@@ -106,4 +106,3 @@ Ordinal hot deck imputation:
 
 ## Simulations {#ordmiss-sims}
 
-

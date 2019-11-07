@@ -3,8 +3,6 @@
 # It outputs data, plr.out, plr.df, int.df, the new education levels, and the new numeric education levels
 # The output can be called with $
 
-rm(list=ls())
-
 OPMord <- function(data, dv, evs){
   library(MASS)
   library(data.table)
@@ -35,7 +33,7 @@ OPMord <- function(data, dv, evs){
   int.df$Intercepts <- factor(int.df$Intercepts, levels = int.df$Intercepts)
     # empty df to fill with assigned new cases
   df.cases <- data.frame(matrix(NA, nrow(data), length(levels(data[,dv]))))   
-    # assign cases that fall underneath the lowest interecept with the respective education category, put results in first column
+    # assign cases that fall underneath the lowest intercept with the respective education category, put results in first column
   df.cases[,1] <- ifelse(plr.out$lp <= int.df$Values[1], levels(data[,dv])[1], NA) 
     # assign cases that fall between all intercepts except the lowest and the highest, put results in all but first and last columns
   for(q in 1:(length(levels(data[,dv]))-2)){        
@@ -76,6 +74,7 @@ OPMord <- function(data, dv, evs){
                  "ord.new.lev.num" = sort(unique(data[,paste(dv, ".new.num", sep = "")])))
   return(output)
 }
+
 
 
 ## Everything except the int.df and df.factors stuff is very straightforward
