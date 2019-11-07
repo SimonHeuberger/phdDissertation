@@ -1,0 +1,655 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+%\usepackage[dvips]{epsfig}
+\usepackage{pstricks,pst-node,pst-tree}
+\usepackage[dvips]{graphicx}
+\usepackage{floatflt,epsfig}
+\usepackage{amsfonts, amssymb, amsmath}
+\usepackage{portland}
+\usepackage{setspace}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{esint}
+\usepackage{vmargin}
+        \setpapersize{USletter}
+        \setmarginsrb{1.0in}{1.0in}{1.0in}{0.3in}{0in}{0in}{0in}{0in}
+\usepackage{fancyhdr}
+        \pagestyle{fancyplain}
+        \setlength{\footskip}{0pt}
+                \setlength{\headsep}{40pt}
+                \setlength{\topmargin}{28pt}
+        \addtolength{\headwidth}{\marginparsep}
+        \renewcommand{\headrulewidth}{0pt}
+        \lhead{\fancyplain{}{\bfseries \small%
+		    \textcolor{Mygrey}{Center for Behavioral Neuroscience, February 27, 2019 [\thepage] }} }
+		\cfoot{}
+	\usepackage{multirow}
+	\usepackage{fancyvrb}
+	\usepackage{verbatim}
+
+\def\bupsilon{\boldsymbol{\Upsilon}}
+\def\aet{\mathbf{A}\boldsymbol{\eta}}
+\def\bA{\mathbf{A}}
+\def\bC{\bf C}
+\def\bI{\mathbf{I}}
+\def\bXal{\X^{(\ell)}}
+\def\ba{\mathbf{A}}
+\def\bbeta{\boldsymbol{\beta}}
+\def\EPS{\boldsymbol{\epsilon}}
+\def\boeta{\boldsymbol{\eta}}
+\def\eti{(\mathbf{A}\boldsymbol{\eta})_i}
+\def\etki{(\mathbf{A}_{k^{(t)}}\boldsymbol{\eta}_{k^{(t)}})_i}
+\def\meta{\boldsymbol{\mu_\eta}}
+\def\mk{m^k\mathcal{L}_k}
+\def\mxb{\X_i\boldsymbol{\beta}}
+\def\mxlb{\X_l\boldsymbol{\beta}}
+\def\pa{\partial}
+\def\psci{\psi_{C_i}}
+\def\psk{\psi_{S_k}}
+\def\sqp{\sqrt{2\pi}}
+\def\sumi{\sum_{i=1}^n}
+\def\sumk{\sum_{k=1}^n}
+\def\ud{\textrm{d}}
+\newcommand{\BigPhi}{ \text{\parbox{0.18in}{\begin{huge}$\Phi\;$\end{huge}}} }
+\newcommand{\ALPHA}{\boldsymbol{\alpha}}
+\newcommand{\Amat}{\mathbf{A}}
+\newcommand{\BETA}{\boldsymbol{\beta}}
+\newcommand{\B}{\boldsymbol{\beta}}
+\newcommand{\DELTA}{\boldsymbol{\delta}}
+\newcommand{\PP}{\boldsymbol{\psi}}
+\newcommand{\PSI}{\boldsymbol{\psi}}
+\newcommand{\TAU}{\boldsymbol{\tau}}
+\newcommand{\THETA}{\boldsymbol{\theta}}
+\newcommand{\T}{{\boldsymbol{\theta}}}
+\newcommand{\BigT}{{\boldsymbol{\Theta}}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\Y}{\mathbf{Y}}
+\newcommand{\Z}{\mathbf{Z}}
+\newcommand{\bSig}{\boldsymbol{\Sigma}}
+\newcommand{\bS}{{\mathbf{S}}}
+\newcommand{\bU}{{\bf U}}
+\newcommand{\bX}{{\bf X}}
+\newcommand{\bY}{{\bf Y}}
+\newcommand{\bc}{{\bf c}}
+\newcommand{\bdelta}{\boldsymbol{\delta}}
+\newcommand{\beps}{\boldsymbol{\epsilon}}
+\newcommand{\blsquote}{\renewcommand{\baselinestretch}{0.9}}
+\newcommand{\blsref}{\renewcommand{\baselinestretch}{0.9}}
+\newcommand{\blstable}{\renewcommand{\baselinestretch}{1.0}}
+\newcommand{\bls}{\renewcommand{\baselinestretch}{1.58}}
+\newcommand{\boa}{{\normalfont{\texttt{BOA}\;}}}
+\newcommand{\boldeta}{\boldsymbol{\eta}}
+\newcommand{\bom}{{\bf m}}
+\newcommand{\bq}{{\bf q}}
+\newcommand{\bugs}{{\normalfont{\texttt{BUGS}\;}}}
+%\newcommand{\bxi}{\mathbf{\xi}_i}
+\newcommand{\ee}{\mathbf{e}}
+\newcommand{\m}{{\boldsymbol{\mu}}}
+\newcommand{\winbugs}{{\normalfont{\texttt{WinBUGS}\;}}}
+\newcommand{\z}{\mathbf{z}}
+\newcommand{\PHI}{\boldsymbol{\phi}}
+\newcommand{\BPHI}{\boldsymbol{\Phi}}
+	\newcommand{\etal}{{\it et al. }}
+	\newcommand{\range}{\negmedspace:\negmedspace}
+	\newcommand{\bh}{\mathbf{b}}
+	\newcommand{\code}[1]{\textcolor{MyGreen}{\texttt{#1}}}
+	\newcommand{\M}{\boldsymbol{\mu}}
+	\newcommand{\SI}{\boldsymbol{\Sigma}}
+	\newcommand{\SIinv}{\boldsymbol{\Sigma}^{-1}}
+	\newcommand{\bb}{\boldsymbol{\beta}}
+	\newcommand{\ga}{\boldsymbol{\gamma}}
+	\newcommand{\G}{\boldsymbol{\gamma}}
+	\newcommand{\I}{{\mathbf{I}}}
+	\newcommand{\ttau}{\color[cmyk]{0.92,0,0.59,0.25}{\tau}}
+	\newcommand{\9}{\\[9pt]}
+	\newcommand{\R}{\texttt{R}}
+	\newcommand{\vo}{\mathbf{v}}
+	\newcommand{\ca}{\mathbf{c}}
+	\newcommand{\U}{\mathbf{U}}
+	\newcommand{\X}{\mathbf{X}}
+	\newcommand{\x}{\mathbf{x}}
+	\newcommand{\y}{\mathbf{y}}
+	\newcommand{\E}{\mathbf{E}}
+	\newcommand{\D}{\mathbf{D}}
+	\newcommand{\OO}{\mathbf{O}}
+	\newcommand{\dd}{\mathbf{d}}
+	\newcommand{\half}{\frac{1}{2}}
+	\renewcommand{\bibitem}{\vskip 2pt\par\hangindent\parindent\hskip-\parindent}
+	\renewcommand{\baselinestretch}{1.00} 
+	\renewcommand{\thesection}{\Alph{section}}
+	\newcommand{\coda}{{\normalfont{\texttt{CODA}\;}}}
+\newcommand{\bgm}{\color{MyMath}}
+\newcommand{\egm}{\color{white}}
+\DefineVerbatimEnvironment{VM}{Verbatim}{formatcom=\color{MyGreen}}
+\renewenvironment{equation}{\bgm\begin{equation*}}{\end{equation*}\egm}
+
+	\makeatletter
+	  \renewcommand{\section}{\@startsection
+	    {section}%
+	    {1}%
+	    {0mm}%
+	    {0.1\baselineskip}%-0.9
+	    {0.8\baselineskip}%0.3
+	    %{\newpage \color[cmyk]{0.43,0,0.01,0} \center\LARGE}}% style
+	    {\newpage \color[cmyk]{0.43,0,0.01,0} \center\LARGE}}% style
+	  \renewcommand{\subsection}{\@startsection
+	    {subsection}%
+	    {2}%
+	    {0mm}%
+	    {0.4\baselineskip}%-0.8
+	    {0.74\baselineskip\@afterindenttrue}%0.12 0.05
+	    {\Large\itshape}}
+	\makeatother
+
+\begin{document}\begin{landscape}
+\pagecolor{black}
+
+	\newenvironment{ohlist}
+	    { \begin{list}{$\blacktriangleright$}{\setlength{\itemsep}{10pt}} }
+	    %{ \begin{list}{$\clubsuit$}{\setlength{\itemsep}{20pt}} }
+	    { \end{list} }
+	\newenvironment{ohlistsmall}
+	    { \begin{list}{$\blacktriangleright$}{\setlength{\itemsep}{1pt}} }
+	    %{ \begin{list}{$\clubsuit$}{\setlength{\itemsep}{1pt}} }
+	    { \end{list} }
+	\newenvironment{ohlist2}
+	    { \begin{list}{$\triangleright$}{\setlength{\itemsep}{8pt}} }
+	    %{ \begin{list}{$\spadesuit$}{\setlength{\itemsep}{8pt}} }
+	    { \end{list} }
+	\newenvironment{ohlist3}
+	    { \begin{list}{$\triangleright$}{\setlength{\itemsep}{1pt}} }
+	    %{ \begin{list}{$\spadesuit$}{\setlength{\itemsep}{1pt}} }
+	    { \end{list} }
+	\definecolor{MyMath}{cmyk}{0.00,0.16,1.00,0.00}
+	\definecolor{MyGreen}{rgb}{0,1,0}
+	\definecolor{Mygrey}{gray}{0.65}
+	\definecolor{MyGold}{cmyk}{0,0.11,0.99,0}
+	\definecolor{MyEmph}{cmyk}{0,0.61,0.72,0.07}
+
+\begin{titlepage}
+\begin{center}\begin{huge}
+\noindent { \textcolor{MyGold}{Pediatric Traumatic Brain Injury: Progress and Plans${}^{\ddagger}$}}\\[0.5in]
+\end{huge}
+\begin{Large}
+\parbox{\linewidth}{  \begin{center} \begin{tabular}{c}
+    \textcolor{MyGreen}{JEFF GILL}  \\
+    {\bf \textcolor{white}{\em Distinguished Professor, Department of Government} }\\
+    {\bf \textcolor{white}{\em Professor, Department Mathematics \& Statistics} }\\
+    {\bf \textcolor{white}{\em Member, Center for Behavioral Neuroscience} }\\
+    {\bf \textcolor{white}{\em American University} }\\[2.2in]
+\end{tabular} \end{center} }
+\end{Large} %\normalsize
+\end{center}
+    {\bf \textcolor{white}{\large $\ddagger$ Supported by Eunice Kennedy Shriver National Institute of Child Health \& Human Development (NIH)
+            Grant Number: 1R21HD086784-01A1.} }\\
+\pagestyle{empty}
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{Large}
+\color{white}{
+
+\section*{Pediatric Traumatic Brain Injury}
+\begin{ohlist}
+    \item   Severe TBI remains a leading cause of pediatric death and disability. 
+    \item   Motor vehicle accidents, falls, and abusive head trauma constitute the most common etiologies. 
+    \item   Pharmacological neuroprotective therapies are \emph{not} available for severe TBI, but guideline-based intensive 
+            care can improve outcomes. 
+    \item   Guideline-based intensive care recommends avoidance of secondary insults that are consistently associated with 
+            abnormal brain metabolism and bad outcome, including intracranial hypertension, hyperventilation, hypoxia, and 
+            occasionally hypotension. 
+    \item   ICP monitoring is a complex clinical issue: uneven application, nonlinear trajectory, poor predictive power.
+    \item   \underline{Today:}
+            \begin{ohlist2}
+                \item   a brief discussion of a published paper showing the value of guideline based intensive care for PTBI.
+                \item   prelimary results from ongoing (funded by NIH) research on biochemical-based analysis
+                        intended for evential clinical prescription.
+            \end{ohlist2}
+\end{ohlist}
+
+\section*{General Measurement Issues for TBI}
+\begin{ohlist}
+    \item   Individual patient biological measures at discharge are often pseudo-interval (continuous) measures, but we also desire 
+            qualitative descriptive measures that summarize patient status.
+    \item   Clearly a standard categorical measure with many values would not be helpful here: for a \bgm$0-100$\egm\ scale what would it mean to be
+            a \bgm$37$\egm\ versus a \bgm$41$\egm?
+    \item   On the other end of the scale, dichotomous outcomes such as lived/died are too blunt to reflect the range of important
+            potential outcomes.
+    \item   In both of the last cases, it is common for the for the data not to support modeling these outcomes in a regression
+            context.
+\end{ohlist}
+
+\section*{Implemented Measures}
+\begin{ohlist}
+    \item   Accordingly, the most useful scales for clinical outcomes have a modest number of informed categories.
+    \item   For example, the \textcolor{MyEmph}{Extended Glasgow Outcome Scale} (GOSE) is structured according to:
+            \begin{center}
+            \begin{tabular}{|c|c|c|}
+                \hline
+                1   & Death                     & D \\
+                2   & Vegetative State            & VS \\
+                3   & Lower Severe Disability   & SD- \\
+                4   & Upper Severe Disability   & SD+ \\
+                5   & Lower Moderate Disability & MD- \\
+                6   & Upper Moderate Disability & MD+ \\
+                7   & Lower Good Recovery       & GR- \\
+                8   & Upper Good Recovery       & GR+ \\
+                \hline
+            \end{tabular}
+            \end{center}
+            \vspace{11pt}
+            (cf. Wilson JT, Slieker FJ, Legrand V, Murray G, Stocchetti N, Maas AI. Observer variation in the assessment of
+            outcome in traumatic brain injury: experience from a multicenter, international randomized clinical trial. Neurosurgery.
+            Jul;61(1):123-8; discussion 128-9. 2007.)
+    \item   Other similar categorized hospital discharge disposition scales also exist.
+\end{ohlist}
+
+\section*{Unhelpful Measures For Statistical Outcomes Assessment}
+\begin{ohlist}
+    \item   Dichotomous survival, unless measured over time and uncensored.
+    \item   From ``ASSESSING A PATIENT’S RISK AT DISCHARGE; USING A TOOL TO IDENTIFY APPROPRIATE POST DISCHARGE RESOURCES''
+            (eq.Health study,\\ \texttt{http://www.cfmc.org/integratingcare/files/AssessingRiskatDischargeRev4-11.pdf}):
+            \begin{center}
+            \begin{tabular}{|c|c|}
+                \hline
+                Home With No Resources      & 45\% \\
+                Home Health                 & 23\% \\
+                Hospice                     & 1\% \\
+                Skilled Care                & 11\% \\
+                Long Term Acute Care/Rehab  & 9\% \\
+                Other                       & 11\% \\
+                \hline
+            \end{tabular}
+            \end{center}
+            \vspace{11pt}
+    \item   Status codes, such as the Patient Discharge Status Codes on BCBS UB04 claim form, which are detailed nominal descriptors 
+            for billing and record-keeping purposes,
+\end{ohlist}
+
+\section*{Recent Comparison, St. Louis Children's Hospital}
+\begin{ohlist}
+    \item   Often these ordinal measures track closely, but have observable differences, relative to the GOS (Observed Glasgow Outcome Scale: 
+            D, death; V, vegetative; SD, severe disabled; MD, moderate disabled; G, good recovery).\\
+            \begin{Large}
+            \begin{center}
+            \begin{tabular}{lrrrrr}
+                                        & \multicolumn{5}{c}{\emph{GOS Code}} \\
+            \emph{Discharge Disposition}   & 1  & 2 &  3 &  4 &  5 \\
+                                        \hline
+            Medical Examiner/Morgue        & 9  & 0 &  0 &  0 &  0 \\
+            Different Acute Care Hospital  & 0  & 0 &  4 &  0 &  0 \\
+            Inpatient Rehab Facility       & 0  & 1 & 19 & 16 &  4 \\
+            Home With Healthcare           & 0  & 0 &  1 &  0 &  0 \\
+            Home With Outpatient Rehab     & 0  & 0 &  6 &  9 &  2 \\
+            Home With No Assistance        & 0  & 0 &  9 & 32 & 11 \\
+                                        \hline
+            \end{tabular}
+            \end{center}
+            \end{Large}
+    \item   Correlation:
+            \begin{VM}
+library(polycor)
+polychor(head.inj3$Destination, head.inj3$GOS_hospital_disharge) # NOTICE THE "h"
+[1] 0.6705342
+            \end{VM}
+\end{ohlist}
+
+\section*{Ordered Outcomes Modeling}
+\begin{ohlist}
+    \item   The applied models are typically not \textcolor{MyEmph}{ordered probit} and \textcolor{MyEmph}{ordered logit}
+            specifications, \emph{despite the obvious ordered nature of the data}.
+    \item   Such models are standard tools for statisticians since Aitchison \& Silvey (1957) and Bock and Jones (1968, Ch.8), and
+            introduced to social science statistics by McKelvey and Zavoina (1975). 
+    \item   However, you can find \emph{no citations} to these models in clinical outcomes analysis until 1993.
+    \item   Now of course they are more common, but not fully appreciated by all medical outcomes researchers.
+\end{ohlist}
+
+\section*{Threshold Approach}
+\begin{ohlist}
+        \item   \bgm$\exists\; \X$,\egm\ an \bgm$n \times k$\egm\ matrix of explanatory variables.
+        \item   \bgm$Y$\egm\ observed on ordered/recorded on ordered categories: \bgm$Y_i \in [1,\ldots,k]$\egm, for \bgm$i=1,\ldots
+                n$\egm.
+        \item   \bgm$Y$\egm\ assumed to be produced by an unobserved (latent) variable \bgm$U$\egm.
+        \item   \bgm$U$\egm\ is continuous on \bgm$\mathfrak{R}$\egm\ from \bgm$-\infty$ to $\infty$\egm.
+        \item   The ``response mechanism'' for the \bgm$r^{th}$\egm\ category:
+                \bgm\begin{equation}
+                        Y=r \Longleftrightarrow \theta_{r-1} < U < \theta_r     \nonumber
+                \end{equation}\egm
+		        \vspace{-33pt}
+        \item   This requires there to be thresholds on \bgm$\mathfrak{R}$\egm\ (no intercept):
+        	    \bgm\begin{equation*}
+        	    \U_i: \;
+            		\theta_0 \underset{c=1}{\longleftarrow\!\longrightarrow}
+            		\theta_1 \underset{c=2}{\longleftarrow\!\longrightarrow}
+            		\theta_2 \underset{c=3}{\longleftarrow\!\longrightarrow}
+            		\theta_3\ldots
+            		\theta_{C-1} \underset{c=C}{\longleftarrow\!\longrightarrow}
+            	    \theta_C        \nonumber
+        	    \end{equation*}\egm
+		        \vspace{-33pt}
+        \item   The vector of (unseen) utilities across individuals in the sample, \bgm$\U$\egm, is determined by a linear
+                additive specification of explanatory variables: \bgm$\U = -\X\B +\E$\egm, where \bgm$\B =
+                [\beta_1,\beta_2,\ldots,\beta_p]$\egm\ does not depend on the \bgm$\theta_j$\egm, and \bgm$\E \sim F_{\E}$\egm.
+\end{ohlist}
+
+\newpage
+\section*{Threshold Approach}
+\begin{ohlist}
+    \item   For the observed vector $\Y$:
+            \bgm\begin{align*}
+                        p(\Y \le r|\X) &= p(\U \le \theta_r) = p(-\X\B + \E \le \theta_r)       \9
+                                       &= p(\E \le \theta_r+\X\B) = F_{\E}(\theta_r + \X\B).
+            \end{align*}\egm
+		    \vspace{-33pt}
+	\item	This is called the \emph{cumulative model} because:
+		    \bgm\begin{equation*}
+				p(\Y \le \theta_r|\X) = p(\Y=1|\X) + p(\Y=2|\X) + \ldots + p(\Y=r|\X)
+		    \end{equation*}\egm
+		    \vspace{-33pt}
+   	\item   A logistic distributional assumption on the errors produces the ordered logit specification:
+        	\bgm\begin{equation*}
+            		F_{\E}(\theta_r - \X'\B) = P(\Y\le r|\X) = [1+\exp(-\theta_r-\X'\B)]^{-1}
+        	\end{equation*}\egm
+		    \vspace{-33pt}
+    \item   The likelihood function is:
+            \bgm\begin{equation*}
+                        L(\B,\T|\X,\Y) = \prod_{i=1}^{n}\prod_{j=1}^{C-1}\left[
+                    		\Lambda(\theta_j + \X_i'\B) - \Lambda(\theta_{j-1} + \X_i'\B) \right]^{z_{ij}}
+            \end{equation*}\egm
+		    \vspace{-33pt}
+		    where \bgm$z_{ij}=1$\egm\ if the \bgm$i$\egm th case is in the \bgm$j$\egm th category, and \bgm$z_{ij}=0$\egm\ otherwise.
+\end{ohlist}
+
+\section*{Interpretation}
+\begin{ohlist}
+	\item	Predicted probabilities use: \bgm$ P(\Y\le r|\X) = [1+\exp(-\theta_r-\X'\B)]^{-1} $\egm\ after estimation of
+            \bgm$\B$\egm.
+\end{ohlist}
+\begin{center}
+   \epsfig{file=/Users/jgill/ARTICLES/Article.PTBI/ordered.logit.fig.ps,height=7.6in,width=4.6in, clip=,angle=270}
+\end{center}
+\begin{comment}
+postscript("Article.PTBI/ordered.logit.fig.ps")
+theta <- c(-2,-0.5,3,4,7)
+ruler <- seq(-8,8,length=300)
+par(col.axis="white",col.lab="white",col.sub="white", col="white", bg="slategray",cex.lab=1.5,mar=c(6,6,2,2))
+plot(ruler,exp(ruler)/(1+exp(ruler)),type="l",lwd=3, col="yellow",xlab="Predictor",ylab="Probability",ylim=c(-0.1,1))
+for (i in 1:length(theta))  {
+    segments(theta[i],0,theta[i],exp(theta[i])/(1+exp(theta[i])), col="black",lwd=1.5)
+    text(expression(theta),x=theta[i],y=-0.07,col="black",cex=1.5)
+    text(i,x=(theta[i]+0.2),y=-0.08,col="black",cex=1.0)
+}
+abline(h=0,col="white")
+lines(ruler,exp(ruler)/(1+exp(ruler)),lwd=3, col="yellow")
+dev.off()
+\end{comment}
+
+\section*{Proportional-Odds Calculation for Ordered Logit}
+\noindent Rewrite According to:
+\bgm\begin{align*}
+	p(\Y \le \theta_r|\X) 	&= \frac{ \exp(\theta_r+\X\B) }{ 1 + \exp(\theta_r+\X\B) }	\9
+	\intertext{\textcolor{black}{and:}}
+	p(\Y > \theta_r|\X)	&= \frac{ 1+ \exp(\theta_r+\X\B) }{ 1 + \exp(\theta_r+\X\B) } 
+	                         - \frac{ \exp(\theta_r+\X\B) }{ 1 + \exp(\theta_r+\X\B) }	\9
+	                        &= \frac{ 1 }{ 1 + \exp(\theta_r+\X\B) }	
+\end{align*}\egm
+so:
+\bgm\begin{equation*}
+	\frac{ p(\Y \le \theta_r|\X) }{ p(\Y > \theta_r|\X) } 
+		= \frac{ \exp(\theta_r+\X\B) / (1 + \exp(\theta_r+\X\B)) }
+			{ 1 / (1 + \exp(\theta_r+\X\B)) }
+		= \exp(\theta_r+\X\B)
+\end{equation*}\egm
+which is nice.  And:
+\bgm\begin{equation*}
+	\log\left[ \frac{ p(\Y \le \theta_r|\X) }{ p(\Y > \theta_r|\X) } \right] = \theta_r+\X\B
+\end{equation*}\egm
+which is nicer.
+
+\section*{Pediatric Neurocritical Care Program (Pineda \emph{etal}, 2013)}
+\begin{ohlist}
+    \item   10 years of PTBI STL Children's Hospital data with a change in the middle-point (September 2005).
+    \item   PNCP: a time-sensitive, severity-based approach to monitor and treat children with TBI that coordinated communication 
+            and activity amongst PICU staff and physician faculty and trainees, conforming with the 2003 Brain Trauma Foundation
+            guidelines.
+    \item   This included a detailed training program, an explicit process for maintaining pathway fidelity, and continuous 
+            quality improvement. 
+    \item   Groups: \bgm$n_{Pre-PNCP}=63$\egm, \bgm$n_{Post-PNCP}=60$\egm, treated as a fixed effect variable (treatment contrast).
+    \item   Tests for differences in demographics between the two periods failed to find statistically reliable differences.
+    \item   Outcomes: Medical Examiner/Morgue, Different Acute Care Hospital, Inpatient Rehab Facility, Home With Healthcare,
+            Home With Outpatient Rehab, Home With No Assistance (better in the positive direction).
+\end{ohlist}
+
+\section*{Results from the Ordered Probit Model}
+\begin{large}
+\begin{center}
+\begin{tabular}{lrrr}
+                               &  Coefficient   & Std.Err.  & t-value \\
+                               \hline
+    Post-PNCP                  &     0.482477   & 0.216061  &   2.233 \\
+    Age In Months              &    -0.004674   & 0.002127  &  -2.198 \\
+    White                      &    -0.318926   & 0.129315  &  -2.466 \\
+    Length of Stay in PICU     &    -0.003776   & 0.007839  &  -0.482 \\
+    Male                       &     0.111984   & 0.107548  &   1.041 \\
+    ICP Monitoring             &     0.997479   & 0.299579  &   3.330 \\
+    Post-Resuscitation GCS     &     0.125677   & 0.060159  &   2.089 \\
+    PRISM III                  &    -0.065137   & 0.018125  &  -3.594 \\
+    Injury Severity Score\^{}2 &    -0.000315   & 0.000134  &  -2.345 \\
+    Fall                       &     0.291087   & 0.268258  &   1.085 \\
+    Motor Vehicle Accident     &     0.197797   & 0.191271  &   1.034 \\
+    Pedestrian Accident        &     0.147976   & 0.241442  &   0.613 \\
+                               \hline
+\end{tabular}
+\end{center}
+\end{large}
+
+\vspace{0.7in}
+\noindent NOTES:
+\begin{ohlist}
+    \item   Reference category for the injury etiologies is ``Other.''
+    \item   Race (white) \texttt{-0.318926}, means that moving from 0=non-white to 1=white pushed the expected outcome down 
+            the scale of \bgm$U$\egm\ towards more unfavorable outcomes.
+    \item   Coefficients such as ICP Monitoring \texttt{0.997479}, have the opposite effect. 
+\end{ohlist}
+
+\section*{Ordered Probit Threshold Estimates}
+\begin{large}
+\begin{center}
+\begin{tabular}{llrrr}
+    Threshold  & Categories Separated                                             & Coefficient & Std. Error    & t-value \\
+    \hline
+    \bgm$\theta_1$\egm\ & Medical Examiner/Morgue \emph{to} Different Acute Care Hospital  & -0.647      & 0.188         & -3.442 \\
+    \bgm$\theta_2$\egm\ & Different Acute Care Hospital \emph{to} Inpatient Rehab Facility & -0.377      & 0.226         & -1.670 \\
+    \bgm$\theta_3$\egm\ & Inpatient Rehab Facility \emph{to} Home With Healthcare          &  0.979      & 0.262         &  3.733 \\
+    \bgm$\theta_4$\egm\ & Home With Healthcare \emph{to} Home With Outpatient Rehab        &  1.005      & 0.262         &  3.829 \\
+    \bgm$\theta_5$\egm\ & Home With Outpatient Rehab \emph{to} Home With No Assistance     &  1.433      & 0.266         &  5.391 \\
+    \hline
+\end{tabular}
+\end{center}
+\end{large}
+
+\vspace{1in}
+\noindent NOTES:
+\begin{ohlist}
+    \item   The literal value of these coefficients is unimportant.
+    \item   The statistical significance of these coefficients is unimportant.
+    \item   They are important only to ``help'' estimate the \bgm$\boldsymbol{\beta}$\egm\ coefficients.  
+\end{ohlist}
+
+\section*{Smooth Predictions From the Model}
+\begin{center}
+   \epsfig{file=../Article.PTBI/outcomes.graph.col.ps,height=8.6in,width=5.6in, clip=,angle=270}
+\end{center}
+
+\section*{Making a Prediction Difference Using Race}
+\begin{ohlist}
+    \item   Suppose a predicted outcome on the \bgm$U$\egm\ metric for a particular non-white patient was \bgm$-0.4$\egm\ 
+            (given values for all of the other \bgm$\mathbf{X}$\egm\ variables).  
+    \item   Then the model would predict the category [Different Acute Care Hospital].  
+    \item   If this was changed to a white patient, the coefficient \bgm$\beta_{\text{Race}}$\egm\ would assign \bgm$-0.318926$\egm\ 
+            instead of \bgm$0$\egm\ in the \bgm$\mathbf{X}_i\boldsymbol{\beta}$\egm\ calculation.  
+    \item   This reduction gives the (hypothetical) patient a prediction of \bgm$U_i = -0.718926$\egm, which corresponds to 
+            the categorical prediction of [Medical Examiner/Morgue].
+\end{ohlist}
+
+\section*{Graphical Comparison}
+\begin{tabular}{lcr}
+\parbox{0.25\linewidth}{
+    \begin{ohlist}
+        \item   The x-axis is the \bgm$U$\egm\ metric and the y-axis is probability.  
+        \item   The five \bgm$\theta$\egm\ cutpoints are given by the dotted vertical lines and labeled at the top. 
+        \item   The slices give the probability for being in each of the categories for a white male following 
+                a motor vehicle accident, with all other explanatory variables set at the data mean.
+    \end{ohlist}
+}
+& $\quad$ &
+\hspace{-0.5in}
+\parbox{0.69\linewidth}{
+    \epsfig{file=../Article.PTBI/ordered.probit.ps,width=8.5in,height=5.5in,clip=,angle=0}
+}
+\end{tabular}
+
+\begin{comment}
+\section*{Analysis of First Differences}
+\begin{ohlist}
+    \item   Select two levels of one explanatory variable and setting all others at their means: 
+            \bgm$\mathbf{X}_1$ and $\mathbf{X}_2$\egm.  
+    \item   Two hypothetical probability vectors are created by applying the link function to
+            \bgm$\mathbf{X}_1\boldsymbol{\beta}$\egm\
+            and \bgm$\mathbf{X}_2\boldsymbol{\beta}$\egm, which can be compared.  
+    \item   Race is set at white, etiology is set at motor vehicle accident, and the two vectors are then made 
+            different with the Group variable: one indicates Pre-PNCP and the other indicates Post-PNCP status.  
+    \item   All other variables except Group, Race and Etiology are set at the data means.
+    \item   These almost identical cases are multiplied by the estimated regression coefficient vector 
+            and the ordered probit link function then transforms each onto the probability scale for comparison.  
+    \item   The probability of death falls 53\% following PNCP initiation (from \bgm$0.210$\egm\ to \bgm$0·0988$\egm) 
+            and the probability for discharge to home with no assistance increases 53\% (from \bgm$0.101$\egm\ to 
+            \bgm$0.214$\egm). 
+\end{ohlist}
+\end{comment}
+
+\section*{Clinical Status of PTBI Patients}
+\begin{ohlist}
+    \item   \emph{Secondary insults} continue to be reported in pediatric patients with severe TBI where intracranial hypertension
+            (ICH) is the most common one. 
+    \item   These can result in direct brain injury and even cerebral herniation and death, or contribute to low cerebral perfusion, 
+            worsening brain metabolism. 
+    \item   Current recommendations for initiation of intracranial pressure (ICP) monitoring and management of ICH are based on 
+            clinical and radiological indicators of injury severity. 
+            %(Glasgow Coma Scale score and computerized tomography) and ICH thresholds associated with worse outcome in a time-dose dependent fashion [REF]. 
+    \item   Yet pediatric randomized trials lowering ICH have not demonstrated a benefit on outcomes. 
+\end{ohlist}
+
+\section*{Current Biomarker Theoretical Basis}
+\begin{ohlist}
+    \item   We propose a focus on neuropathological information from two serum based biomarkers of cellular injury: 
+            \begin{ohlist2}
+                \item   \textcolor{MyEmph}{ubiquitin carboxyl-terminal esterase L1} (UCH-L1) 
+                \item   \textcolor{MyEmph}{glial fibrillary acidic protein} breakdown products (GFAP-BDPs) 
+            \end{ohlist2}
+            that can improve our ability to characterize injury progression in pediatric severe TBI patients. 
+    \item   These biomarkers may in the future also allow biological quantification of response to therapy, facilitating timely and 
+            individualized adjustments in patient care and consequently better outcomes.
+\end{ohlist}
+
+\section*{UCH-L1}
+\begin{ohlist}
+    \item   A highly abundant neuronal protein thought to play a critical role in cellular protein degradation during both normal and 
+            pathological conditions. 
+    %\item   This enzyme is a thiol protease that recognizes and hydrolyzes a peptide bond at the C-terminal glycine of ubiquitin.              
+    \item   This soluble protein constitutes up to 10\% of cytoplasmic protein in neurons, is elevated in cerebrospinal fluid (CSF) 
+            and serum following TBI, and is significantly associated with measures of injury severity and outcome in adults and 
+            children. 
+    \item   Localized to neurons in the cerebral cortex, and has demonstrated anecdotal accuracy in stratifying adult patients 
+            with varying degrees of TBI within an hour of injury in addition to predicting outcomes.
+\end{ohlist}
+
+\section*{GFAP}
+\begin{ohlist}
+    \item   A type III intermediate filament that forms part of the cytoskeleton of mature astrocytes and other glial cells. 
+    \item   GFAP is only found in the central nervous system, and it presence in the blood is a marker of astrogial injury.  
+    \item   Central nervous system (CNS) injury (only) causes gliosis and subsequently up-regulates blood GFAP, making it a
+            potential  marker of TBI as opposed to other trauma.
+    \item   Specifically, GFAP is a product of astrocyte cytoskeleton degradation by calpain protease (calcium-dependent,
+            non-lysosomal) activation and therefore considered specific to the CNS. 
+    \item   Elevated concentrations of GFAP two days post injury portend a poor prognosis and are thought to reflect the presence 
+            of a secondary insults (i.e. ICH and low brain tissue oxygen tension)
+\end{ohlist}
+
+\section*{The Data}
+\begin{ohlist}
+    \item   A prospective case-control cohort study, \bgm$n=67$\egm\ pediatric patients (17 years old and younger) admitted to 
+            the Intensive Care Unit at Saint Louis Children’s Hospital with severe TBI (post-resuscitation GCS) score 8 or less (12). 
+    \item   In the case of suspected non-accidental trauma, children with computerized tomography evidence of old intracranial hemorrhage 
+            were excluded. 
+    \item   Dr. Rachel Berger and colleagues at the University of Pittsburgh provided control samples from a cohort of 30 normal children 
+            either as part of a 1-year wellness check-up or during the workup of an acute injury for which TBI was ruled out.
+    \item   Blood plasma was collected from these control patients admitted to the Pediatric Intensive Care Unit with normal mental status and 
+            no history of TBI (GCS = 15).  
+    \item   Blood was sampled at regular time points following injury (6, 24, 48, 72 hours) and centrifuged for 10 minutes at 5,000 
+            revolutions per minute and serum from these samples was stored at -80C until the time of assay.  
+\end{ohlist}
+
+\section*{ROC Curves}
+\vspace{-2.0in}
+\begin{center}
+\parbox{\linewidth}{  \begin{center} 
+    \epsfig{file=./roc.ps, height=10.5in,width=7.25in,clip=,angle=270}
+    \end{center} }
+\end{center}
+
+\section*{Discharge Model, Biomarkers at 24 Hours}
+\begin{VM}
+biom1 <- polr(as.factor(GOSE.hospital.D.C) ~ (UCHL1.ng.ml.24hrSerum) 
+                                           + (GFAP.ng.ml.24.hr.Serum)
+    + Age.mo + Post.Res.GCS + NAT
+    , data=biomarkers.stl[1:67,])
+
+Coefficients:
+                            Value Std. Error t value
+UCHL1.ng.ml.24hrSerum  -0.3802111  0.2991090 -1.2711
+GFAP.ng.ml.24.hr.Serum -0.0542211  0.0249381 -2.1742
+Age.mo                 -0.0091644  0.0064066 -1.4305
+Post.Res.GCS            0.3433188  0.1921960  1.7863
+NAT                    -3.0600989  1.1653334 -2.6259
+\end{VM}
+
+\section*{Discharge Model, Biomarkers at 48 Hours}
+\begin{VM}
+biom2 <- polr(as.factor(GOSE.hospital.D.C) ~ (UCHL1.ng.ml.48hrSerum) 
+                                           + (GFAP.ng.ml.48hrSerum)
+    + Age.mo + Post.Res.GCS + NAT
+    , data=biomarkers.stl[1:67,])
+
+Coefficients:
+                          Value Std. Error  t value
+UCHL1.ng.ml.48hrSerum -0.489430  0.2426552 -2.01698
+GFAP.ng.ml.48hrSerum  -0.097880  0.0272559 -3.59115
+Age.mo                -0.007701  0.0059658 -1.29085
+Post.Res.GCS           0.070040  0.1796915  0.38978
+NAT                   -0.296157  1.3070076 -0.22659
+\end{VM}
+
+\section*{Discharge Model, Biomarkers at 72 Hours}
+\begin{VM}
+biom3 <- polr(as.factor(GOSE.hospital.D.C) ~ (UCHL1.ng.ml.72hrSerum) 
+                                           + (GFAP.ng.ml.72hrSerum)
+    + Age.mo + Post.Res.GCS + NAT
+    , data=biomarkers.stl[1:67,])
+
+Coefficients:
+                          Value Std. Error  t value
+UCHL1.ng.ml.72hrSerum -1.448308  0.6202287 -2.33512
+GFAP.ng.ml.72hrSerum  -0.188987  0.0586528 -3.22212
+Age.mo                -0.018231  0.0091357 -1.99555
+Post.Res.GCS          -0.203829  0.3367397 -0.60530
+NAT                   -0.384292  1.6886275 -0.22758
+\end{VM}
+
+
+
+
+} % END OF \color{white}{
+\end{Large}\end{landscape}\end{document}

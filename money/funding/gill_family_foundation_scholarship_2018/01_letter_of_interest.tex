@@ -1,0 +1,77 @@
+\documentclass[10pt,letterpaper,dateno,sigleft]{newlfm}
+
+\usepackage{charter} % Use the Charter font for the document text
+\usepackage{graphicx}
+\usepackage[letterspace=100]{microtype} % To make the letters of \LaTeX a bit more spaced out (the font style presses words together)
+\usepackage{float}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks = true,
+    urlcolor = {blue}
+}
+\newsavebox{\Luiuc}\sbox{\Luiuc}{\parbox[b]{1.75in}{\vspace{0.5in}
+\includegraphics[width=2\linewidth]{/Users/simonheuberger/Dropbox/work/logo.png}}} % Company/institution logo at the top left of the page
+\makeletterhead{Uiuc}{\Lheader{\usebox{\Luiuc}}}
+
+\newlfmP{sigsize=50pt} % Slightly decrease the height of the signature field
+
+\lthUiuc % Print the company/institution logo
+
+\makeatletter % These lines remove the black lines
+\g@addto@macro{\ps@ltrhead}{%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\g@addto@macro{\ps@othhead}{%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\makeatother
+
+\addrfrom{
+\today\\ % Date
+Washington, DC
+}
+
+\addrto{
+Gill Family Foundation Scholarship\\
+School of Public Affairs, American University
+}
+
+
+\begin{document}
+
+\begin{newlfm}
+
+
+\vspace{-0.3cm}
+
+Dear Selection Committee,
+
+\vspace{0.15cm}
+
+I am writing to express my interest in the Gill Family Foundation Scholarship. I am a fourth-year Ph.D. candidate in American Politics. I took the American and Comparative comprehensive exams in 2017. I am also the only Ph.D. candidate in the School of Public Affairs to have taken the Methodology comprehensive exam that was held for the first time this year. I am currently in the process of writing the first-ever methods dissertation in the Government Department at American University. 
+
+During my coursework at AU, I completed the full Conduct of Inquiry sequence, receiving an A in each course. Thanks to these courses, I possess great knowledge of the proper usage of and assumptions behind a wide variety of statistical modeling strategies. This knowledge greatly informs the approaches I take when I analyze my own data and also significantly enhances my understanding of quantitative literature in political science. Additionally, these course taught me the use of the statistical software packages {\tt R} (Conduct I and II) and {\tt Stata} (Conduct III and IV), as well as the typesetting language {\lsstyle \LaTeX}. Through my own self-teaching thereafter, I am now also fluent in {\tt Python}, {\tt R Markdown}, and {\tt SQL}.
+
+As part of my Graduate Assistantship, I have been working for Prof. Jeff Gill since August 2017. Prof. Gill is a nationally renowned scholar in quantitative methodology who holds appointments in several departments at AU. He is also currently the editor-in-chief of the journal \textit{Political Analysis}. Prof. Gill chooses the conditionally accepted manuscripts for publication, and I am in charge of replicating and debugging all data material for said manuscripts. \textit{Political Analysis} does not publish manuscripts without fully replicable data. Replication material is usually submitted as a mixture of {\tt R}, {\tt Stata}, and {\tt Python}. I directly communicate with the authors and work through their code. Due to the intensive computational nature of some material, I have been granted access to the Ohio Supercomputer High-Performance Cluster at Ohio State University. I also taught myself how to use elastic cloud computing (EC2) instances on Amazon Web Services. My replication work has led to a forthcoming single-authored publication in \textit{Political Analysis}, where I dissect insufficient published replication material. Besides this replication work for Prof. Gill, I also currently teach \textit{GOVT-310 Introduction to Political Research} as an adjunct instructor, where I use Kosuke Imai's (2018) \textit{Quantitative Social Science: An Introduction} and {\tt R}.
+
+
+The knowledge gained from the Conduct series and working for Prof. Gill has inspired me to write a methods dissertation. I propose to develop advances in public opinion measurement with modern statistical methods, particularly in the form of new quantitative methods for ordinal survey measures. The enclosed prospectus consists of three papers, where the first two make quantitative methods contributions and the third applies both contributions in a substantive analysis in American Politics.
+Paper I shows how balance in survey experiments can be improved with a new method of sequential blocking for ordinal covariates. I propose a weighted approach based on covariate-adaptive randomization that incorporates all ordinal variable levels for the incoming participant and the distribution in the treatment groups with already assigned participants, thus utilizing the hitherto unused full explanatory power of ordinal variables. I demonstrate the benefits of my method with simulations, external data from published survey experiments, and my own original data. My new sequential blocking method will also be made freely available as the R package {\tt BlockExperiments}. 
+Paper II develops a measure of ordinal entropy for mode differences in surveys. While many studies analyze mode differences, existing research can only pinpoint certain parts of surveys where respondents' reactions are affected by mode. I combine the Wilcoxon Signed Rank Test and Shannon's entropy to obtain a comparative measure of two ordinal vectors, which is more suitable to detect mode differences than traditional approaches. I test this measure with external and original data and locate its results within the environment of the Total Survey Error.
+Finally, paper III employs the methodological contributions from papers I and II and investigates whether moral arguments are part of what makes a political frame strong. I conduct several pre-tests in the form of online polls and subsequently design and field a questionnaire for online and face-to-face survey experiments that assesses the effect of moral and amoral frames. I was able to secure \$5,000 in funding through the Office of the Provost to conduct these experiments.
+
+\vspace{0.15cm}
+I believe my dissertation makes significant quantitative methodological contributions worthy of the Gill Family Foundation Scholarship. I thank you for taking the time to consider my application.
+
+\vspace{0.15cm}
+
+Sincerely, 
+\newline \newline \includegraphics[width=4cm, height=2cm]{/Users/simonheuberger/Dropbox/work/signature.jpg}
+\newline Simon Heuberger
+
+
+\end{newlfm}
+
+\end{document}

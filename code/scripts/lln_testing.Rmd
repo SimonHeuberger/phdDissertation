@@ -1,0 +1,698 @@
+---
+title: "lln_testing"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+#  What I did
+
+I wanted to simulate balance comparisons between treatment groups in randomized experiments and in blocked experiments. So I wanted to draw samples of random numbers, repeat those draws many times, randomize treatment for each drawn sample, block treatment for the very same samples, then plot the differences all of the randomized and blocked treatment group distributions.
+
+
+
+# Simulations Code (repeats for 2, 3, 5, 10 groups and saves .csv files -- run on Jeff's machine)
+
+The final simulations code can specify any number of treatment groups and any number of repeats. I can also specify any number of concatenated or sequenced sampled numbers, as long as the total number and sequence is dividable by the number of treatment groups. I can also specify any number of concatenated or sequenced variable levels.
+
+I ran the code below on Jeff's machine. It creates up to 1000 sequenced sampled numbers with 100 repeats for one level (5) in four different loops for 2, 3, 5, and 10 treatment groups.
+
+It takes about 3-4 days to run this code. I looked into ways to speed up the code: Rcpp is an obvious candidate, but I need to read into that more to apply it here.
+
+
+```{r, All Simulations, eval=FALSE, include=FALSE}
+
+ rm(list=ls())
+
+library(blockTools)
+library(randomizr)
+library(plyr)
+library(ggplot2)
+library(here)
+
+## Save .csv files for blocked and randomized ##
+## Sample is between 6 and 1000, with variations and sequences for different group sizes ##
+## Following Ryan's suggestion, I set the seq() to bigger iterations, to keep the calulcation time, resulting file size and density down ##
+## Repeats: 100 ##
+## Levels: 5 ##
+## Groups: 2 ##
+
+sampled_numbers <- seq(from = 6, to = 1000, by = 8)
+length(sampled_numbers)
+repeats <- 100
+lev <- 5
+groups <- as.factor(c("control", "treatment"))
+
+listoflists_1 <- rep(list(list()), length(lev)) # lists with with length(lev) # of lists (to store sampled numbers)
+
+df_rand <- data.frame(matrix(NA, repeats, (length(groups)+2))) # needed for listofdf_rand (+2 to add variance and levels columns after the treatment group columns)
+colnames(df_rand) <- c(levels(groups), "variance", "levels")
+listofdf_rand <- rep(list(df_rand), length(sampled_numbers)) # list with length(sampled_numbers) # of df_rand (needed for listoflists_2)
+
+listoflists_2 <- rep(list(listofdf_rand), length(lev)) # list with length(lev) # of listofdf_rand (to store means of randomized treatment groups)
+listoflists_3 <- rep(list(list()), length(sampled_numbers)) # list with length(sampled_numers) # of lists (to store blocking assignments)
+
+df_blocked <- data.frame(matrix(NA, 1, (length(groups)+3))) # needed for listofdf_blocked (+3 to add columns later)
+colnames(df_blocked) <- c(levels(groups), "sampled_numbers", "repeat", "diff")
+listofdf_blocked <- rep(list(df_blocked), repeats) # list with repeats # of df_blocked (needed for listoflists_4)
+
+listoflists_4 <- rep(list(listofdf_blocked), length(sampled_numbers)) #list with length(sampled_numbers) # of listofdf_blocked (to store means of blocked treatment groups)
+
+pb <- txtProgressBar(min = 1, max = length(sampled_numbers), style = 3) # creates the percentage progress bar across the sampled numbers
+
+for(q in 1:length(lev)){
+  for(x in 1:length(sampled_numbers)){
+    setTxtProgressBar(pb, x) # loads the percentage progress bar into the loop
+    set.seed(123)
+    listoflists_1[[q]][[x]] <- data.frame(replicate(repeats, sample(lev[q], sampled_numbers[x], replace = TRUE))) 
+    # randomly sample numbers
+    listoflists_1[[q]][[x]]$levels <- rep(lev[q], sampled_numbers[x]) 
+    # add column of levels
+    listoflists_1[[q]][[x]]$groups <- simple_ra(N = sampled_numbers[x], conditions=groups)  
+    # assign treatment for each amount of randomly sampled numbers and add as column
+    listoflists_1[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], sampled_numbers[x]) 
+    # add column of of sampled numbers
+    listoflists_1[[q]][[x]]$repeats <- rep(repeats, sampled_numbers[x]) 
+    # add column of repeats
+    listoflists_1[[q]][[x]]$id <- 1:sampled_numbers[x]
+    # add column of continuous id (for blocking)
+      for(i in 1:repeats){
+        listoflists_3[[x]][[i]] <- assignment(block(listoflists_1[[q]][[x]], id.vars = "id", block.vars = names(listoflists_1[[q]][[x]])[i], n.tr = length(groups)), seed = 123)
+        # block and assign samples to treatment groups
+        for(z in 1:length(groups)){
+          listoflists_2[[q]][[x]][i,z] <- mean(listoflists_1[[q]][[x]][,i][listoflists_1[[q]][[x]]$groups == levels(groups)[z]])
+          # take means of each treatment group and add as column
+          listoflists_4[[x]][[i]][1,z] <- mean(listoflists_1[[q]][[x]][listoflists_1[[q]][[x]]$id %in% unname(listoflists_3[[x]][[i]]$assg[[1]][,z]), i]) # take means of each treatment group and add as column
+          # %in% is needed because $assg lists the assigned units, not their actual sampled values
+        }
+        listoflists_4[[x]][[i]][1,(length(groups)+1)] <- sampled_numbers[x]
+        # add column of sampled numbers
+        listoflists_4[[x]][[i]][1,(length(groups)+2)] <- repeats
+        # add column of repeats
+        listoflists_4[[x]][[i]][1,(length(groups)+3)] <- apply(listoflists_4[[x]][[i]][,1:length(groups)], 1, function(w) diff(range(w)))
+        # # calculate the max diff between treatment groups and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+1)] <- var(listoflists_1[[q]][[x]][,i]) 
+        # take variance of each repeat and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+2)] <- lev[q] 
+        # add column of levels
+      }  
+    listoflists_2[[q]][[x]]$groups <- rep(length(groups), repeats) 
+    # add groups to dataframes
+    listoflists_2[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], repeats)
+    # add sampled numbers to dataframes
+    listoflists_2[[q]][[x]]$repeats <- rep(repeats, repeats)
+    # add repeats to dataframes
+    }
+}
+
+list_all_samples <- unlist(listoflists_1, recursive=FALSE) 
+# turn listoflists_1 (which is a list of lists of dataframes) into a list of dataframes
+list_all_means_variances <- unlist(listoflists_2, recursive = FALSE) 
+# same for listoflists_2
+all_samples <- ldply(list_all_samples, data.frame) 
+# turn the list of dataframes of all samples into one giant dataframe of all samples
+all_means_variances <- ldply(list_all_means_variances, data.frame) 
+# same for list of dataframes of all means and variances
+all_means_variances$diff <- apply(all_means_variances[,1:length(groups)], 1, function(x) diff(range(x)))
+# calculate the max diff between treatment groups and add them as column "diff"
+all_means_variances$label <- c(rep("rand", nrow(all_means_variances)))
+# add the label "rand" to all rows (for plotting)
+
+list_all_blocked <- unlist(listoflists_4, recursive = FALSE)
+# turn listoflists_4 (which is a list of lists of dataframes) into a list of dataframes
+all_blocked <- ldply(list_all_blocked, data.frame)
+# turn the list of dataframes with all blocked diffs into one giant dataframe of all diffs
+all_blocked$label <- c(rep("blocked", nrow(all_blocked)))
+# add the label "blocked" to all rows (for plotting)
+
+write.csv(all_samples, file = here("data", "all_samples_2.csv"))
+write.csv(all_means_variances, file = here("data", "all_means_variances_2.csv"))
+write.csv(all_blocked, file = here("data", "all_blocked_2.csv"))
+
+rm(list=ls())
+
+
+
+
+## Save .csv files for blocked and randomized ##
+## Same as above, just for 3 groups ##
+
+sampled_numbers <- seq(from = 9, to = 1002, by = 9)
+length(sampled_numbers)
+repeats <- 100
+lev <- 5
+groups <- as.factor(c("control", "treatment1", "treatment2"))
+
+listoflists_1 <- rep(list(list()), length(lev)) # lists with with length(lev) # of lists (to store sampled numbers)
+
+df_rand <- data.frame(matrix(NA, repeats, (length(groups)+2))) # needed for listofdf_rand (+2 to add variance and levels columns after the treatment group columns)
+colnames(df_rand) <- c(levels(groups), "variance", "levels")
+listofdf_rand <- rep(list(df_rand), length(sampled_numbers)) # list with length(sampled_numbers) # of df_rand (needed for listoflists_2)
+
+listoflists_2 <- rep(list(listofdf_rand), length(lev)) # list with length(lev) # of listofdf_rand (to store means of randomized treatment groups)
+listoflists_3 <- rep(list(list()), length(sampled_numbers)) # list with length(sampled_numers) # of lists (to store blocking assignments)
+
+df_blocked <- data.frame(matrix(NA, 1, (length(groups)+3))) # needed for listofdf_blocked (+3 to add columns later)
+colnames(df_blocked) <- c(levels(groups), "sampled_numbers", "repeat", "diff")
+listofdf_blocked <- rep(list(df_blocked), repeats) # list with repeats # of df_blocked (needed for listoflists_4)
+
+listoflists_4 <- rep(list(listofdf_blocked), length(sampled_numbers)) #list with length(sampled_numbers) # of listofdf_blocked (to store means of blocked treatment groups)
+
+pb <- txtProgressBar(min = 1, max = length(sampled_numbers), style = 3) # creates the percentage progress bar across the sampled numbers
+
+for(q in 1:length(lev)){
+  for(x in 1:length(sampled_numbers)){
+    setTxtProgressBar(pb, x) # loads the percentage progress bar into the loop
+    set.seed(123)
+    listoflists_1[[q]][[x]] <- data.frame(replicate(repeats, sample(lev[q], sampled_numbers[x], replace = TRUE))) 
+    # randomly sample numbers
+    listoflists_1[[q]][[x]]$levels <- rep(lev[q], sampled_numbers[x]) 
+    # add column of levels
+    listoflists_1[[q]][[x]]$groups <- simple_ra(N = sampled_numbers[x], conditions=groups)  
+    # assign treatment for each amount of randomly sampled numbers and add as column
+    listoflists_1[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], sampled_numbers[x]) 
+    # add column of of sampled numbers
+    listoflists_1[[q]][[x]]$repeats <- rep(repeats, sampled_numbers[x]) 
+    # add column of repeats
+    listoflists_1[[q]][[x]]$id <- 1:sampled_numbers[x]
+    # add column of continuous id (for blocking)
+      for(i in 1:repeats){
+        listoflists_3[[x]][[i]] <- assignment(block(listoflists_1[[q]][[x]], id.vars = "id", block.vars = names(listoflists_1[[q]][[x]])[i], n.tr = length(groups)), seed = 123)
+        # block and assign samples to treatment groups
+        for(z in 1:length(groups)){
+          listoflists_2[[q]][[x]][i,z] <- mean(listoflists_1[[q]][[x]][,i][listoflists_1[[q]][[x]]$groups == levels(groups)[z]])
+          # take means of each treatment group and add as column
+          listoflists_4[[x]][[i]][1,z] <- mean(listoflists_1[[q]][[x]][listoflists_1[[q]][[x]]$id %in% unname(listoflists_3[[x]][[i]]$assg[[1]][,z]), i]) # take means of each treatment group and add as column
+          # %in% is needed because $assg lists the assigned units, not their actual sampled values
+        }
+        listoflists_4[[x]][[i]][1,(length(groups)+1)] <- sampled_numbers[x]
+        # add column of sampled numbers
+        listoflists_4[[x]][[i]][1,(length(groups)+2)] <- repeats
+        # add column of repeats
+        listoflists_4[[x]][[i]][1,(length(groups)+3)] <- apply(listoflists_4[[x]][[i]][,1:length(groups)], 1, function(w) diff(range(w)))
+        # # calculate the max diff between treatment groups and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+1)] <- var(listoflists_1[[q]][[x]][,i]) 
+        # take variance of each repeat and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+2)] <- lev[q] 
+        # add column of levels
+      }  
+    listoflists_2[[q]][[x]]$groups <- rep(length(groups), repeats) 
+    # add groups to dataframes
+    listoflists_2[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], repeats)
+    # add sampled numbers to dataframes
+    listoflists_2[[q]][[x]]$repeats <- rep(repeats, repeats)
+    # add repeats to dataframes
+    }
+}
+
+list_all_samples <- unlist(listoflists_1, recursive=FALSE) 
+# turn listoflists_1 (which is a list of lists of dataframes) into a list of dataframes
+list_all_means_variances <- unlist(listoflists_2, recursive = FALSE) 
+# same for listoflists_2
+all_samples <- ldply(list_all_samples, data.frame) 
+# turn the list of dataframes of all samples into one giant dataframe of all samples
+all_means_variances <- ldply(list_all_means_variances, data.frame) 
+# same for list of dataframes of all means and variances
+all_means_variances$diff <- apply(all_means_variances[,1:length(groups)], 1, function(x) diff(range(x)))
+# calculate the max diff between treatment groups and add them as column "diff"
+all_means_variances$label <- c(rep("rand", nrow(all_means_variances)))
+# add the label "rand" to all rows (for plotting)
+
+list_all_blocked <- unlist(listoflists_4, recursive = FALSE)
+# turn listoflists_4 (which is a list of lists of dataframes) into a list of dataframes
+all_blocked <- ldply(list_all_blocked, data.frame)
+# turn the list of dataframes with all blocked diffs into one giant dataframe of all diffs
+all_blocked$label <- c(rep("blocked", nrow(all_blocked)))
+# add the label "blocked" to all rows (for plotting)
+
+write.csv(all_samples, file = here("data", "all_samples_3.csv"))
+write.csv(all_means_variances, file = here("data", "all_means_variances_3.csv"))
+write.csv(all_blocked, file = here("data", "all_blocked_3.csv"))
+
+rm(list=ls())
+
+
+
+## Save .csv files for blocked and randomized ##
+## Same as above, just for 5 groups
+
+sampled_numbers <- seq(from = 15, to = 1000, by = 10)
+length(sampled_numbers)
+repeats <- 100
+lev <- 5
+groups <- as.factor(c("control", "treatment1", "treatment2", "treatment3", "treatment4"))
+
+listoflists_1 <- rep(list(list()), length(lev)) # lists with with length(lev) # of lists (to store sampled numbers)
+
+df_rand <- data.frame(matrix(NA, repeats, (length(groups)+2))) # needed for listofdf_rand (+2 to add variance and levels columns after the treatment group columns)
+colnames(df_rand) <- c(levels(groups), "variance", "levels")
+listofdf_rand <- rep(list(df_rand), length(sampled_numbers)) # list with length(sampled_numbers) # of df_rand (needed for listoflists_2)
+
+listoflists_2 <- rep(list(listofdf_rand), length(lev)) # list with length(lev) # of listofdf_rand (to store means of randomized treatment groups)
+listoflists_3 <- rep(list(list()), length(sampled_numbers)) # list with length(sampled_numers) # of lists (to store blocking assignments)
+
+df_blocked <- data.frame(matrix(NA, 1, (length(groups)+3))) # needed for listofdf_blocked (+3 to add columns later)
+colnames(df_blocked) <- c(levels(groups), "sampled_numbers", "repeat", "diff")
+listofdf_blocked <- rep(list(df_blocked), repeats) # list with repeats # of df_blocked (needed for listoflists_4)
+
+listoflists_4 <- rep(list(listofdf_blocked), length(sampled_numbers)) #list with length(sampled_numbers) # of listofdf_blocked (to store means of blocked treatment groups)
+
+pb <- txtProgressBar(min = 1, max = length(sampled_numbers), style = 3) # creates the percentage progress bar across the sampled numbers
+
+for(q in 1:length(lev)){
+  for(x in 1:length(sampled_numbers)){
+    setTxtProgressBar(pb, x) # loads the percentage progress bar into the loop
+    set.seed(123)
+    listoflists_1[[q]][[x]] <- data.frame(replicate(repeats, sample(lev[q], sampled_numbers[x], replace = TRUE))) 
+    # randomly sample numbers
+    listoflists_1[[q]][[x]]$levels <- rep(lev[q], sampled_numbers[x]) 
+    # add column of levels
+    listoflists_1[[q]][[x]]$groups <- simple_ra(N = sampled_numbers[x], conditions=groups)  
+    # assign treatment for each amount of randomly sampled numbers and add as column
+    listoflists_1[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], sampled_numbers[x]) 
+    # add column of of sampled numbers
+    listoflists_1[[q]][[x]]$repeats <- rep(repeats, sampled_numbers[x]) 
+    # add column of repeats
+    listoflists_1[[q]][[x]]$id <- 1:sampled_numbers[x]
+    # add column of continuous id (for blocking)
+      for(i in 1:repeats){
+        listoflists_3[[x]][[i]] <- assignment(block(listoflists_1[[q]][[x]], id.vars = "id", block.vars = names(listoflists_1[[q]][[x]])[i], n.tr = length(groups)), seed = 123)
+        # block and assign samples to treatment groups
+        for(z in 1:length(groups)){
+          listoflists_2[[q]][[x]][i,z] <- mean(listoflists_1[[q]][[x]][,i][listoflists_1[[q]][[x]]$groups == levels(groups)[z]])
+          # take means of each treatment group and add as column
+          listoflists_4[[x]][[i]][1,z] <- mean(listoflists_1[[q]][[x]][listoflists_1[[q]][[x]]$id %in% unname(listoflists_3[[x]][[i]]$assg[[1]][,z]), i]) # take means of each treatment group and add as column
+          # %in% is needed because $assg lists the assigned units, not their actual sampled values
+        }
+        listoflists_4[[x]][[i]][1,(length(groups)+1)] <- sampled_numbers[x]
+        # add column of sampled numbers
+        listoflists_4[[x]][[i]][1,(length(groups)+2)] <- repeats
+        # add column of repeats
+        listoflists_4[[x]][[i]][1,(length(groups)+3)] <- apply(listoflists_4[[x]][[i]][,1:length(groups)], 1, function(w) diff(range(w)))
+        # # calculate the max diff between treatment groups and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+1)] <- var(listoflists_1[[q]][[x]][,i]) 
+        # take variance of each repeat and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+2)] <- lev[q] 
+        # add column of levels
+      }  
+    listoflists_2[[q]][[x]]$groups <- rep(length(groups), repeats) 
+    # add groups to dataframes
+    listoflists_2[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], repeats)
+    # add sampled numbers to dataframes
+    listoflists_2[[q]][[x]]$repeats <- rep(repeats, repeats)
+    # add repeats to dataframes
+    }
+}
+
+list_all_samples <- unlist(listoflists_1, recursive=FALSE) 
+# turn listoflists_1 (which is a list of lists of dataframes) into a list of dataframes
+list_all_means_variances <- unlist(listoflists_2, recursive = FALSE) 
+# same for listoflists_2
+all_samples <- ldply(list_all_samples, data.frame) 
+# turn the list of dataframes of all samples into one giant dataframe of all samples
+all_means_variances <- ldply(list_all_means_variances, data.frame) 
+# same for list of dataframes of all means and variances
+all_means_variances$diff <- apply(all_means_variances[,1:length(groups)], 1, function(x) diff(range(x)))
+# calculate the max diff between treatment groups and add them as column "diff"
+all_means_variances$label <- c(rep("rand", nrow(all_means_variances)))
+# add the label "rand" to all rows (for plotting)
+
+list_all_blocked <- unlist(listoflists_4, recursive = FALSE)
+# turn listoflists_4 (which is a list of lists of dataframes) into a list of dataframes
+all_blocked <- ldply(list_all_blocked, data.frame)
+# turn the list of dataframes with all blocked diffs into one giant dataframe of all diffs
+all_blocked$label <- c(rep("blocked", nrow(all_blocked)))
+# add the label "blocked" to all rows (for plotting)
+
+write.csv(all_samples, file = here("data", "all_samples_5.csv"))
+write.csv(all_means_variances, file = here("data", "all_means_variances_5.csv"))
+write.csv(all_blocked, file = here("data", "all_blocked_5.csv"))
+
+rm(list=ls())
+
+
+
+## Save .csv files for blocked and randomized ##
+## Same as above, just for 10 groups
+
+sampled_numbers <- seq(from = 30, to = 1000, by = 10)
+length(sampled_numbers)
+repeats <- 100
+lev <- 5
+groups <- as.factor(c("control", "treatment1", "treatment2", "treatment3", "treatment4", "treatment5", "treatment6", "treatment7", "treatment8", "treatment9"))
+
+listoflists_1 <- rep(list(list()), length(lev)) # lists with with length(lev) # of lists (to store sampled numbers)
+
+df_rand <- data.frame(matrix(NA, repeats, (length(groups)+2))) # needed for listofdf_rand (+2 to add variance and levels columns after the treatment group columns)
+colnames(df_rand) <- c(levels(groups), "variance", "levels")
+listofdf_rand <- rep(list(df_rand), length(sampled_numbers)) # list with length(sampled_numbers) # of df_rand (needed for listoflists_2)
+
+listoflists_2 <- rep(list(listofdf_rand), length(lev)) # list with length(lev) # of listofdf_rand (to store means of randomized treatment groups)
+listoflists_3 <- rep(list(list()), length(sampled_numbers)) # list with length(sampled_numers) # of lists (to store blocking assignments)
+
+df_blocked <- data.frame(matrix(NA, 1, (length(groups)+3))) # needed for listofdf_blocked (+3 to add columns later)
+colnames(df_blocked) <- c(levels(groups), "sampled_numbers", "repeat", "diff")
+listofdf_blocked <- rep(list(df_blocked), repeats) # list with repeats # of df_blocked (needed for listoflists_4)
+
+listoflists_4 <- rep(list(listofdf_blocked), length(sampled_numbers)) #list with length(sampled_numbers) # of listofdf_blocked (to store means of blocked treatment groups)
+
+pb <- txtProgressBar(min = 1, max = length(sampled_numbers), style = 3) # creates the percentage progress bar across the sampled numbers
+
+for(q in 1:length(lev)){
+  for(x in 1:length(sampled_numbers)){
+    setTxtProgressBar(pb, x) # loads the percentage progress bar into the loop
+    set.seed(123)
+    listoflists_1[[q]][[x]] <- data.frame(replicate(repeats, sample(lev[q], sampled_numbers[x], replace = TRUE))) 
+    # randomly sample numbers
+    listoflists_1[[q]][[x]]$levels <- rep(lev[q], sampled_numbers[x]) 
+    # add column of levels
+    listoflists_1[[q]][[x]]$groups <- simple_ra(N = sampled_numbers[x], conditions=groups)  
+    # assign treatment for each amount of randomly sampled numbers and add as column
+    listoflists_1[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], sampled_numbers[x]) 
+    # add column of of sampled numbers
+    listoflists_1[[q]][[x]]$repeats <- rep(repeats, sampled_numbers[x]) 
+    # add column of repeats
+    listoflists_1[[q]][[x]]$id <- 1:sampled_numbers[x]
+    # add column of continuous id (for blocking)
+      for(i in 1:repeats){
+        listoflists_3[[x]][[i]] <- assignment(block(listoflists_1[[q]][[x]], id.vars = "id", block.vars = names(listoflists_1[[q]][[x]])[i], n.tr = length(groups)), seed = 123)
+        # block and assign samples to treatment groups
+        for(z in 1:length(groups)){
+          listoflists_2[[q]][[x]][i,z] <- mean(listoflists_1[[q]][[x]][,i][listoflists_1[[q]][[x]]$groups == levels(groups)[z]])
+          # take means of each treatment group and add as column
+          listoflists_4[[x]][[i]][1,z] <- mean(listoflists_1[[q]][[x]][listoflists_1[[q]][[x]]$id %in% unname(listoflists_3[[x]][[i]]$assg[[1]][,z]), i]) # take means of each treatment group and add as column
+          # %in% is needed because $assg lists the assigned units, not their actual sampled values
+        }
+        listoflists_4[[x]][[i]][1,(length(groups)+1)] <- sampled_numbers[x]
+        # add column of sampled numbers
+        listoflists_4[[x]][[i]][1,(length(groups)+2)] <- repeats
+        # add column of repeats
+        listoflists_4[[x]][[i]][1,(length(groups)+3)] <- apply(listoflists_4[[x]][[i]][,1:length(groups)], 1, function(w) diff(range(w)))
+        # # calculate the max diff between treatment groups and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+1)] <- var(listoflists_1[[q]][[x]][,i]) 
+        # take variance of each repeat and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+2)] <- lev[q] 
+        # add column of levels
+      }  
+    listoflists_2[[q]][[x]]$groups <- rep(length(groups), repeats) 
+    # add groups to dataframes
+    listoflists_2[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], repeats)
+    # add sampled numbers to dataframes
+    listoflists_2[[q]][[x]]$repeats <- rep(repeats, repeats)
+    # add repeats to dataframes
+    }
+}
+
+list_all_samples <- unlist(listoflists_1, recursive=FALSE) 
+# turn listoflists_1 (which is a list of lists of dataframes) into a list of dataframes
+list_all_means_variances <- unlist(listoflists_2, recursive = FALSE) 
+# same for listoflists_2
+all_samples <- ldply(list_all_samples, data.frame) 
+# turn the list of dataframes of all samples into one giant dataframe of all samples
+all_means_variances <- ldply(list_all_means_variances, data.frame) 
+# same for list of dataframes of all means and variances
+all_means_variances$diff <- apply(all_means_variances[,1:length(groups)], 1, function(x) diff(range(x)))
+# calculate the max diff between treatment groups and add them as column "diff"
+all_means_variances$label <- c(rep("rand", nrow(all_means_variances)))
+# add the label "rand" to all rows (for plotting)
+
+list_all_blocked <- unlist(listoflists_4, recursive = FALSE)
+# turn listoflists_4 (which is a list of lists of dataframes) into a list of dataframes
+all_blocked <- ldply(list_all_blocked, data.frame)
+# turn the list of dataframes with all blocked diffs into one giant dataframe of all diffs
+all_blocked$label <- c(rep("blocked", nrow(all_blocked)))
+# add the label "blocked" to all rows (for plotting)
+
+write.csv(all_samples, file = here("data", "all_samples_10.csv"))
+write.csv(all_means_variances, file = here("data", "all_means_variances_10.csv"))
+write.csv(all_blocked, file = here("data", "all_blocked_10.csv"))
+
+rm(list=ls())
+
+
+```
+
+
+
+# Plotting Code
+
+I can easily do scatterplots, but they are so dense they're essentially unusable. They're also not very meaningful for the blocked version (and jitter() doesn't help much). Boxplots and transparent/hued histograms are much better here.
+
+The code below reads in the created simulation .csv files and saves a boxplots and a histogram. I adapted this in the actual diss to be produced by markdown, rather than saved.
+
+
+```{r, Boxplots, include=FALSE}
+
+library(ggplot2)
+require(gridExtra)
+
+all_blocked_2 <- read.csv(here("data", "all_blocked_2.csv"))
+all_blocked_3 <- read.csv(here("data", "all_blocked_3.csv"))
+all_blocked_5 <- read.csv(here("data", "all_blocked_5.csv"))
+all_blocked_10 <- read.csv(here("data", "all_blocked_10.csv"))
+all_means_variances_2 <- read.csv(here("data", "all_means_variances_2.csv"))
+all_means_variances_3 <- read.csv(here("data", "all_means_variances_3.csv"))
+all_means_variances_5 <- read.csv(here("data", "all_means_variances_5.csv"))
+all_means_variances_10 <- read.csv(here("data", "all_means_variances_10.csv"))
+
+together <- list(all_blocked_2, all_means_variances_2, all_blocked_3, all_means_variances_3, all_blocked_5, all_means_variances_5, all_blocked_10, all_means_variances_10) # collect all dfs in a list to loop over
+couple <- list() # empty list
+
+for(i in 1:(length(together))){
+   couple[[i]] <- subset(together[[i]], select = c(sampled_numbers, diff, label))
+   couple[[i]]$sampled_numbers <- as.factor(couple[[i]]$sampled_numbers)
+} # subset for 3 columns and turn sampled_numbers into factor
+
+sims_2 <- rbind(couple[[1]],couple[[2]]) # combine blocked and rand for each # of treatment groups
+sims_3 <- rbind(couple[[3]],couple[[4]])
+sims_5 <- rbind(couple[[5]],couple[[6]])
+sims_10 <- rbind(couple[[7]],couple[[8]])
+
+selection <- c(0, 0.1, 0.2, 0.3, 0.5, 1) # the quantiles I want
+
+quantile(as.numeric(levels(sims_2$sampled_numbers)), selection) # quantiles for 2 groups
+levels(sims_2$sampled_numbers) # levels for 2 groups
+sims_2_range <- subset(sims_2, subset = sampled_numbers %in% c(14, 102, 206, 302, 502, 998)) # hand-select samples for range
+sims_2_one <- subset(sims_2, subset = sampled_numbers == as.numeric(levels(sims_2$sampled_numbers)[2])) # select second level for 'intro' plot
+
+quantile(as.numeric(levels(sims_3$sampled_numbers)), selection)
+levels(sims_3$sampled_numbers)
+sims_3_range <- subset(sims_3, subset = sampled_numbers %in% c(18, 108, 207, 306, 504, 999))
+sims_3_one <- subset(sims_3, subset = sampled_numbers == as.numeric(levels(sims_3$sampled_numbers)[2]))
+
+quantile(as.numeric(levels(sims_5$sampled_numbers)), selection)
+levels(sims_5$sampled_numbers)
+sims_5_range <- subset(sims_5, subset = sampled_numbers %in% c(25, 115, 215, 305, 505, 995))
+sims_5_one <- subset(sims_5, subset = sampled_numbers == as.numeric(levels(sims_5$sampled_numbers)[2]))
+
+quantile(as.numeric(levels(sims_10$sampled_numbers)), selection)
+levels(sims_10$sampled_numbers)
+sims_10_range <- subset(sims_10, subset = sampled_numbers %in% c(40, 130, 220, 300, 500, 1000))
+sims_10_one <- subset(sims_10, subset = sampled_numbers == as.numeric(levels(sims_10$sampled_numbers)[2]))
+
+xlab <- "Sample Sizes"
+ylab <- "Distances Between Treatment Groups"
+title <- "Distances Between Treatment Groups in Randomized and Blocked Data"
+
+plot_first <- ggplot(sims_2_one, aes(x=sampled_numbers, y=diff)) + geom_boxplot(aes(fill=label)) + theme(axis.title=element_blank()) + theme(legend.title=element_blank()) + theme(legend.position = c(0.85, 0.75)) # first plot outside of the loop because of the legend
+
+sims_plots <- list(sims_2_range, sims_3_one, sims_3_range, sims_5_one, sims_5_range, sims_10_one, sims_10_range) # list of all subsets for plotting
+plots <- list()
+for(i in 1:(length(sims_plots))){
+   plots[[i]]  <- ggplot(sims_plots[[i]], aes(x=sampled_numbers, y=diff)) + geom_boxplot(aes(fill=label)) + theme(axis.title=element_blank()) + guides(fill=FALSE)
+  } # create plot for each data subset
+
+pdf(here("plots", "lln_all_boxplots.pdf"))
+grid.arrange(plot_first, plots[[1]], plots[[2]], plots[[3]], plots[[4]], plots[[5]], plots[[6]], plots[[7]], ncol = 2, nrow = 4, bottom=xlab,  top = title, left=ylab) # plot everything
+dev.off()
+
+
+```
+
+```{r, Histograms, include=FALSE}
+
+ylab <- "Density"
+xlab <- "Distances Between Treatment Groups"
+title <- "Distribution of Treatment Group Differences in Randomized and Blocked Data"
+
+plot_first_more <- ggplot(sims_2, aes(x=diff, fill=label)) + geom_histogram(alpha=0.2, aes(y=..density..), position="identity", binwidth = 0.2) + theme(axis.title=element_blank()) + theme(legend.title=element_blank()) + theme(legend.position = c(0.6, 0.75)) # first plot outside of the loop because of the legend
+
+sims_plots_more <- list(sims_3, sims_5, sims_10) # list of all data sets (minus for 2 groups for plotting)
+
+plots_more <- list()
+for(i in 1:(length(sims_plots_more))){
+   plots_more[[i]] <- ggplot(sims_plots_more[[i]], aes(x=diff, fill=label)) + geom_histogram(alpha=0.2, aes(y=..density..), position="identity", binwidth = 0.2) + theme(axis.title=element_blank()) + guides(fill=FALSE) # create plot for each data set
+}
+
+pdf(here("plots", "lln_all_histograms.pdf"))
+grid.arrange(plot_first_more, plots_more[[1]], plots_more[[2]], plots_more[[3]], ncol = 2, nrow = 2, bottom = xlab, top = title, left = ylab) # plot everything
+dev.off()
+
+```
+
+
+
+
+
+# Simulation for 650 Respondents and 5 Groups (Matt wanted to see this)
+
+Run everything for 650 people and 5 treatment groups, plot it, then test for statistical significance between the diff means of blocked and randomized assignments. I ran the actual simulation on Jeff's machine (faster), then copied the code (adjusting for saving directories) and dragged the results over to my machine.
+
+```{r, Simulation, eval=FALSE, include=FALSE}
+
+library(blockTools)
+library(randomizr)
+library(plyr)
+library(ggplot2)
+require(gridExtra)
+
+sampled_numbers <- 650
+length(sampled_numbers)
+repeats <- 100
+lev <- 5
+groups <- as.factor(c("control", "treatment1", "treatment2", "treatment3", "treatment4"))
+
+listoflists_1 <- rep(list(list()), length(lev)) # lists with with length(lev) # of lists (to store sampled numbers)
+
+df_rand <- data.frame(matrix(NA, repeats, (length(groups)+2))) # needed for listofdf_rand (+2 to add variance and levels columns after the treatment group columns)
+colnames(df_rand) <- c(levels(groups), "variance", "levels")
+listofdf_rand <- rep(list(df_rand), length(sampled_numbers)) # list with length(sampled_numbers) # of df_rand (needed for listoflists_2)
+
+listoflists_2 <- rep(list(listofdf_rand), length(lev)) # list with length(lev) # of listofdf_rand (to store means of randomized treatment groups)
+listoflists_3 <- rep(list(list()), length(sampled_numbers)) # list with length(sampled_numers) # of lists (to store blocking assignments)
+
+df_blocked <- data.frame(matrix(NA, 1, (length(groups)+3))) # needed for listofdf_blocked (+3 to add columns later)
+colnames(df_blocked) <- c(levels(groups), "sampled_numbers", "repeat", "diff")
+listofdf_blocked <- rep(list(df_blocked), repeats) # list with repeats # of df_blocked (needed for listoflists_4)
+
+listoflists_4 <- rep(list(listofdf_blocked), length(sampled_numbers)) #list with length(sampled_numbers) # of listofdf_blocked (to store means of blocked treatment groups)
+
+# pb <- txtProgressBar(min = 1, max = length(sampled_numbers), style = 3) # creates the percentage progress bar across the sampled numbers
+
+for(q in 1:length(lev)){
+  for(x in 1:length(sampled_numbers)){
+    #setTxtProgressBar(pb, x) # loads the percentage progress bar into the loop
+    set.seed(123)
+    listoflists_1[[q]][[x]] <- data.frame(replicate(repeats, sample(lev[q], sampled_numbers[x], replace = TRUE))) 
+    # randomly sample numbers
+    listoflists_1[[q]][[x]]$levels <- rep(lev[q], sampled_numbers[x]) 
+    # add column of levels
+    listoflists_1[[q]][[x]]$groups <- simple_ra(N = sampled_numbers[x], conditions=groups)  
+    # assign treatment for each amount of randomly sampled numbers and add as column
+    listoflists_1[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], sampled_numbers[x]) 
+    # add column of of sampled numbers
+    listoflists_1[[q]][[x]]$repeats <- rep(repeats, sampled_numbers[x]) 
+    # add column of repeats
+    listoflists_1[[q]][[x]]$id <- 1:sampled_numbers[x]
+    # add column of continuous id (for blocking)
+      for(i in 1:repeats){
+        listoflists_3[[x]][[i]] <- assignment(block(listoflists_1[[q]][[x]], id.vars = "id", block.vars = names(listoflists_1[[q]][[x]])[i], n.tr = length(groups)), seed = 123)
+        # block and assign samples to treatment groups
+        for(z in 1:length(groups)){
+          listoflists_2[[q]][[x]][i,z] <- mean(listoflists_1[[q]][[x]][,i][listoflists_1[[q]][[x]]$groups == levels(groups)[z]])
+          # take means of each treatment group and add as column
+          listoflists_4[[x]][[i]][1,z] <- mean(listoflists_1[[q]][[x]][listoflists_1[[q]][[x]]$id %in% unname(listoflists_3[[x]][[i]]$assg[[1]][,z]), i]) # take means of each treatment group and add as column
+          # %in% is needed because $assg lists the assigned units, not their actual sampled values
+        }
+        listoflists_4[[x]][[i]][1,(length(groups)+1)] <- sampled_numbers[x]
+        # add column of sampled numbers
+        listoflists_4[[x]][[i]][1,(length(groups)+2)] <- repeats
+        # add column of repeats
+        listoflists_4[[x]][[i]][1,(length(groups)+3)] <- apply(listoflists_4[[x]][[i]][,1:length(groups)], 1, function(w) diff(range(w)))
+        # # calculate the max diff between treatment groups and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+1)] <- var(listoflists_1[[q]][[x]][,i]) 
+        # take variance of each repeat and add as column
+        listoflists_2[[q]][[x]][i,(length(groups)+2)] <- lev[q] 
+        # add column of levels
+      }  
+    listoflists_2[[q]][[x]]$groups <- rep(length(groups), repeats) 
+    # add groups to dataframes
+    listoflists_2[[q]][[x]]$sampled_numbers <- rep(sampled_numbers[x], repeats)
+    # add sampled numbers to dataframes
+    listoflists_2[[q]][[x]]$repeats <- rep(repeats, repeats)
+    # add repeats to dataframes
+    }
+}
+
+list_all_samples <- unlist(listoflists_1, recursive=FALSE) 
+# turn listoflists_1 (which is a list of lists of dataframes) into a list of dataframes
+list_all_means_variances <- unlist(listoflists_2, recursive = FALSE) 
+# same for listoflists_2
+all_samples <- ldply(list_all_samples, data.frame) 
+# turn the list of dataframes of all samples into one giant dataframe of all samples
+all_means_variances <- ldply(list_all_means_variances, data.frame) 
+# same for list of dataframes of all means and variances
+all_means_variances$diff <- apply(all_means_variances[,1:length(groups)], 1, function(x) diff(range(x)))
+# calculate the max diff between treatment groups and add them as column "diff"
+all_means_variances$label <- c(rep("rand", nrow(all_means_variances)))
+# add the label "rand" to all rows (for plotting)
+
+list_all_blocked <- unlist(listoflists_4, recursive = FALSE)
+# turn listoflists_4 (which is a list of lists of dataframes) into a list of dataframes
+all_blocked <- ldply(list_all_blocked, data.frame)
+# turn the list of dataframes with all blocked diffs into one giant dataframe of all diffs
+all_blocked$label <- c(rep("blocked", nrow(all_blocked)))
+# add the label "blocked" to all rows (for plotting)
+
+write.csv(all_means_variances, file = here("data", "all_means_variances_650.csv"))
+write.csv(all_blocked, file = here("data", "all_blocked_650.csv"))
+
+```
+
+```{r, Plotting, include=FALSE}
+
+all_blocked <- read.csv(here("data", "all_blocked_650.csv"))
+all_means_variances <- read.csv(here("data", "all_means_variances_650.csv"))
+
+all_blocked <- subset(all_blocked, select = c(sampled_numbers, diff, label))
+all_means_variances <- subset(all_means_variances, select = c(sampled_numbers, diff, label))
+
+sims_5 <- rbind(all_blocked, all_means_variances)
+
+xlab <- "Sample Sizes"
+ylab <- "Max. Distances Between Treatment Groups"
+title <- "Distances Between Treatment Groups in Randomized and Blocked Data"
+
+plot_first <- ggplot(sims_5, aes(x=sampled_numbers, y=diff)) + geom_boxplot(aes(fill=label)) + theme(axis.title=element_blank()) + theme(legend.title=element_blank()) + theme(legend.position = c(0.85, 0.75)) # first plot outside of the loop because of the legend
+
+pdf(here("plots", "lln_boxplot_650.pdf"))
+grid.arrange(plot_first, ncol = 1, nrow = 1, bottom=xlab,  top = title, left=ylab) # plot everything
+dev.off()
+
+ylab <- "Density"
+xlab <- "Max. Distances Between Treatment Groups"
+title <- "Distribution of Treatment Group Differences in Randomized and Blocked Data"
+
+plot_first_more <- ggplot(sims_5, aes(x=diff, fill=label)) + geom_histogram(alpha=0.2, aes(y=..density..), position="identity", binwidth = 0.2) + theme(axis.title=element_blank()) + theme(legend.title=element_blank()) + theme(legend.position = c(0.6, 0.75)) # first plot outside of the loop because of the legend
+
+pdf(here("plots", "lln_histogram_650.pdf"))
+grid.arrange(plot_first_more, ncol = 1, nrow = 1, bottom = xlab, top = title, left = ylab) # plot everything
+dev.off()
+
+```
+
+```{r, Test for Statistical Significance of Difference in Means}
+
+t.test(all_blocked$diff,all_means_variances$diff,alternative="two.sided")
+
+#   	Welch Two Sample t-test
+
+# data:  all_blocked$diff and all_means_variances$diff
+# t = -28.271, df = 101.2, p-value < 2.2e-16
+# alternative hypothesis: true difference in means is not equal to 0
+# 95 percent confidence interval:
+#  -0.2611598 -0.2269138
+# sample estimates:
+#  mean of x  mean of y 
+# 0.02230769 0.26634450
+
+## Yes, difference in means is statistically significant.
+
+```
+

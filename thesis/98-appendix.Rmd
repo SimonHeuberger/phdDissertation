@@ -1,0 +1,35 @@
+\appendix
+
+# SURVEY ENVIRONMENT {#app-survey}
+
+
+In order to conduct this experiment, I created an online survey environment based on `R` with `shiny` [@boas_fielding_2013], as there currently is no available tool to block sequentially online. Popular online survey platforms, such as Qualtrics, do not have offer this functionality, and none of the attempts to combine `R` code work with Qualtrics concern the 'injection' of `R` code into the Qualtrics randomization engine, which blocking would require [@hainmueller_2014_causal;@barari_2017_package;@testa_2017_qualtricstools;@ginn_2018_package]. The following is a basic outline of the mechanisms behind this survey environment.
+
+The survey questions, i.e. questions that collect demographic information and questions that apply treatment, need to be designed as `.txt` files and incorporated into a local `shiny` environment. This local environment is then hosted in the cloud and publicly accessible. The hosted website sequentially blocks each incoming participant based on her covariate information and covariate information from all previous participants through constant interaction with the `R` code. The workflow for any incoming participant is illustrated in Figure \ref{online-workflow} below.
+
+\vspace{0.8cm}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+    \node [cloud]  (survey) {\scriptsize{P starts survey}};
+    \node [cloud, below right=0.8cm and -0.6cm of survey] (dems) {\scriptsize{P answers demographics}};
+    \node [cloud, right= 0.2cm of survey] (pulls) {\scriptsize{Pull data from Dropbox}};
+    \node [cloud, below right=0.8cm and -0.3cm of pulls] (blocking) {\scriptsize{Blocking}};
+    \node [cloud, right= 0.2cm of pulls] (assignment) {\scriptsize{Assignment}};
+    \node [cloud, below right=0.8cm and -0.6cm of assignment] (treatment) {\scriptsize{Treatment}};
+    \node [cloud, right= 0.2cm of assignment] (results) {\scriptsize{Save data to Dropbox}};
+	\path [line] (survey) -- (dems);
+	\path [line] (dems) -- (pulls);
+	\path [line] (pulls) -- (blocking);
+	\path [line] (blocking) -- (assignment);
+	\path [line] (assignment) -- (treatment);
+	\path [line] (treatment) -- (results);
+\end{tikzpicture}
+\caption{Online survey experiment workflow} \label{online-workflow}
+\end{figure}
+
+A participant clicks on the survey link and answers the demographic question. After she selects her level of education, `R` code in the background pulls previous participants' covariate information from a Dropbox server. Based on this information and her chosen education level, the `R` code sequentially blocks and assigns her to a treatment group. The participant then sees and answers the respective treatment question(s). Her responses are then saved on the same Dropbox server. This process is repeated for all incoming participants. If the participant is the first person to take the survey, i.e. if there is no covariate information from previous participants yet, the code randomly assigns her to one of the treatment groups. All subsequent participants are then blocked and assigned as just described.
+
+To recruit participants, the cloud-based website can easily be linked to online market platforms, such as MTurk. MTurk is a service where researchers can host tasks to be completed by anonymous participants. Participants receive financial compensation for their work and Amazon collects a commission. MTurk samples have been shown to be internally valid in survey experiments [@berinsky_evaluating_2012]. The use of MTurk in political science experiments has increased dramatically over the past decade and is now common practice [@hauser_attentive_2016]. I use Lucid for my experiment, which has been shown to be equally reliable and performs well on a national scale in survey experiments [@coppock_2019_validating].
+

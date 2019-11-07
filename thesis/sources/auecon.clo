@@ -1,0 +1,190 @@
+\ProvidesFile{auecon.clo}[2006/09/14]
+%%%%%%%%%%%%% Contains code specific to the 'econ' class option. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%MODIFICATION LOG
+%AI: 20060914: add indent to first par of a chapter, to please Library
+%AI: 20060914: adjust chapter heading format to please Library
+%AI: 20050401: moved common page formatting commands to authesis.cls
+%AI: 20030111 changed chapter header formatting
+%AI: 20020624 \chindent now defined in authesis.cls 
+%ABC 07/01/98: Removed \enlargethispage{-0.25in} from the chapter definition
+%ABC           because it is not needed with the "econ" dissertation style.
+%ABC           It resulted in a bottom margin greater than one inch which
+%ABC		   is against university specifications.
+%========================================================================
+
+%ABC This file contains the code specific to the econ dissertation class
+%ABC file. Basically the changes include:
+%ABC                  1) No ugly underline!
+%ABC                  2) Page numbers top right always.
+%ABC                  3) Numbered section and subsection. All section
+%ABC                     headers are left justified.
+
+
+%% Definition of 'chapfirst' page style to be the same as 'plain' 
+\def\ps@chapfirst{\let\@mkboth\@gobbletwo
+\def\@oddfoot{}\def\@evenfoot{}				% no feet
+\def\@oddhead{\hbox{}\hfil\rmfamily\thepage}		% heading (right)
+\def\@evenhead{\rmfamily\thepage\hfil\hbox{}}}		% heading (left)
+
+
+%    ****************************************
+%    *        CHAPTERS AND SECTIONS         *
+%    ****************************************
+%
+%
+% \@makechapterhead {TEXT} : Makes the heading for the \chapter command.
+%
+ 
+\def\@makechapterhead#1{%           % Heading for \chapter command
+% ABC  \vspace*{50\p@}              % Space at top of text page.
+  {\thispagestyle{plain}	    % ABC changed from chapfirst in authesis
+    \parindent \z@   \raggedright   %AI: changed this to left justify  
+                                    % ABC right justified chapter headings
+                                    % ABC changed from centering in authesis 
+    \ifnum \c@secnumdepth >\m@ne    % IF secnumdepth > -1 THEN
+     \huge \@chapapp{} \thechapter 
+	                            % Print '\chaptername' and number. 
+                                    %AI: changed fmfont to huge
+                                    %AI: ABC changed huge to fmfont
+                                    %AI: fmfont is defined in authesis.cls
+    \par \fi 
+% ABC    \vskip 20\p@ \fi              % Space between number and title.
+    \huge\bfseries             
+	                            % Print chapter title
+                                    %AI: changed to huge from fmfont
+                                    %AI: ABC changed Huge to fmfont
+                                    %AI: fmfont is defined in authesis.cls
+    \uppercase{#1}                  %AI: 20060914 force upper case
+    \par 
+    \nobreak                        % TeX penalty to prevent page break.
+    \vskip 40\p@                    % Space between title and text.
+  }}
+ 
+% \@makeschapterhead {TEXT} : Makes the heading for the \chapter*
+% command.
+%
+ 
+\def\@makeschapterhead#1{%          % Heading for \chapter* command
+% ABC  \vspace*{50\p@}%             % Space at top of page.
+  {\thispagestyle{plain}	    % ABC changed from chapfirst in authesis
+   \parindent \z@   \raggedright    %AI: change to left justified chapter headings
+                                    % ABC right justified chapter headings
+                                    % ABC changed from centering in authesis 
+    \large \bfseries               
+                                    %AI: changed fmfont to large
+                                    %AI: ABC changed huge to fmfont
+                                    %AI: fmfont is defined in authesis.cls
+    \uppercase{#1}                  %AI: 20060914 force upper case
+    \par 
+    \nobreak                        % TeX penalty to prevent page break.
+    \vskip 40\p@                    % Space between title and text.
+  }}
+ 
+% \secdef{UNSTARCMDS}{STARCMDS} :
+%    When defining a \chapter or \section command without using
+%    \@startsection, you can use \secdef as follows:
+%       \def\chapter { ... \secdef \CMDA \CMDB }
+%       \def\CMDA    [#1]#2{ ... }  % Command to define
+%                                   % \chapter[...]{...}
+%       \def\CMDB    #1{ ... }      % Command to define
+%                                   % \chapter*{...}
+ 
+\newcommand\chapter{\clearpage
+   \thispagestyle{plain} %  AI: vs. chapfirst in aucas.clo
+	\setlength{\topmargin}{-0.30in}
+	\vspace*{0.45in}			 % ABC Top margin (total 2.0in)
+   \global\@topnum\z@        % Prevents figures from going at top of page.
+   \@afterindenttrue         % no first paragraph indent
+   \secdef\@chapter\@schapter}   
+
+ 
+%AI: \chindent now defined in authesis.cls 20020624
+\def\@chapter[#1]#2{%
+      \ifnum\c@chapter=0  %AI: fixed 20030112
+      \addtocontents{toc}{\hspace{\AIindent}{  }\par}
+      \addtocontents{toc}{\hspace{\chindent}{\@chapapp}\par}  %AI: fixed 20030112
+      \addtocontents{toc}{\protect\addvspace{10\p@}}
+    \fi 	    %ABC
+		\ifnum \c@secnumdepth >\m@ne
+        \refstepcounter{chapter}%
+        \typeout{\@chapapp\space\thechapter.}%
+		\addtocontents{toc}{\protect\addvspace{10\p@}}
+        \addcontentsline{toc}{chap}{\protect     % ABC for indented line
+        \numberline{\thechapter.}#1}
+		\addtocontents{toc}{\protect\addvspace{10\p@}}
+		\else
+	  \addtocontents{toc}{\protect\addvspace{10\p@}}	
+      \addcontentsline{toc}{chap}{#1}            % ABC for indented line
+	  \addtocontents{toc}{\protect\addvspace{10\p@}}\fi 
+   \chaptermark{#1}%
+   \addtocontents{lof}%
+       {\protect} 
+   \addtocontents{lot}%
+       {\protect} 
+   \@makechapterhead{#2}%
+   \@afterheading          			% Routine called after chapter and
+   }                       		    % section heading.
+
+\def\@schapter#1{\@makeschapterhead{#1}%
+              \@afterheading}
+
+% ABC Section headers
+%define: \@startsection {NAME}{LEVEL}{INDENT}{BEFORESKIP}{AFTERSKIP}{STYLE} 
+%            optional * [ALTHEADING]{HEADING}
+%    Generic command to start a section.  
+%    NAME       : e.g., 'subsection'
+%    LEVEL      : a number, denoting depth of section -- e.g.,
+%                 chapter=1, section = 2, etc.  A section number will be
+%                 printed if and only if LEVEL < or = the value of the
+%                 secnumdepth counter.
+%    INDENT     : Indentation of heading from left margin
+%    BEFORESKIP : Absolute value = skip to leave above the heading.  
+%                 If negative, then paragraph indent of text following 
+%                 heading is suppressed.
+%    AFTERSKIP  : if positive, then skip to leave below heading,
+%                       else - skip to leave to right of run-in heading.
+%    STYLE      : commands to set style
+%  If '*' missing, then increments the counter.  If it is present, then
+%  there should be no [ALTHEADING] argument.  A sectioning command
+%  is normally defined to \@startsection + its first six arguments.
+
+\def\@startsection#1#2#3#4#5#6{\if@noskipsec \leavevmode \fi
+   \par \@tempskipa #4\relax
+   \@afterindenttrue
+   \ifdim \@tempskipa <\z@ \@tempskipa -\@tempskipa \relax\fi
+   \if@nobreak \everypar{}
+   \addtocontents{toc}{\protect\addvspace{10\p@}}\else
+     \addpenalty{\@secpenalty}\addvspace{\@tempskipa}
+	 \addtocontents{toc}{\protect\addvspace{10\p@}}\fi  %ABC To dblspace entries
+	 \@ifstar
+    {\@ssect{#3}{#4}{#5}{#6}}
+	{\@dblarg{\@sect{#1}{#2}{#3}{#4}{#5}{#6}}}}
+
+
+%AI: going to replace the following:
+%\def\section{\@startsection {section}{1}{\z@}{-3.5ex plus-1ex minus
+%    -.2ex}{2.3ex plus.2ex}{\ssp\reset@font\large\bfseries}}
+%\def\subsection{\@startsection{subsection}{2}{\z@}{-3.25ex plus-1ex minus
+%    -.2ex}{1.5ex plus.2ex}{\ssp\reset@font\normalsize\bfseries}}
+%\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex plus
+%    -1ex minus-.2ex}{1.5ex plus.2ex}{\ssp\reset@font\normalsize\bfseries}}
+%AI: with the following (from report.cls, except added \ssp):
+\newcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\ssp\normalfont\large\bfseries}}
+\newcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\ssp\normalfont\normalsize\bfseries}}
+\newcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\ssp\normalfont\normalsize\bfseries}}
+\newcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+                                    {3.25ex \@plus1ex \@minus.2ex}%
+                                    {-1em}%
+                                    {\ssp\normalfont\normalsize\bfseries}}
+
+\endinput

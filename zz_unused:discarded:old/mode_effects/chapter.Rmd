@@ -1,0 +1,207 @@
+# PAPER II: MEASURING MODE EFFECTS FOR ORDINAL SURVEY RESPONSES IN ONLINE AND FACE-TO-FACE SURVEY EXPERIMENTS {#mode}
+
+## Introduction {#mode-intro}
+
+Survey methodology is continuously undergoing changes. One prominent area of such change is survey mode. Survey mode refers to the manner in which survey responses are collected. The most common survey modes are face-to-face interviews, mailed letters, telephone calls, and online questionnaires. Up until the 1970s, mail and face-to-face surveys were the main modes of data collection [@lyberg_1991_data]. Because of the low costs of telephone calls and based on the ever-increasing phone network coverage across the US, survey researchers then gradually shifted to telephone calls, which soon replaced face-to-face interviews as the most widely used survey mode, particularly through the use of random-digit dialing [@dillman_2000_mail]. It is much cheaper to call potential respondents from your desk than to travel to each respondent's place of residence for an interview. In the 1990s, the emergence of the internet challenged the supremacy of the telephone to conduct surveys [@brick_2011_future]. It is much cheaper still to create one digital questionnaire and provide it online than to call and talk to potential respondents for hours.
+
+Changes in mode choice can be problematic. Each mode can influence the way participants think about and respond to survey questions, which in turn hurts comparability of surveys across modes. This influence is called 'mode effects'. Mode effects form a key part of the Total Survey Error (TSE) framework. The TSE consists of five primary sources of error in survey research: Sampling error, coverage error, nonresponse error, measurement error, and post-survey error [@weisberg_2005_total]. It comprises all potential errors that can occur whilst conducting a sample survey and using model-based statistical means to describe a population [@biemer_2010_overview]. Survey mode choice can 'activate' each and all of these sources of error [@groves_2010_total;@weisberg_2005_total;@ansolabehere_2014_does;@atkeson_2014_nonresponse;@ye_2011_more;@yeager_2011_comparing;@bowyer_2017_mode].
+
+While research is able to pinpoint certain parts of surveys where respondents' reactions are and are not affected by mode, the literature offers little help in identifying whether systematic mode effects exist that affect the distributions of responses and the survey instrument as a whole. For instance, is there a measurement error in the form of a critical distributional difference in aggregate survey responses? If there is such a distributional measurement error, what potential do such a measurement and its related findings have? Can it affect how we interpret question responses given on each respective mode? Do such systematic differences occur, and if so, when do they occur, and do they matter?
+
+In an attempt to address this question, @homola_2016_measure develop an entropy measurement [@shannon_1948_mathematical] for discrete survey measures. Entropy roughly translates to 'information' and is most often used in information theory to carry levels of information in a message. Entropy represents a measure of the average amount of information that is required to describe the distribution of a variable of interest [@cover_1991_elements]. They find that entropy catches differences in mode effects that traditional statistical measurements that assume continuous data, e.g. the standard deviation, miss: Mode effects do not show in measures of centrality, but instead are shown by greater variability. @homola_2016_measure show that entropy is a good measure of variability for discrete survey measures as it reveals differences in how respondents react to identical questions presented in two differing modes. 
+
+Entropy thus shows great potential to uncover distributional differences in responses between survey modes. In its application to political science data, however, Homola et al.'s measure falls short on the aspect of ordinality. In political science, two of the most important predictors of political behavior are ordinal survey measures: Education and income. Income, for instance, is a strong predictor for political behavior such as turnout, representation, or donations [@dawood_campaign_2015; @fiorina_disconnect_2009; @leighley_who_2014]. @homola_2016_measure do not account for ordinality in their model and there is currently no way to measure entropy for these important ordinal survey measures. I fill this gap by developing such a measurement. I apply it to two modes: Online and face-to-face. Substantively, I employ this measure in external data from political science experiments published in peer-reviewed journal articles and original data in the form of an online and face-to-face survey experiment on the importance of moral arguments in political framing. 
+
+The following sections describe the TSE framework in more detail and put it in connection with research on mode effects, showcase Homola et al.'s entropy measurement, develop a measurement for ordinal entropy, and provide a brief overview of the data sources I use to employ this measurement.
+
+
+
+
+
+## Theory {#mode-theory}
+
+### Total Survey Error (TSE) {#mode-theory-tse}
+
+As mentioned above, the TSE is an overarching framework that gives a complete account of the potential errors that can result from conducting a sample survey and using model-based statistical means to describe a population [@biemer_2010_overview]. It "is based on analyzing the several different sources of error in surveys and considering how to minimize them in the context of such practical constraints as available money" [@weisberg_2005_total, p. 16]. 'Error' here refers to the difference between the values the researcher obtains and the 'true value' she should obtain.
+
+There are five primary sources of error in the TSE: Sampling error, coverage error, nonresponse error, measurement error, and post-survey error [@groves_2010_total; @groves_survey_2009; @weisberg_2005_total]. Survey mode can affect each and all of these sources. They are diagrammed in Figure \ref{tse-model} which shows the order of concern that each potential source of error appears in the survey data collection process. The arrows in the figure represent this sequential nature, rather than causal paths. Figure \ref{survey-life-cycle} locates the five potential sources of error more precisely within the survey life cycle.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \node [block4]  (nonresponse) {\scriptsize{Nonresponse Error}};
+    \node [block4, left= 0.8cm of nonresponse] (coverage) {\scriptsize{Coverage Error}};     
+    \node [block4, right= 0.8cm of nonresponse] (postsurvey) {\scriptsize{Post-Survey Error}};
+    \node [block4, below= 0.8cm of nonresponse] (measurement) {\scriptsize{Measurement Error}};
+    \node [block4, above= 0.8cm of nonresponse] (sampling) {\scriptsize{Sampling Error}};
+	\path [line] (coverage.north) -- (sampling.west);
+	\path [line] (coverage) -- (nonresponse);
+	\path [line] (coverage.south) -- (measurement.west);
+	\path [line] (sampling.east) -- (postsurvey.north);
+	\path [line] (nonresponse) -- (postsurvey);
+	\path [line] (measurement.east) -- (postsurvey.south);
+\end{tikzpicture}
+\caption{Model of Total Survey Error (from Homola et al. 2016)} \label{tse-model}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \node [block4]  (construct) {\scriptsize{Construct}};
+    \node [block4, below= 1.4cm of construct] (measurement) {\scriptsize{Measurement}};
+    \node [cloud2, below left=0.25cm and 0.8cm of measurement] (measurement_error) {\scriptsize{Measurement Error}};
+    \node [block4, below= 1.4cm of measurement] (response) {\scriptsize{Response}};     
+    \node [block4, below= 1.4cm of response] (edited) {\scriptsize{Edited Response}};  
+    \node [block4, right= 1.2cm of construct] (target) {\scriptsize{Target Population}};     
+    \node [cloud2, below right=0.06cm and 0.8cm of target] (coverage_error) {\scriptsize{Coverage Error}};
+    \node [block4, below= 1cm of target] (sampling) {\scriptsize{Sampling Frame}};     
+    \node [cloud2, below right=0.06cm and 0.8cm of sampling] (sampling_error) {\scriptsize{Sampling Error}};
+    \node [block4, below= 1cm of sampling] (sample) {\scriptsize{Sample}};     
+    \node [cloud2, below right=0.06cm and 0.8cm of sample] (nonresponse_error) {\scriptsize{Nonresponse Error}};
+    \node [block4, below= 1cm of sample] (respondents) {\scriptsize{Respondents}};     
+    \node [cloud2, below right=0.06cm and 0.8cm of respondents] (postsurvey_error) {\scriptsize{Post-Survey Error}};
+    \node [block4, below= 1cm of respondents] (postsurvey) {\scriptsize{Post-Survey Adjustments}};     
+    \node [block4, below left= 1cm and -1cm of postsurvey] (statistic) {\scriptsize{Survey Statistic}};     
+	\path [line] (construct) -- (measurement);
+	\path [line] (measurement) -- (response);
+  \path [line] (measurement_error.east) -- (-0.006cm,-3.97cm);
+	\path [line] (response) -- (edited);
+  \path [line] (edited.south) |- (statistic);
+	\path [line] (target) -- (sampling);
+  \path [line] (coverage_error.west) -- (4.495cm,-1.13cm);
+	\path [line] (sampling) -- (sample);
+  \path [line] (sampling_error.west) -- (4.495cm,-3.38cm);
+	\path [line] (sample) -- (respondents);
+  \path [line] (nonresponse_error.west) -- (4.495cm,-5.64cm);
+	\path [line] (respondents) -- (postsurvey);
+  \path [line] (postsurvey_error.west) -- (4.495cm,-7.89cm);
+  \path [line] (postsurvey.south) |- (statistic);
+\end{tikzpicture}
+\caption{Survey Life Cycle (adapted from Groves et al. 2009)} \label{survey-life-cycle}
+\end{figure}
+
+As shown in Figure \ref{survey-life-cycle}, all sources add up to form one resulting total survey error, or TSE. I now address each of the five sources and their explicit connection to survey mode in turn.
+
+
+
+### Five Types of Survey Error in Connection with Survey Mode  {#mode-theory-types}
+
+#### Coverage Error {#mode-theory-types-coverage}
+
+Coverage error applies to the nonobservational gap between the target population and the sampling frame, i.e. the actual set of units from which the sample is taken [@groves_survey_2009]. This means we choose a sample intended to represent the target population from a sampling frame that does not actually cover that target population. In statistical terms, coverage error is the mathematical difference between a statistic calculated for the population that is studied and the same statistic calculated for the target population [@weisberg_2005_total].
+
+In early survey research days, potential survey respondents could only be contacted through mailed letters. Since everyone in the target population, i.e. the U.S. population, had a mailing address, the sampling frame of mailing addresses was identical to the target population, both for questionnaires sent directly through the mail and for mailed requests for face-to-face interviews. The invention of the telephone provided a cheaper, faster alternative. Until around 35 years ago, however, telephone landline access did not cover the entire U.S. population, so any samples drawn from a list of landline phone numbers did not cover the entire adult U.S. population. In such a case, there are population units that fall outside of the sampling frame because of the chosen vehicle of communication, i.e. the survey mode. People who did not have telephones could not be contacted and were thus not part of the sampling frame. Since people who did not yet have telephones were likely to differ systematically from people who did have them, this lead to biased estimates of the variables of interest. In other words, bias occurred because non-covered units were omitted from the sample because of the choice of survey mode. 
+
+In more current times, this issue arises for people who no longer have a landline but instead rely exclusively on their cell phone. If the chosen vehicle of communication is landline telephone numbers, these people will be excluded from the sample. In 2008, 17.5 percent of U.S. households had only wireless telephone access, with landline coverage having decreased to 80 percent [@blumberg_2008_recent], with this trend likely to have continued in the years to follow. Similarly, coverage error can be substantial in online surveys intended to represent the U.S. population, as 11 percent of U.S. adults currently do not have access to the internet [@pew_2018_internet]. This number continues to shrink, however, with the continuous spread of high-speed internet access in rural areas.
+
+
+
+#### Sampling Error {#mode-theory-types-sampling}
+
+Researchers can only very rarely ask an entire population but instead have to rely on samples. As a result, not all people in the sampling frame, i.e. the entire population, are part of the eventual sample. This nonobservational gap between the sampling frame and the sample is called sampling error [@groves_survey_2009]. Sampling error is thus very much by definition part of survey data collection. It is often colloquially known as the 'margin of error', i.e. the difference in estimates between repeated samples.
+
+Sampling error primarily arises in the form of sampling bias. Sampling bias occurs when some units of the sampling frame are systematically excluded from the sample. This can be avoided by probability sampling, i.e. randomly selecting units of the sampling frame to be included in the sample. It is essential here that everyone in the larger population has a known probability of being chosen for the random sample. This is not the case with non-probability sampling, also known as convenience sampling, where researchers collect responses of everybody who conveniently 'stops by' to answer questions. In non-probability sampling, sampling bias can be systematic. While this can affect all survey modes, it is a particular problem for online surveys, where participants volunteer to answer questions, often in return for financial compensation [@ansolabehere_2014_does]. One such example is MTurk (see section \ref{seq-computational-r} of Paper I for a brief outline of MTurk). These volunteers can differ systematically from participants who are randomly selected and can look very different in terms of their covariates than the rest of the population [@dillman_2014_internet;@couper_2000_surveys;@hays_2015_internet;@alvarez_2003_subject]. 
+
+
+<!-- 
+Sampling variance occurs when many greatly differing samples can be drawn from a sampling frame, resulting in each sample having different statistical values. This can be reduced by the use of large samples, stratified samples, and non-clustered samples.
+-->
+
+
+
+#### Measurement Error {#mode-theory-types-measurement}
+
+Measurement error is "the error that occurs when the measure obtained is not an accurate measure of what was to be measured" [@weisberg_2005_total, p. 18]. In other words, the questions that researchers choose to measure something do not actually measure that thing. Measurement error is the observational gap between the ideal measurement and the response obtained [@groves_survey_2009]. There are two primary levels of measurement error: Respondent-induced measurement error and interviewer-induced measurement error.
+Respondent-induced measurement error occurs when respondents do not give the answers they 'should' give. The most common respondent-induced measurement errors are non-differentiation and speeding. 
+
+Non-differentiation involves participants who give answers that simply enable them to finish the survey as quickly as possible. For online surveys, this means that the impersonal screen interface could lead people to simply select the same answer for every question, something they could not do with a human interviewer. @chang_2010_comparing utilize a true random assignment to either self-administered computer surveys or interviewer-enabled RDD phone interviews. They find that online participants provide fewer straightlining answers than RDD participants. Contradicting these findings, @heerwegh_2008_face-to-face uncover more 'straightlining' in web-based surveys than face-to-face. Similarly, @fricker_2005_experimental find evidence for more 'straightlining' in web-based experiments than through the phone. Speeding concerns responses that were given 'too fast', given the number and depth of survey questions. Most research shows that online surveys display more speeding than other modes [@chang_2010_comparing;@miller_2000_phone;@heerwegh_2008_face-to-face;@greszki_2015_exploring]. It is important to note, however, that speeding might not necessarily be bad for response quality. It could simply be that a visual mode of seeing the questions enables people to answer with the same quality, just more quickly than merely hearing the questions. Speeding research has yet to develop a method to distinguish these aspects.
+
+Interviewer-induced measurement error occurs when the interviewer influences how respondents answer the questions. The most common interviewer-induced measurement error is social desirability bias. The social desirability hypothesis proposes that in the presence of an interviewer, some participants may be reluctant to admit embarrassing attributes about themselves or may be motivated to exaggerate the extent to which they possess admirable attributes [@chang_2010_comparing;@rogers_2001_using]. This body of research is consistent with the notion that self-administration by computer elicits more honesty [@kreuter_2008_social]. In other words, people are more honest when they answer sensitive questions on a screen than when they talk to another human being directly (be that face-to-face or on the phone). Other potential sources for interviewer-induced measurement error include gender, race, and age [@huddy_1997_effect; @rooney_2005_effects; @tourangeau_2007_sensitive; @warnecke_1997_improving; @yan_2008_fast].
+
+
+
+
+
+#### Nonresponse Error {#mode-theory-types-nonresponse}
+
+Nonresponse error applies to the nonobservational gap between the sample and the respondent pool [@groves_survey_2009]. Nonresponse error can occur on two levels, namely the unit and the item. Unit nonresponse error arises when a respondent who was supposed the answer the survey does not do so. Item nonresponse error happens when a respondent does not answer all questions or provides 'Don't Know' as an answer to one or several questions. It is very common for response rates to be very low, often in the area of 10 percent [@groves_survey_2009]. This need not necessarily be worrisome, as long as these 10 percent look like the other 90 percent in terms of their covariates. It is only when differences between respondents and nonrespondents are systematic that nonresponse error comes into play. A high nonresponse rate does not equal the existence of bias, the same way a low nonresponse rate does not protect from bias. However, it is generally thought that a low nonresponse rate is preferred because it reduces the risk of nonresponse bias while not offering complete protection [@weisberg_2005_total]. 
+
+An abundance of studies on nonresponse in connection with survey mode exist. @atkeson_2014_nonresponse find significant differences of nonresponse between telephone and online surveys, yet also show evidence that both modes represent the underlying population well. Somewhat similarly, @nagelhout_2010_interviewing uncover differences between a web and telephone sample but maintain that these differences were small and not consistently favorable to either survey mode. On the contrary, @couper_2001_promises finds significant differences in nonresponse rates across modes. He concludes that nonresponse is a crucial concern for online surveys, especially when compared to the alternative method of mail. On the other hand, @chang_2010_comparing identify lower nonresponse rates in computer surveys when compared to those administered by phone. They thus tentatively suggest a potential advantage of the online mode over telephone administration. Yet contrary again, @west_2013_interviewer emphasize interviewers' ability to influence hesitant participants on the phone and face-to-face, which is not possible online. @dillman_2005_survey in turn point out that nonresponse in online surveys can be overcome by software setup that obliges participants to answer all questions. These severely differing findings indicate that is far from clear whether there is a systematic difference in the levels of nonresponse and whether such a difference results in differing levels of data quality [@groves_2010_total; @mcnabb_2013_nonsampling; @millar_2012_mail; @aapor_2013_report].
+
+
+
+
+#### Post-Survey Error {#mode-theory-types-post}
+
+Once data collection is completed, researchers often apply various statistical methods to adjust and improve the obtained results. These undertakings are best described as post-survey "efforts to improve the sample estimate in the face of coverage, sampling, and nonresponse errors" [@groves_survey_2009, p. 59]. Any error that arises in this stage, when the survey data is processed and analyzed, is called post-survey error. Post-Survey error concerns everything that happens to survey data after collection is finished and includes data cleaning, recoding, weighting, and modeling, among many others [@weisberg_2005_total]. Whilst applicable to all survey modes, weighting and modeling to create representative survey results is heavily used and widely spread particularly in online surveys [@atkeson_2014_nonresponse]. Any of these procedures can introduce error to the survey analysis process and thus bias the estimate [@mcnabb_2013_nonsampling].
+
+
+
+### Entropy {#mode-theory-entropy}
+
+#### Entropy for Discrete Survey Responses {#mode-theory-entropy-discrete}
+
+
+Research on mode effects within the TSE thus does not reveal much about systematic, distributional differences that might be caused by mode choice. In particular, "despite the widespread use of online panels, there is still a great deal that is not known with confidence" [@aapor_2010_opt-in, p. 54]. In an attempt to address this issue, @homola_2016_measure develop an entropy measurement [@shannon_1948_mathematical] for discrete survey measures. They argue that traditional statistical measurements, such as the variance (Var$(X) = \frac{1}{n-1} \sum (X_i - \overline{X})^2$) and the median average deviation (MAD$(X) =$median$(\vert X_i -$median$(X)\vert$), appear unsuited to the task of assessing this aspect as they assume interval measured data. In particular, $\overline{X}$ and median$(X)$ are said to not represent correct measures of centrality [@homola_2016_measure;@wang_2008_probability;@hu_2010_information]. Entropy, on the other hand, is a measure of variability in discrete survey responses [@shannon_1948_mathematical].
+
+Entropy roughly translates to 'information' and is most often used in information theory to carry levels of information in a message. It represents a measure of the average amount of information that is required to describe the distribution of a variable of interest [@cover_1991_elements]. Mathematically, Homola et al.'s entropy measure for a given response is formed by empirically counting the observations in each survey mode and subsequently normalizing them into probabilities. This measure, $H$, is calculated by 
+
+\begin{equation}
+H(X) = \sum\limits_{i=1}^{n} p(x_i) \text{log}_2 (\frac{1}{p(x_i)})
+\end{equation}
+
+where $p(x_i) = Pr(X=x_i)$ is the probability of the $i^{\text{th}}$ outcome of $X$. The entropy of the variable $X$ is thus the product of the probability of outcome $x_i$ and the log of the inverse of the probability of $x_i$, summed over all possible outcomes $x_i$ of $X$.
+
+Based on @shannon_1948_mathematical, @homola_2016_measure argue that entropy is the only function that satisfies three critical properties: (1) $H$ is continuous in the discrete measure ${p_1,p_2,...,P_n}$, (2) $H$ is at its maximum and is monotonically increasing with $n$ if the $p_i$ are uniformly distributed, and (3) The first $H$ equals the weighted sum of consecutive $H$ values, $H(p_1,p_2,p_3) = H(p_1, 1-p_1) + (1 - p_1) H (p_2, p_3)$. Additionally, entropy does not make assumptions about the probability distribution of the variability of uncertainty.
+
+Applying their measure to the 2012 ANES, which used identical questions that were asked face-to-face and online, @homola_2016_measure find that entropy catches differences in mode effects that traditional statistical measurements that assume continuous data, e.g. the standard deviation, miss: Mode effects do not show in measures of centrality, but instead are shown by greater variability. They show that entropy reveals differences in how respondents react to identical questions presented in two differing modes. Their measure does not, however, account for ordinal variables, which are crucial in political science research.
+
+
+
+#### Entropy for Ordinal Survey Responses {#mode-theory-entropy-ordinal}
+
+Why do we need an entropy measurement that accounts for ordinal variables? @homola_2016_measure demonstrate that entropy reveals a measurement error in the form of a critical distributional difference in aggregate survey responses that traditional statistical measurements miss. Traditional statistical measurements also suppose ordinal data with roughly equally spaced distances between levels. Popular political science surveys, such as the ANES and the majority of survey experiments, however, contain ordinal data which are not equally spaced. @johns_2005_size, for example, points out that response scales that measure support or opposition often show significant differences in terms of spacing. On a 5-point Likert scale, the neighboring points 2 ("Somewhat oppose") and 3 ("Neither favor or oppose") are much closer together than the neighboring points 1 ("Strongly oppose") and 2. Ordinality is a crucial feature of these variables. Treating ordinal variables as numerical results in the loss of this information of two crucial variables that predict political behavior. The lack of ordinality in an entropy measurement thus excludes two of the most important predictors of political behavior from survey mode effects analysis.
+
+To develop a measure of ordinal entropy, I combine the Wilcoxon Signed Rank Test (WSRT) and Shannon's entropy measure to obtain a comparative measure of two ordinal vectors. The WSRT considers ordinal data as 'ranks'. By definition, ranks are not affected by outliers, since no outlying value is more than one unit away from the next value. The WSRT removes information about the distributional shape of the data. It is a statistical hypothesis test to compare two related samples to assess whether their population mean ranks differ, i.e. a paired difference test. It is used to determine whether two dependent samples were selected from populations that show the same distribution.
+
+The WSRT follows several concrete steps. Let the first sample be denoted by units $x_{11}, x_{12}, ..., x_{1n}$ and the second sample by units $x_{21}, x_{22}, ..., x_{2n}$. We pair the units across samples, $(x_{11}, x_{21}), (x_{12}, x_{22}), ..., (x_{1n}, x_{2n})$, and define the paired differences, $d_1 = x_{11} - x_{21}, d_2 = x_{12} - x_{22}, ..., d_n = x_{1n} - x_{2n}$. We obtain the absolute value and sign of the paired differences and subsequently rank them, with values equaling zero being discarded. Let us call these values $R_1, R_2, ..., R_{n'}$, where the new $n' < n$ because of the discards that were carried out. We then calculate:
+
+\begin{equation}
+T^+ = \Bigg\vert \sum\limits_{i=1}^{n'} \text{sign}(d_i) \times R_i \Bigg\vert = \Bigg\vert \sum\limits_{i=1}^{n'} \text{signed rank of } d_i \Bigg\vert
+\end{equation}
+
+The null hypothesis of the WSRT is $H_0$: median$(\delta) = 0$, with the alternative hypothesis being $H_A$: median$(\delta) \neq 0$. The new ordinal entropy measure I propose is simply the combination of the WSRT and Homola et al.'s entropy measure:
+
+\begin{equation}
+T^+ = \Bigg\vert \sum\limits_{i=1}^{n'} \text{signed rank of } d_i \times \text{log}_2 (\frac{1}{p(d_i)}) \Bigg\vert
+\end{equation}
+
+In the original WSRT, the $\text{signed rank of } d_i$ are defined as the signed ranks of all paired absolute differences $d_i$. In our modified case, the $\text{signed rank of } d_i$ are simply the signed ranks of the paired absolute differences between the two ordinal vectors of the two mode samples.
+
+
+<!--
+-- Evidence, Calculations --
+Provide one study, one example where entropy would improve things. This example can be anything, doesn't have to be pol sci: "Here is a case where it is demonstrable that entropy helps"
+Provide exemplary calculations, just like for Blocking
+-->
+
+
+## Data {#mode-data}
+
+I apply my new method of ordinal entropy to external and original data in the online and face-to-face modes. For both purposes, I intend to conduct parallel studies with identical questions in the same period of time. I calculate ordinal entropy measurements for each survey mode. This reveals systematic, distributional differences that might be caused by mode choice. I then contrast these measures with the most common measure of the TSE for measures with validated baselines and the total survey measurement variation approach for questions on opinions and and attitudes. The most common measure of the TSE is the mean squared error, i.e. the squared average deviation of a survey estimate from the true value of the parameter being estimated. A large mean squared error indicates "that one or more sources of error are adversely affecting the accuracy of the estimate" [@biemer_2010_total, p. 826]. For measures without validated baselines, i.e. questions regarding opinions and attitudes that lack previous survey exposure, I estimate the extent to which the surveys produce diverging measures of each concept in the respective survey modes [@smith_2011_refining].
+
+
+
+
+### External Data {#mode-data-external}
+
+External data sets with identical questionnaires face-to-face and online modes are provided by the 2012 ANES, as used by @homola_2016_measure, the 2016 ANES, and several Pew surveys. The Pew Research Center in particular has excelled in gradually shifting its modes. This provides an ideal testing ground to prove the validity of the ordinal entropy measure. I demonstrate that ordinal entropy matters when switching survey modes, as the new measure reveals discrepancies that cannot be detected with traditional statistical measurements (see section \ref{mode-theory-entropy-ordinal}). 
+
+
+
+
+### Original Data {#mode-data-original}
+
+In addition to external data, I use original data to demonstrate ordinal entropy discrepancies and why they are significant. For this purpose, I field a survey experiment on the power of moral arguments online on MTurk and face-to-face for undergraduate students at American University. The details of this experiment can be found in [paper III][PAPER III: MORAL ARGUMENTS AS A SOURCE OF FRAME STRENGTH] below.
+

@@ -1,0 +1,119 @@
+\documentclass[11pt]{article}
+\usepackage[top=1in, bottom=1in, right=1in, left=1in]{geometry} % margins
+\usepackage[dvipsnames]{xcolor}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage[toc]{appendix} % appendix part of table of contents
+\usepackage{titlesec}
+\usepackage{float} % position tables exactly where I want them
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{dcolumn}
+\usepackage{changepage}
+\usepackage{fixltx2e}
+\usepackage{setspace}
+\usepackage{url} % web links
+\usepackage{listings}
+\usepackage{rotating}
+\usepackage[final]{changes} % track changes
+\usepackage{bbding}
+\usepackage{paralist} % for \compactitem
+\usepackage{array}
+\usepackage{titling} % to remove space between title and date in \maketitle
+\usepackage{soul} % to highlight text with \hl (also wraps the text) -- if including a link, wrap link in \hbox{}
+\usepackage{hyperref} % for links
+\hypersetup{
+    colorlinks = false,
+    allcolors = blue
+} % activates blue color for all links
+\colorlet{Changes@Color}{red}
+\errorcontextlines 10000
+\newcolumntype{.}{D{.}{.}{-1}}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+\newcommand{\bibtex}{\textsc{Bib\TeX}}
+\setremarkmarkup{(#2)}
+
+\renewcommand\appendixname{Appendix}
+\renewcommand\appendixpagename{Appendix}
+\renewcommand\appendixtocname{Appendix}
+\renewcommand\maketitlehookc{\vspace{-8ex}} % moves date up in \maketitle
+\newlength{\mylen} % next 4 lines make that stupid bullet sign smaller and raise it to the same vertical height as the normal \bullet
+\setbox1=\hbox{$\bullet$}\setbox2=\hbox{\tiny$\bullet$}
+\setlength{\mylen}{\dimexpr0.5\ht1-0.5\ht2}
+\renewcommand\labelitemi{\raisebox{\mylen}{\tiny$\bullet$}} 
+\setlength{\droptitle}{-5em} % moves title up in \maketitle
+\setlength\parindent{1cm}
+\setremarkmarkup{(#2)}
+\titleformat*{\section}{\normalsize\bfseries} % makes section titles a bit smaller but still bold
+\titleformat*{\subsection}{\normalsize\itshape} % makes subsection titles a bit smaller but still bold
+\titlespacing*{\section}{0pt}{0.4cm}{0cm} % reduces space before and deletes space after section title
+\titlespacing*{\subsection}{0pt}{0.4cm}{0cm} % reduces space before and deletes space after subsection title
+\graphicspath{ {figures/} } % loads figures from the "figures" folder (for aesthetics)
+\bibliographystyle{chicago}
+\newenvironment{coi}{\compactitem}{\endcompactitem} % renaming so I can type \begin{coi} instead of \begin{compactitem}
+\usepackage{helvet} % next two lines use Arial font
+\renewcommand{\familydefault}{\sfdefault}
+
+% timeline:
+\usepackage[utf8]{inputenc}
+\usepackage[TS1,T1]{fontenc}
+\usepackage{fourier, heuristica}
+\usepackage{array, booktabs}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{caption}
+\DeclareCaptionFont{blue}{\color{NavyBlue}}
+\newcommand{\foo}{\color{NavyBlue}\makebox[0pt]{\textbullet}\hskip-0.5pt\vrule width 1pt\hspace{\labelsep}}
+
+\usepackage{natbib}
+\bibliographystyle{chicago}
+
+
+
+\title{Rationale for Inclusion of Proposed Dissertation Committee Members}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\vspace{-1.6cm}
+
+\section*{Jeff Gill (Chair; previously on committee)}
+
+\vspace{0.3cm}
+
+Professor Gill researches and teaches statistical methodology and software in political science, statistics, and mathematics. I have been working with Professor Gill as his research assistant since he joined American University in the summer of 2017. In this capacity, I replicate data submissions to the journal \textit{Political Analysis}, of which Professor Gill is the editor-in-chief. We are also in the process of publishing an article and a book chapter on Bayesian models. As the chair of my dissertation committee, Professor Gill will supervise the overall completion process and my weekly progress. I will continue to work for Professor Gill as his research assistant in the coming years, so we will interact on a daily basis. Substantively, Professor Gill's role will focus on the development of the statistical software tool, the quantitative applications of the tool, as well as the usage of all quantitative methods overall. Together with Professor Moore (below), Professor Gill will be primarily engaged in all quantitative aspects of my dissertation.
+
+\section*{Ryan T. Moore (previously on committee)}
+
+\vspace{0.3cm}
+
+Professor Moore researches and teaches statistical political methodology and software, with applications in social and political behavior. I have been working with Professor Moore for the past three years as a student in his classes on statistical political methodology, as his research assistant in 2016/17 where we taught GOVT-310 Introduction to Political Research, and on collaborative papers and classes afterwards, such as an R workshop in the fall of 2017. We are currently writing a paper on Congressional candidate characteristics using conjoint survey methodology. Professor Moore specializes in the development and implementation of methods for political experiments and causal inference. Substantively, Professor Moore's role in the dissertation process will focus on the development of the statistical software tool, the quantitative applications of the tool, as well as the experimental implementation in the online survey. He will provide counsel on the usage of all quantitative methods together with Professor Gill.
+
+\section*{Liz Suhay (new to committee)}
+
+\vspace{0.3cm}
+
+Professor Suhay researches and teaches in public opinion, political psychology, and political communication in the US. She specializes in the relationship between Americans' political attitudes and their explanations (`causal attributions'). I have been working with Professor Suhay in the spring of 2016 as a student in her class on Political Behavior. She has also provided invaluable feedback on questionnaires I designed for previous survey experiments. She is also currently the Graduate Director for PhD student in the Government Department. Substantively, Professor Suhay's role in the dissertation process will focus on the theoretical framing setup as well as the design and testing of the survey questionnaire and its subsequent substantive analysis. She will be primarily engaged in all qualitative and substantive aspects of my dissertation.
+
+\section*{R. Michael Alvarez (external reader; new to committee)}
+
+\vspace{0.3cm}
+
+Professor Alvarez's research focuses on public opinion and voting behavior statistical and computational modeling, and electoral politics. He is also an expert in Quantitative Methodologies and a fellow of the Society for Political Methodology. I have been working with Professor Alvarez for the past two years in his capacity as Associate Editor for \textit{Political Analysis}. We have also written an article on replication together that is currently under review. Substantively, as the external reader, Professor Alvarez's role in the dissertation process will focus on reading chapter drafts and providing feedback on the overall dissertation structure. \\
+
+
+
+
+
+
+
+\end{document}
+

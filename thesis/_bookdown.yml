@@ -1,0 +1,5 @@
+book_filename: "dissertation"
+chapter_name: "Chapter "
+rmd_files: ["thesis.Rmd", "01-chap1-intro.Rmd", "02-chap2-paper1.Rmd", "03-chap3-paper2.Rmd", "04-chap4-paper3.Rmd", "05-chap5-conclusion.Rmd", "98-appendix.Rmd", "99-references.Rmd"]
+download: [["dissertation.pdf", "PDF"], ["dissertation.epub", "EPUB"], ["dissertation.docx", "Word"]]
+delete_merged_file: true

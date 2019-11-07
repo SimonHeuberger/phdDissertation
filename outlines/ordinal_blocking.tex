@@ -1,0 +1,453 @@
+\input{/Users/simonheuberger/Dropbox/work/latex/preamble.tex}
+ 
+\title{Ordinal Variables for Blocking}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+%\section*{\st{Prospectus Revisions}}
+%	\begin{coi}
+%		\item \st{Rewrite everything I stole from Ryan}
+%		\item \st{Work in Ryan's comments on scan}
+%		\item \st{Address `small sample' motivation issues in the setup}
+%		\item \st{Statistical contribution}
+%			\begin{coi}
+%				\item \st{Measure the distance between an incoming unit and the units in the treatment groups in terms of an ordinal variable}
+%			\end{coi}
+%		\item \st{Get literature I cite}
+%		\item \st{Proofread everything}
+%	\end{coi}
+
+
+
+
+%\section*{Qualtrics}
+%	\begin{coi}
+%		\item What pieces software are out there that interact with Qualtrics, and what do they do?
+%			\begin{coi}
+%				\item Hainmueller et al.:
+%					\begin{coi}
+%						\item \hl{\hbox{\href{https://scholar.harvard.edu/astrezhnev/conjoint-survey-design-tool}{Conjoint Survey Design Tool}}}
+%							\begin{coi}
+%								\item The tool is a Python script (at least for Mac; it's a bit different for Windows) that creates the conjoint design
+%								\item The tool exports it as a {\tt .php} file
+%								\item A newer version of the tool exports a {\tt .dat} file that can be read into the {\tt cjoint} R package
+%								\item You upload the {\tt .php} file to a web server, then load it into Qualtrics via Qualtrics functions {\tt Web Service} and {\tt Embedded Data}. That pipes the file into the Qualtrics question design
+%								\item You need to have the questions created in Qualtrics before (or use the Qualtrics conjoint template)
+%								\item \hl{Does not affect Qualtrics's randomization engine	, `just' loads questions categories	}
+%							\end{coi}
+%						\item \hl{\hbox{\href{https://cran.r-project.org/web/packages/cjoint/cjoint.pdf}{R package {\tt cjoint}}}}
+%							\begin{coi}
+%								\item Designed to calculate Average Marginal Component Effects of conjoint surveys
+%								\item Has a function called {\tt makeDesign} which creates the conjoint survey design
+%								\item You can either put in the design by hand or feed it a {\tt .dat} file exported from the external survey design tool
+%								\item Has two Qualtrics functions that pull the .csv from the website into R directly
+%								\item The package does not produce anything you can load into Qualtrics. Rather, you use the external tool to create the survey, then pipe it into Qualtrics, then use the package to pull the results from Qualtrics into R and analyze them. The external tool also requires a server in order to be able to pipe into Qualtrics
+%								\item \hl{Doesn't affect Qualtrics's randomization engine, doesn't send anything to Qualtrics}
+%							\end{coi}
+%					\end{coi}
+%				\item \hl{\hbox{\href{https://github.com/emmamorgan-tufts/QualtricsTools/}{R package {\tt QualtricsTools}}}}
+%					\begin{coi}
+%						\item Automatically processes Qualtrics survey data into reports breaking down the responses to each question
+%						\item Creates reports that summarize the results of closed-ended questions, compiles appendices of open-ended text responses, and generates question dictionaries that describe the details of each survey question
+%						\item Can generate reports for subsets of respondents based on their response data
+%						\item Uses shiny (so everything is then visible in the browser)
+%						\item \hl{Doesn't affect Qualtrics's randomization engine, doesn't send anything to Qualtrics}
+%					\end{coi}
+%				\item \hl{\hbox{\href{https://www.opencpu.org}{OpenCPU Platform}}}
+%					\begin{coi}
+%						\item The OpenCPU server provides an interoperable HTTP API for data analysis based on R
+%						\item In English, that means you run R through a web server on your browser -- no need to have anything on your local machine
+%						\item You can either use the public servers or host your own
+%						\item Open source, so extremely integrable with GitHub and tons of other languages (Python, Java etc.)
+%						\item \hl{I have not found a connection for how to use it with Qualtrics}
+%					\end{coi}
+%				\item \hl{\hbox{\href{https://cran.r-project.org/web/packages/qualtRics/qualtRics.pdf}{R package {\tt qualtRics}}}}
+%					\begin{coi}
+%						\item Pulls run survey results from Qualtrics to analyze directly in R (so you don't have to go to the website)
+%						\item Uses Qualtrics API to do so
+%						\item \hl{Doesn't affect Qualtrics's randomization engine, doesn't send anything to Qualtrics}
+%					\end{coi}	
+%				\item \hl{\hbox{\href{http://www.mit.edu/\~dhidalgo/papers/fielding\_complex\_online\_2013.pdf}{Fielding complex surveys with Qualtrics and {\tt rApache}}}}
+%					\begin{coi}
+%						\item 2013 paper that combines {\tt rApache} with Qualtrics
+%						\item On the surface, that looks like exactly what I need
+%						\item \hl{The problem is that it requires significant HTML skills to create the connection to Qualtrics, which I don't have}
+%						\item \hl{The authors suggest {\tt shiny} as an alternative}
+%					\end{coi}	
+%				\item \hl{{\tt shiny}}
+%					\begin{coi}
+%						\item Easily harnesses all the statistical power from R (that's what it's built for)
+%						\item Problem: Foregoes the simplicity and user interface of Qualtrics, which I can't possibly replicate
+%					\end{coi}
+%			\end{coi}
+%		\item \hl{Jeff: Given my exhaustive search with Qualtrics, it looks like I'll need to go with {\tt shiny}}
+%	\end{coi}
+
+
+%	\begin{coi}
+%		\item I use Chong and Druckman as evidence for the small-treatment-groups-risk-balance argument, but I don't actually show anything. Ditch the Chong \& Druckman data; I don't need it to make my point. Simulations will work well here $\rightarrow$ They are done, histograms and boxplots are plotted
+%	\end{coi}
+
+
+
+
+%\section*{Math}
+%	\begin{coi}
+%		\item My prospectus formula doesn't work. For one thing, it returns substantively wrong treatment assignments. Also, it just uses numbers, which is the same as turning an ordinal into an interval variable -- which is exactly the thing I argue to avoid. I looked at the categorical data analysis literature. Pretty much across the board, turning ordinal into interval variables is considered not a great idea, with less damaging consequences in some and more damaging ones in others. 
+%		\item Identify a suitable ordinal variable score assignment method
+%			\begin{coi}
+%				\item Agresti (2010) looks like a great book. The most useful for me is chapter 2, which talks about using cumulative probabilities, ridits (average cumulative proportion scores), midranks (similar thing), and cumulative odds ratios. He also has a good chapter on Bayesian estimation
+%				\item Casacci \& Pareto (2015) present a univariate approach that allows to estimate the category values of an ordinal variable from the observed frequencies on the basis of a distributional assumption -- but they offer next to no justification, so it all looks a bit fishy
+%				\item Winship \& Mare (1984) say natural extensions of probit and logit models can be used here
+%				\item Lucadamoa \& Amentaa (2014)'s approach consists of quantifying each non-quantitative variable according to the empirical distributions of the variables involved in the analysis assuming the presence of a continuous underlying variable for each ordinal indicator
+%				\item Gertheiss \& Tutz (2008) talk about penalized regression techniques and include a Bayesian perspective
+%				\item Agresti (1990, p. 294) mentions two different approaches to assigning scores to ordinal variables: One where the scores are preassigned before analysis (but his recommendations here are for the scale ``to be chosen by a consensus of `experts'", which is useless for me), and one where the scores are parameters to be estimated from the data
+%				\item Most literature thus deals with how to analyze ordinal variables once the data is in, to analyze the results. These approaches seem to incorporate the distribution of each the categorical variable's values in some way, e.g. when all the data is in front of you
+%				\item Jeff suggested an ordered probit model, which fits with what a lot of the literature is saying. In particular, he suggested to run \texttt{polr()} with \texttt{education} as the DV and several common EVs on a good data set, like the 2016 ANES. That trains the model, gives me thresholds for each education category, bins the observations as cases according to the new thresholds, and results in the data-fitting education categories we should be using. I then block on that as before
+%				\end{coi}
+%		\item Develop ordered probit model (OPM) with Jeff and Ryan to be ready for the presentation
+%	\end{coi}
+
+
+
+
+%\section*{Presentation on March 6}
+%	\begin{coi}
+%		\item Basics of survey experiments
+%		\item Basics of blocking
+%		\item Basics of ordinal variables
+%		\item Method: Ordinal Probit Model + blocking + ordinal variable
+%		\item Eventual package incl. \texttt{shiny} online application
+%		\item Feedback
+%			\begin{coi}
+%				\item Block on the original 10 ANES education variables, then run OLS regression on some ANES outcome. Then do the same for the 5 re-estimated OPM categories and compare the differences in results. If there were no differences, this would raise some doubts whether OPM is really necessary
+%				\item Run simulations to show how the resulting re-estimated education categories differ depending on different covariates (and different combinations of covariates) in my model. That is, the current covariates result in 5 new categories -- do fewer/more/different covariates result in different categories?
+%				\item Set the eventual package up so that the user specifies/loads the data and the model to use for training. The idea here is that my functions then apply polr(), attach binned cases, create a new DV with re-estimated categories, and attach this variable to the originally supplied data -- all in one go. Then the user can block on the resulting variable. This would make this method applicable pretty much everywhere
+%				\item For my framing experiment, use the model I developed to create re-estimated categories for education and then block on education and other covariates. So my experiment would use the education model I developed, but the package would be applicable much more generally
+%				\item My project needs to be framed more in the language of machine learning, to make the ideas behind it clearer and more immediately obvious. I should read more about machine learning and incorporate that into my chapter write-up
+%			\end{coi}
+%	\end{coi}
+
+
+
+\section*{Committee meeting May 21}
+	\begin{coi}
+		\item I thought my Table 2.2 shows evidence that OP is better than making things numeric. It doesn't. I am using a placebo treatment, i.e. there is no treatment, so the Group T2 coefficient should be zero. In other words: There would be differences with anything here, since it's just one single draw. I need evidence that OP works better
+			\begin{coi}
+				\item Evidence 1: Monte Carlo simulations
+				\item Evidence 2: Repeat the Table 2.2. estimations 100 times and show the distributions around zero
+			\end{coi}
+		\item Perform a test to check that OP assigns people correctly
+		\item Write up the \texttt{shiny} survey environment in the appendix
+		\item Emphasize machine learning in the write-up
+	\end{coi}
+	
+
+
+
+\section*{\texttt{shiny}}
+	\begin{coi}
+		\item The only current option to design an online survey environment is through a provider like \texttt{Qualtrics}. You can randomize there, but only by clicking ``Randomize". It is not possible to use blocking online. I create a survey environment which can do that
+		\item I found the package {\tt ShinyPsych}. It creates a survey environment with {\tt shiny} (among other things)
+			\begin{coi}
+				\item \href{http://rstudio-pubs-static.s3.amazonaws.com/302907_9491d773d4f147c3ac8e0b29d301846a.html#about_shinypsych}{Overview}
+				\item \href{http://rstudio-pubs-static.s3.amazonaws.com/302891_3a8f5170171545248977bbb7b015f546.html#what_is_this_tutorial_about}{How to create a survey}
+				\item \href{http://rpubs.com/msteiner/ShinyPsych_TextfileTutorial}{Specifications of {\tt .txt} files for questions}
+			\end{coi}
+		\item A survey environment is created by running the code in the file {\tt app.R} in the package folder {\tt ShinyPsych/shiny-examples/Survey}. This code reads in questions in {\tt .txt} format from the package folder {\tt ShinyPsych/extdata}. The {\tt .txt} files need to be very specifically formatted (a question goes into one cell, all answer options go into one cell etc.). To adapt everything for my needs, I need to write my own questions as {\tt .txt} files and I need to edit the code in {\tt app.R}
+		\item  It's a pain to edit a {\tt .txt} question file. It's much better to turn it into a {\tt .csv}, edit that, then turn it back into a {\tt .txt}
+		\item I made a copy of {\tt app.R} called {\tt shiny\_psych\_survey.R} that I will continue to edit. Running {\tt shiny\_psych\_survey.R} creates my survey environment setup. Running {\tt app.R} creates the the original package example survey environment
+		\item Questions as {\tt .txt} files:
+			\begin{coi}
+				\item I copied an existing {\tt .txt} file and edited it to contain an example of the questions I need. So far, I created the following files in {\tt /questions}:
+					\begin{coi}
+						\item {\tt code.txt}						\item {\tt education.txt}						\item {\tt goodbye.txt}						\item {\tt instructions.txt}
+						\item {\tt demographics.txt}
+					\end{coi}
+					And the following ones in {\tt /questions/treatment}:
+					\begin{coi}						\item {\tt mw.control.txt}
+						\item {\tt mw.m.opp.txt}						\item {\tt mw.m.supp.txt}						\item {\tt mw.p.opp.txt}						\item {\tt mw.p.supp.txt}						\item {\tt tb.control.txt}						\item {\tt tb.m.opp.txt}						\item {\tt tb.m.supp.txt}						\item {\tt tb.p.opp.txt}						\item {\tt tb.p.supp.txt}			
+					\end{coi}
+				\item I copied the code from {\tt app.R} into {\tt shiny\_psych\_survey.R} and adapted it to load my question files
+				\item Crucial: The code to load the question files needs to include any file path and {\tt .txt} as well as have {\tt defaulttxt = FALSE}. Otherwise these external files will not be read in by the code
+			\end{coi}
+		\item Saving data 
+			\begin{coi}
+				\item I can save locally and to Dropbox
+				\item Locally
+					\begin{coi}
+						\item Use the {\tt saveData} function from {\tt shinyPsych} and set {\tt location = "local"}. That saves each response as a {\tt .csv} in whatever {\tt outputDir} is
+					\end{coi}
+				\item Dropbox setup:
+					\begin{coi}
+						\item Much more complicated
+						\item Use the {\tt rdrop2} (\href{https://github.com/karthik/rdrop2}{link}) and {\tt dplyr} packages
+						\item Setup things:
+							\begin{coi}
+								\item Sign into my AU Dropbox in the browser
+								\item \href{https://blogs.dropbox.com/developers/2014/05/generate-an-access-token-for-your-own-account/}{Generate a Dropbox access token}
+								\item Pull and save the access token to the same folder where {\tt shiny\_psych\_survey} is located:
+									\begin{verbatim}
+										library(rdrop2)
+										token <- drop_auth()
+										saveRDS(token, "droptoken.rds")
+									\end{verbatim}
+							\end{coi}
+						\item Create the function {\tt savedata} to upload a {\tt .csv} to Dropbox folder {\tt /block\_data} (instructions are \href{http://shiny.rstudio.com/articles/persistent-data-storage.html#dropbox}{here})
+						\item Create the function {\tt loaddata} (instructions are \href{http://shiny.rstudio.com/articles/persistent-data-storage.html#dropbox}{here}) to download all the {\tt .csv} files from Dropbox {\tt /block\_data}, turn them into a list, then a data frame, then save that data frame in my local folder {\tt /block\_data}
+						\item {\tt savedata} needs to be defined before the actual {\tt shiny} code and is executed in the app code by adding {\tt  savedata(data.list)} instead of the original {\tt shinyPsych} data saving code
+						\item {\tt loaddata} is defined and executed from {\tt edit\_package.R}
+					\end{coi}
+			\end{coi}
+		\item Randomly assigning respondents to one of five treatment groups
+			\begin{coi}
+				\item Took me a lot of experimenting, but the end result is very nice and simple
+				\item For each issue, create an {\tt R} vector with the names of the group {\tt .txt} files, then randomly sample one of those names and store it. Then paste that stored object name into the {\tt createPageList} function and create the needed objects in the other sections
+				\item Each input question in each treatment {\tt .txt} needs to be labelled ``treat", otherwise the data can't be read. With this generic labelling, it is not shown what group the respondent was assigned to in the resulting data frame. That's why I added the stored randomly sampled group name for each issue as a variable to the list of data saved in {\tt data.list} 
+			\end{coi}
+		\item {\tt edit\_package.R}:
+			\begin{coi}
+				\item Code to edit question files
+				\item Code to source {\tt shiny\_psych\_survey.R} and run the app to test that the questions are properly loaded. Responses are saved to my AU Dropbox folder {\tt /block\_data}
+				\item Code to re-deploy the app on my {\tt shiny} server account
+				\item Code to create function {\tt loaddata}
+				\item Code to execute {\tt loaddata}
+				\item Code to source {\tt ShinyPsych}'s {\tt app.R} if I want to look up some things in the original version. Responses are saved locally under {\tt /package\_data}
+			\end{coi}
+		\item {\tt shiny\_psych\_survey.R}:
+			\begin{coi}
+				\item Code to create function {\tt savedata}
+				\item Code to create the setup of my app survey environment
+				\item No additional code for authentication with Dropbox needed. The original setup above is enough for use on my local machine 
+			\end{coi}
+		\item Deployed app on \href{https://www.shinyapps.io/admin/#/login}{my shiny server account}: \href{https://sheuberger.shinyapps.io/survey_experiment/}{https://sheuberger.shinyapps.io/survey\_experiment/}
+			\begin{coi}
+				\item Everything is in {\tt /survey\_experiment}:
+					\begin{coi}
+						\item {\tt app.R}
+							\begin{coi}
+								\item Code to create authentication with Dropbox (adapted from \href{https://github.com/karthik/rdrop2}{here}, not needed locally but needed when deployed to create Dropbox authentication and save the data):
+									\begin{verbatim}
+										drop_auth(rdstoken = "droptoken.rds")
+									\end{verbatim}
+								\item Code to create function {\tt savedata}
+								\item All app code
+								\item Data saved to AU Dropbox {\tt /block\_data}
+								\item Randomized treatment questions for both issues
+								\item Code set up so I have to adjust only the bare minimum
+							\end{coi}
+						\item {\tt questions/code.txt}
+						\item {\tt questions/education.txt}						\item {\tt questions/instructions.txt}
+						\item {\tt questions/demographics.txt}						\item \texttt{questions/pid\_foll\_dem.txt}
+						\item \texttt{questions/pid\_foll\_ind\_else.txt}
+						\item \texttt{questions/pid\_foll\_rep.txt}						\item {\tt questions/treatment/mw.control.txt}						\item {\tt questions/treatment/mw.m.opp.txt}						\item {\tt questions/treatment/mw.m.supp.txt}						\item {\tt questions/treatment/mw.p.opp.txt}						\item {\tt questions/treatment/mw.p.supp.txt}						\item {\tt questions/treatment/tb.control.txt}						\item {\tt questions/treatment/tb.m.opp.txt}						\item {\tt questions/treatment/tb.m.supp.txt}						\item {\tt questions/treatment/tb.p.opp.txt}						\item {\tt questions/treatment/tb.p.supp.txt}
+						\item {\tt droptoken.rds}
+					\end{coi}
+			\end{coi}
+		\item {\tt shiny\_psych\_survey.R} is for my local machine where I can test and make changes as I go along. {\tt app.R} in {\tt /survey\_experiment} is the live survey on the server. If I make any code changes to {\tt shiny\_psych\_survey.R} that I want to see in the deployed app, I need to manually copy it to {\tt app.R}. This is for safety, so I don't accidentally overwrite it with stupid things
+		\item The same goes for the questions. All question files are under {\tt /questions} for my local machine. There are separate versions of them in {\tt /survey\_experiment}. Any changes need to be copied manually
+		\item Over the course of development, I massively changed the original code in \\{\tt shiny\_psych\_survey.R} so that I had to adjust only a minimum of things as I move forward (I had to keep going through and changing all the cases over and over again). I have commented things out and also saved the old version. In the current one, only the sampled questions need to be adjusted throughout (otherwise I would keep re-sampling). The rest is set once at the beginning of the document and then called with {\tt paste}, {\tt assign} etc.
+		\item Include OPM function \texttt{OPMord} (from \texttt{OPM} above) in existing \texttt{shiny} environment
+			\begin{coi}
+				\item This is actually not necessary because the OPM does not need to be part of the \texttt{shiny} environment. Users run \texttt{OPMord} with data, DV, and EVs of their choice to obtain data-driven ordinal categories. These categories then replace the original categories in ordinal variable in the user's experimental data. She can then use these categories as the basis for sequential blocking. Basically, \texttt{OPMord} is run before anything in \texttt{shiny} and thus does not need to be included in it
+			\end{coi}
+		\item Modify \texttt{shiny\_psych\_survey.R} to include/run \texttt{seqblock}
+			\begin{coi}
+				\item Overall idea: 	Feed the user-selected category into \texttt{seqblock()}. If the MD code doesn't set in yet, the respondent is randomly assigned to a treatment group. If the MD code sets in, all previously assigned education data is loaded from Dropbox, and the code blocks the respondent into a treatment group. In both cases, the respective group is extracted, the respective treatment \texttt{.txt} is saved as \texttt{mw.sample/tb.sample}, and the the newly updated assigned data is saved to Dropbox
+				\item \texttt{seqblock()} only works with \texttt{.RData} files and only stores the variables that are blocked on. So saving the seqblock data and saving all input data needs to be separate. seqblock data goes to Dropbox/seqblock, all input data goes to Dropblox/alldata. The seqblock data needs to be overwritten on Dropbox and within \texttt{shiny}, so it's one \texttt{.RData} file. The input data is one small \texttt{.csv} file for each user that I later download and combine on my laptop (so exactly the same as before)
+				\item \texttt{seqblock()} creates a \texttt{.RData} file for the first person. All following people are assigned based on that continuously updated file. The website code doesn't detect whether someone is the first person or not. As a work-around for now, I put in my education category a the first user by running \texttt{seqblock()} once before the \texttt{shiny} environment and uploading that \texttt{.RData} file
+				\item I need a reaction when users click ``Continue" on the education page (i.e. they select their category, then the blocking code sets in and draws/uploads stuff from/to Dropbox). Thats' done via \texttt{observeEvent()}. I also need to save an output for use in a later function when users click that button (i.e. the assigned treatment group, which determines which treatment page is shown). That's done via \texttt{eventReactive()}. I don't know how to combine them, so each issue has one \texttt{observeEvent()} and one \texttt{eventReactive()}
+				\item Order of code
+					\begin{coi}
+						\item \texttt{sequpload()}
+							\begin{coi}
+								\item Function that uploads a \texttt{.RData} file to Dropbox/seqblock
+							\end{coi}
+						\item \texttt{seqdownload()}
+							\begin{coi}
+								\item Function that downloads a \texttt{.RData} file from Dropbox/seqblock
+							\end{coi}
+						\item \texttt{observeEvent()} when hitting ``Continue" on education page
+							\begin{coi}
+								\item Download \texttt{.RData} (\texttt{seqdownload})
+								\item Load \texttt{.RData}
+								\item Run \texttt{seqblock()} on user-selected category and loaded \texttt{.RData}
+								\item Upload \texttt{.RData} (\texttt{sequpload})
+							\end{coi}
+						\item \texttt{eventReactive()} when hitting ``Continue" on education page
+							\begin{coi}
+								\item Download \texttt{.RData} (\texttt{seqdownload})
+								\item Load \texttt{.RData}
+								\item Save assigned treatment group to object for later use to display correct treatment page
+							\end{coi}
+					\end{coi}
+				\item App is deployed and working. The whole \texttt{.RData} downloading/uploading works. It only causes a few split seconds of loading before the web page displays the next question. Except for the issue where I have to be the first user, I think this looks good
+			\end{coi}
+		\item Improve the code
+			\begin{coi}
+				\item Am I using the right variables in \texttt{seqblock} (I use \texttt{exact.vars} but there is also \texttt{covar.vars})?
+					\begin{coi}
+						\item Nope. \texttt{exact.vars} requires exact variables. So if an incoming person has a 2 but a treatment group is made up of 1s and 3s, it won't find anything to match
+						\item I want \texttt{covar.vars}, which matches on the distribution
+						\item I switched the code to \texttt{covar.vars}
+					\end{coi}
+				\item Find a setup where I don't have to put in my own data to create the first person
+					\begin{coi}
+						\item Done. I used the \texttt{drop\_exists} function and wrapped it in \texttt{if ... else}. \texttt{drop\_exists} tests whether a file exists in a Dropbox path
+						\item If the mw \texttt{.RData} file exists on Dropbox/seqblock -- which means other respondents have been assigned before this current respondent -- the code now reads in that data, blocks on the data and the current respondent, then uploads the updated \texttt{.RData} to Dropbox/seqblock
+						\item If the mw \texttt{.RData} file doesn't exist -- which means the current respondent is the first respondent to fill in the survey --  the code now blocks only on the current respondent, then uploads the resulting \texttt{.RData}
+						\item Obviously the same repeated for any/all other issues
+								\item App is deployed and working
+					\end{coi}
+				\item Added \texttt{pid} to block on as an \texttt{exact.vars}
+				\item Incorporate skip logic (if ``Republican", give question ``Strong or weak?") with \texttt{eventReactive()}
+					\begin{coi}
+						\item I used the same technique I used for the two issues. I created separate question \texttt{.txt} files for the party ID follow-up questions (one for Dem, one for Rep, one for Ind/Something Else)
+						\item Depending on the number that represents what the respondent selected, the code displays the corresponding follow-up \texttt{.txt}
+					\end{coi}
+				\item Test the blocking code with the Dropbox upload/download code
+					\begin{coi}
+						\item I want to make sure that everything really does result in balance and that the Dropbox stuff doesn't mess things up somewhere somehow
+						\item Ideally, I would like to get randomized survey responses. Ryan said there was a way to make the computer fill in responses randomly, but I couldn't find anything on that
+						\item I don't think this test has to be in the finished survey. I want to simulate the blocking part including the uploading/downloading to Dropbox -- I can do that locally on Jeff's machine. I'm also including the \texttt{.csv} saving code. It should look identical to the \texttt{.RData}, but I just want to make sure there's nothing muddled up there
+						\item I started doing that on Jeff's machine. It worked well for n = 1,000 for \texttt{education} and \texttt{pid}. So the Dropbox stuff doesn't mess anything up and we get balance
+						\item One weird thing: The blocked \texttt{education} numbers have decimals. It's something to do with \texttt{seqblock()}. I printed a screenshot of the blocked \texttt{bdata\$x}
+						\item Show Ryan \texttt{bdata\$x} with decimals and my code (all printed)
+						\item For reasons I don't understand, \texttt{bdata\$x} includes a \texttt{jitter()} part, hence the decimals (or noise) around the values
+						\item Change \texttt{bdata\$x} to \texttt{bdata\$orig}, which keeps the original values in \texttt{shiny\_psych\_survey.R}, the deployed \texttt{app.R}, and \texttt{testing\_blocking\_dropbox.R}. Then rerun the test for 1,000 simulations
+						\item Reran test for 1,000 simulations -- everything looks good
+					\end{coi}
+			\end{coi} 
+		\item Work in redirects for Lucid
+			\begin{coi}
+				\item The Lucid folks need my survey to read in a respondent-based unique alphanumeric number (called \texttt{RID}) before anything is loaded. This number is created in their system when a respondent clicks on my survey link and added to the web link, creating an initial Lucid link. For the placeholder \texttt{RID} \texttt{123456-abc}, the initial link is \texttt{https://sheuberger.shinyapps.io/survey\_experiment/?rid=123456-abc}. My survey needs to read in \texttt{123456-abc} from that link
+				\item The Lucid folks also need my survey to pass out the read-in \texttt{RID}. This means that my survey needs to redirect to a Lucid completion link with the \texttt{RID} in it once all questions have been answered. For the placeholder \texttt{RID} \texttt{123456-abc}, the completion link is \texttt{https://notch.insights.supply/cb?token=98b98d10-789d-42ec-}\\\texttt{ba71-a077
+						cbbd909c\&RID=123456-abc}
+				\item It took a lot of emails and a Zoom meeting to figure out the above details. Here is what I did:
+					\begin{coi}
+						\item I took out the \texttt{GoodBye} page (all the code plus the question files) and added a Thank You message on the \texttt{Code} page
+						\item To read the \texttt{RID} in: \texttt{shiny} stores the current session data, which includes everything in the URL. In order to read in the \texttt{RID}, I needed to access the component of the URL in the session data with the \texttt{RID} in it. It turns out that this URL component is the query string, which is the stuff after the question mark (it's all described \href{https://community.tealiumiq.com/t5/iQ-Tag-Management/URL-Components-Explained/ta-p/5573}{here}). The \texttt{shiny} session location for that is \texttt{session\$clientData\$url\_search}. To read that in, it needed to be wrapped into \texttt{parseQueryString()}. The resulting R object is a list, so it needed to be made a character with \texttt{[[1]]} (explained \href{https://shiny.rstudio.com/articles/client-data.html}{here} and \href{https://shiny.rstudio.com/reference/shiny/0.14/parseQueryString.html}{here}). I set all that up
+						\item I added the stored \texttt{RID} to the \texttt{data.list} I save on Dropbox, so I can see what is being initially read in
+						\item To pass the \texttt{RID} out: I defined a Javascript function, called \texttt{js\$browseURL}, that automatically redirects respondents to a website (code taken from \href{https://stackoverflow.com/questions/41426016/shiny-open-multiple-browser-tabs?rq=1}{here}). I set it so that respondents are automatically redirected to a specified website when they hit "Continue" after typing in the survey code. I set the specified website to Lucid's completion link, with the stored \texttt{RID} pasted in
+						\item I also added two \texttt{if...else()} wrappers for the reading-in and the passing-out code, so that the same code can be run if there is no query string (which is when I run it) and if there is a query string (which is when Lucid runs it). The background here is that the pulled-in list is empty if there is no query string, which means you can't subset it with \texttt{[[1]]} because it throws an error. So now the code stores the query string if there is one and stores ``no.query.string" if there isn't. It also redirects to Lucid's completion page in the first case and to Google in the second
+					\end{coi}
+				\item Lucid successfully tested the reading-in and passing-out code on April 22. The technical setup is now ready for the launch with Lucid
+			\end{coi}
+	\end{coi}
+	
+
+\section*{\texttt{ordered\_outcomes\_modeling}}
+	\begin{coi}
+		\item Note: I don't have to invent new R code to block, either normally or sequentially, because OPM comes before blocking. Ryan already developed R code to block normally and sequentially ({\tt seqblock}) using MD. {\tt seqblock} is set up so that the MD blocking code doesn't set in for a specified `first few people' to be assigned. They are assigned randomly. Then, at a code-specified point, the MD code sets in and takes over for everyone else. Use that and the `normal' blocking function to block after OPM is applied
+		\item Test OPM model
+			\begin{coi}
+				\item Block on the original 10 ANES education variables, then run OLS regression on some ANES outcome. Then do the same for the 5 re-estimated OPM categories and compare the differences in results. If there were no differences, this would raise some doubts whether OPM is really necessary
+					\begin{coi}
+						\item \texttt{opm\_create\_model.R} loads the ANES variables, runs the OPM model, saves \texttt{.csv}, \texttt{.pdf} (I used both of these for the presentation), and \texttt{.rds} files
+						\item \texttt{opm\_test\_model\_100.Rmd} loads the \texttt{.rds} files, blocks and runs OLS for 100 ANES observations. Outputs a regression table as a \texttt{.pdf}
+						\item \texttt{opm\_test\_model\_all\_jeff.R} does the same, but for all ANES observations. This is a separate \texttt{.R} file because I ran this on Jeff's computer (the loop takes a while on mine). Outputs another set of \texttt{.rds} files
+						\item \texttt{opm\_test\_model\_all.Rmd} loads the extra set of \texttt{.rds} files. Outputs a regression table as a \texttt{.pdf}
+						\item Most EVs are the same for both regressions, which makes sense. They haven't been modified, so they shouldn't be different. The treatment group coefficient, however, is different. The groups were blocked on education, so that's definitely the effect of the different categories. I think this is different enough to justify OPM. Jeff agrees, so this is all good
+					\end{coi}
+			\end{coi}
+		\item Set up an R function (or functions, whatever is better)
+			\begin{coi}
+				\item I set up \texttt{opm\_create\_function.R}, which creates the function \texttt{OPMord}, which:
+						\begin{coi}
+							\item Applies \texttt{polr()} to specified training data, DV, EVs
+							\item Attaches binned cases
+							\item Creates a new DV with re-estimated categories
+							\item Attaches new DV to the originally supplied data
+							\item Saves several objects as outputs as a list, to be called with \$
+						\end{coi}
+				\item I saved \texttt{OPMord} as \texttt{OPMord.RData} so I can load into any R session
+				\item The re-estimated levels outputted by \texttt{OPMord} can be used by \texttt{block} and \texttt{seqblock} for any data. In my case, I will block my data on the education levels that result from training the OPM on the ANES data. The OPM part stops after \texttt{OPMord} has been run and the re-estimated levels have been obtained
+			\end{coi}
+		\item Simulate things by including different groups as the EVS and see how that affects the estimated new number of categories
+			\begin{coi}
+				\item If run with only one variable as EV, these are the resulting number of categories:
+					\begin{coi}
+						\item \texttt{race}: 4 estimated new categories
+						\item \texttt{income}: 3
+						\item \texttt{occupation}: 3
+						\item \texttt{gender}: 2
+						\item \texttt{pid}: 1
+						\item \texttt{age}: 1
+					\end{coi}
+				\item Using just one variable as EV is silly, but it gives a good indicator of the influence of each variable. I played around with a few different combinations, and that confirmed: You get the same 5 categories just with \texttt{race}, \texttt{income}, and \texttt{occupation}. The others don't affect the overall new number
+			\end{coi}
+		\item \texttt{\$lp} v. \texttt{\$fitted.values}
+			\begin{coi}
+				\item I'm using \texttt{\$lp}. Ryan said that I could also use \texttt{\$fitted.values}, which lists the probabilities of assignment for each observation for each education category
+				\item After investigating a bit, we found that \texttt{\$lp} gave 5 categories but \texttt{\$fitted.values} only 4
+				\item I calculated the percentages of observations within each category (all in \texttt{opm\_create\_model.R}) and found the results very confusing. I sent them to Ryan. He didn't respond, and it's been ages, so I'm just going to leave this be
+			\end{coi}
+		\item Do Monte Carlo simulations
+			\begin{coi}
+				\item MVN data with some cross-correlations
+				\item I know the true treatment effect here
+				\item So when I then block on categories 1:15 and 1:5, I know which one performs better -- the one that's closer to the true treatment effect
+				\item Set up in \texttt{opm\_monte\_carlo.Rmd}
+				\item Still needs tweaking, though I'm not sure in which way(s)
+				\item Further space out \texttt{theta} and adjust rounding of \texttt{theta.star} to achieve greater difference (play around)
+				\item Sent it to Jeff
+				\item Space it out some more; play with the sample size; modify the covariate generation with more cross-correlation
+					\begin{coi}
+						\item I spaced \texttt{theta} out in many different ways and played with the sample size -- barely any change
+						\item \texttt{Y} is based on \texttt{theta} and \texttt{X} comes from the ANES correlation matrix
+						\item I could manually change the correlation matrix, but then it wouldn't be the ANES correlations any more. Is that what he meant?
+						\item How can I make \texttt{Y} correlate more strongly with \texttt{X} but still create \texttt{Y} from \texttt{theta} and \texttt{X} from the ANES?
+						\item Try link Jeff sent me (first steps in R file)
+						\item The results never really change, no matter what I do with the correlations
+						\item I implemented exactly what was in the link; now Jeff tells me that this doesn't create realistic data and doesn't go anywhere. Then what was the point of the link?
+					\end{coi}
+				\item \hl{Read through the resources Jeff sent me}
+					\begin{coi}
+						\item \href{https://scholar.cu.edu.eg/sites/default/files/mohamed_abonazel/files/how_to_create_a_monte_carlo_simulation_study_using_r_with_applications_on_econometric_models.pdf}{https://scholar.cu.edu.eg/sites/default/files/mohamed\_abonazel/files/how\_to\_create\_a\_monte\_carlo\_simulation\_study\_using\_r\_with\_applications\_on\_econometric\_models.pdf}
+						\item \href{https://statweb.stanford.edu/~owen/mc/}{https://statweb.stanford.edu/~owen/mc/}
+						\item \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.703.5878&rep=rep1&type=pdf}{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.703.5878\&rep=rep1\&type=pdf}
+					\end{coi}
+			\end{coi}
+		\item Repeat and visualize Table 2.2
+			\begin{coi}
+				\item The table is created with a placebo treatment, i.e. there is no real treatment. That means Group T2 should be zero. The table is not evidence that the OP method is better
+				\item Repeat the estimations for Table 2.2 100 times and visualize the distribution of the Group T2 coefficients. This will show which category estimation is closer to zero, which is the true value of that coefficient
+				\item I set all this up in the \texttt{opm\_test\_model\_regression\_100\_obs} and\\ \texttt{opm\_test\_model\_regression\_all\_obs} files
+				\item The setup works for 100 observations (to test it) and all observations
+				\item I ran 100 repeats for all observations
+				\item I ran 1,000 repeats for all observations
+			\end{coi} 
+		\item Write up the \texttt{shiny} environment in the appendix
+		\item \hl{Emphasize machine learning in the write-up}
+			\begin{coi}
+				\item Model training is what it's all about
+				\item People are being misclassified based on arbitrary numeric values
+			\end{coi}
+	\end{coi}
+	
+	
+	
+	
+\section*{Eventual package setup}
+	\begin{coi}
+		\item Leave this until the very end. It's interesting, but I don't need it for the diss
+		\item For my framing experiment, I use education and ANES to train the OPM, then I block on education and other covariates with \texttt{blockTools}. The package will be applicable much more generally: Set the package up so that the user specifies/loads the data, the DV, and the EVs to use for training. My functions then apply polr(), attach binned cases, create a new DV with re-estimated categories, and attach this variable to the originally supplied data. Then the user can block on the resulting variable with \texttt{blockTools}
+			\begin{coi}
+				\item \texttt{OPMord} comes before any blocking
+				\item \texttt{OPMord} output can be used to \texttt{block} normally in interactive R
+				\item \texttt{OPMord} output can be used to \texttt{seqblock} sequentially in \texttt{shiny} environment
+			\end{coi}
+		\item I currently don't have any `package' folder because it doesn't make sense to set that up before the functions are developed
+		\item \href{https://deanattali.com/2015/04/21/r-package-shiny-app/}{Blog post to include {\tt shiny} in R package and launch app from within package}
+	\end{coi}	
+	
+	
+	
+
+\end{document}
+

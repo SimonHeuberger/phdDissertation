@@ -1,0 +1,57 @@
+---
+# AU dissertation fields
+title: "WHAT THE PEOPLE THINK: ADVANCES IN PUBLIC OPINION MEASUREMENT USING MODERN STATISTICAL METHODS"
+author: "Simon Heuberger"
+degreeyear: "2020"
+degree: "Doctor of Philosophy"
+chair: "Professor Jeff Gill"
+secondreader: "Professor Ryan T. Moore"
+thirdreader: "Professor +++"
+degreefield: "Government"
+abstract: |
+  Surveys are a central part of political science. Without surveys, we would not know what people think about political issues. Survey experiments further enable us to test how people react to given treatments. Surveys and survey experiments are only as good as the measurements and analytical techniques we as researchers employ, though. For one particular survey variable called ordinal variables, some of our current measurements and techniques are insufficient. Ordinal variables consist of ordered categories where the spacing between each category is uneven and not known. Ordinal variables are highly important because the most important predictor of political behavior is an ordinal variable: education. Ordinal example categories for education could be "Some High School", "High School Graduate", and "Bachelor's Degree". The literature currently often does not take the special nature of ordinal variables, i.e. their uneven spacing, into account. This could misrepresent the data and potentially distort survey results. It is important that we measure and use education and other ordinal variables correctly. My dissertation develops two methods to do so and applies them in original survey research. Chapter II develops a new method to improve the use of ordinal variables in the assignment of treatment in survey experiments. Chapter III develops a new method to treat missing survey data with ordinal variables. Chapter IV applies both methods in an online survey experiment on political framing. 
+acknowledgements: |
+  I want to thank Muesli and Fendi, the two greatest creatures on the planet. And of course Waldemar Burgo.
+# End of AU dissertation fields
+knit: "bookdown::render_book"
+site: bookdown::bookdown_site
+output: 
+  eagledown::dissertation_pdf: 
+    latex_engine: xelatex
+#  eagledown::dissertation_gitbook: default
+#  eagledown::dissertation_word: default
+#  eagledown::dissertation_epub: default
+bibliography: /Users/simonheuberger/Dropbox/work/bib-files/all-together.bib
+csl: sources/apa.csl
+---
+
+```{r include_packages, include = FALSE}
+# This chunk ensures that all required packages for the AU dissertation template are installed and loaded
+if(!require(devtools))
+  install.packages("devtools", repos = "http://cran.rstudio.com")
+if(!require(stargazer))
+  install.packages("stargazer", repos = "http://cran.rstudio.com")
+if(!require(ggplot2))
+  install.packages("ggplot2", repos = "http://cran.rstudio.com")
+if(!require(eagledown))
+  devtools::install_github("SimonHeuberger/eagledown")
+if(!require(dplyr))
+  install.packages("dplyr", repos = "http://cran.rstudio.com")
+if(!require(gridExtra))
+  install.packages("gridExtra", repos = "http://cran.rstudio.com")
+if(!require(blockTools))
+  install.packages("blockTools", repos = "http://cran.rstudio.com")
+if(!require(randomizr))
+  install.packages("randomizr", repos = "http://cran.rstudio.com")
+if(!require(forcats))
+  install.packages("forcats", repos = "http://cran.rstudio.com")
+library(devtools)
+library(stargazer)
+library(ggplot2)
+library(dplyr)
+require(gridExtra)
+library(blockTools)
+library(randomizr)
+library(forcats)
+```
+

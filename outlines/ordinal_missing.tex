@@ -1,0 +1,39 @@
+\input{/Users/simonheuberger/Dropbox/work/latex/preamble}
+
+\title{Ordinal Variables and Missing Data}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{General}
+	\begin{coi}
+		\item This paper should be an intersection of ordinal variables and missing data. Jeff thinks there is room there for a contribution
+		\item The general idea is that general treatments of missing data (listwise deletion, multiple imputation etc.) lead to different results -- depending on the type of variable. How you treat \texttt{Don't Know} and \texttt{Refused} and how this treatment affects the results depends greatly on the type of variable that you use to impute the missing data. The idea is that you would need to approach things differently depending on whether you use a nominal, interval, or ordinal variable to fill in values for \texttt{Don't Know}/\texttt{Refused}. So I am developing a method to specifically treat \texttt{Don't Know}/\texttt{Refused} with ordinal variables that improves over current uses that are generic for all types of variables
+		\item This method should be a customized form of multiple imputation that is closer to the data than general multiple imputation. Jeff and Skyler developed affinity scores and hot decking in their BJPS paper. They used the number of exact matches (in the form of other participants) to calculate the affinity score. Instead, I should use a weighted distance solution between ordinal variable categories. I would use the OP model from the blocking paper to weight the distances between the categories in matches (in the form of other participants). In other words, I would use the underlying ordered probit numbers to create the weights. So this would be a specific ordinal variable adjustment of the affinity score building
+		\item Set up chapter structure
+	\end{coi}
+
+
+\section*{Ordinal Hot Decking}
+	\begin{coi}
+		\item \texttt{testing.R}
+			\begin{coi}
+				\item \hl{Continue with TO DOs}
+			\end{coi}
+	\end{coi}
+
+\section*{Theory}
+	\begin{coi}
+		\item \hl{Step by step fill in the sections on Missing Data, Deletion, and Imputation}
+		\item Rework the introduction
+			\begin{coi}
+				\item Current stuff in there is very broad and nowhere near detailed enough (taken from the Kerwin application)
+			\end{coi}
+	\end{coi}
+
+
+\end{document}			
+

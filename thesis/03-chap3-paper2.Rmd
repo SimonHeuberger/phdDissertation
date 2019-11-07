@@ -1,0 +1,109 @@
+# PRECISION IN SURVEY MEASUREMENT -- A NEW METHOD TO IMPUTE MISSING DATA FROM ORDINAL VARIABLES {#ordmiss}
+
+## Introduction {#ordmiss-intro}
+
+Missing data are ubiquitous in survey research [@allison_2002_missing;@raghunathan_2016_missing]. Respondents frequently refuse to answer questions, select "Don't Know" as a response option, or drop out during the response collection process [@honaker_2010_what]. Missing data pose a big problem for researchers because data can typically not be analyzed with statistical software if they contain missing values [@little_2002_statistical;@molenberghs_2007_missing]. 
+
+Scholars have developed several general ways to treat missing data. These range from deleting all observations with missing data (listwise deletion) over randomly drawing a 'similar' respondent to provide a fill-in value for a missing slot (hot decking) to estimating missing values from conditional distributions (multiple imputation) [@rubin_1976_inference;@king_2001_analyzing;@fay_1996_alternative]. Listwise deletion has been shown to induce bias with political data, and hot decking does not reflect statistical uncertainty in the filled-in values since there is only one draw [@kroh_2006_taking;@gill_2013_bayesian;@rees_1997_methods]. While multiple implementation has become and remains the state of the art in missing data management, it is not necessarily always suitable for all types of variables. Multiple hot deck imputation, an improvement over generic multiple imputation, solves this for non-granular discrete data [@gill_2012_have;@reilly_1993_data]. However, the underlying algorithm assumes even distances between categories in discrete data, which makes it unsuitable for ordinal variables. I propose a method designed to impute missing data specifically from ordinal variables that fills this gap in multiple hot deck imputation. 
+
+Multiple hot deck imputation uses draws of values from the variable with the missing values (hot decking) to impute them distributionally (multiple imputation) and estimate affinity scores. This score measures how close other respondents are to the one with the missing value. 'Closeness' is measured as the distance between respondents in the variables that do not contain missing values. This is best illustrated with simplified data shown in Table \ref{ordmiss-affscore}.
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{lccccc}
+  \bottomrule 
+  \midrule
+  Respondent & Age & Party ID & Education & Income & Gender\\
+  \hline
+  A & 25 & Republican & High School Graduate & \$40-50,000 & Male \\
+  B & 40 & NA & Some High School &  \$30-40,000 & Female\\
+  C & 30 & Democrat & Bachelor's Degree &  \$60-70,000 & Female\\
+  \bottomrule 
+  \end{tabular}
+  \caption{Illustrative Data}
+  \label{ordmiss-affscore}
+\end{table}
+
+Respondent B shows missing data for party ID. To impute a fill-in value, we look at how close respondents A and C are to B in terms of age, education, income, and gender. C is closer to B in terms of age and they share the same gender. A is closer to B on education and income. Multiple hot deck imputation measures these distances and estimates affinity scores for respondents A and C. B then receives the party ID fill-in value from whichever respondent has the higher score. The algorithm building the affinity score, however, assumes evenly spaced distances between categories. This is the case for age, income, and gender, but not for education, since education is an ordinal variable. Applying multiple hot deck imputation here would misrepresent the data.
+
+Instead, I propose a weighted distance solution with the estimated numeric thresholds from the ordered probit model approach in chapter II to measure the distances between the categories and calculate the affinity score. I demonstrate the benefits of this method with several Monte Carlo simulations. As in chapter II, simulations are crucial as they allow comparison to the 'true' results, which is not possible with actual data. They show that weighted distance multiple hot decking imputation outperforms current general missing data techniques for ordinal variables.
+
+
+## Theory {#ordmiss-theory}
+
+### Missing Data Mechanisms {#ordmiss-theory-mechanisms}
+
+MCAR
+MAR
+NMAR
+
+
+### Deletion {#ordmiss-theory-delete}
+
+Deletion of incomplete observations, listwise deletion
+
+
+### Imputation {#ordmiss-theory-impute}
+
+#### Mean {#ordmiss-theory-impute-mean}
+
+Mean is used to substitute values
+
+
+#### Regression {#ordmiss-theory-impute-regress}
+
+Missing variables for a unit are estimated by predicted values from the regression on the known variables for that unit
+
+
+#### Hot Deck {#ordmiss-theory-impute-hot}
+
+Recorded units in the sample are used to substitute values
+
+Hot deck (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (1981), Ford (1983), David et al. (1986)) (chapter 4, [@little_2002_statistical])
+-- by simple random sampling with replacement
+-- within adjustment cells
+-- nearest neighbor
+-- sequential ordered by a covariate
+-- multiple hot decking (Cranmer, Gill)
+
+
+#### Multiple Hot Decking {#ordmiss-theory-impute-multhot}
+
+Multiple hot deck imputation (all COPIED OVER from Cranmer, Gill):
+-- A non-parametric alternative to multiple imputation
+-- A variation of hot deck imputation combined with the repeated imputation and estimation method typical of parametric multiple imputation
+-- Designed to work well in situations where (traditional) parametric multiple imputation falls short -- when a discrete variable with a small number of categories has missing values. This can produce nonsensical imputations, biased results and artificially smaller standard errors
+-- Maintains the integrity of the data by using draws of actual values from the variable with the missing values to impute missing items
+-- Maintains the discrete nature of discrete data and produces more accurate imputations than parametric multiple imputation in a majority of social science applications where the data are discrete
+-- Since many political science applications rely on highly discrete measures, multiple hot deck imputation provides the researcher with more accuracy in imputations than parametric multiple imputation, while requiring none of parametric multiple imputation's standard assumptions
+
+Concrete estimation steps:
+(1) Create several copies of the dataset.
+(2) Search down columns of the data sequentially looking for missing observations
+  a) When a missing value is found, compute a vector of affinity scores, for that missing value. This vector is as long as the number of rows in the dataset, minus any rows with missing values for the same variable
+  b) Create the imputation cell of best donors for this missing value and draw randomly from it to produce a vector of imputations
+  c) Impute one of these values into the appropriate cell of each duplicate dataset for this missing value
+(3) Repeat Step 2 until no missing observations remain
+(4) Fit the statistic of interest for each dataset
+(5) Combine the estimates of the statistic into a single estimate using the combination rules of parametric multiple imputation
+
+
+
+### Ordinal Variable Hot Decking {#ordmiss-theory-ordhot}
+
+Imputation techniques rely on continuous distributional assumptions.
+I use my ordered probit estimated latent underlying continuous variable.
+
+Ordinal hot deck imputation: 
+-- An extension of multiple hot deck imputation
+-- Designed specifically to implement multiple hot deck imputation with ordinal variables
+-- Fully utilizes the unevenly spaced yet ordered information provided in ordinal variables
+-- A key variable in political science surveys is ordinal: Education. Ordinal hot deck imputation enables researchers to impute missing data using the full information provided in this most important predictor variable
+
+
+
+## Data {#ordmiss-data}
+
+## Simulations {#ordmiss-sims}
+
+

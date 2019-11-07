@@ -1,0 +1,270 @@
+\ProvidesFile{aut11.clo}[2005/04/19]
+%%%%%%%%%%%%% Contains code specific to the 'aut12' class option. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%MODIFICATION LOG
+%AI: 20050419 replace font-size defs with defs from latex base option size12.clo
+%AI: 20050402 moved shared font and paragraphing stuff to authesis.cls
+
+%  ****************************************
+%  *               FONTS                  *
+%  ****************************************
+%
+
+
+
+%%%%%%%%%%%%  NEW size defs  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%AI: only diff is use of \@setfontsize?
+%AI: taken directly from report class base option size12.clo
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize\@xiipt{14.5}%
+   \abovedisplayskip 12\p@ \@plus3\p@ \@minus7\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\normalsize
+\newcommand\small{%
+   \@setfontsize\small\@xipt{13.6}%
+   \abovedisplayskip 11\p@ \@plus3\p@ \@minus6\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 9\p@ \@plus3\p@ \@minus5\p@
+               \parsep 4.5\p@ \@plus2\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\newcommand\footnotesize{%
+   \@setfontsize\footnotesize\@xpt\@xiipt
+   \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 6\p@ \@plus2\p@ \@minus2\p@
+               \parsep 3\p@ \@plus2\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\newcommand\scriptsize{\@setfontsize\scriptsize\@viiipt{9.5}}
+\newcommand\tiny{\@setfontsize\tiny\@vipt\@viipt}
+\newcommand\large{\@setfontsize\large\@xivpt{18}}
+\newcommand\Large{\@setfontsize\Large\@xviipt{22}}
+\newcommand\LARGE{\@setfontsize\LARGE\@xxpt{25}}
+\newcommand\huge{\@setfontsize\huge\@xxvpt{30}}
+\let\Huge=\huge
+
+
+%%%%%%%  OLD SIZE DEFS commented out  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% All of the font selection commands have been revised to conform with the
+% LaTeX2e font selection commands (BBF 10/31/94).
+%
+% Each size-changing command \SIZE executes the command
+%        \fontsize\@FONTSIZE{BASELINESKIP}\selectfont
+% where:
+%  \@FONTSIZE     = Name of font-size command.  The currently available
+%                  (preloaded) font sizes are: \@vpt (5pt), \@vipt (6pt),
+%                  \@viipt (etc.), \@viiipt, \@ixpt, \@xpt, \@xipt, \@xiipt,
+%                  \@xivpt, \@xviipt, \@xxpt, \@xxvpt.  These are defined
+%                  in ltfss.dtx.
+%
+%   BASELINESKIP = Normal value of \baselineskip for that size. (Actual
+%                  value will be \baselinestretch * BASELINESKIP.)
+%\renewcommand{\normalsize}{\fontsize\@xiipt{14.5}\selectfont%
+%\abovedisplayskip 12\p@ plus3\p@ minus7\p@
+%\belowdisplayskip \abovedisplayskip
+%\abovedisplayshortskip  \z@ plus3\p@
+%\belowdisplayshortskip  6.5\p@ plus3.5\p@ minus3\p@
+%\let\@listi\@listI}   % Setting of \@listi added 9 Jun 87
+%
+%\newcommand{\small}{\fontsize\@xipt{13.6}\selectfont%
+%\abovedisplayskip 11\p@ plus3\p@ minus6\p@
+%\belowdisplayskip \abovedisplayskip
+%\abovedisplayshortskip  \z@ plus3\p@
+%\belowdisplayshortskip  6.5\p@ plus3.5\p@ minus3\p@
+%\def\@listi{\leftmargin\leftmargini %% Added 22 Dec 87
+%\parsep 4.5\p@ plus2\p@ minus\p@
+%            \itemsep \parsep
+%            \topsep 9\p@ plus3\p@ minus5\p@}}
+%
+%\newcommand{\footnotesize}{\fontsize\@xpt{12}\selectfont%
+%\abovedisplayskip 10\p@ plus2\p@ minus5\p@
+%\belowdisplayskip \abovedisplayskip
+%\abovedisplayshortskip  \z@ plus3\p@
+%\belowdisplayshortskip  6\p@ plus3\p@ minus3\p@
+%\def\@listi{\leftmargin\leftmargini %% Added 22 Dec 87
+%\topsep 6\p@ plus2\p@ minus2\p@\parsep 3\p@ plus2\p@ minus\p@
+%\itemsep \parsep}}
+%
+%\newcommand{\scriptsize}{\fontsize\@viiipt{9.5pt}\selectfont}
+%\newcommand{\tiny}{\fontsize\@vipt{7pt}\selectfont}
+%\newcommand{\large}{\fontsize\@xivpt{18pt}\selectfont}
+%\newcommand{\Large}{\fontsize\@xviipt{22pt}\selectfont}
+%\newcommand{\LARGE}{\fontsize\@xxpt{25pt}\selectfont}
+%\newcommand{\huge}{\fontsize\@xxvpt{30pt}\selectfont}
+%\newcommand{\Huge}{\fontsize\@xxvpt{30pt}\selectfont}
+%%%%%%%%%%%%  END OLD SIZE DEFS  %%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%  ****************************************
+%  *            PAGE LAYOUT               *
+%  ****************************************
+%option specific MARGINS:
+\marginparsep 10pt       % Horizontal space between outer margin and marginal note
+\topskip = 12pt          %    '\baselineskip' for first line of page.
+
+
+% FOOTNOTES:
+
+\footnotesep 16.8pt   % ABC Height of strut placed before every footnote.
+					  % ABC Footnotes must be single spaced with an
+                      % ABC empty line between them. That is why I
+					  % ABC I doubled original 8.4pt value.
+
+\skip\footins 10.8pt plus 4pt minus 2pt  % Space between last line of
+                                         % text and top of first footnote.
+
+% FLOATS: (a float is something like a figure or table)
+%
+%  FOR FLOATS ON A TEXT PAGE:
+%
+%    ONE-COLUMN MODE OR SINGLE-COLUMN FLOATS IN TWO-COLUMN MODE:
+\floatsep 14pt plus 2pt minus 4pt        % Space between adjacent floats
+                                         % moved to top or bottom of
+                                         % text page.
+\textfloatsep 20pt plus 2pt minus 4pt    % Space between main text and
+                                         % floats at top or bottom of
+                                         % page.
+\intextsep 14pt plus 4pt minus 4pt       % Space between in-text figures
+                                         % and text.
+%    TWO-COLUMN FLOATS IN TWO-COLUMN MODE:
+\dblfloatsep 14pt plus 2pt minus 4pt     % Same as \floatsep for
+                                         % double-column figures in
+                                         % two-column mode.
+\dbltextfloatsep 20pt plus 2pt minus 4pt % \textfloatsep for
+                                         % double-column floats.
+
+%  FOR FLOATS ON A SEPARATE FLOAT PAGE OR COLUMN:
+%    ONE-COLUMN MODE OR SINGLE-COLUMN FLOATS IN TWO-COLUMN MODE:
+\@fptop 0pt plus 1fil    % Stretch at top of float page/column. (Must
+                         % be 0pt plus ...)
+\@fpsep 10pt plus 2fil   % Space between floats on float page/column.
+\@fpbot 0pt plus 1fil    % Stretch at bottom of float page/column.
+                         % (Must be 0pt plus ... )
+
+%   DOUBLE-COLUMN FLOATS IN TWO-COLUMN MODE.
+\@dblfptop 0pt plus 1fil % Stretch at top of float page. (Must be
+                         % 0pt plus ...)
+\@dblfpsep 10pt plus 2fil% Space between floats on float page.
+\@dblfpbot 0pt plus 1fil % Stretch at bottom of float page. (Must be
+                         % 0pt plus ... )
+% MARGINAL NOTES:
+%
+\marginparpush 7pt       % Minimum vertical separation between two
+                         % marginal notes.
+
+
+%  ****************************************
+%  *           PARAGRAPHING               *
+%  ****************************************
+%  option specific paragraphing:
+
+%\topsep 10pt plus 4pt minus 6pt   % Extra vertical space, in addition
+                                   % to \parskip, added above and below
+                                   % list and paragraphing environments.
+\partopsep 3pt plus 2pt minus 2pt  % Extra vertical space, in addition
+                                   % to \parskip and \topsep, added when
+                                   % list leaves blank line before
+                                   % environment.
+%\itemsep 5pt plus 2.5pt minus 1pt % Extra vertical space, in addition
+                                   % to \parskip, added between list
+                                   % items.
+% See \@listI for values of \topsep and \itemsep
+% (Change made 9 Jun 87)
+
+
+
+%    ****************************************
+%    *        CHAPTERS AND SECTIONS         *
+%    ****************************************
+%
+% Definition of \part moved to report.doc  19 Jan 88
+
+%ABC Moved definitions to aucas.clo and auecon.clo
+
+%
+% Default initializations of \...mark commands.  (See below for their
+% us in defining page styles.
+%
+
+\def\chaptermark#1{}
+% \def\sectionmark#1{}           % Preloaded definitions
+% \def\subsectionmark#1{}
+% \def\subsubsectionmark#1{}
+% \def\paragraphmark#1{}
+% \def\subparagraphmark#1{}
+
+%AI: moved def of appendix to authesis.cls
+
+
+%    ****************************************
+%    *                LISTS                 *
+%    ****************************************
+%
+
+% The following commands are used to set the default values for the list
+% environment's parameters. See the LaTeX manual for an explanation of
+% the meanings of the parameters.  Defaults for the list environment are
+% set as follows.  First, \rightmargin, \listparindent and \itemindent
+% are set to 0pt.  Then, for a Kth level list, the command \@listK is
+% called, where 'K' denotes 'i', 'ii', ... , 'vi'.  (I.e., \@listiii is
+% called for a third-level list.)  By convention, \@listK should set
+% \leftmargin to \leftmarginK.
+%
+% For efficiency, level-one list's values are defined at top level, and
+% \@listi is defined to set only \leftmargin.
+
+\leftmargini 2.5em
+\leftmarginii 2.2em     % > \labelsep + width of '(m)'
+\leftmarginiii 1.87em   % > \labelsep + width of 'vii.'
+\leftmarginiv 1.7em     % > \labelsep + width of 'M.'
+\leftmarginv 1em
+\leftmarginvi 1em
+
+\leftmargin\leftmargini
+\labelsep .5em
+\labelwidth\leftmargini\advance\labelwidth-\labelsep
+%\parsep 5pt plus 2.5pt minus 1pt   %(Removed 9 Jun 87)
+
+% \@listI defines top level and \@listi values of
+% \leftmargin, \topsep, \parsep, and \itemsep
+% (Added 9 Jun 87)
+\def\@listI{\leftmargin\leftmargini \parsep 5\p@ plus2.5\p@ minus\p@
+\topsep 10\p@ plus4\p@ minus6\p@
+\itemsep 5\p@ plus2.5\p@ minus\p@}
+
+\let\@listi\@listI
+\@listi
+
+\def\@listii{\leftmargin\leftmarginii
+   \labelwidth\leftmarginii\advance\labelwidth-\labelsep
+   \topsep 5\p@ plus2.5\p@ minus\p@
+   \parsep 2.5\p@ plus\p@ minus\p@
+   \itemsep \parsep}
+
+\def\@listiii{\leftmargin\leftmarginiii
+    \labelwidth\leftmarginiii\advance\labelwidth-\labelsep
+    \topsep 2.5\p@ plus\p@ minus\p@
+    \parsep \z@ \partopsep \p@ plus\z@ minus\p@
+    \itemsep \topsep}
+
+\def\@listiv{\leftmargin\leftmarginiv
+     \labelwidth\leftmarginiv\advance\labelwidth-\labelsep}
+
+\def\@listv{\leftmargin\leftmarginv
+     \labelwidth\leftmarginv\advance\labelwidth-\labelsep}
+
+\def\@listvi{\leftmargin\leftmarginvi
+     \labelwidth\leftmarginvi\advance\labelwidth-\labelsep}
+
+
+\endinput

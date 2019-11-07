@@ -1,0 +1,16 @@
+citHeader("To cite package 'blockTools' in publications use:")
+     
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date, perl = TRUE)
+vers <- paste("R package version", meta$Version)
+     
+citEntry(entry="Manual",
+         title = "blockTools: Blocking, Assignment, and Diagnosing Interference in Randomized Experiments",
+         author = personList(as.person("Ryan T. Moore")),
+    	 year = year,
+         note = vers,
+     
+         textVersion =
+         paste("Moore, Ryan T. (",
+                year,
+                "). blockTools: Blocking, Assignment, and Diagnosing Interference in Randomized Experiments. ",
+                vers, ".", sep=""))
