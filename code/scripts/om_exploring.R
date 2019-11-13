@@ -613,6 +613,13 @@ hot.deck(OPMcut.out) # also works!!
 
 ##### Create hot.deck.ord() to scale educ variable #####
 
+data <- OPMcut.frame.more.nas
+m = m
+ord = "educ"
+sdCutoff = sd(na.omit(framing.nas$educ))
+method = "best.cell"
+cutoff=10
+
 hot.deck.ord <-
 function(data, ord, m = 5, method=c("best.cell", "p.draw"), cutoff=10, sdCutoff=1, optimizeSD = FALSE,   # adds "ord" to the list
     optimStep = 0.1, optimStop = 5, weightedAffinity = FALSE, impContinuous = c("HD", "mice"), 
@@ -839,23 +846,6 @@ sapply(means.df, mean)
 
 
 ##### Randomly insert more NAs into framing data, for different types of variables (binary/continuous). Run OPMord(), OPMcut(), and hot.deck.ord() on the data. Also run hot.deck() on the data. Compare the resulting imputed variable means to the true values, hot.deck() means, and na.omit() means  #####
-
-
-# Found this online to randomly insert NAs based on proportion
-# NAins <-  NAinsert <- function(df, prop = .1){
-#     n <- nrow(df)
-#     m <- ncol(df)
-#     num.to.na <- ceiling(prop*n*m)
-#     id <- sample(0:(m*n-1), num.to.na, replace = FALSE)
-#     rows <- id %/% m + 1
-#     cols <- id %% m + 1
-#     sapply(seq(num.to.na), function(x){
-#             df[rows[x], cols[x]] <<- NA
-#         }
-#     )
-#     return(df)
-# }
-
 
 
 

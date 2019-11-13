@@ -17,12 +17,32 @@
 	\end{coi}
 
 
-\section*{Ordinal Hot Decking}
+\section*{Code}
 	\begin{coi}
-		\item \texttt{testing.R}
+		\item Currently \texttt{MCAR} with \texttt{prodNA}
 			\begin{coi}
-				\item \hl{Continue with TO DOs}
+				\item \texttt{prodNA} adds a proportion of NAs
+				\item My code functions for one variable with NAs, for 10,000 iterations
+					\begin{coi}
+						\item I have saved results for \texttt{inc}, \texttt{age}, \texttt{Dem}, \texttt{Rep} for \texttt{hd.ord} and \texttt{hd.norm}
+						\item For all 4, \texttt{na.omit} performs the best. This isn't surprising, since deleting observations with missing values shouldn't be a problem with MCAR
+					\end{coi}
+				\item My code does not function When run for several variables with NAs
+					\begin{coi}
+						\item It throws up a replacement error somewhere down the line when run for 10,000 iterations. It's never in the same place, so it must be something random
+					\end{coi}
+				\item Always the same: \# of NAs overall. Not always the same between some runs: \# of NAs per column, \# of rows with NAs
+				\item \hl{Find out why my code doesn't work for NAs in several variables}
+					\begin{coi}
+						\item Fill in the \texttt{else{}} sections so that I don't save anything to dfs
+					\end{coi}
 			\end{coi}
+		\item \hl{Test \texttt{mice} \texttt{amputate()}}
+			\begin{coi}
+				\item It has \texttt{MCAR} and \texttt{MAR} options, which would be awesome
+				\item Testing is a bit annoying, since it doesn't work on just one variable
+			\end{coi}
+		\item Increase proportion of NAs
 	\end{coi}
 
 \section*{Theory}

@@ -1,0 +1,217 @@
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> 
+> library(plyr)
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:plyr’:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise,
+    summarize
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> library(hot.deck)
+Loading required package: mice
+Loading required package: lattice
+
+Attaching package: ‘mice’
+
+The following objects are masked from ‘package:base’:
+
+    cbind, rbind
+
+
+Attaching package: ‘hot.deck’
+
+The following object is masked from ‘package:plyr’:
+
+    is.discrete
+
+> library(magrittr)
+> library(data.table)
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+> library(tidyverse)
+── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
+✔ ggplot2 3.2.1     ✔ readr   1.3.1
+✔ tibble  2.1.3     ✔ purrr   0.3.2
+✔ tidyr   0.8.3     ✔ stringr 1.4.0
+✔ ggplot2 3.2.1     ✔ forcats 0.4.0
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::arrange()      masks plyr::arrange()
+✖ data.table::between() masks dplyr::between()
+✖ purrr::compact()      masks plyr::compact()
+✖ tidyr::complete()     masks mice::complete()
+✖ dplyr::count()        masks plyr::count()
+✖ tidyr::extract()      masks magrittr::extract()
+✖ dplyr::failwith()     masks plyr::failwith()
+✖ dplyr::filter()       masks stats::filter()
+✖ data.table::first()   masks dplyr::first()
+✖ dplyr::id()           masks plyr::id()
+✖ dplyr::lag()          masks stats::lag()
+✖ data.table::last()    masks dplyr::last()
+✖ dplyr::mutate()       masks plyr::mutate()
+✖ dplyr::rename()       masks plyr::rename()
+✖ purrr::set_names()    masks magrittr::set_names()
+✖ dplyr::summarise()    masks plyr::summarise()
+✖ dplyr::summarize()    masks plyr::summarize()
+✖ purrr::transpose()    masks data.table::transpose()
+> library(missForest)
+Loading required package: randomForest
+randomForest 4.6-14
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: ‘randomForest’
+
+The following object is masked from ‘package:ggplot2’:
+
+    margin
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+Loading required package: foreach
+
+Attaching package: ‘foreach’
+
+The following objects are masked from ‘package:purrr’:
+
+    accumulate, when
+
+Loading required package: itertools
+Loading required package: iterators
+> 
+> 
+> load("OPMord.Rdata") 
+> 
+> load("OPMcut.Rdata") 
+> 
+> load("hot.deck.ord.Rdata") 
+> 
+> 
+> # Load the framing data
+> framing <- read.csv("second_framing_experiment.csv")
+> 
+> # Select needed columns
+> framing <- framing[, c("tb_supp", "tb", "pid", "educ", "inc", "age", "race", "gender", "empl", "interest", "media", "part" )]
+> 
+> # Make all needed columns binary, i.e. numeric/integer (needed for hot.deck())
+> framing <- mutate(framing,
++                   C = ifelse(tb == "C", 1, 0),
++                   M_Supp = ifelse(tb == "M_Supp", 1, 0),
++                   P_Supp = ifelse(tb == "P_Supp", 1, 0),
++                   M_Opp = ifelse(tb == "M_Opp", 1, 0),
++                   P_Opp = ifelse(tb == "P_Opp", 1, 0),
++                   Dem = ifelse(pid == "Democrat", 1, 0),
++                   Rep = ifelse(pid == "Republican", 1, 0),
++                   Ind = ifelse(pid == "Independent", 1, 0),
++                   SthElse = ifelse(pid == "Something Else", 1, 0),
++                   Black = ifelse(race == "Black or African-American", 1, 0),
++                   Hisp = ifelse(race == "Hispanic", 1, 0),
++                   White = ifelse(race == "White", 1, 0),
++                   Female = ifelse(gender == "Female", 1, 0),
++                   Male = ifelse(gender == "Male", 1, 0)
++ )
+> 
+> set.seed(123)
+> framing <- sample_n(framing, 100)
+> 
+> 
+> # Select needed columns and save complete data under a different name
+> framing_true <- framing <- framing[, c("Dem", "Rep", "Ind", "educ", "inc", "age", "Female", "Male", "Black", "Hisp", "White")]
+> 
+> 
+> # variables to insert NAs into. Two are binary, one is nominal, one is continuous
+> add.nas.columns <- c("Dem", "Rep", "inc", "age") 
+> no.nas <- framing_true[,!names(framing_true) %in% add.nas.columns] # separate framing_true into columns with and without NAs
+> yes.nas <- framing_true[,names(framing_true) %in% add.nas.columns]
+> 
+> 
+> prop <- .05 # the proportions of NAs to insert (for the loop)
+> 
+> methods <- c("true", "hd.ord", "hd.norm", "na.omit")
+> 
+> mc.iterations <- 10000
+> #mc <- 1
+> 
+> #results.list <- rep(list(data.frame(matrix(NA, length(methods), length(add.nas.columns)+1))), mc.iterations)
+> 
+> #winner.list <- rep(list(data.frame(matrix(NA, length(prop), length(add.nas.columns)))), mc.iterations)
+> 
+> hot.deck.ord.frame.more.nas <- rep(list(list()), mc.iterations)
+> 
+> #hot.deck.ord.data.only <- rep(list(list()), mc.iterations)
+> #m <- round_any(prop*nrow(framing_true)*length(add.nas.columns), 10)
+> #means.hd <- data.frame(matrix(NA, m, length(add.nas.columns)))
+> #list.means.hd.norm <- list.means.hd.ord <- rep(list(means.hd), mc.iterations)
+> 
+> #na.omit <- data.frame(matrix(NA, mc.iterations, length(add.nas.columns)))
+> 
+> pb <- txtProgressBar(min = 1, max = mc.iterations, style = 3) # creates the percentage progress bar across the sampled numbers
+> 
+> 
+> for(mc in 1:mc.iterations){
++   
++   setTxtProgressBar(pb, mc) # loads the percentage progress bar into the loop
++   
++   framing.nas <- cbind(no.nas, prodNA(yes.nas, noNA = prop)) # combine columns with NAs and columns without NAs
++   na.rows.cols <- which(is.na(framing.nas), arr.ind=TRUE) # which rows and columns have NAs
++   m <- na.rows.cols %>% nrow() # how many rows have NAs
++ 
++   OPMord.frame.more.nas <- OPMord(data = na.omit(framing.nas), dv = "educ", evs = c("Dem", "Rep", "Ind", "inc", "age", "Female", "Male", "Black", "Hisp", "White")) # run ordinal polr() function on data
++ 
++   OPMcut.frame.more.nas <- OPMcut(data = framing.nas, dv = "educ", OPMordOut = OPMord.frame.more.nas) # run function that replaces ordinal values with mid-cutpoints
++ 
++   hot.deck.ord.frame.more.nas[[mc]] <- hot.deck.ord(OPMcut.frame.more.nas, m = m, ord = "educ", sdCutoff = sd(na.omit(framing.nas$educ)), method = "best.cell") # run hot.deck.ord(), which scales the ordinal variable
++   
++ #  hot.deck.ord.data.only[[mc]] <- hot.deck.ord.frame.more.nas$data
++ 
++   #hot.deck.norm.frame.more.nas <- hot.deck(OPMcut.frame.more.nas, m = m, sdCutoff = sd(na.omit(framing.nas$educ)), method = "best.cell") # run normal hot.deck()
++ 
++ }
+  |                                                                              |                                                                      |   0%
+Attaching package: ‘MASS’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%Error in `[<-.data.frame`(`*tmp*`, , paste(dv, ".new", sep = ""), value = c(5L,  : 
+  replacement has 80 rows, data has 81
+Calls: OPMord -> [<- -> [<-.data.frame
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
+Execution halted

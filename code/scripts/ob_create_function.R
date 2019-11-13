@@ -6,6 +6,10 @@
 OPMord <- function(data, dv, evs){
   library(MASS)
   library(data.table)
+    # save original data with all NAs
+  data.full.nas <- data
+    # use na.omit version of the data in the function
+  data <- na.omit(data)
     # turn dv into factor variable if it isn't one
   if(is.factor(data[, dv]) == FALSE){
     data[, dv] <- as.factor(data[, dv])
@@ -41,7 +45,7 @@ OPMord <- function(data, dv, evs){
                            plr.out$lp <= int.df$Values[q+1], levels(data[,dv])[q+1], NA)
   }
     # assign all cases that fall above the highest intercept, put in last column
-  df.cases[,length(levels(data[,dv]))] <- ifelse(plr.out$lp > int.df$Values[length(levels(data[,dv]))],
+  df.cases[,length(levels(data[,dv]))] <- ifelse(plr.out$lp > int.df$Values[length(levels(data[,dv]))-1],
                                                      levels(data[,dv])[length(levels(data[,dv]))], NA)
     # combine all columns, omit NAs, add column to df
   data[,paste(dv, ".new", sep = "")] <- factor(c(na.omit(c(t(df.cases)))))   
@@ -65,8 +69,9 @@ OPMord <- function(data, dv, evs){
                                                levels = unique(data[,paste(dv, ".new", sep = "")][order(data[,paste(dv, ".new.num", sep = "")])]))
     # make numbers for .new.num column start at 1, based on newly refactored .new levels
   data[,paste(dv, ".new.num", sep = "")] <- as.numeric(data[,paste(dv, ".new", sep = "")])
-    # have the function output data, plr.out, plr.df, int.df, the new education levels, and the new numeric education levels
-  output <- list("data" = data,
+    # have the function output data with all NAs, na.omit version of data, plr.out, plr.df, int.df, the new education levels, and the new numeric education levels
+  output <- list("data.full.nas" = data.full.nas,
+                 "data.short.na.omit" = data,
                  "plr.out" = plr.out,
                  "plr.df" = plr.df, 
                  "int.df" = int.df,
