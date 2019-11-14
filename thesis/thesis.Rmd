@@ -21,7 +21,7 @@ output:
 #  eagledown::dissertation_gitbook: default
 #  eagledown::dissertation_word: default
 #  eagledown::dissertation_epub: default
-bibliography: /Users/simonheuberger/Dropbox/work/bib-files/all-together.bib
+bibliography: ../../../bib-files/all-together.bib
 csl: sources/apa.csl
 ---
 
@@ -53,5 +53,6 @@ require(gridExtra)
 library(blockTools)
 library(randomizr)
 library(forcats)
+
 ```
 

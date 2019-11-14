@@ -65,7 +65,7 @@ methods <- c("hd.ord", "hd.norm", "na.omit")
 
 
 
-mc.iterations <- 10
+mc.iterations <- 8
 
 OPMord.frame.more.nas <- list()
 #OPMord.frame.more.nas <- list()
@@ -181,8 +181,8 @@ for(n in 1:length(OPMord.frame)){
 
 }
 
-saveRDS(rep.list, file = paste0("rep.", nrow(framing_true), "n.", length(OPMord.frame), "it.rds"))
-saveRDS(inc.list, file = paste0("inc.", nrow(framing_true), "n.", length(OPMord.frame), "it.rds"))
+saveRDS(rep.list, file = paste0("rep.", nrow(framing_true), "n.", length(OPMord.frame), "it.", prop*100, "perc.rds"))
+saveRDS(inc.list, file = paste0("inc.", nrow(framing_true), "n.", length(OPMord.frame), "it.", prop*100, "perc.rds"))
 
 
 # # Save files
