@@ -65,7 +65,7 @@ methods <- c("hd.ord", "hd.norm", "na.omit")
 
 
 
-mc.iterations <- 8
+mc.iterations <- 12500
 
 OPMord.frame.more.nas <- list()
 #OPMord.frame.more.nas <- list()
@@ -92,7 +92,6 @@ for(mc in 1:mc.iterations){
   
 }
 
-
 empty <- c()
 
 for (i in 1:mc.iterations){
@@ -101,7 +100,11 @@ for (i in 1:mc.iterations){
 
 table(empty)
 
-OPMord.frame <- list.remove(OPMord.frame.more.nas, which(empty == 5))
+  if(all.equal(length(empty), sum(empty == length(unique(framing_true$educ))-1)) != TRUE){
+    OPMord.frame <- list.remove(OPMord.frame.more.nas, which(empty != length(unique(framing_true$educ))-1))
+  }else{
+    OPMord.frame <- OPMord.frame.more.nas
+  }
 
 # blub <- c()
 # for (i in 1:length(OPMord.frame)){

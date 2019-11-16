@@ -1,4 +1,4 @@
-\input{/Users/simonheuberger/Dropbox/work/latex/preamble}
+\input{\string~"/Insync/Google Drive/templates/preamble"}
 
 \title{Ordinal Variables and Missing Data}
 
@@ -19,31 +19,68 @@
 
 \section*{Code}
 	\begin{coi}
-		\item Currently \texttt{MCAR} with \texttt{prodNA}
+		\item My code functions for one variable with NAs, for 10,000 iterations
 			\begin{coi}
-				\item \texttt{prodNA} adds a proportion of NAs
-				\item My code functions for one variable with NAs, for 10,000 iterations
-					\begin{coi}
-						\item I have saved results for \texttt{inc}, \texttt{age}, \texttt{Dem}, \texttt{Rep} for \texttt{hd.ord} and \texttt{hd.norm}
-						\item For all 4, \texttt{na.omit} performs the best. This isn't surprising, since deleting observations with missing values shouldn't be a problem with MCAR
-					\end{coi}
-				\item My code does not function When run for several variables with NAs
-					\begin{coi}
-						\item It throws up a replacement error somewhere down the line when run for 10,000 iterations. It's never in the same place, so it must be something random
-					\end{coi}
+				\item I have saved results for \texttt{inc}, \texttt{age}, \texttt{Dem}, \texttt{Rep} for \texttt{hd.ord} and \texttt{hd.norm}
+				\item For all 4, \texttt{na.omit} performs the best. This isn't surprising, since deleting observations with missing values shouldn't be a problem with MCAR
+			\end{coi}
+		\item My code does not function When run for several variables with NAs
+			\begin{coi}
+				\item It throws up a replacement error somewhere down the line when run for 10,000 iterations. It's never in the same place, so it must be something random
 				\item Always the same: \# of NAs overall. Not always the same between some runs: \# of NAs per column, \# of rows with NAs
-				\item \hl{Find out why my code doesn't work for NAs in several variables}
+				\item Find out why my code doesn't work for NAs in several variables
 					\begin{coi}
-						\item Fill in the \texttt{else{}} sections so that I don't save anything to dfs
+						\item The number of NAs inserted wasn't actually the issue. It was in the \texttt{OPMord} code
+						\item I painfully ran 1,000 iterations for two variables, gradually adding one line at a time to the function. I discovered the error was where I assign values to \texttt{df.cases}, specifically where the columns are all combined and the resulting vector added to the data as \texttt{educ.new}
+						\item I saved the vector to an empty vector, ran everything for 1,000 iterations, then looked at the vectors and the corresponding versions of \texttt{df.cases}
+						\item There were rows with all NAs in \texttt{df.cases}, which makes the vector shorter than the data, which means it can't be assigned to it as a column. I reran the \texttt{df.cases} creation code to find the culprit
+						\item I had overlooked that \texttt{int.df\$Values} has one value fewer than there are variable levels, since it lists cutpoints between the levels. For 6 levels, I had assigned \texttt{int.df\$length(levels(...))}, which picks the 6th value of \texttt{int.df\$Values} -- but it only goes to 5. I had to add \texttt{-1}. Now it's working
 					\end{coi}
 			\end{coi}
-		\item \hl{Test \texttt{mice} \texttt{amputate()}}
+		\item Method to insert NAs
 			\begin{coi}
-				\item It has \texttt{MCAR} and \texttt{MAR} options, which would be awesome
-				\item Testing is a bit annoying, since it doesn't work on just one variable
+				\item I tried \texttt{prodNA}, which works for \texttt{MCAR} but gives me nothing for \texttt{MAR}. And \texttt{MCAR} works well for \texttt{na.omit}, since by definition it's a random sample of missing data, which doesn't matter 
+				\item Use \texttt{mice} \texttt{ampute()}
+					\begin{coi}
+						\item It has \texttt{MCAR} and \texttt{MAR} options. \texttt{MAR} is what I need
+						\item It doesn't work on just one variable; it needs at least two
+						\item \texttt{ampute()} works very well
+					\end{coi}
 			\end{coi}
-		\item Increase proportion of NAs
+		\item With the code adjusted (\texttt{-1}), \texttt{OPMord} now works. However, some of the \texttt{int.df}s don't have all the education levels: \texttt{int.df} with all levels has 6 rows (one fewer than the levels, since each row shows a cutoff), but some have 5. This means \texttt{OPMcut} now doesn't work
+			\begin{coi}
+				\item I could adjust \texttt{OPMcut} to work with fewer levels, but then I would be, in the end, taking means of most data with all levels and some data with fewer levels. That's problematic
+				\item It's better to discard the iterations where \texttt{int.df} has 5 rows after \texttt{OPMord} has run and then continue with the other functions. I set the code up to do that. However, after about 40 percent of running 12,500 iterations, there was an error: I hadn't factored in that the \texttt{int.df}s could also have fewer rows than that. A few of them had 4 rows, which caused the error. I adjusted the code to now discard the iterations where \texttt{int.df} has anything other than 6 rows
+			\end{coi}
+		\item The data is currently running for 12,500 iterations, 80 percent NAs, \texttt{Rep} and \texttt{inc}, \texttt{hot.deck.ord}, \texttt{hot.deck.norm}, \texttt{na.omit}
+		\item Add more variables/NAs
+			\begin{coi}
+				\item \hl{Add every demographic to the data that I still have}: Age(numeric), employment (5 levels), ideology (liberal, conservative, neither), following public affairs (ordinal, 4 levels), media interest (numeric, accumulative count of activities), participation (numeric, accumulative count of activities)
+				\item \hl{Add NAs to 5 of the variables}
+			\end{coi}
+		\item More methods
+			\begin{coi}
+				\item \hl{Include mice imputation}
+			\end{coi}
+		\item What to run \texttt{hot.deck.norm} on
+			\begin{coi}
+				\item I currently run it on the data with the cutpoints as the education values
+				\item \hl{Run it on the original education values as well}
+			\end{coi} 
+		\item Percentages of NAs
+			\begin{coi}
+				\item I'm currently using 80 percent. Jeff used 20, 50, and 80
+				\item \hl{Expand to 20 and 50 percent NAs when suitable}
+			\end{coi}
+		\item \texttt{sdCutoff} in \texttt{hot.deck.norm}
+			\begin{coi}
+				\item The default of \texttt{sdCutoff} is set to 10. Education has 7 levels, so it won't be considered continuous and thus won't be scaled down. This holds for either data-- the original one or the one with the cutpoints. A lot of the variable data will be then be ignored since it doesn't fall in the region of 0 or 1 
+				\item This feels like a tuning parameter to Jeff. \hl{Try shorter test runs with different cutoffs, to possibly rule out ridiculous choices}
+			\end{coi} 
 	\end{coi}
+
+
+
 
 \section*{Theory}
 	\begin{coi}
