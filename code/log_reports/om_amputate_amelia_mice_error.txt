@@ -1,0 +1,514 @@
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> 
+> library(plyr)
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:plyr’:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise,
+    summarize
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> library(hot.deck)
+Loading required package: mice
+Loading required package: lattice
+
+Attaching package: ‘mice’
+
+The following objects are masked from ‘package:base’:
+
+    cbind, rbind
+
+
+Attaching package: ‘hot.deck’
+
+The following object is masked from ‘package:plyr’:
+
+    is.discrete
+
+> library(magrittr)
+> library(data.table)
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+> library(tidyverse)
+── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
+✔ ggplot2 3.2.1     ✔ readr   1.3.1
+✔ tibble  2.1.3     ✔ purrr   0.3.2
+✔ tidyr   0.8.3     ✔ stringr 1.4.0
+✔ ggplot2 3.2.1     ✔ forcats 0.4.0
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::arrange()      masks plyr::arrange()
+✖ data.table::between() masks dplyr::between()
+✖ purrr::compact()      masks plyr::compact()
+✖ tidyr::complete()     masks mice::complete()
+✖ dplyr::count()        masks plyr::count()
+✖ tidyr::extract()      masks magrittr::extract()
+✖ dplyr::failwith()     masks plyr::failwith()
+✖ dplyr::filter()       masks stats::filter()
+✖ data.table::first()   masks dplyr::first()
+✖ dplyr::id()           masks plyr::id()
+✖ dplyr::lag()          masks stats::lag()
+✖ data.table::last()    masks dplyr::last()
+✖ dplyr::mutate()       masks plyr::mutate()
+✖ dplyr::rename()       masks plyr::rename()
+✖ purrr::set_names()    masks magrittr::set_names()
+✖ dplyr::summarise()    masks plyr::summarise()
+✖ dplyr::summarize()    masks plyr::summarize()
+✖ purrr::transpose()    masks data.table::transpose()
+> library(mice)
+> library(rlist)
+> library(Amelia)
+Loading required package: Rcpp
+## 
+## Amelia II: Multiple Imputation
+## (Version 1.7.5, built: 2018-05-07)
+## Copyright (C) 2005-2019 James Honaker, Gary King and Matthew Blackwell
+## Refer to http://gking.harvard.edu/amelia/ for more information
+## 
+> 
+> load("OPMord.Rdata") 
+> load("OPMcut.Rdata") 
+> load("hot.deck.ord.Rdata") 
+> 
+> # Load the framing data
+> framing <- read.csv("second_framing_experiment.csv")
+> 
+> # Select needed columns
+> framing <- framing[, c("tb_supp", "tb", "pid", "educ", "inc", "age", "race", "gender", "empl", "ideol", "interest", "media", "part" )]
+> # following public affairs (ordinal, 4 levels), media interest (numeric, accumulative count of activities), participation (numeric, accumulative count of activities)
+> 
+> # Make all needed columns binary, i.e. numeric/integer (needed for hot.deck())
+> framing <- mutate(framing,
++                   Dem = ifelse(pid == "Democrat", 1, 0),
++                   Rep = ifelse(pid == "Republican", 1, 0),
++                   Ind = ifelse(pid == "Independent", 1, 0),
++                   Cons = ifelse(ideol == "Conservative", 1, 0),
++                   Lib = ifelse(ideol == "Liberal", 1, 0),
++                   Black = ifelse(race == "Black or African-American", 1, 0),
++                   Hisp = ifelse(race == "Hispanic", 1, 0),
++                   White = ifelse(race == "White", 1, 0),
++                   Arab = ifelse(race == "Arabic", 1, 0),
++                   Asian = ifelse(race == "Asian", 1, 0),
++                   Female = ifelse(gender == "Female", 1, 0),
++                   Male = ifelse(gender == "Male", 1, 0),
++                   Empl = ifelse(empl == "Employed full time outside of the home" | empl == "Employed part time outside of the home", 1, 0),
++                   Unempl = ifelse(empl == "Unemployed", 1, 0),
++                   Ret = ifelse(empl == "Retired", 1, 0),
++                   Stud = ifelse(empl == "Student", 1, 0)
++ )
+> 
+> # Select needed columns and save complete data under a different name
+> # all.cols <- c("Rep", "Cons", "White", "Female", "Empl", "interest", "media", "part", "inc", "age")
+> all.cols <- c("Dem", "Rep", "Ind", "Cons", "Lib", "Black", "Hisp", "White", "Asian", "Female", "Male", "Empl", "Unempl", "Ret", "interest", "media", "part", "inc", "age")
+> framing_true <- framing <- framing[, c(all.cols, "educ")]
+> 
+> add.nas.columns <- c("Rep", "inc", "age", "White", "Female", "interest") # variables to insert NAs into
+> # add.nas.columns <- c("Rep", "inc", "age", "White", "Female") # variables to insert NAs into
+> no.nas <- framing_true[,!names(framing_true) %in% add.nas.columns] # separate framing_true into columns with and without NAs
+> yes.nas <- framing_true[,names(framing_true) %in% add.nas.columns]
+> 
+> prop <- .8 # the proportions of NAs to insert
+> methods <- c("hd.ord", "hd.norm.orig", "amelia", "mice", "na.omit")
+> # methods <- c("hd.ord", "hd.norm.cut", "hd.norm.orig", "amelia", "mice", "na.omit")
+> 
+> true <- sapply(framing_true[, add.nas.columns], mean) # true variable means
+> OPMord.frame <- list()
+> 
+> mc.iterations <- 1200
+> pb <- txtProgressBar(min = 1, max = mc.iterations, style = 3) # creates the percentage progress bar across the sampled numbers
+> 
+>   for(mc in 1:mc.iterations){
++     setTxtProgressBar(pb, mc) # loads the percentage progress bar into the loop
++     framing.nas <- cbind(no.nas, ampute(yes.nas, prop = prop, mech = "MAR")$amp) # combine columns with NAs and columns without NAs
++     OPMord.frame[[mc]] <- OPMord(data = framing.nas, dv = "educ", evs = all.cols) # run ordinal polr() function on data
++     
++       if(OPMord.frame[[mc]]$int.df %>% nrow() < framing_true$educ %>% unique() %>% length - 1){
++         print("Fewer than original levels") # prints whenever int.df doesn't have all rows, which means it doesn't have all education levels (6 rows for 7 levels)
++       }
++   }
+  |                                                                              |                                                                      |   0%
+Attaching package: ‘MASS’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+[1] "Fewer than original levels"
+  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |=                                                                     |   2%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%[1] "Fewer than original levels"
+  |                                                                              |==                                                                    |   4%  |                                                                              |===                                                                   |   4%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |=====                                                                 |   7%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |=====                                                                 |   8%[1] "Fewer than original levels"
+  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%[1] "Fewer than original levels"
+  |                                                                              |=======                                                               |   9%[1] "Fewer than original levels"
+  |                                                                              |=======                                                               |  10%[1] "Fewer than original levels"
+  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%[1] "Fewer than original levels"
+  |                                                                              |========                                                              |  12%[1] "Fewer than original levels"
+  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%[1] "Fewer than original levels"
+  |                                                                              |=========                                                             |  14%  |                                                                              |==========                                                            |  14%[1] "Fewer than original levels"
+  |                                                                              |==========                                                            |  15%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |===========                                                           |  15%[1] "Fewer than original levels"
+  |                                                                              |===========                                                           |  16%[1] "Fewer than original levels"
+  |                                                                              |============                                                          |  16%[1] "Fewer than original levels"
+  |                                                                              |============                                                          |  17%[1] "Fewer than original levels"
+  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  18%[1] "Fewer than original levels"
+  |                                                                              |=============                                                         |  19%[1] "Fewer than original levels"
+  |                                                                              |==============                                                        |  19%[1] "Fewer than original levels"
+  |                                                                              |==============                                                        |  20%[1] "Fewer than original levels"
+  |                                                                              |==============                                                        |  21%[1] "Fewer than original levels"
+  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  22%  |                                                                              |================                                                      |  23%  |                                                                              |================                                                      |  24%  |                                                                              |=================                                                     |  24%  |                                                                              |=================                                                     |  25%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |===================                                                   |  28%  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%[1] "Fewer than original levels"
+  |                                                                              |=====================                                                 |  29%[1] "Fewer than original levels"
+  |                                                                              |=====================                                                 |  30%[1] "Fewer than original levels"
+  |                                                                              |=====================                                                 |  31%  |                                                                              |======================                                                |  31%  |                                                                              |======================                                                |  32%[1] "Fewer than original levels"
+  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |=======================                                               |  34%  |                                                                              |========================                                              |  34%  |                                                                              |========================                                              |  35%  |                                                                              |=========================                                             |  35%  |                                                                              |=========================                                             |  36%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |==========================                                            |  36%[1] "Fewer than original levels"
+  |                                                                              |==========================                                            |  37%[1] "Fewer than original levels"
+  |                                                                              |==========================                                            |  38%[1] "Fewer than original levels"
+  |                                                                              |===========================                                           |  38%[1] "Fewer than original levels"
+  |                                                                              |===========================                                           |  39%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |============================                                          |  39%  |                                                                              |============================                                          |  40%  |                                                                              |============================                                          |  41%[1] "Fewer than original levels"
+  |                                                                              |=============================                                         |  41%[1] "Fewer than original levels"
+  |                                                                              |=============================                                         |  42%[1] "Fewer than original levels"
+  |                                                                              |==============================                                        |  42%[1] "Fewer than original levels"
+  |                                                                              |==============================                                        |  43%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |==============================                                        |  44%  |                                                                              |===============================                                       |  44%[1] "Fewer than original levels"
+  |                                                                              |===============================                                       |  45%[1] "Fewer than original levels"
+  |                                                                              |================================                                      |  45%[1] "Fewer than original levels"
+  |                                                                              |================================                                      |  46%[1] "Fewer than original levels"
+  |                                                                              |=================================                                     |  46%  |                                                                              |=================================                                     |  47%[1] "Fewer than original levels"
+  |                                                                              |=================================                                     |  48%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |===================================                                   |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |===================================                                   |  51%  |                                                                              |====================================                                  |  51%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  52%  |                                                                              |=====================================                                 |  53%[1] "Fewer than original levels"
+  |                                                                              |=====================================                                 |  54%  |                                                                              |======================================                                |  54%[1] "Fewer than original levels"
+  |                                                                              |======================================                                |  55%[1] "Fewer than original levels"
+  |                                                                              |=======================================                               |  55%[1] "Fewer than original levels"
+  |                                                                              |=======================================                               |  56%[1] "Fewer than original levels"
+  |                                                                              |========================================                              |  56%  |                                                                              |========================================                              |  57%  |                                                                              |========================================                              |  58%  |                                                                              |=========================================                             |  58%  |                                                                              |=========================================                             |  59%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |==========================================                            |  59%[1] "Fewer than original levels"
+  |                                                                              |==========================================                            |  60%[1] "Fewer than original levels"
+  |                                                                              |==========================================                            |  61%[1] "Fewer than original levels"
+  |                                                                              |===========================================                           |  61%  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  62%[1] "Fewer than original levels"
+  |                                                                              |============================================                          |  63%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |============================================                          |  64%[1] "Fewer than original levels"
+  |                                                                              |=============================================                         |  64%  |                                                                              |=============================================                         |  65%[1] "Fewer than original levels"
+  |                                                                              |==============================================                        |  65%[1] "Fewer than original levels"
+  |                                                                              |==============================================                        |  66%[1] "Fewer than original levels"
+  |                                                                              |===============================================                       |  66%  |                                                                              |===============================================                       |  67%[1] "Fewer than original levels"
+  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |=================================================                     |  69%  |                                                                              |=================================================                     |  70%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |=================================================                     |  71%  |                                                                              |==================================================                    |  71%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |==================================================                    |  72%[1] "Fewer than original levels"
+  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |===================================================                   |  74%[1] "Fewer than original levels"
+  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%  |                                                                              |=====================================================                 |  75%[1] "Fewer than original levels"
+  |                                                                              |=====================================================                 |  76%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |======================================================                |  76%  |                                                                              |======================================================                |  77%[1] "Fewer than original levels"
+  |                                                                              |======================================================                |  78%[1] "Fewer than original levels"
+  |                                                                              |=======================================================               |  78%[1] "Fewer than original levels"
+  |                                                                              |=======================================================               |  79%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |========================================================              |  79%  |                                                                              |========================================================              |  80%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |========================================================              |  81%  |                                                                              |=========================================================             |  81%[1] "Fewer than original levels"
+  |                                                                              |=========================================================             |  82%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |==========================================================            |  84%  |                                                                              |===========================================================           |  84%[1] "Fewer than original levels"
+  |                                                                              |===========================================================           |  85%[1] "Fewer than original levels"
+  |                                                                              |============================================================          |  85%  |                                                                              |============================================================          |  86%[1] "Fewer than original levels"
+  |                                                                              |=============================================================         |  86%[1] "Fewer than original levels"
+  |                                                                              |=============================================================         |  87%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  88%[1] "Fewer than original levels"
+  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  89%  |                                                                              |===============================================================       |  90%[1] "Fewer than original levels"
+  |                                                                              |===============================================================       |  91%[1] "Fewer than original levels"
+  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%[1] "Fewer than original levels"
+  |                                                                              |=================================================================     |  92%[1] "Fewer than original levels"
+  |                                                                              |=================================================================     |  93%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  95%  |                                                                              |===================================================================   |  96%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |====================================================================  |  96%[1] "Fewer than original levels"
+  |                                                                              |====================================================================  |  97%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |====================================================================  |  98%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |===================================================================== |  98%[1] "Fewer than original levels"
+  |                                                                              |===================================================================== |  99%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+  |                                                                              |======================================================================|  99%  |                                                                              |======================================================================| 100%[1] "Fewer than original levels"
+[1] "Fewer than original levels"
+There were 50 or more warnings (use warnings() to see the first 50)
+> 
+> 
+> 
+> 
+> empty <- c() # empty vector to store data iterations in
+> 
+>   for (i in 1:mc.iterations){
++     empty[i] <- OPMord.frame[[i]]$int.df %>% nrow() # extract number of rows of int.df
++   }
+> 
+> table(empty) # show how many int.dfs don't have all education levels
+empty
+   5    6 
+ 145 1055 
+> 
+>   # remove all data that don't have all education levels and overwrite output
+>   if(all.equal(length(empty), sum(empty == length(unique(framing_true$educ))-1)) != TRUE){
++     OPMord.frame <- list.remove(OPMord.frame, which(empty != length(unique(framing_true$educ))-1)) 
++   }else{
++     OPMord.frame <- OPMord.frame
++   }
+> 
+> results.list <- rep(list(rep(list(c()), length(methods))), length(add.nas.columns)) # empty container to store results (list of lists of vectors)
+> names(results.list) <- add.nas.columns # name first list after variables with NAs
+> 
+>   for (t in 1:length(add.nas.columns)){
++     names(results.list[[t]]) <- methods # name second lists after methods
++   }
+> 
+> 
+> 
+> 
+> 
+> pb <- txtProgressBar(min = 1, max = length(OPMord.frame), style = 3) # creates the percentage progress bar across the sampled numbers
+> 
+>   for(n in 1:length(OPMord.frame)){
++     setTxtProgressBar(pb, n) # loads the percentage progress bar into the loop
++     OPMcut.frame <- OPMcut(data = OPMord.frame[[n]]$data.full.nas, dv = "educ", OPMordOut = OPMord.frame[[n]]) # run function that replaces ordinal values with mid-cutpoints
++ 
++     na.rows.cols <- which(is.na(OPMord.frame[[n]]$data.full.nas), arr.ind=TRUE) # which rows and columns have NAs
++     m <- na.rows.cols %>% nrow() # how many rows have NAs
++ 
++     hd.ord.frame <- hot.deck.ord(OPMcut.frame, m = m, ord = "educ", sdCutoff = sd(OPMord.frame[[n]]$data.full.nas$educ), method = "best.cell") # run hot.deck.ord() on OPMcut education values, which scales the ordinal variable
++     # hd.norm.cut.frame <- hot.deck(OPMcut.frame, m = m, sdCutoff = sd(OPMord.frame[[n]]$data.full.nas$educ), method = "best.cell") # run normal hot.deck() on OPMcut education values
++     hd.norm.orig.frame <- hot.deck(OPMord.frame[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.frame[[n]]$data.full.nas$educ), method = "best.cell") # run normal hot.deck() on original education values
++     am.orig.frame <- amelia(OPMord.frame[[n]]$data.full.nas, m = m, p2s = 0) # run amelia on original education values (ps2 sets the console printing)
++     mice.orig.frame <- mice(OPMord.frame[[n]]$data.full.nas, m = m, print = FALSE) # run mice on original education values (print sets the console printing)
++   
++     # means.mice.orig <- means.am.orig <- means.hd.norm.cut <- means.hd.norm.orig <- means.hd.ord <- data.frame(matrix(NA, m, length(add.nas.columns))) # empty dfs to store variable means
++     means.mice.orig <- means.am.orig <- means.hd.norm.orig <- means.hd.ord <- data.frame(matrix(NA, m, length(add.nas.columns))) # empty dfs to store variable means
++     na.cols <- na.rows.cols %>% .[,2] %>% unique() # which column numbers have NAs in them
++   
++       for (x in 1:length(na.cols)){
++         for (i in 1:m){
++           means.hd.ord[i,x] <- hd.ord.frame$data[[i]] %>% .[, add.nas.columns[x]] %>% mean()
++           # means.hd.norm.cut[i,x] <- hd.norm.cut.frame$data[[i]] %>% .[, add.nas.columns[x]] %>% mean()
++           means.hd.norm.orig[i,x] <- hd.norm.orig.frame$data[[i]] %>% .[, add.nas.columns[x]] %>% mean()
++           means.am.orig[i,x] <- am.orig.frame$imputations[[i]] %>% .[, add.nas.columns[x]] %>% mean()
++           means.mice.orig[i,x] <- mice::complete(mice.orig.frame, action = i) %>% .[, add.nas.columns[x]] %>% mean()
++         }
++       }
++ 
++     hd.ord <- sapply(means.hd.ord, mean)
++     # hd.norm.cut <- sapply(means.hd.norm.cut, mean)
++     hd.norm.orig <- sapply(means.hd.norm.orig, mean)
++     am.orig <- sapply(means.am.orig, mean)
++     mice.orig <- sapply(means.mice.orig, mean)
++     na.omit <- sapply(OPMord.frame[[n]]$data.short.na.omit[, add.nas.columns], mean) # na.omit variable means
++     # names(mice.orig) <- names(am.orig) <- names(hd.ord) <- names(hd.norm.cut) <- names(hd.norm.orig) <- names(na.omit) <- add.nas.columns
++     names(mice.orig) <- names(am.orig) <- names(hd.ord) <- names(hd.norm.orig) <- names(na.omit) <- add.nas.columns
++   
++       for (ss in 1:length(add.nas.columns)){
++         results.list[[ss]][["hd.ord"]][n] <- hd.ord[ss]
++         # results.list[[ss]][["hd.norm.cut"]][n] <- hd.norm.cut[ss]
++         results.list[[ss]][["hd.norm.orig"]][n] <- hd.norm.orig[ss]
++         results.list[[ss]][["amelia"]][n] <- am.orig[ss]
++         results.list[[ss]][["mice"]][n] <- mice.orig[ss]
++         results.list[[ss]][["na.omit"]][n] <- na.omit[ss]
++       }
++   
++   }
+  |                                                                              |                                                                      |   0%  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |==                                                                    |   4%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+error: inv_sympd(): matrix is singular or not positive definite
+
+
+The resulting variance matrix was not invertible.   Please check your data for highly collinear variables.
+
+Error in .[, add.nas.columns[x]] : incorrect number of dimensions
+Calls: %>% ... withVisible -> eval -> eval -> _fseq -> freduce -> <Anonymous>
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
+Execution halted
