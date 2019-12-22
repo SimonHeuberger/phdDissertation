@@ -53,13 +53,13 @@ framing_true <- framing_true[,-c(coll.var)]
 all.evs <- colnames(framing_true)[-which(colnames(framing_true) == "educ")]                         
 
 # variables to insert NAs into
-add.nas.columns <- c("Dem", "inc", "age", "White", "Female", "interest")                            
+add.nas.columns <- c("Dem", "inc", "age", "Female", "interest")                            
 # separate framing_true into columns with and without NAs
 no.nas <- framing_true[,!names(framing_true) %in% add.nas.columns]                                  
 yes.nas <- framing_true[,names(framing_true) %in% add.nas.columns]
 
 # the proportions of NAs to insert
-prop <- .8     
+prop <- .2
 # number of imputations (https://stats.stackexchange.com/questions/219013/how-do-the-number-of-imputations-the-maximum-iterations-affect-accuracy-in-mul)
 m <- prop*100
 
@@ -69,53 +69,81 @@ methods <- c("hd.ord", "hd.norm.orig", "amelia", "mice", "na.omit")
 
 # true variable means
 true <- sapply(framing_true[, add.nas.columns], mean)
+
+# specifications for ampute()
+mech = "MAR"
+bycases = FALSE
+cont = FALSE
+  if(cont == TRUE){
+    type = "MID"
+  }else{
+    type = NULL
+  }
 }
 
 
 
-calculation <- FALSE
+calculation <- TRUE
 
 if(calculation == TRUE){
 
-# minimum number of rows int.df needs to have (see below) 
-min.row <- framing_true$educ %>% unique() %>% length-1
 # empty list to store OPMord output
 OPMord.frame <- list()
-mc.iterations <- 12500
+# empty list to store ampute() output
+list.ampute <- list()
+# the complete number of education levels
+min.lev <- framing_true$educ %>% unique() %>% length()
+# number of iterations
+mc.iterations <- 10
 # set up the percentage progress bar across the sampled numbers
 pb <- txtProgressBar(min = 1, max = mc.iterations, style = 3)                                       
+
+
 
   for(mc in 1:mc.iterations){
     # load the percentage progress bar into the loop
     setTxtProgressBar(pb, mc)                                                                       
     # combine columns with NAs and columns without NAs
-    framing.nas <- cbind(no.nas, ampute(yes.nas, prop = prop, mech = "MAR")$amp)                    
+
+    list.ampute[[mc]] <- ampute(yes.nas, prop = prop, mech = mech, bycases = bycases, cont = cont, type = type)
+    framing.nas <- cbind(no.nas, list.ampute[[mc]]$amp)
+    # framing.nas <- cbind(no.nas, ampute(yes.nas, prop = prop, mech = "MAR")$amp)
+
     # run ordinal polr() function on data
     OPMord.frame[[mc]] <- OPMord(data = framing.nas, dv = "educ", evs = all.evs)                    
 
       # print whenever int.df doesn't have all rows, which means it doesn't have all education levels (6 rows for 7 levels)
-      if(OPMord.frame[[mc]]$int.df %>% nrow() < min.row){                                           
+      if(OPMord.frame[[mc]]$data.short.na.omit %>% .$educ %>% unique() %>% length() < min.lev){                                           
         print("Fewer than original levels")                                                         
       }                                                                                       
   }
 
 
-# empty vector to store numbers rows of int.dfs
 empty <- c()
-  # extract numbers of rows of int.dfs
-  for (i in 1:mc.iterations){                                                                       
-    empty[i] <- OPMord.frame[[i]]$int.df %>% nrow()                                           
-  }
-# show how many int.dfs don't have all education levels
+for (i in 1:mc.iterations){                                                                       
+  empty[i] <- OPMord.frame[[i]]$data.short.na.omit %>% .$educ %>% unique() %>% length()
+}
+# show how many imputed data sets don't have all education levels
 table(empty)                                                                                        
 
 
-  # remove all data that don't have all education levels and overwrite output
-  if(all.equal(length(empty), sum(empty == min.row)) != TRUE){                                      
-    OPMord.frame <- list.remove(OPMord.frame, which(empty != min.row)) 
-  }else{
-    OPMord.frame <- OPMord.frame
-  }
+# remove all data that don't have all education levels and overwrite output
+if(all.equal(length(empty), sum(empty == min.lev)) != TRUE){                                      
+  OPMord.frame <- list.remove(OPMord.frame, which(empty != min.lev))
+  list.ampute <- list.remove(list.ampute, which(empty != min.lev))
+}else{
+  OPMord.frame <- OPMord.frame
+  list.ampute <- list.ampute
+}
+
+OPMord.frame %>% length()
+list.ampute %>% length()
+
+# save all ampute output
+saveRDS(list.ampute, file = paste0("ampute.", length(add.nas.columns), "var.",
+                                      nrow(framing_true), "n.", length(OPMord.frame), "it.",
+                                      prop*100, "perc.rds"))
+
 
 # empty list of lists of vectors to store results
 results.list <- rep(list(rep(list(c()), length(methods))), length(add.nas.columns))                 
@@ -127,12 +155,14 @@ names(results.list) <- add.nas.columns
     names(results.list[[t]]) <- methods 
   }
 
-
+# empty list to store framing.nas data frames
+list.framing.nas <- list()
 
 pb <- txtProgressBar(min = 1, max = length(OPMord.frame), style = 3)
 
   for(n in 1:length(OPMord.frame)){
     setTxtProgressBar(pb, n)
+    list.framing.nas[[n]] <- OPMord.frame[[n]]$data.full.nas
     # replace ordinal values with mid-cutpoints
     OPMcut.frame <- OPMcut(data = OPMord.frame[[n]]$data.full.nas,                                  
                            dv = "educ", OPMordOut = OPMord.frame[[n]]) 
@@ -200,10 +230,16 @@ pb <- txtProgressBar(min = 1, max = length(OPMord.frame), style = 3)
   
   }
 
+
+# save results
 saveRDS(results.list, file = paste0("results.", length(add.nas.columns), "var.",
                                     nrow(framing_true), "n.", length(OPMord.frame), "it.",
                                     prop*100, "perc.rds"))
 
+# save framing.nas data frames
+saveRDS(list.framing.nas, file = paste0("framing.nas.", length(add.nas.columns), "var.",
+                                      nrow(framing_true), "n.", length(OPMord.frame), "it.",
+                                      prop*100, "perc.rds"))
 
 
 
@@ -255,6 +291,3 @@ results[,3:4] <- format(results[,3:4], scientific = FALSE)
 write.csv(results, paste0("results.", prop*100, ".perc.csv"))
 
 }
-
-
-
