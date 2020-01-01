@@ -177,7 +177,7 @@ This is the introduction.
 
 Survey experiments collect background information and attempt to uncover treatment effects on public opinion and/or behavior. In order to identify such potential effects, the treatment groups need to be comparable. All treatment groups need to look the same in every measure, i.e.~they must be balanced. This can be achieved through random assignment of participants to treatment groups. Randomization, i.e.~flipping a coin to decide which treatment group a participant is assigned to, probabilistically results in balance based on the Law of Large Numbers (Urdan, 2010). For small samples, however, it can lead to serious imbalance. It can easily be that the treatment groups will not look the same. This can leave experimental results in statistically murky waters (Fox, 2015; Imai, 2018; King, Keohane, \& Verba, 1994). In survey experiments, the overall sample size is often split across several treatment groups, which can exacerbate the problem. Chong \& Druckman (2007), for instance, split 869 participants in a framing experiment on urban growth over 17 treatment groups, which leads to an average of just over 50 participants per group. Randomization is unlikely to lead to balanced treatment groups of this size. Researchers need to employ statistical methods to obtain balanced groups here. Blocking, i.e.~arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries.
 
-Blocking depends on covariates. In political science, many covariates with high predictive power are categorical variables, i.e.~variables where the data can be divided into groups. These include interval (ordered and evenly spaced, e.g. \texttt{Income}) and ordinal (ordered and unevenly spaced, e.g. \texttt{Education}) variables. To block, these variables are often made numeric, e.g.~by assigning the numbers 1-4 to the variable categories. This is acceptable for interval variables as the evenly spaced numbers correspond to the evenly spaced categories. For ordinal variables, however, this can be problematic. An arbitrary evenly spaced string of numbers does not correspond to the unevenly spaced ordinal categories and may misrepresent the data. I propose an ordered probit threshold approach to circumvent this problem: This approach estimates an assumed underlying latent continuous structure underneath ordinal variables whose data-driven categories can then be used for blocking. By training a linear model on meaningful data, it creates numerical thresholds which partition the variable into regions corresponding to the ordinal categories and bins the observations between these thresholds according to the explanatory variables. These binned cases determine which of the original categories make sense given the underlying latent continuous structure. The result is a data-based and non-arbitrary re-estimated set of variable categories. Because of their data-driven estimation, these categories can be safely used for blocking. This approach allows researchers to block on ordinal variables in survey experiments without making unwarranted assumptions in terms of arbitrary numeric values whilst fully utilizing the ordinal information provided and respecting uneven spaces.
+Blocking depends on covariates. In political science, many covariates with high predictive power are categorical variables, i.e.~variables where the data can be divided into groups. These include interval (ordered and evenly spaced, e.g.~\texttt{Income}) and ordinal (ordered and unevenly spaced, e.g.~\texttt{Education}) variables. To block, these variables are often made numeric, e.g.~by assigning the numbers 1-4 to the variable categories. This is acceptable for interval variables as the evenly spaced numbers correspond to the evenly spaced categories. For ordinal variables, however, this can be problematic. An arbitrary evenly spaced string of numbers does not correspond to the unevenly spaced ordinal categories and may misrepresent the data. I propose an ordered probit threshold approach to circumvent this problem: This approach estimates an assumed underlying latent continuous structure underneath ordinal variables whose data-driven categories can then be used for blocking. By training a linear model on meaningful data, it creates numerical thresholds which partition the variable into regions corresponding to the ordinal categories and bins the observations between these thresholds according to the explanatory variables. These binned cases determine which of the original categories make sense given the underlying latent continuous structure. The result is a data-based and non-arbitrary re-estimated set of variable categories. Because of their data-driven estimation, these categories can be safely used for blocking. This approach allows researchers to block on ordinal variables in survey experiments without making unwarranted assumptions in terms of arbitrary numeric values whilst fully utilizing the ordinal information provided and respecting uneven spaces.
 
 The following sections provide a background on survey experiments and blocking, describe the key aspects of ordinal variables, and outline my proposed ordered probit approach. I then demonstrate the benefits and implications of this approach with external survey data and original data from an online survey experiment. Since there currently is no available tool to block in online survey experiments, I create my own survey environment in \texttt{shiny}, which will be described in more detail below.
 
@@ -389,7 +389,7 @@ Missing variables for a unit are estimated by predicted values from the regressi
 
 Recorded units in the sample are used to substitute values
 
-Hot deck (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (1981), Ford (1983), David et al. (1986)) (chapter 4, (Little \& Rubin, 2002))
+Hot deck (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (1981), Ford (1983), David et al.~(1986)) (chapter 4, (Little \& Rubin, 2002))
 -- by simple random sampling with replacement
 -- within adjustment cells
 -- nearest neighbor
@@ -674,7 +674,7 @@ Druckman, J., \& Bolsen, T. (2011). Framing, Motivated Reasoning, and Opinions A
 Druckman, J., Fein, J., \& Leeper, T. J. (2012). A Source of Bias in Public Opinion Stability. \emph{American Political Science Review}, \emph{106}(2), 430--454. \url{http://doi.org/10.1017/S0003055412000123}
 
 \leavevmode\hypertarget{ref-druckman_political_2018}{}%
-Druckman, J., Klar, S., Robison, J., \& Gubitz, S. (2018). Political Dynamics of Framing. In T. N. Ridout (Ed.), \emph{New Directions in Media and Politics} (2nd ed.). New York, NY: Routledge.
+Druckman, J., Klar, S., Robison, J., \& Gubitz, S. R. (2018). Political Dynamics of Framing. In T. N. Ridout (Ed.), \emph{New Directions in Media and Politics} (2nd ed.). New York, NY: Routledge.
 
 \leavevmode\hypertarget{ref-druckman_how_2013}{}%
 Druckman, J., Peterson, E., \& Slothuus, R. (2013). How Elite Partisan Polarization Affects Public Opinion Formation. \emph{American Political Science Review}, \emph{107}(1), 57--79.
@@ -800,7 +800,7 @@ Little, R. J., \& Rubin, D. (2002). \emph{Statistical Analysis with Missing Data
 Lucadamoa, A., \& Amenta, P. (2014). A new scaling proposal for handling ordinal categorical variables in co-inertia (-pls) analysis. \emph{Procedia Economics and Finance}, \emph{17}, 10--19.
 
 \leavevmode\hypertarget{ref-markaryan_2010_exact}{}%
-Markaryan, T., \& Rosenberger, W. (2010). Exact properties of efron's biased coin randomization procedure. \emph{The Annals of Statistics}, \emph{38}(3), 1546--1567.
+Markaryan, T., \& Rosenberger, W. F. (2010). Exact properties of efron's biased coin randomization procedure. \emph{The Annals of Statistics}, \emph{38}(3), 1546--1567.
 
 \leavevmode\hypertarget{ref-molenberghs_2007_missing}{}%
 Molenberghs, G., \& Kenward, M. G. (2007). \emph{Missing Data in Clinical Studies}. New York, NY: Wiley-Interscience.
@@ -845,7 +845,7 @@ Rees, P. H., \& Duke-Williams, O. (1997). Methods for Estimating Missing Data on
 Reilly, M. (1993). Data Analysis Using Hot Deck Multiple Imputation. \emph{The Statistician}, \emph{42}, 307--13.
 
 \leavevmode\hypertarget{ref-rosenberger_2002_randomization}{}%
-Rosenberger, W., \& Lachin, J. (2002). \emph{Randomization in clinical trials}. New York, NY: John Wiley \& Sons.
+Rosenberger, W. F., \& Lachin, J. (2002). \emph{Randomization in clinical trials}. New York, NY: John Wiley \& Sons.
 
 \leavevmode\hypertarget{ref-rubin_1974_estimating}{}%
 Rubin, D. (1974). Estimating causal effects of treatments in randomized and nonrandomized studies. \emph{Journal of Educational Psychology}, \emph{66}, 688--701.
@@ -893,7 +893,7 @@ Tatalovich, R., Smith, A., \& Bobic, M. P. (1994). Moral Conflict and the Policy
 Testa, C. (2017). \emph{QualtricsTools}. https://github.com/emmamorgan-tufts/QualtricsTools/, package version 0.1.0.
 
 \leavevmode\hypertarget{ref-tetlock_correspondence_2003}{}%
-Tetlock, P. (2003). Correspondence and Coherence Indicators of Good Judgment in World Politics. In D. Hardman \& L. Macchi (Eds.), \emph{Thinking: Psychological Perspectives on Reasoning, Judgment and Decision-Making} (pp. 233--250). New York, NY: Cambridge University Press.
+Tetlock, P. E. (2003). Correspondence and Coherence Indicators of Good Judgment in World Politics. In D. Hardman \& L. Macchi (Eds.), \emph{Thinking: Psychological Perspectives on Reasoning, Judgment and Decision-Making} (pp. 233--250). New York, NY: Cambridge University Press.
 
 \leavevmode\hypertarget{ref-tversky_framing_1981}{}%
 Tversky, A., \& Kahneman, D. (1981). The Framing of Decisions and the Psychology of Choice. \emph{Science}, \emph{211}, 453--458.
