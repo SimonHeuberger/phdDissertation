@@ -82,22 +82,38 @@
 			\end{coi}
 		\item Preliminary results
 			\begin{coi}
-				\item Across the board, \texttt{Amelia} and \texttt{mice} performa best. \texttt{hd.ord} performa better than normal \texttt{hot.deck}, but worse than \texttt{Amelia} and \texttt{mice}
+				\item Across the board, \texttt{hd.ord} performs better than normal \texttt{hot.deck}, but worse than \texttt{Amelia} and \texttt{mice}
+				\item Across the board, \texttt{Amelia} is better than \texttt{mice} for \texttt{inc} and \texttt{age}. It's also better for \texttt{interest}, except for 20 percent NAs, where \texttt{mice} wins
+				\item For \texttt{Dem}, \texttt{Female}, and \texttt{White}, \texttt{Amelia} also edges first, thought \texttt{mice} sometimes is ahead by one unit or so in the fourth decimal
 				\item The difference is less pronounced for the binary variables and most visible in the nominal ones. It is worst for ``age", which has the most unique values
-				\item As the percentage of NAs increases, the estimates are further off from the true means. This is to be expected for all methods, but it affects \texttt{hd.ord} and \texttt{hot.deck} more than \texttt{Amelia} and \texttt{mice}
+				\item As the percentage of NAs increases, the estimates are further off from the true means. This is to be expected for all methods, but it affects \texttt{hd.ord} and \texttt{hot.deck} much more than \texttt{Amelia} and \texttt{mice}
 			\end{coi}
-		\item Jeff gave me a bunch of pointers/ideas where to go from here. He likens this to the search for the pot of gold at the end of the rainbow. There will be something there, somewhere. I just need to find one specific scenario, one specific set of circumstances where I do particularly well or better
-		\item \hl{Work through Jeff's pointers/ideas (noted down on paper)}
-	\end{coi}
-
-
-\section*{What is my contribution?}
-	\begin{coi}
-		\item \hl{Greatly stress and outline the value of \texttt{hd.ord()} outperforming normal \texttt{hotdeck()}}
+		\item Jeff likens this to the search for the pot of gold at the end of the rainbow. There will be something there, somewhere. I just need to find one specific scenario, one specific set of circumstances where I do particularly well or better. He gave me a bunch of pointers/ideas where to go from here. I'm using \texttt{ampute()} to generates \texttt{NAs} \texttt{MAR}. \texttt{ampute()} is part of \texttt{mice} -- it's not a great surprise that \texttt{mice} then performs really well. \texttt{amelia()} performs even better -- Jeff thinks \texttt{amelia()} calls \texttt{mice} at some point. \texttt{ampute()} has lots of default settings that are not immediately obvious. Jeff says to mess with those
+		\item Run it with \texttt{bycases = FALSE} (\texttt{TRUE} introduces a very specific pattern of missingness), \texttt{cont = FALSE}, \texttt{type = "MID"}
 			\begin{coi}
-				\item This is a very valuable contribution
+				\item I had to take out \texttt{White} because \texttt{ampute()} complained there were too many variables for \texttt{bycases = FALSE}
+				\item I ran it for 20 percent \texttt{NAs} and saved \texttt{framing.nas} and \texttt{ampute()} output -- no significant change in results: \texttt{hd.ord} is better than \texttt{hot.deck} across the board. \texttt{Amelia} is better than \texttt{mice} for \texttt{inc}, \texttt{age}, and \texttt{interest}. \texttt{mice} is better for \texttt{Dem} and \texttt{Female}
+				\item The same for 10 percent
 			\end{coi}
-		\item Show the benefit of the speed improvement of \texttt{hd.ord} compared to \texttt{mice}/\texttt{Amelia}, and why this speed gain is worth using my function
+		\item Runnning it with ANES data on Code Ocean
+			\begin{coi}
+				\item Previous small tests have shown that the results should not be different when compared to the framing data
+				\item I have results from running things for 2,363 iterations, but the \texttt{amelia} runtime results were much faster than expected here. I did this run with \texttt{lapply}. I want to rerun this with a loop, as before, before I write anything up here
+			\end{coi}
+		\item Runtimes
+			\begin{coi}
+				\item \texttt{hd.ord()} outperforms \texttt{hotdeck()} (minimally) and massively outperforms \texttt{mice} and \texttt{Amelia} on the framing data
+				\item I have some ANES runtime results for fewer iterations (1,307)
+				\item I also have ANES runtime results for more iterations (2,363) obtained through \texttt{lapply}. Weirdly, \texttt{amelia} is almost as fast as \texttt{hd.ord} here ... I want to rerun this with a loop before I write anything up here
+			\end{coi}
+		\item Own function to create NAs as MAR
+			\begin{coi}
+				\item Jeff: ``It's MAR if you `delete' values in column 1 based on values in column 2", e.g. `delete' the values for age where income is 1 and where income is 5
+				\item I wrote a function that samples the ID numbers for a specified percentage of each selected variable's unique values, then replaces the corresponding values of a different variable with NAs, based on the sampled ID numbers
+				\item I have run this function on the framing data
+				\item Seems to be more MCAR than MAR, since \texttt{na.omit} performs really well now
+			\end{coi}
+		\item \hl{Continue with paper notes}
 	\end{coi}
 
 

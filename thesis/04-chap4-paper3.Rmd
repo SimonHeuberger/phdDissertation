@@ -90,17 +90,12 @@ I use the insights from the second online poll to design several frames for each
 
 Finally, I design a questionnaire for a survey experiment that combines all the insights from the previous tests and thoroughly examines whether moral arguments form a part of what makes a frame strong. The experiment is fielded online for a random sample of U.S. adults on Lucid. It features frames with moral and amoral arguments that have been shown to elicit effects (tested for moral content in the first online poll) and frames with moral and amoral arguments that fill missing 'slots' (designed based on insights from the second online poll). The survey also collects demographic information and includes post-treatment evaluations in terms of rating the arguments by their moral content. The political issues the frames apply are determined by the issues used in previous framing experiments. Both methodological contributions from chapters II and III are applied.
 
-Participants are separately sequentially blocked into five treatment groups. The blocking algorithm is performed once on the original ANES edcuation categories for one half of participants and once on the ordered probit education categories for the other half. We then conduct an ordered probit regression on an ordinal response variable on a 5-point Likert scale, ranging from "Strongly oppose" to "Strongly support". We then compare the differences between the ordered probit and the original results whilst knowing which one is closer to the truth based on the simulation results from section \ref{ordblock-sims}. This thus tests the performance of the ordered probit method (chapter II).
+Participants are separately sequentially blocked into five treatment groups. The blocking algorithm is performed once on the original ANES edcuation categories for one half of participants and once on the ordered probit education categories for the other half. We then conduct an ordered probit regression on an ordinal response variable on a 5-point Likert scale, ranging from "Strongly oppose" to "Strongly support". We then compare the differences between the ordered probit and the original results whilst knowing which one is closer to the truth based on the simulation results from section \ref{ordblock-data}. This thus tests the performance of the ordered probit method (chapter II).
 
 Participants are not given the option to select "Don't Know" or "Refuse", resulting in completely observed data. We then introduce random missing data, and show how the ordinal affinity score method (chapter III) performs on ordinal variables compared with other methods. We can assess the performance of the ordinal affinity score method because we know the true values of the completely observed data.
 
 
 ## Results {#framing-results}
 
-### Performance of Ordinal Probit Method {#framing-results-op}
-
-### Performance of Ordinal Missing Data Method {#framing-results-missing}
-
-### Substantive Results {#framing-results-substantive}
 
 

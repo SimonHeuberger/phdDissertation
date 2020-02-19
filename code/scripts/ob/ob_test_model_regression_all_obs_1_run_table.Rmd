@@ -1,0 +1,48 @@
+---
+title: "Testing OPM -- OLS Trump -- All ANES Observations -- 1 Run"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+   - \usepackage{dcolumn}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+
+# drag the two list.test.ols.trump files back to my machine under /data before running
+
+library(stargazer)
+library(here)
+
+list.test.ols.trump <- list()
+lm.out <- list()
+
+for (i in 1:2){
+list.test.ols.trump[[i]] <- readRDS(here("data", paste0("list_test_ols_trump[[", i, "]].rds")))
+lm.out[[i]] <- lm(feel.trump ~ group + dem + rep + male + white + black + hisp + income.num + age, data = list.test.ols.trump[[i]])
+}
+```
+
+
+```{r results='asis', echo=FALSE}
+
+stargazer(lm.out[[1]], lm.out[[2]], 
+          header = FALSE,
+          title = "OLS After Blocking on Education into 2 Treatment Groups",
+          dep.var.labels   = "Feeling Thermometer Trump",
+          column.labels = c("Original Educ Categories", "OPM Educ Categories"),
+          model.numbers = FALSE,
+          no.space = TRUE,
+          align = TRUE,
+          star.cutoffs = NA,
+          omit.table.layout = "n",
+          single.row = TRUE,
+          covariate.labels = c("Group T2", "Dem", "Rep", "Male", "White", "Black", "Hisp", "Inc", "Age"))
+
+```
+
+

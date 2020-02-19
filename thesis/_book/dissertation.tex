@@ -267,7 +267,7 @@ To use this ordered probit model for blocking, we need to estimate a linear comb
 \section{Data}\label{ordblock-data}}
 
 \hypertarget{ordblock-data-opmodel}{%
-\subsubsection{Ordered Probit Model}\label{ordblock-data-opmodel}}
+\subsubsection{ANES Model Training}\label{ordblock-data-opmodel}}
 
 One of the most common ordinal variables in political science is education. It is widely established that education represents one of the major driving forces behind public opinion and political behavior, such as turnout or donations, in the U.S. (Abramowitz, 2010; Dawood, 2015; Druckman, Peterson, \& Slothuus, 2013; Fiorina \& Abrams, 2009; Fiorina, Abrams, \& Pope, 2011; King, 1997; Leighley \& Nagler, 2014). One of the most respected and recognized externally and internally valid data sets are the American National Election Studies. I thus choose the following ordered probit model with the 2016 ANES data (the predictors are standard linear predictors in political science literature):
 
@@ -309,8 +309,13 @@ The observations in the data are binned according to the estimated threshold coe
 \end{figure}
 As we can see, all categories `below' ``High school graduate'' and `above' ``Master's'' are collapsed because they do not fit the data. The ordered probit model uses the ordinal information with unevenly spaced distances provided and returns categories that do fit the data. We can now use these estimated education categories as the basis for blocking. Assigning numeric values to the new categories is now justifiable because they are based on data-driven estimations. This allows us to block on numerical values with the Mahalanobis distance, which would not be possible without empirical justification. The following sections show that the new estimated categories significantly affect analyses and results.
 
-\hypertarget{ordblock-sims}{%
-\section{Simulations}\label{ordblock-sims}}
+\hypertarget{ordblock-data-sims}{%
+\subsection{Simulations}\label{ordblock-data-sims}}
+
+I conduct various simulations to compare the Ordered Probit Model and its resulting reestimated education categories with the original ANES categories.
+
+\hypertarget{ordblock-data-sims-plac}{%
+\subsubsection{Placebo Regression}\label{ordblock-data-sims-plac}}
 
 We separately block the 2016 ANES on the original and the ordered probit education categories into two treatment groups. We then model the following OLS regression on an interval response variable, a feeling thermometer towards Donald Trump as the Republican presidential candidate:
 
@@ -318,13 +323,27 @@ We separately block the 2016 ANES on the original and the ordered probit educati
 
 \[Feel.Trump \sim Group + Dem + Rep + Income + Male + White + Black + Hispanic\]
 
-\texttt{Group} indicates a placebo treatment, as no actual treatment is administered. In the absence of actual treatment, the difference between both treatment groups should thus be zero. To test this, each blocking/regression process for each set of categories is repeated 1,000 times. The distribution of the placebo treatment indicator (\texttt{Group}) is visualized in Figure \ref{DensPlacTreat}.
+\texttt{Group} indicates a placebo treatment, as no actual treatment is administered. In the absence of actual treatment, the difference between both treatment groups should thus be zero.
+
+\hypertarget{ordblock-data-framing}{%
+\subsection{Framing Survey}\label{ordblock-data-framing}}
+
+\hypertarget{ordblock-results}{%
+\section{Results}\label{ordblock-results}}
+
+\hypertarget{ordblock-results-plac}{%
+\subsection{Placebo Regression}\label{ordblock-results-plac}}
+
+To test this, each blocking/regression process for each set of categories is repeated 1,000 times. The distribution of the placebo treatment indicator (\texttt{Group}) is visualized in Figure \ref{DensPlacTreat}.
 \begin{figure}
 \centering
 \includegraphics{dissertation_files/figure-latex/Density-Plot-Placebo-Treatment-1.pdf}
 \caption{\label{fig:Density-Plot-Placebo-Treatment}Distribution of placebo treatment coefficients by education model\label{DensPlacTreat}}
 \end{figure}
 Both distributions center around zero, as is the statistical expectation. Upon closer inspection, the ordered probit categories are closer to the true values than the original categories on both mean (0.019 v. -0.05) and median (-0.01 v. -0.07). This indicates slightly superior performance by the ordered probit categories.
+
+\hypertarget{ordblock-results-framing}{%
+\subsection{Framing Survey}\label{ordblock-results-framing}}
 
 \hypertarget{ordmiss}{%
 \chapter{PRECISION IN SURVEY MEASUREMENT -- A NEW METHOD TO IMPUTE MISSING DATA FROM ORDINAL VARIABLES}\label{ordmiss}}
@@ -384,20 +403,28 @@ Mean is used to substitute values
 
 Missing variables for a unit are estimated by predicted values from the regression on the known variables for that unit
 
-\hypertarget{ordmiss-theory-impute-hot}{%
-\subsubsection{Hot Deck}\label{ordmiss-theory-impute-hot}}
+\hypertarget{ordmiss-theory-impute-hd}{%
+\subsubsection{Hot Decking}\label{ordmiss-theory-impute-hd}}
 
 Recorded units in the sample are used to substitute values
 
-Hot deck (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (1981), Ford (1983), David et al.~(1986)) (chapter 4, (Little \& Rubin, 2002))
+Hot decking (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (1981), Ford (1983), David et al.~(1986)) (chapter 4, (Little \& Rubin, 2002))
 -- by simple random sampling with replacement
 -- within adjustment cells
 -- nearest neighbor
 -- sequential ordered by a covariate
--- multiple hot decking (Cranmer, Gill)
 
-\hypertarget{ordmiss-theory-impute-multhot}{%
-\subsubsection{Multiple Hot Decking}\label{ordmiss-theory-impute-multhot}}
+\hypertarget{ordmiss-theory-multimpute}{%
+\subsection{Multiple Imputation}\label{ordmiss-theory-multimpute}}
+
+\hypertarget{ordmiss-theory-multimpute-amelia}{%
+\subsubsection{\texorpdfstring{\texttt{Amelia}}{Amelia}}\label{ordmiss-theory-multimpute-amelia}}
+
+\hypertarget{ordmiss-theory-multimpute-mice}{%
+\subsubsection{\texorpdfstring{\texttt{mice}}{mice}}\label{ordmiss-theory-multimpute-mice}}
+
+\hypertarget{ordmiss-theory-multimpute-hdnorm}{%
+\subsubsection{Multiple Hot Decking}\label{ordmiss-theory-multimpute-hdnorm}}
 
 Multiple hot deck imputation (all COPIED OVER from Cranmer, Gill):
 -- A non-parametric alternative to multiple imputation
@@ -417,8 +444,8 @@ c) Impute one of these values into the appropriate cell of each duplicate datase
 (4) Fit the statistic of interest for each dataset
 (5) Combine the estimates of the statistic into a single estimate using the combination rules of parametric multiple imputation
 
-\hypertarget{ordmiss-theory-ordhot}{%
-\subsection{Ordinal Variable Hot Decking}\label{ordmiss-theory-ordhot}}
+\hypertarget{ordmiss-theory-multimpute-hdord}{%
+\subsubsection{Ordinal Variable Multiple Hot Decking}\label{ordmiss-theory-multimpute-hdord}}
 
 Imputation techniques rely on continuous distributional assumptions.
 I use my ordered probit estimated latent underlying continuous variable.
@@ -429,11 +456,249 @@ Ordinal hot deck imputation:
 -- Fully utilizes the unevenly spaced yet ordered information provided in ordinal variables
 -- A key variable in political science surveys is ordinal: Education. Ordinal hot deck imputation enables researchers to impute missing data using the full information provided in this most important predictor variable
 
+\hypertarget{ordmiss-theory-ampute}{%
+\subsection{Amputation}\label{ordmiss-theory-ampute}}
+
+\texttt{ampute()} from \texttt{mice} and my own function. Explain my own function here.
+
 \hypertarget{ordmiss-data}{%
 \section{Data}\label{ordmiss-data}}
 
-\hypertarget{ordmiss-sims}{%
-\section{Simulations}\label{ordmiss-sims}}
+We test the accuracy of five multiple imputation methods (\texttt{hd.ord}, \texttt{hot.deck}, \texttt{amelia}, \texttt{mice}, \texttt{na.omit}) on several data sets (old framing experiment, ANES, framing survey). NAs are inserted with two amputation methods (\texttt{ampute}, \texttt{own.NA}).
+
+Old framing experiment:
+-- 1003 observations
+-- 5 variables (\texttt{Dem}, \texttt{Female}, \texttt{income}, \texttt{age}, \texttt{interest})
+-- 20/50/80 percent NAs inserted MAR
+-- 20/50/80 imputations
+-- 12,500/12,462/10,566 iterations
+-- Run with R 3.6.2 on MacBook Pro (Retina, 13-inch, Early 2015), 2.7 GHz Intel Core i5, 16 GB, macOS 10.13.6
+ANES:
+-- 3,223 observations
+-- 5 variables(\texttt{Dem}, \texttt{Female}, \texttt{income}, \texttt{age}, \texttt{interest})
+- 20 percent NAs inserted MAR
+- 20 imputations
+-- 2,396 iterations
+Framing survey:
+--
+
+\hypertarget{ordmiss-results}{%
+\section{Results}\label{ordmiss-results}}
+
+\hypertarget{ordmiss-results-acc}{%
+\section{Accuracy of Imputation Methods}\label{ordmiss-results-acc}}
+
+Tables \ref{amp.old.frame.acc}, \ref{amp.bycases.old.frame.acc}, \ref{amp.anes.acc}, and \ref{ownNA.old.frame.acc} give an overview of the accuracy of each imputation method. Table \ref{amp.old.frame.acc} uses ampute, the old framing data, and inserts NAs at 20, 50, and 80 percent. For reasons of brevity, all following tables insert 20 percent NAs only. Table \ref{amp.bycases.old.frame.acc} uses ampute with the \texttt{bycases} option set to \texttt{TRUE} and the old framing data. Table \ref{amp.anes.acc} uses ampute and ANES 2016 data. Table \ref{ownNA.old.frame.acc} uses my own function to insert NAs and the old framing data.
+
+\hypertarget{ordmiss-results-acc-ampute}{%
+\subsection{\texorpdfstring{With \texttt{ampute()}}{With ampute()}}\label{ordmiss-results-acc-ampute}}
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods (ampute, old framing data)} 
+  \label{amp.old.frame.acc} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{6}{c}{NAs} \\ 
+\hline \\[-1.8ex] 
+ & & \multicolumn{2}{c}{20 Percent} & \multicolumn{2}{c}{50 Percent}& \multicolumn{2}{c}{80 Percent} \\
+\cline{3-8}\\[-1.8ex]
+ & & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\
+\cline{3-4} 
+\cline{5-6} 
+\cline{7-8}  \\[-1.8ex]
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0001 & 0.467 & 0.0002 & 0.468 & 0.001 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0005 & 0.468 & 0.001 & 0.469 & 0.002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & 0.466 & -0.0001 & 0.466 & -0.0001 & 0.467 & 0.0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & 0.466 & -0.0001 & 0.467 & 0 & 0.467 & 0.0003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & 0.434 & -0.033 & 0.390 & -0.077 & 0.344 & -0.123 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & 3.093 & 0 & 3.093 & 0 & 3.093 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & 3.086 & -0.006 & 3.070 & -0.022 & 3.053 & -0.040 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{inc} & 3.080 & -0.013 & 3.052 & -0.040 & 3.032 & -0.061 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & 3.092 & -0.0002 & 3.093 & 0.0001 & 3.093 & 0.001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & 3.094 & 0.001 & 3.095 & 0.002 & 3.096 & 0.003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & 2.977 & -0.115 & 2.826 & -0.267 & 2.667 & -0.425 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 37.925 & 0 & 37.925 & 0 & 37.925 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 37.638 & -0.287 & 37.097 & -0.828 & 36.664 & -1.261 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{age} & 37.565 & -0.360 & 36.938 & -0.988 & 36.528 & -1.397 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 37.924 & -0.001 & 37.923 & -0.002 & 37.928 & 0.003 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 37.928 & 0.003 & 37.931 & 0.005 & 37.934 & 0.009 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 36.674 & -1.251 & 35.081 & -2.844 & 33.560 & -4.365 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{White} & 0.772 & 0 & 0.772 & 0 & 0.772 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{White} & 0.774 & 0.002 & 0.777 & 0.006 & 0.782 & 0.010 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{White} & 0.774 & 0.002 & 0.778 & 0.006 & 0.782 & 0.010 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{White} & 0.772 & 0 & 0.772 & 0 & 0.772 & -0.0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{White} & 0.772 & -0.0001 & 0.771 & -0.0005 & 0.771 & -0.001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{White} & 0.745 & -0.026 & 0.698 & -0.074 & 0.632 & -0.140 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Female} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Female} & 0.466 & -0.0004 & 0.465 & -0.002 & 0.464 & -0.002 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Female} & 0.466 & -0.001 & 0.464 & -0.003 & 0.462 & -0.004 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Female} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Female} & 0.467 & 0.0001 & 0.467 & 0.0002 & 0.467 & 0.0003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Female} & 0.429 & -0.037 & 0.377 & -0.089 & 0.323 & -0.144 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 3.216 & 0 & 3.216 & 0 & 3.216 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 3.199 & -0.017 & 3.171 & -0.045 & 3.146 & -0.070 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{interest} & 3.197 & -0.019 & 3.162 & -0.054 & 3.135 & -0.081 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 3.217 & 0.0003 & 3.216 & 0.0001 & 3.216 & -0.0002 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 3.216 & 0 & 3.216 & -0.0002 & 3.216 & -0.001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 3.149 & -0.067 & 3.039 & -0.178 & 2.897 & -0.320 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+As Table \ref{amp.old.frame.acc} shows, \texttt{amelia} performs best, followed by \texttt{mice}. \texttt{hd.ord} outperforms \texttt{hd.norm.orig}. \texttt{Amelia} is better than \texttt{mice} for \texttt{inc} and \texttt{age}. It is also better for \texttt{interest}, except for 20 percent NAs. For \texttt{Dem}, \texttt{Female}, and \texttt{White}, \texttt{amelia} edges ahead, though \texttt{mice} sometimes is ahead by one unit or so in the fourth decimal. The differences between the methods are less pronounced for the binary variables and most visible in the nominal ones. It is worst for \texttt{age}, which has the most unique values. As the percentage of NAs increases, the estimates are further off from the true means. This is to be expected for all methods, but it affects \texttt{hd.ord} and \texttt{hot.deck} more than \texttt{amelia} and \texttt{mice}.
+
+These results are confirmed when \texttt{ampute()} is run with the options \texttt{bycoases=FALSE} and \texttt{cont=FALSE}, as shown in Table \ref{amp.bycases.old.frame.acc}, and when \texttt{ampute()} is run on the 2016 ANES data, as shown in Table \ref{amp.anes.acc}. It is noticeable, however, that the differences in method performance are somewhat reduced with the ANES data. This is likely due to the increased number of observations in the data.
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods (ampute with bycases, old framing data)} 
+  \label{amp.bycases.old.frame.acc} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & 0.467 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & 0.467 & 0.001 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Dem} & 0.469 & 0.002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0003 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & 0.236 & -0.230 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & 3.093 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & 3.047 & -0.046 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{inc} & 3.025 & -0.068 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & 3.094 & 0.001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & 3.097 & 0.005 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & 2.421 & -0.672 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 37.925 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 36.506 & -1.419 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{age} & 36.344 & -1.581 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 37.929 & 0.004 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 37.940 & 0.015 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 31.696 & -6.229 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Female} & 0.467 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Female} & 0.462 & -0.005 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Female} & 0.460 & -0.007 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Female} & 0.466 & -0.0003 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Female} & 0.467 & 0 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Female} & 0.217 & -0.250 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 3.216 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 3.136 & -0.080 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{interest} & 3.122 & -0.094 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 3.215 & -0.001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 3.215 & -0.002 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 2.728 & -0.488 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods (ampute, ANES)} 
+  \label{amp.anes.acc} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & 0.355 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & 0.355 & 0.0003 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Dem} & 0.355 & 0.0003 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & 0.355 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & 0.355 & 0 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & 0.339 & -0.016 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & 15.574 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & 15.576 & 0.002 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{inc} & 15.578 & 0.004 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & 15.575 & 0.001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & 15.575 & 0.002 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & 15.231 & -0.343 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 49.040 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 49.008 & -0.032 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{age} & 49.016 & -0.024 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 49.038 & -0.002 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 49.038 & -0.002 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 48.378 & -0.662 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & 0.468 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & 0.468 & 0.0002 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Male} & 0.468 & 0.0002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & 0.468 & 0.0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & 0.468 & 0 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & 0.447 & -0.021 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 2.220 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 2.221 & 0.002 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{interest} & 2.221 & 0.002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 2.220 & 0.0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 2.220 & 0.0001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 2.201 & -0.019 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+\hypertarget{ordmiss-results-acc-ownNA}{%
+\subsection{With My Own Amputation Method}\label{ordmiss-results-acc-ownNA}}
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods (ownNA, old framing data)} 
+  \label{ownNA.old.frame.acc} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & 0.467 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & 0.470 & 0.003 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Dem} & 0.472 & 0.006 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0002 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 37.925 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 36.154 & -1.772 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{age} & 35.884 & -2.041 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 37.925 & -0.001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 37.937 & 0.012 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 37.922 & -0.003 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 3.216 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 3.116 & -0.100 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{interest} & 3.101 & -0.115 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 3.217 & 0.0002 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 3.216 & -0.001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 3.216 & 0.0001 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+Table \ref{ownNA.old.frame.acc} shows that method performance does not change when a different function to create NAs is applied. Note that the number of amputed and imputed variables is lower here, as my method depends on other variables to create NAs. However, it seems my method is closer to being MCAR than MAR, as \texttt{na.omit} outperforms other methods here.
+
+\hypertarget{overall-table-analysis-so-far}{%
+\subsection{Overall Table Analysis So Far}\label{overall-table-analysis-so-far}}
+
+For binary variables (\texttt{Dem}, \texttt{White}, \texttt{Female}, \texttt{Male}), \texttt{hd.ord} is very close to \texttt{amelia} and \texttt{mice} for the old framing and the ANES data. The differences here are on the level of the third or fourth decimals for all tested 20 percent NA variations (\texttt{bycases}, old framing, ANES) (I am not including \texttt{own.na} here for now, since I very likely need to further adjust that function). With increased NA percentages \texttt{amelia} and \texttt{mice} get worse only very slightly, whereas \texttt{hd.ord} and \texttt{hd.norm.orig} get progressively worse. This is to be expected, since the latter methods are based on hot decking replacement. In addition, missingness levels of 50 and 80 percent are substantively almost irrelevant.
+
+For the nominal variable \texttt{age}, \texttt{hd.ord} performs much worse with \texttt{bycases}. The difference value is on the third and second decimals for \texttt{amelia} and \texttt{mice}, whereas the value for \texttt{hd.ord} is on full digits. There is potentially some slight improvement when comparing the ANES to the old framing data: \texttt{amelia} and \texttt{mice} show difference values on the third decimals for both, whereas \texttt{hd.ord} is on the first decimal for the old framing data and on the second decimal for the ANES data. The ANES data contains more observations and was run for fewer iterations. The \texttt{age} variable consists of 58 unique values in the old framing data and 73 unique values in the ANES data.
+
+The other nominal variable, \texttt{inc}, seems to confirm this very, very slight trend: \texttt{amelia} is on the fourth decimal for the old framing data, with \texttt{hd.ord} and \texttt{mice} on the third. However, all methods are on the third decimal for the ANES data, with \texttt{hd.ord} even showing the same difference value as \texttt{mice}. As was the case for \texttt{age}, the ANES variable contains more unique values -- \texttt{inc} contains 7 unique values in the old framing data but 27 in the ANES data.
+
+For the ordinal variable \texttt{interest}, \texttt{hd.ord} also appears to get somewhat closer to the performance of \texttt{amelia} and \texttt{mice}: \texttt{mice} is on the full digit zero, \texttt{amelia} on the fourth, and \texttt{hd.ord} on the second decimal for the old framing data. For the ANES data, \texttt{amelia} and \texttt{mice} are on the fourth and \texttt{hd.ord} on the third decimal. \texttt{interest} consists of the same number of unique values (4) in both data sets.
+
+It thus appears that \texttt{hd.ord} is getting somewhat slightly closer to the performance of \texttt{amelia} and \texttt{mice} for the \texttt{age}, \texttt{inc}, and \texttt{interest} variables when we switch from the old framing to the ANES data. This could be due to the higher number of observations and. In the case of \texttt{age} and \texttt{inc}, the higher number of unique values is also noticeable.
+
+\hypertarget{ordmiss-results-runtimes}{%
+\section{Runtimes}\label{ordmiss-results-runtimes}}
+
+Run in R 3.6 on a Code Ocean AWS EC2 instance with 16 cores and 120 GB of memory. Amputed with \texttt{ampute}.
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes)} 
+  \label{runtimes} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{2}{c}{Data}\\ 
+\hline \\[-1.8ex] 
+ & \multicolumn{1}{c}{Old Framing} & \multicolumn{1}{c}{ANES 2016}\\
+\cline{2-2} 
+\cline{3-3}\\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 32.954 & 32.642 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & 33.396 & 32.669 \\ 
+\multicolumn{1}{c}{amelia} & 71.719 & 33.051 \\ 
+\multicolumn{1}{c}{mice} & 597.034 & 293.722 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+As can be seen in Table \ref{runtimes}, \texttt{hd.ord} and \texttt{hot.deck} show virtually identical imputation times for the old framing data, with \texttt{hd.ord} being 27 seconds faster. \texttt{amelia}, however, is 2 times slower than \texttt{hd.ord}. \texttt{mice} is 18 times slower than \texttt{hd.ord}. This is a dramatic speed gain. The ANES data show only a reduced speed gain. \texttt{mice} is still drastically slower than \texttt{hd.ord} (by a magnitude of 9), but the speed gain is cut in half. The previous speed gain over \texttt{amelia} is no longer observable. \texttt{hd.ord} and \texttt{amelia} now show virtually identical runtimes (with a difference of 25 seconds in favor of \texttt{hd.ord}). Note that the ANES data contain more than triple the observations than the old framing data, which reduces the number of computationally feasible overall iterations for these data.
 
 \hypertarget{framing}{%
 \chapter{MORAL ARGUMENTS AS A SOURCE OF FRAME STRENGTH}\label{framing}}
@@ -521,21 +786,12 @@ I use the insights from the second online poll to design several frames for each
 
 Finally, I design a questionnaire for a survey experiment that combines all the insights from the previous tests and thoroughly examines whether moral arguments form a part of what makes a frame strong. The experiment is fielded online for a random sample of U.S. adults on Lucid. It features frames with moral and amoral arguments that have been shown to elicit effects (tested for moral content in the first online poll) and frames with moral and amoral arguments that fill missing `slots' (designed based on insights from the second online poll). The survey also collects demographic information and includes post-treatment evaluations in terms of rating the arguments by their moral content. The political issues the frames apply are determined by the issues used in previous framing experiments. Both methodological contributions from chapters II and III are applied.
 
-Participants are separately sequentially blocked into five treatment groups. The blocking algorithm is performed once on the original ANES edcuation categories for one half of participants and once on the ordered probit education categories for the other half. We then conduct an ordered probit regression on an ordinal response variable on a 5-point Likert scale, ranging from ``Strongly oppose'' to ``Strongly support''. We then compare the differences between the ordered probit and the original results whilst knowing which one is closer to the truth based on the simulation results from section \ref{ordblock-sims}. This thus tests the performance of the ordered probit method (chapter II).
+Participants are separately sequentially blocked into five treatment groups. The blocking algorithm is performed once on the original ANES edcuation categories for one half of participants and once on the ordered probit education categories for the other half. We then conduct an ordered probit regression on an ordinal response variable on a 5-point Likert scale, ranging from ``Strongly oppose'' to ``Strongly support''. We then compare the differences between the ordered probit and the original results whilst knowing which one is closer to the truth based on the simulation results from section \ref{ordblock-data}. This thus tests the performance of the ordered probit method (chapter II).
 
 Participants are not given the option to select ``Don't Know'' or ``Refuse'', resulting in completely observed data. We then introduce random missing data, and show how the ordinal affinity score method (chapter III) performs on ordinal variables compared with other methods. We can assess the performance of the ordinal affinity score method because we know the true values of the completely observed data.
 
 \hypertarget{framing-results}{%
 \section{Results}\label{framing-results}}
-
-\hypertarget{framing-results-op}{%
-\subsection{Performance of Ordinal Probit Method}\label{framing-results-op}}
-
-\hypertarget{framing-results-missing}{%
-\subsection{Performance of Ordinal Missing Data Method}\label{framing-results-missing}}
-
-\hypertarget{framing-results-substantive}{%
-\subsection{Substantive Results}\label{framing-results-substantive}}
 
 \hypertarget{conclusion}{%
 \chapter{CONCLUSION}\label{conclusion}}

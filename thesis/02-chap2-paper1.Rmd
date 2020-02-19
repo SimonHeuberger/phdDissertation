@@ -200,7 +200,7 @@ To use this ordered probit model for blocking, we need to estimate a linear comb
 ## Data {#ordblock-data}
 
 
-#### Ordered Probit Model {#ordblock-data-opmodel}
+#### ANES Model Training {#ordblock-data-opmodel}
 
 One of the most common ordinal variables in political science is education. It is widely established that education represents one of the major driving forces behind public opinion and political behavior, such as turnout or donations, in the U.S. [@dawood_campaign_2015; @fiorina_disconnect_2009; @leighley_who_2014; @abramowitz_disappearing_2010; @druckman_how_2013; @fiorina_culture_2011; @king_polarization_1997]. One of the most respected and recognized externally and internally valid data sets are the American National Election Studies. I thus choose the following ordered probit model with the 2016 ANES data (the predictors are standard linear predictors in political science literature): 
 
@@ -243,14 +243,29 @@ grid.arrange(plot.orig, plot.new, ncol = 2, nrow = 1, bottom = "Education", left
 As we can see, all categories 'below' "High school graduate" and 'above' "Master's" are collapsed because they do not fit the data. The ordered probit model uses the ordinal information with unevenly spaced distances provided and returns categories that do fit the data. We can now use these estimated education categories as the basis for blocking. Assigning numeric values to the new categories is now justifiable because they are based on data-driven estimations. This allows us to block on numerical values with the Mahalanobis distance, which would not be possible without empirical justification. The following sections show that the new estimated categories significantly affect analyses and results. 
 
 
-## Simulations {#ordblock-sims}
+### Simulations {#ordblock-data-sims}
+
+I conduct various simulations to compare the Ordered Probit Model and its resulting reestimated education categories with the original ANES categories.
+
+
+#### Placebo Regression {#ordblock-data-sims-plac}
 
 We separately block the 2016 ANES on the original and the ordered probit education categories into two treatment groups. We then model the following OLS regression on an interval response variable, a feeling thermometer towards Donald Trump as the Republican presidential candidate:
 
 \vspace{-1cm}
 $$Feel.Trump \sim Group + Dem + Rep + Income + Male + White + Black + Hispanic$$
 
-\texttt{Group} indicates a placebo treatment, as no actual treatment is administered. In the absence of actual treatment, the difference between both treatment groups should thus be zero. To test this, each blocking/regression process for each set of categories is repeated 1,000 times. The distribution of the placebo treatment indicator (\texttt{Group}) is visualized in Figure \ref{DensPlacTreat}. 
+\texttt{Group} indicates a placebo treatment, as no actual treatment is administered. In the absence of actual treatment, the difference between both treatment groups should thus be zero.
+
+
+### Framing Survey {#ordblock-data-framing}
+
+
+## Results {#ordblock-results}
+
+### Placebo Regression {#ordblock-results-plac}
+
+To test this, each blocking/regression process for each set of categories is repeated 1,000 times. The distribution of the placebo treatment indicator (\texttt{Group}) is visualized in Figure \ref{DensPlacTreat}. 
 
 
 ```{r Placebo Treatment Plotting Code, include=FALSE}
@@ -279,6 +294,7 @@ ggplot(gt2.df, aes(x=coefficient, fill=categories)) + geom_density(alpha=0.2, ae
 
 Both distributions center around zero, as is the statistical expectation. Upon closer inspection, the ordered probit categories are closer to the true values than the original categories on both mean (`r unname(round(tapply(gt2.df$coefficient, gt2.df$categories, mean)[2], digits = 3))` v. `r unname(round(tapply(gt2.df$coefficient, gt2.df$categories, mean)[1], digits = 3))`) and median (`r unname(round(tapply(gt2.df$coefficient, gt2.df$categories, median)[2], digits = 3))` v. `r unname(round(tapply(gt2.df$coefficient, gt2.df$categories, median)[1], digits = 3))`). This indicates slightly superior performance by the ordered probit categories.
 
+### Framing Survey {#ordblock-results-framing}
 
 
 <!-- Table from 1 placebo run only

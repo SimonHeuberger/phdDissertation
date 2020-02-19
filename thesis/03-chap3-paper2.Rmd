@@ -55,19 +55,25 @@ Mean is used to substitute values
 Missing variables for a unit are estimated by predicted values from the regression on the known variables for that unit
 
 
-#### Hot Deck {#ordmiss-theory-impute-hot}
+#### Hot Decking {#ordmiss-theory-impute-hd}
 
 Recorded units in the sample are used to substitute values
 
-Hot deck (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (1981), Ford (1983), David et al. (1986)) (chapter 4, [@little_2002_statistical])
+Hot decking (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (1981), Ford (1983), David et al. (1986)) (chapter 4, [@little_2002_statistical])
 -- by simple random sampling with replacement
 -- within adjustment cells
 -- nearest neighbor
 -- sequential ordered by a covariate
--- multiple hot decking (Cranmer, Gill)
 
 
-#### Multiple Hot Decking {#ordmiss-theory-impute-multhot}
+
+### Multiple Imputation {#ordmiss-theory-multimpute}
+
+#### `Amelia` {#ordmiss-theory-multimpute-amelia}
+
+#### `mice` {#ordmiss-theory-multimpute-mice}
+
+#### Multiple Hot Decking {#ordmiss-theory-multimpute-hdnorm}
 
 Multiple hot deck imputation (all COPIED OVER from Cranmer, Gill):
 -- A non-parametric alternative to multiple imputation
@@ -88,8 +94,7 @@ Concrete estimation steps:
 (5) Combine the estimates of the statistic into a single estimate using the combination rules of parametric multiple imputation
 
 
-
-### Ordinal Variable Hot Decking {#ordmiss-theory-ordhot}
+#### Ordinal Variable Multiple Hot Decking {#ordmiss-theory-multimpute-hdord}
 
 Imputation techniques rely on continuous distributional assumptions.
 I use my ordered probit estimated latent underlying continuous variable.
@@ -102,7 +107,230 @@ Ordinal hot deck imputation:
 
 
 
+### Amputation {#ordmiss-theory-ampute}
+
+`ampute()` from `mice` and my own function. Explain my own function here.
+
+
 ## Data {#ordmiss-data}
 
-## Simulations {#ordmiss-sims}
+We test the accuracy of five multiple imputation methods (`hd.ord`, `hot.deck`, `amelia`, `mice`, `na.omit`) on several data sets (old framing experiment, ANES, framing survey). NAs are inserted with two amputation methods (`ampute`, `own.NA`).
+
+Old framing experiment: 
+-- 1003 observations
+-- 5 variables (`Dem`, `Female`, `income`, `age`, `interest`)
+-- 20/50/80 percent NAs inserted MAR
+-- 20/50/80 imputations
+-- 12,500/12,462/10,566 iterations
+-- Run with R 3.6.2 on MacBook Pro (Retina, 13-inch, Early 2015), 2.7 GHz Intel Core i5, 16 GB, macOS 10.13.6
+ANES:
+-- 3,223 observations
+-- 5 variables(`Dem`, `Female`, `income`, `age`, `interest`)
+- 20 percent NAs inserted MAR
+- 20 imputations
+-- 2,396 iterations
+Framing survey:
+--
+
+
+
+## Results {#ordmiss-results}
+
+## Accuracy of Imputation Methods {#ordmiss-results-acc}
+
+Tables \ref{amp.old.frame.acc}, \ref{amp.bycases.old.frame.acc}, \ref{amp.anes.acc}, and \ref{ownNA.old.frame.acc} give an overview of the accuracy of each imputation method. Table \ref{amp.old.frame.acc} uses ampute, the old framing data, and inserts NAs at 20, 50, and 80 percent. For reasons of brevity, all following tables insert 20 percent NAs only. Table \ref{amp.bycases.old.frame.acc} uses ampute with the `bycases` option set to `TRUE` and the old framing data. Table \ref{amp.anes.acc} uses ampute and ANES 2016 data. Table \ref{ownNA.old.frame.acc} uses my own function to insert NAs and the old framing data.
+
+### With `ampute()` {#ordmiss-results-acc-ampute}
+
+```{r include=FALSE}
+amp.old.frame.20 <- read.csv("data/framing.results.6var.1003n.12500it.20perc.csv") %>% .[,-1]
+amp.old.frame.50 <- read.csv("data/framing.results.6var.1003n.12462it.50perc.csv") %>% .[,-1]
+amp.old.frame.80 <- read.csv("data/framing.results.6var.1003n.10566it.80perc.csv") %>% .[,-1]
+colnames(amp.old.frame.20) <- c("Method", "Variable", "Value20", "Diff20")
+colnames(amp.old.frame.50) <- c("Method", "Variable", "Value50", "Diff50")
+colnames(amp.old.frame.80) <- c("Method", "Variable", "Value80", "Diff80")
+acc <- cbind(amp.old.frame.20, amp.old.frame.50[,3:4], amp.old.frame.80[,3:4])
+stargazer(acc, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Accuracy of Multiple Imputation Methods (ampute, old framing data)",
+          label = "amp.old.frame.acc")
+
+```
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods (ampute, old framing data)} 
+  \label{amp.old.frame.acc} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{6}{c}{NAs} \\ 
+\hline \\[-1.8ex] 
+ & & \multicolumn{2}{c}{20 Percent} & \multicolumn{2}{c}{50 Percent}& \multicolumn{2}{c}{80 Percent} \\
+\cline{3-8}\\[-1.8ex]
+ & & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\
+\cline{3-4} 
+\cline{5-6} 
+\cline{7-8}  \\[-1.8ex]
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0001 & 0.467 & 0.0002 & 0.468 & 0.001 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0005 & 0.468 & 0.001 & 0.469 & 0.002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & 0.466 & -0.0001 & 0.466 & -0.0001 & 0.467 & 0.0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & 0.466 & -0.0001 & 0.467 & 0 & 0.467 & 0.0003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & 0.434 & -0.033 & 0.390 & -0.077 & 0.344 & -0.123 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & 3.093 & 0 & 3.093 & 0 & 3.093 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & 3.086 & -0.006 & 3.070 & -0.022 & 3.053 & -0.040 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{inc} & 3.080 & -0.013 & 3.052 & -0.040 & 3.032 & -0.061 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & 3.092 & -0.0002 & 3.093 & 0.0001 & 3.093 & 0.001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & 3.094 & 0.001 & 3.095 & 0.002 & 3.096 & 0.003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & 2.977 & -0.115 & 2.826 & -0.267 & 2.667 & -0.425 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 37.925 & 0 & 37.925 & 0 & 37.925 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 37.638 & -0.287 & 37.097 & -0.828 & 36.664 & -1.261 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{age} & 37.565 & -0.360 & 36.938 & -0.988 & 36.528 & -1.397 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 37.924 & -0.001 & 37.923 & -0.002 & 37.928 & 0.003 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 37.928 & 0.003 & 37.931 & 0.005 & 37.934 & 0.009 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 36.674 & -1.251 & 35.081 & -2.844 & 33.560 & -4.365 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{White} & 0.772 & 0 & 0.772 & 0 & 0.772 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{White} & 0.774 & 0.002 & 0.777 & 0.006 & 0.782 & 0.010 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{White} & 0.774 & 0.002 & 0.778 & 0.006 & 0.782 & 0.010 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{White} & 0.772 & 0 & 0.772 & 0 & 0.772 & -0.0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{White} & 0.772 & -0.0001 & 0.771 & -0.0005 & 0.771 & -0.001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{White} & 0.745 & -0.026 & 0.698 & -0.074 & 0.632 & -0.140 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Female} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Female} & 0.466 & -0.0004 & 0.465 & -0.002 & 0.464 & -0.002 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Female} & 0.466 & -0.001 & 0.464 & -0.003 & 0.462 & -0.004 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Female} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Female} & 0.467 & 0.0001 & 0.467 & 0.0002 & 0.467 & 0.0003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Female} & 0.429 & -0.037 & 0.377 & -0.089 & 0.323 & -0.144 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 3.216 & 0 & 3.216 & 0 & 3.216 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 3.199 & -0.017 & 3.171 & -0.045 & 3.146 & -0.070 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{interest} & 3.197 & -0.019 & 3.162 & -0.054 & 3.135 & -0.081 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 3.217 & 0.0003 & 3.216 & 0.0001 & 3.216 & -0.0002 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 3.216 & 0 & 3.216 & -0.0002 & 3.216 & -0.001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 3.149 & -0.067 & 3.039 & -0.178 & 2.897 & -0.320 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+As Table \ref{amp.old.frame.acc} shows, `amelia` performs best, followed by `mice`. `hd.ord` outperforms `hd.norm.orig`. `Amelia` is better than `mice` for `inc` and `age`. It is also better for `interest`, except for 20 percent NAs. For `Dem`, `Female`, and `White`, `amelia` edges ahead, though `mice` sometimes is ahead by one unit or so in the fourth decimal. The differences between the methods are less pronounced for the binary variables and most visible in the nominal ones. It is worst for `age`, which has the most unique values. As the percentage of NAs increases, the estimates are further off from the true means. This is to be expected for all methods, but it affects `hd.ord` and `hot.deck` more than `amelia` and `mice`.
+
+These results are confirmed when `ampute()` is run with the options `bycoases=FALSE` and `cont=FALSE`, as shown in Table \ref{amp.bycases.old.frame.acc}, and when `ampute()` is run on the 2016 ANES data, as shown in Table \ref{amp.anes.acc}. It is noticeable, however, that the differences in method performance are somewhat reduced with the ANES data. This is likely due to the increased number of observations in the data.
+
+
+```{r results='asis', echo=FALSE}
+amp.bycases.old.frame <- read.csv("data/bycases=FALSE_cont=FALSE/framing.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1]
+colnames(amp.bycases.old.frame) <- c("Method", "Variable", "Value", "Diff")
+stargazer(amp.bycases.old.frame, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Accuracy of Multiple Imputation Methods (ampute with bycases, old framing data)",
+          label = "amp.bycases.old.frame.acc")
+
+```
+
+
+```{r results='asis', echo=FALSE}
+amp.anes <- read.csv("data/anes.results.5var.3223n.2396it.20perc.csv") %>% .[,-1]
+colnames(amp.anes) <- c("Method", "Variable", "Value", "Diff")
+stargazer(amp.anes, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Accuracy of Multiple Imputation Methods (ampute, ANES)",
+          label = "amp.anes.acc")
+
+```
+
+
+
+### With My Own Amputation Method {#ordmiss-results-acc-ownNA}
+
+```{r results='asis', echo=FALSE}
+own.NA.old.frame <- read.csv("data/own.na/framing.results.3var.1003n.12324it.20perc.csv") %>% .[,-1]
+colnames(own.NA.old.frame) <- c("Method", "Variable", "Value", "Diff")
+stargazer(own.NA.old.frame, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Accuracy of Multiple Imputation Methods (ownNA, old framing data)",
+          label = "ownNA.old.frame.acc")
+
+```
+
+
+Table \ref{ownNA.old.frame.acc} shows that method performance does not change when a different function to create NAs is applied. Note that the number of amputed and imputed variables is lower here, as my method depends on other variables to create NAs. However, it seems my method is closer to being MCAR than MAR, as `na.omit` outperforms other methods here.
+
+
+### Overall Table Analysis So Far
+
+For binary variables (`Dem`, `White`, `Female`, `Male`), `hd.ord` is very close to `amelia` and `mice` for the old framing and the ANES data. The differences here are on the level of the third or fourth decimals for all tested 20 percent NA variations (`bycases`, old framing, ANES) (I am not including `own.na` here for now, since I very likely need to further adjust that function). With increased NA percentages `amelia` and `mice` get worse only very slightly, whereas `hd.ord` and `hd.norm.orig` get progressively worse. This is to be expected, since the latter methods are based on hot decking replacement. In addition, missingness levels of 50 and 80 percent are substantively almost irrelevant.
+
+For the nominal variable `age`, `hd.ord` performs much worse with `bycases`. The difference value is on the third and second decimals for `amelia` and `mice`, whereas the value for `hd.ord` is on full digits. There is potentially some slight improvement when comparing the ANES to the old framing data: `amelia` and `mice` show difference values on the third decimals for both, whereas `hd.ord` is on the first decimal for the old framing data and on the second decimal for the ANES data. The ANES data contains more observations and was run for fewer iterations. The `age` variable consists of 58 unique values in the old framing data and 73 unique values in the ANES data.
+
+The other nominal variable, `inc`, seems to confirm this very, very slight trend: `amelia` is on the fourth decimal for the old framing data, with `hd.ord` and `mice` on the third. However, all methods are on the third decimal for the ANES data, with `hd.ord` even showing the same difference value as `mice`. As was the case for `age`, the ANES variable contains more unique values -- `inc` contains 7 unique values in the old framing data but 27 in the ANES data.
+
+For the ordinal variable `interest`, `hd.ord` also appears to get somewhat closer to the performance of `amelia` and `mice`: `mice` is on the full digit zero, `amelia` on the fourth, and `hd.ord` on the second decimal for the old framing data. For the ANES data, `amelia` and `mice` are on the fourth and `hd.ord` on the third decimal. `interest` consists of the same number of unique values (4) in both data sets.
+
+It thus appears that `hd.ord` is getting somewhat slightly closer to the performance of `amelia` and `mice` for the `age`, `inc`, and `interest` variables when we switch from the old framing to the ANES data. This could be due to the higher number of observations and. In the case of `age` and `inc`, the higher number of unique values is also noticeable.
+
+
+
+
+
+
+## Runtimes {#ordmiss-results-runtimes}
+
+Run in R 3.6 on a Code Ocean AWS EC2 instance with 16 cores and 120 GB of memory. Amputed with `ampute`.
+
+
+```{r Runtimes MI Methods, include=FALSE}
+
+old.frame.runtime <- read.csv("data/framing.runtime.5var.1003n.12500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.runtime <- read.csv("data/anes.runtime.5var.3223n.2396it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+runtimes <- cbind(old.frame.runtime, anes.runtime[,2])
+colnames(runtimes) <- c("Method", "OldFraming", "ANES2016")
+stargazer(runtimes, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes)",
+          label = "runtimes")
+
+```
+
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes)} 
+  \label{runtimes} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{2}{c}{Data}\\ 
+\hline \\[-1.8ex] 
+ & \multicolumn{1}{c}{Old Framing} & \multicolumn{1}{c}{ANES 2016}\\
+\cline{2-2} 
+\cline{3-3}\\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 32.954 & 32.642 \\ 
+\multicolumn{1}{c}{hd.norm.orig} & 33.396 & 32.669 \\ 
+\multicolumn{1}{c}{amelia} & 71.719 & 33.051 \\ 
+\multicolumn{1}{c}{mice} & 597.034 & 293.722 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+As can be seen in Table \ref{runtimes}, `hd.ord` and `hot.deck` show virtually identical imputation times for the old framing data, with `hd.ord` being `r ((runtimes$OldFraming[runtimes$Method == "hd.norm.orig"]-runtimes$OldFraming[runtimes$Method == "hd.ord"])*60) %>% round(., digits = 0)` seconds faster. `amelia`, however, is `r (runtimes$OldFraming[runtimes$Method == "amelia"] / runtimes$OldFraming[runtimes$Method == "hd.ord"]) %>% round(., digits = 0)` times slower than `hd.ord`. `mice` is `r (runtimes$OldFraming[runtimes$Method == "mice"] / runtimes$OldFraming[runtimes$Method == "hd.ord"]) %>% round(., digits = 0)` times slower than `hd.ord`. This is a dramatic speed gain. The ANES data show only a reduced speed gain. `mice` is still drastically slower than `hd.ord` (by a magnitude of `r (runtimes$ANES2016[runtimes$Method == "mice"] / runtimes$ANES2016[runtimes$Method == "hd.ord"]) %>% round(., digits = 0)`), but the speed gain is cut in half. The previous speed gain over `amelia` is no longer observable. `hd.ord` and `amelia` now show virtually identical runtimes (with a difference of `r round((runtimes$ANES2016[runtimes$Method == "amelia"] - runtimes$ANES2016[runtimes$Method == "hd.ord"]) * 60, digits = 0)` seconds in favor of `hd.ord`). Note that the ANES data contain more than triple the observations than the old framing data, which reduces the number of computationally feasible overall iterations for these data.
+
+
+
+
+
 
