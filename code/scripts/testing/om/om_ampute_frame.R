@@ -100,7 +100,8 @@ min.lev <- df_true$educ %>% unique() %>% length()
 #     type = NULL
 #   }
 
-
+# empty list to store amputed data sets
+list.ampute <- list()
 # empty list to store OPMord output
 OPMord.dat <- list()
 # set up the percentage progress bar across the sampled numbers
@@ -108,8 +109,10 @@ pb <- txtProgressBar(min = 1, max = mc.iterations, style = 3)
 for(mc in 1:mc.iterations){
   # load the percentage progress bar into the loop
   setTxtProgressBar(pb, mc)
+  # ampute to create NAs and save amputations
+  list.ampute[[mc]] <- ampute(yes.nas, prop = prop, mech = "MNAR")
   # combine columns with NAs and columns without NAs and run ordinal polr() function on data
-  OPMord.dat[[mc]] <- cbind(no.nas, ampute(yes.nas, prop = prop, mech = "MNAR", cont = FALSE)$amp) %>%
+  OPMord.dat[[mc]] <- cbind(no.nas, list.ampute[[mc]]$amp) %>%
     OPMord(., dv = "educ", evs = all.evs)
     # print whenever int.df doesn't have all rows, which means it doesn't have all education levels (6 rows for 7 levels)
     if(OPMord.dat[[mc]]$data.short.na.omit %>% .$educ %>% unique() %>% length() < min.lev){

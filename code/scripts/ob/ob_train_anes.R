@@ -9,7 +9,7 @@ library(reshape2)
 library(ggplot2)
 library(here)
 
-temp <- read.dta13(here("data", "anes_timeseries_2016.dta"), generate.factors=T, nonint.factors = TRUE)
+temp <- read.dta13(here("data", "anes", "anes_timeseries_2016.dta"), generate.factors=T, nonint.factors = TRUE)
 
 # V161267 -- age
 # V161342 -- gender
@@ -23,13 +23,15 @@ temp <- read.dta13(here("data", "anes_timeseries_2016.dta"), generate.factors=T,
 # V162192: Should the minimum wage be [raised, kept the same, lowered but not eliminated, or eliminated altogether / eliminated altogether, lowered but not eliminated, kept the same, or raised]?
 # V161081: Do you feel things in this country are generally going in the right direction, or do you feel things have pretty seriously gotten off on the wrong track?
 # V161087: Feeling thermometer Trump candidate
+# V162257: Interest
 
-df <- dplyr::select(temp, V161267, V161342, V161310x, V161361x, V161276x, V161155, V161270, V161082, V162192, V161081, V161087)
+df <- dplyr::select(temp, V161267, V161342, V161310x, V161361x, V161276x, V161155, V161270, V161082, V162192, V161081, V161087, V162257)
 summary(is.na(df)) # No NAs
 
 df <- rename(df, age = V161267, gender = V161342, race = V161310x, income =  V161361x, occupation = V161276x, pid = V161155, education = V161270,
-             pres.approv = V161082, min.wage = V162192, country.track = V161081, feel.trump = V161087)
+             pres.approv = V161082, min.wage = V162192, country.track = V161081, feel.trump = V161087, interest = V162257)
 nrow(df) # [1] 4270 observations
+
 
 # all variables are factors
 
@@ -45,7 +47,8 @@ df <- filter(df, !age %in% c("-9. RF (year of birth)", "-8. DK (year of birth, F
              !min.wage %in% c("-9. Refused", "-8. Don't know", "-7. No post data, deleted due to incomplete IW", "-6. No post-election interview"),
              !country.track %in% c("-9. Refused", "-8. Don't know (FTF only)"),
              !feel.trump %in% c("-99. Refused", "-89. FTF ONLY: Don't recognize ('don't know who this is')",
-                                "-88. FTF ONLY: Don't know ('don't know where to rate')"))
+                                "-88. FTF ONLY: Don't know ('don't know where to rate')"),
+             !interest %in% c("-9. Refused", "-8. Don't know", "-7. No post data, deleted due to incomplete IW", "-6. No post-election interview"))
 
 # refactor to get rid of unneeded levels
 for (i in 1:ncol(df)){
@@ -109,12 +112,17 @@ df$education <- fct_recode(df$education,
                             "Master's" = "14. Master's degree (for example: MA, MS, MENG, MED, MSW, MBA)",
                             "Professional" = "15. Professional school degree (for example: MD, DDS, DVM, LLB, JD)",
                             "Doctorate" = "16. Doctorate degree (for example: PHD, EDD)")
+df$interest <- fct_recode(df$interest,
+                          "Very closely" = "1. Very closely",
+                          "Fairly closely" = "2. Fairly closely",
+                          "Not very closely" = "3. Not very closely",
+                          "Not at all" = "4. Not at all")
 
 df$education.num <- as.character(as.numeric(df$education))    # needed for the loop later
 
 # save df to be used to create opm functions (separate .R file)
 
-saveRDS(df, here("data", "anes_cleaned.rds"))
+saveRDS(df, here("data", "anes", "anes_cleaned.rds"))
 
 
 
@@ -127,7 +135,7 @@ evs <- c("age", "gender", "race", "income", "occupation", "pid")
 ord.list <- OPMord(data = df, dv = dv, evs = evs)
 
 # save ord.list to be used in other scripts
-saveRDS(ord.list, here("data", "ord_list.rds"))
+saveRDS(ord.list, here("data", "ob", "ord_list.rds"))
 
 # plot and save Coefficients/Thresholds visualization with horizontal error bars of SE
 ggplot(ord.list$int.df, aes(Values, Intercepts)) + geom_point(size = 1.5) + geom_errorbarh(aes(xmin=Values-SE, xmax=Values+SE), height = .3) +
@@ -145,7 +153,7 @@ ggplot(ord.list$data, aes(x = education.new)) + geom_bar(aes(y = (..count..)/sum
   xlab("Education") + ggtitle("Distribution of OPM Education Categories") + theme(plot.title = element_text(hjust = 0.5))
 ggsave(here("plots", "barplot_new.pdf"), height=7, width=7, units='in')
 # save data with new education variable
-saveRDS(ord.list$data, file = here("data", "anes_education.rds"))
+saveRDS(ord.list$data, file = here("data", "anes", "anes_education.rds"))
 
  ### Code above ###
 ## Stores .pdf and .csv files to save thresholds

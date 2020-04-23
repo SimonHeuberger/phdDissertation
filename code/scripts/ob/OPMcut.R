@@ -35,3 +35,4 @@ OPMcut <- function(data, dv, OPMordOut){
   data[, dv] <- c(na.omit(c(t(tmp))))
   return(data)
 }
+

@@ -113,7 +113,47 @@
 				\item I have run this function on the framing data
 				\item Seems to be more MCAR than MAR, since \texttt{na.omit} performs really well now
 			\end{coi}
-		\item \hl{Continue with paper notes}
+		\item Run \texttt{ampute} with MNAR for framing and ANES data
+			\begin{coi}
+				\item I've written everything up. \texttt{hd.ord} is doing well for binary variables overall, but less so for nominal and ordinal ones
+				\item MNAR or MAR makes no significant difference
+			\end{coi}
+		\item I've written up the \texttt{own.NA.rows} results
+		\item It is not possible to run the whole ANES data for 10,000 iterations on Jeff's machine or on Code Ocean. It exhausts the memory. After endless trials, I finally managed to do it by sampling 1,000 observations, then running my code on that smaller ANES data set
+		\item I added CCES to my data sets for analysis and set up several coding scripts
+		\item With each data set sampled for 1,000 observations (old framing, CCES, ANES), I got great running times where \texttt{hd.ord} consistently performs far better than \texttt{amelia}
+		\item What doesn't work so far
+			\begin{coi}
+				\item Increasing percentage of NAs == worse \texttt{hd.ord} performance
+				\item Ordinal and nominal variables == worse \texttt{hd.ord} performance
+				\item High number of observations == reduced number of iterations (crashes and/or RAM maxing out)
+				\item High number of observations == makes \texttt{amelia} faster relative to \texttt{hd.ord}
+				\item 17 ANES education levels == increases needed number of iterations
+				\item 17 ANES education levels == causes \texttt{amelia} to stop on CO and Jeff
+				\item \texttt{ampute()} with \texttt{bycases=FALSE} and \texttt{cont=FALSE} == worse \texttt{hd.ord} performance, good \texttt{na.omit} performance
+				\item \texttt{own.NA()} == \texttt{na.omit} performs best
+				\item \texttt{own.NA.rows()}== pretty much everything is zero, incl. \texttt{na.omit} (only \texttt{mice} is awful)
+				\item Running \texttt{hd.ord} with \texttt{method = p.draw} == worse \texttt{hd.ord} performance
+				\item Running \texttt{hd.ord} with \texttt{method = p.draw} == only works with only binary vars in the data
+				\item Increasing \texttt{sdCutoff} == only does something with only binary vars in the data
+				\item Only binary vars in data == no gain in \texttt{hd.ord} performance
+			\end{coi}
+		\item What works so far
+			\begin{coi}
+				\item Results for binary variables == equal performance of \texttt{hd.ord}, \texttt{mice}, \texttt{amelia}
+				\item Increasing number of variables with NAs (all, not just binary) == better \texttt{hd.ord} performance
+				\item 1000 observations in data sets == allows 10,000 iterations
+				\item 1000 observations in data sets == increases \texttt{amelia} running time
+				\item MNAR == MAR in terms of \texttt{hd.ord} performance
+			\end{coi}
+		\item I ran CCES for 14 NA variables for 10,000 iterations on CO. It took FOREVER because \texttt{mice} took more than 20 hours (!) on its own. I then ran the same code for 100 iterations on my machine. The results are virtually identical, so we really don't need all these thousands of runs. They're good to get good running time numbers, but not for other things. From now on I can test ideas like variables to add etc. on at most 1,000 iterations. No need for any more
+		\item In addition, \texttt{mice} is at best identical to \texttt{amelia} regarding the results. Most of the times, \texttt{amelia} is better. If I do need to run things for 10,000-ish iterations again for some reason, consider leaving \texttt{mice} out of it, if possible. That massively cuts down the runtime of the code
+		\item I selected and included more variables for ANES and framing, then ran those for 1,000 iterations. The results are getting even closer to zero across the board, including for \texttt{na.omit}
+		\item I set up versions of all my functions to work with multiple ordinal variables: \texttt{OPMordMult}, \texttt{OPMcutMult}, \texttt{hot.deck.ord.mult}. I ran this for 1,000 iterations for CCES, ANES, and framing. It produced good results for all binary variables, though not better than before
+		\item So far, I have really good results that are on par with \texttt{amelia} for lots of binary variables. I also have great running times where \texttt{hd.ord} is consistently at least twice as fast as \texttt{amelia} for all data sets with 1,000 observations and 10,000 iterations. That's a good step forward
+		\item I don't think there is a scenario where \texttt{hd.ord} performs better. I'm reaching the stage where I would state that the theory of the latent underlying variable didn't pan out
+		\item \hl{Email Jeff}: I'm at the end of my research. I can't beat \texttt{amelia}, no matter the circumstances. But I get the same results for binary variables, with tons better running time. It looks like the theory of \texttt{polr} to estimate ordinal variables doesn't pay dividends. I want that to be enough for my diss
+		\item Fallback: If all else fails, a really thorough examination of when what package performs best in imputation, under what circumstances etc. is enough for the dissertation, says Jeff (perhaps called something like ``Understanding multiple imputation alternatives in differing circumstances")
 	\end{coi}
 
 

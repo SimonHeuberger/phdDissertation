@@ -61,14 +61,14 @@ Identical levels in terms of covariates across treatment groups represent the ke
 
 ### I LOAD THE CREATED SIMULATIONS HERE TO CREATE THE PLOTS ###
 
-all_blocked_2 <- read.csv("data/all_blocked_2.csv")
-all_blocked_3 <- read.csv("data/all_blocked_3.csv")
-all_blocked_5 <- read.csv("data/all_blocked_5.csv")
-all_blocked_10 <- read.csv("data/all_blocked_10.csv")
-all_means_variances_2 <- read.csv("data/all_means_variances_2.csv")
-all_means_variances_3 <- read.csv("data/all_means_variances_3.csv")
-all_means_variances_5 <- read.csv("data/all_means_variances_5.csv")
-all_means_variances_10 <- read.csv("data/all_means_variances_10.csv")
+all_blocked_2 <- read.csv("data/blocking/all_blocked_2.csv")
+all_blocked_3 <- read.csv("data/blocking/all_blocked_3.csv")
+all_blocked_5 <- read.csv("data/blocking/all_blocked_5.csv")
+all_blocked_10 <- read.csv("data/blocking/all_blocked_10.csv")
+all_means_variances_2 <- read.csv("data/blocking/all_means_variances_2.csv")
+all_means_variances_3 <- read.csv("data/blocking/all_means_variances_3.csv")
+all_means_variances_5 <- read.csv("data/blocking/all_means_variances_5.csv")
+all_means_variances_10 <- read.csv("data/blocking/all_means_variances_10.csv")
 
 # There are 100 NAs each in "all_means_variances_3", "all_means_variances_5", and "all_means_variances_10"
 # They are always for the first respective sampled number: 9, 15, 30
@@ -210,7 +210,7 @@ $$Education \sim Gender + Race + Age + Income + Occupation + Party ID$$
 When trained on the 2016 ANES data, this ordinal probit model estimates the thresholds between each of the education categories shown in Table \ref{education-categories}.
 
 ```{r Education Thresholds Table, results='asis', echo=FALSE}
-op.model.thresholds <- read.csv("data/thresholds.csv")
+op.model.thresholds <- read.csv("data/blocking/thresholds.csv")
 colnames(op.model.thresholds) <- c("Thresholds", "Coefficients", "Standard Errors", "t-values")
 stargazer(op.model.thresholds, 
           summary = FALSE, 
@@ -227,7 +227,7 @@ The observations in the data are binned according to the estimated threshold coe
 
 ```{r Education Categories Plotting Code Histograms, include=FALSE}
 
-op.model.data <- readRDS("data/anes_education.rds")
+op.model.data <- readRDS("data/anes/anes_education.rds")
 plot.orig <- ggplot(op.model.data, aes(x = education)) + geom_bar(aes(y = (..count..)/sum(..count..)), fill = "darkred") + theme(axis.title=element_blank())
 plot.new <- ggplot(op.model.data, aes(x = education.new)) + geom_bar(aes(y = (..count..)/sum(..count..)), fill = "darkred") + theme(axis.title=element_blank())
 
@@ -272,7 +272,7 @@ To test this, each blocking/regression process for each set of categories is rep
 
 repeats <- 1000
 
-list.list.gt2.coeff <- readRDS(paste("data/list_list_test_ols_trump_gt2_coeff_all_obs_", repeats, "_runs.rds", sep = ""))
+list.list.gt2.coeff <- readRDS(paste("data/blocking/list_list_test_ols_trump_gt2_coeff_all_obs_", repeats, "_runs.rds", sep = ""))
 
 gt2.orig <- unlist(list.list.gt2.coeff[[1]], recursive = FALSE)
 gt2.new <- unlist(list.list.gt2.coeff[[2]], recursive = FALSE)
@@ -296,34 +296,8 @@ Both distributions center around zero, as is the statistical expectation. Upon c
 
 ### Framing Survey {#ordblock-results-framing}
 
+Put text here
 
-<!-- Table from 1 placebo run only
 
-```{r results='asis', echo=FALSE}
-
-list.test.ols.trump <- list()
-lm.out <- list()
-for (i in 1:2){
-  list.test.ols.trump[[i]] <- readRDS(paste("data/list_test_ols_trump[[", i, "]].rds", sep = ""))
-  lm.out[[i]] <- lm(feel.trump ~ group + dem + rep + male + white + black + hisp + income.num + age, data = list.test.ols.trump[[i]])
-}
-
-stargazer(lm.out[[1]], lm.out[[2]], 
-          header = FALSE,
-          title = "OLS After Blocking on Education into 2 Treatment Groups",
-          dep.var.labels   = "Feeling Thermometer Trump",
-          column.labels = c("Original Educ Categories", "OPM Educ Categories"),
-          model.numbers = FALSE,
-          single.row = TRUE,
-          align = TRUE,
-          star.cutoffs = NA,
-          omit.table.layout = "n",
-          label = "ols-trump",
-          covariate.labels = c("Group T2", "Dem", "Rep", "Male", "White", "Black", "Hisp", "Inc", "Age"))
-
-```
-
-We can see that the differing education categories used for blocking affect the treatment group coefficients, which actually switch signs (`r unname(round(lm.out[[1]]$coefficients[2], digits=3))` v. `r unname(round(lm.out[[2]]$coefficients[2], digits=3))`). 
--->
 
 

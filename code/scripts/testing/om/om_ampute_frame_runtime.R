@@ -1,8 +1,8 @@
 
 # run <- c("jeff", "CO", "mine")
-run <- "CO"
+run <- "mine"
 # number of iterations
-mc.iterations <- 12500
+mc.iterations <- 4
 
 library(dplyr)
 library(hot.deck)
@@ -34,35 +34,51 @@ if(run == "CO"){
 
 # Make all needed columns numeric/integer (needed for hot.deck())
 df <- mutate(df,
-                  Dem = ifelse(pid == "Democrat", 1, 0),
-                  Rep = ifelse(pid == "Republican", 1, 0),
-                  Ind = ifelse(pid == "Independent", 1, 0),
-                  Cons = ifelse(ideol == "Conservative", 1, 0),
-                  Lib = ifelse(ideol == "Liberal", 1, 0),
-                  Black = ifelse(race == "Black or African-American", 1, 0),
-                  Hisp = ifelse(race == "Hispanic", 1, 0),
-                  White = ifelse(race == "White", 1, 0),
-                  Arab = ifelse(race == "Arabic", 1, 0),
-                  Asian = ifelse(race == "Asian", 1, 0),
-                  Female = ifelse(gender == "Female", 1, 0),
-                  Male = ifelse(gender == "Male", 1, 0),
-                  Empl = ifelse(empl == "Employed full time outside of the home" |
-                                  empl == "Employed part time outside of the home", 1, 0),
-                  Unempl = ifelse(empl == "Unemployed", 1, 0),
-                  Ret = ifelse(empl == "Retired", 1, 0),
-                  Stud = ifelse(empl == "Student", 1, 0)
-                  )
+             Dem = ifelse(pid == "Democrat", 1, 0),
+             Rep = ifelse(pid == "Republican", 1, 0),
+             Ind = ifelse(pid == "Independent", 1, 0),
+             Conservative = ifelse(ideol == "Conservative", 1, 0),
+             Liberal = ifelse(ideol == "Liberal", 1, 0),
+             Moderate = ifelse(ideol == "Something else", 1, 0),
+             Black = ifelse(race == "Black or African-American", 1, 0),
+             Hisp = ifelse(race == "Hispanic", 1, 0),
+             White = ifelse(race == "White", 1, 0),
+             Arab = ifelse(race == "Arabic", 1, 0),
+             Asian = ifelse(race == "Asian", 1, 0),
+             Female = ifelse(gender == "Female", 1, 0),
+             Male = ifelse(gender == "Male", 1, 0),
+             Empl = ifelse(empl == "Employed full time outside of the home" |
+                             empl == "Employed part time outside of the home", 1, 0),
+             Unempl = ifelse(empl == "Unemployed", 1, 0),
+             Ret = ifelse(empl == "Retired", 1, 0),
+             Stud = ifelse(empl == "Student", 1, 0)
+             )
+
+names(df)[names(df) == "official"] <- "Official"
+names(df)[names(df) == "media"] <- "Media"
+names(df)[names(df) == "part"] <- "Participation"
+
 
 
 # Select needed columns and save complete data under a different name
 # interest: following public affairs (ordinal, 4 levels)
 # media: media consumption (numeric, accumulative count of activities)
 # part: political participation (numeric, accumulative count of activities)
-df_true <- df[, c("Dem", "Rep", "Ind", "Cons", "Lib", "Black", "Hisp",         
-                                       "White", "Asian", "Female", "Male", "Empl", "Unempl",        
-                                       "Ret", "Stud", "interest", "media", "part", "inc",           
-                                       "age", "educ")]                                              
+df_true <- df[, c("Dem", "Rep", "Ind", "Conservative", "Liberal", 
+                  "Black", "Hisp", "White", "Asian", "Female", "Male", 
+                  "Empl", "Unempl", "Ret", "Stud", "Official", "Media", 
+                  "Participation", "interest", "inc", "age", "educ")]
+# I'm not including "Moderate" because it returns NA in the correlation matrix
+# I'm not including "Arab" because it's perfectly collinear with another variable
 
+
+
+# take a sample of 1000 observations, then save it, to try to get around the CO RAM collapses
+# set.seed(143)
+# df_true$educ %>% unique %>% length
+# framing_1000 <- sample(nrow(df_true), 1000, replace = TRUE) %>% df_true[.,]
+# framing_1000$educ %>% unique %>% length
+# saveRDS(framing_1000, here("data", "framing", "framing_1000.rds"))
 
 # identify and discard highly collinear variables
 coll.var <- df_true %>% cor() %>% abs() %>% findCorrelation(., cutoff = .7) %>% sort()         

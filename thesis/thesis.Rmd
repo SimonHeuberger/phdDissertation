@@ -46,6 +46,8 @@ if(!require(randomizr))
   install.packages("randomizr", repos = "http://cran.rstudio.com")
 if(!require(forcats))
   install.packages("forcats", repos = "http://cran.rstudio.com")
+if(!require(magrittr))
+  install.packages("magrittr", repos = "http://cran.rstudio.com")
 library(devtools)
 library(stargazer)
 library(ggplot2)
@@ -54,6 +56,9 @@ require(gridExtra)
 library(blockTools)
 library(randomizr)
 library(forcats)
+library(magrittr)
+options(scipen=999) # turn off scientific notation (e.g. e-04)
+
 
 ```
 

@@ -109,61 +109,95 @@ Ordinal hot deck imputation:
 
 ### Amputation {#ordmiss-theory-ampute}
 
-`ampute()` from `mice` and my own function. Explain my own function here.
+`ampute()` from `mice` and my own functions. Explain all here.
 
 
 ## Data {#ordmiss-data}
 
-We test the accuracy of five multiple imputation methods (`hd.ord`, `hot.deck`, `amelia`, `mice`, `na.omit`) on several data sets (old framing experiment, ANES, framing survey). NAs are inserted with two amputation methods (`ampute`, `own.NA`).
-
-Old framing experiment: 
--- 1003 observations
--- 5 variables (`Dem`, `Female`, `income`, `age`, `interest`)
--- 20/50/80 percent NAs inserted MAR
--- 20/50/80 imputations
--- 12,500/12,462/10,566 iterations
--- Run with R 3.6.2 on MacBook Pro (Retina, 13-inch, Early 2015), 2.7 GHz Intel Core i5, 16 GB, macOS 10.13.6
-ANES:
--- 3,223 observations
--- 5 variables(`Dem`, `Female`, `income`, `age`, `interest`)
-- 20 percent NAs inserted MAR
-- 20 imputations
--- 2,396 iterations
-Framing survey:
---
-
-
-
 ## Results {#ordmiss-results}
 
-## Accuracy of Imputation Methods {#ordmiss-results-acc}
+## Accuracy of Imputation Methods {#ordmiss-results-acc-stand}
 
-Tables \ref{amp.old.frame.acc}, \ref{amp.bycases.old.frame.acc}, \ref{amp.anes.acc}, and \ref{ownNA.old.frame.acc} give an overview of the accuracy of each imputation method. Table \ref{amp.old.frame.acc} uses ampute, the old framing data, and inserts NAs at 20, 50, and 80 percent. For reasons of brevity, all following tables insert 20 percent NAs only. Table \ref{amp.bycases.old.frame.acc} uses ampute with the `bycases` option set to `TRUE` and the old framing data. Table \ref{amp.anes.acc} uses ampute and ANES 2016 data. Table \ref{ownNA.old.frame.acc} uses my own function to insert NAs and the old framing data.
+We test the accuracy of five multiple imputation methods (`hd.ord`, `hd.norm`, `amelia`, `mice`, `na.omit`) on several data sets (old framing experiment, ANES, framing survey). `hd.ord` is my ordinal multiple hot decking function. `hd.norm` is Gill and Cranmer's multiple hot decking function. `amelia` and `mice` are used in its default settings unless specified otherwise. The 'old framing experiment' consists of data from a framing experiment I ran on MTurk on 2017. ANES refers to the 2016 ANES data. The framing survey data will come from the eventual framing experiment I will run with Lucid (and is thus obviously not included in this write-up right now). NAs are inserted with three amputation methods (`ampute`, `own.NA`, `own.NA.rows`) and some variations of the options within these methods. `ampute` is included in the `Amelia` package. `own.NA` and and `own.NA.rows` are functions I have written, the details of which will be explained below.
 
-### With `ampute()` {#ordmiss-results-acc-ampute}
+The tables below provide an overview of the accuracy of each imputation method. All difference values are absolute values, since we care about the closeness of each method to the truth, regardless of whether closeness has a positive or negative value. The sign thus does not matter here. The analyses use differing data sets, differing missing data mechanisms, differing amputation functions, and differing settings for the respective amputation functions.
+
+Table \ref{amp.oldframe.acc} uses `ampute`, the old framing data (n = 1,003), and inserts NAs MAR for 5 variables at 20, 50, and 80 percent for 12,500, 12,462, and 10,566 iterations.
+
+Table \ref{amp.anes.acc} uses `ampute`, the 2016 ANES data (n = 3,223), and inserts NAs MAR for 5 variables at 20 percent for 2,396 iterations.
+
+Table \ref{amp.oldframe.bycases.acc} uses `ampute` with the options `bycases=FALSE` and `cont=FALSE`, the old framing data (n = 1,003), and inserts NAs MAR for 5 variables at 20 percent for 9,644 iterations.
+
+Table \ref{amp.mnar.acc} uses `ampute` and inserts NAs MNAR for 5 variables at 20 percent. This is done for the old framing data (n = 1,003) for 12,499 iterations and for the 2016 ANES data (n = 3,223) for 2,351 iterations. 
+
+Table \ref{own.NA.oldframe.acc} uses my own function `own.NA`, the old framing data (n = 1,003), and inserts NAs MAR for 3 variables at 20 percent for 12,324 iterations.
+
+Table \ref{own.NA.rows.oldframe.acc} uses my own function `own.NA.rows`, the old framing (n = 1,003) data, and inserts NAs MAR for 17 variables at 20 percent for 10,000 iterations.
+
+The number of iterations differs due to the percentage of missingness, the amputation function used, the `ampute` options, the missingness mechanism, and the levels of `education` in each data set. `education` is crucial to these analyes as the point of conducting them is to test the performance of `hd.ord`; a multiple hot decking function designed specifically for ordinal variables. `hd.ord` in turn depends on another specifically designed function called `OPMOrd`. `OPMOrd` applies `polr()` to an ordinal variable (here `education`) to estimate the underlying latent continuous variable. `polr()` can only be run on data without missing variables, which means the amputation process sometimes leads to fewer levels of `education` levels in some amputation iterations. Since a comparison of data with differing variable levels makes little sense, these iterations are discarded. That in turn leads to differing numbers of iterations across analyses.
+
+
 
 ```{r include=FALSE}
-amp.old.frame.20 <- read.csv("data/framing.results.6var.1003n.12500it.20perc.csv") %>% .[,-1]
-amp.old.frame.50 <- read.csv("data/framing.results.6var.1003n.12462it.50perc.csv") %>% .[,-1]
-amp.old.frame.80 <- read.csv("data/framing.results.6var.1003n.10566it.80perc.csv") %>% .[,-1]
-colnames(amp.old.frame.20) <- c("Method", "Variable", "Value20", "Diff20")
-colnames(amp.old.frame.50) <- c("Method", "Variable", "Value50", "Diff50")
-colnames(amp.old.frame.80) <- c("Method", "Variable", "Value80", "Diff80")
-acc <- cbind(amp.old.frame.20, amp.old.frame.50[,3:4], amp.old.frame.80[,3:4])
-stargazer(acc, 
+# function to make all diff columns absolute values
+abs.diff <- function(df){
+  df$diff <- df$diff %>% abs
+  return(df)
+}
+
+# function to drop leading zeroes in numeric columns in data frames (adapted
+# from f_num())
+drop.zero <- function (df, digits = 4, p, s, pad.char = NA, ...){
+    library(dplyr)
+    ldots <- list(...)
+    if (length(ldots) > 0) {
+        if (!is.null(ldots[["prefix"]]) & missing(p)) 
+            p <- ldots[["prefix"]]
+        if (!is.null(ldots[["suffix"]]) & missing(s)) 
+            s <- ldots[["suffix"]]
+    }
+    x <- dplyr::select_if(df, is.numeric)
+    for(i in 1:ncol(x)){
+      x[,i] <- round(as.numeric(x[,i]), digits)
+      x[,i] <- sprintf(paste0("%.", digits, "f"), x[,i])
+      x[,i] <- gsub("^0(?=\\.)|(?<=-)0", "", x[,i], perl = TRUE)
+    }
+    df[, colnames(x)] <- x
+    return(df)
+}
+
+```
+
+
+### With Standard `ampute()` {#ordmiss-results-acc-ampute}
+
+
+```{r include=FALSE}
+amp.oldframe.20 <- read.csv("data/framing/framing.results.6var.1003n.12500it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+amp.oldframe.50 <- read.csv("data/framing/framing.results.6var.1003n.12462it.50perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+amp.oldframe.80 <- read.csv("data/framing/framing.results.6var.1003n.10566it.80perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+levels(amp.oldframe.20$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+levels(amp.oldframe.50$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+levels(amp.oldframe.80$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(amp.oldframe.20) <- c("Method", "Variable", "Value", "Diff")
+colnames(amp.oldframe.50) <- c("Method", "Variable", "Value", "Diff")
+colnames(amp.oldframe.80) <- c("Method", "Variable", "Value", "Diff")
+amp.oldframe.acc <- cbind(amp.oldframe.20, amp.oldframe.50[,3:4], amp.oldframe.80[,3:4])
+stargazer(amp.oldframe.acc, 
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
-          title = "Accuracy of Multiple Imputation Methods (ampute, old framing data)",
-          label = "amp.old.frame.acc")
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods (ampute, old framing data (n = 1,003))",
+          label = "amp.oldframe.acc")
 
 ```
 
 
 \begin{table}[!htbp] \centering 
-  \caption{Accuracy of Multiple Imputation Methods (ampute, old framing data)} 
-  \label{amp.old.frame.acc} 
+  \caption{Accuracy of Multiple Imputation Methods (ampute, old framing data (n = 1,003))} 
+  \label{amp.oldframe.acc} 
 \begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
@@ -175,113 +209,446 @@ stargazer(acc,
 \cline{3-4} 
 \cline{5-6} 
 \cline{7-8}  \\[-1.8ex]
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0001 & 0.467 & 0.0002 & 0.468 & 0.001 \\ 
-\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Dem} & 0.467 & 0.0005 & 0.468 & 0.001 & 0.469 & 0.002 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & 0.466 & -0.0001 & 0.466 & -0.0001 & 0.467 & 0.0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & 0.466 & -0.0001 & 0.467 & 0 & 0.467 & 0.0003 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & 0.434 & -0.033 & 0.390 & -0.077 & 0.344 & -0.123 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & 3.093 & 0 & 3.093 & 0 & 3.093 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & 3.086 & -0.006 & 3.070 & -0.022 & 3.053 & -0.040 \\ 
-\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{inc} & 3.080 & -0.013 & 3.052 & -0.040 & 3.032 & -0.061 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & 3.092 & -0.0002 & 3.093 & 0.0001 & 3.093 & 0.001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & 3.094 & 0.001 & 3.095 & 0.002 & 3.096 & 0.003 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & 2.977 & -0.115 & 2.826 & -0.267 & 2.667 & -0.425 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 37.925 & 0 & 37.925 & 0 & 37.925 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 37.638 & -0.287 & 37.097 & -0.828 & 36.664 & -1.261 \\ 
-\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{age} & 37.565 & -0.360 & 36.938 & -0.988 & 36.528 & -1.397 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 37.924 & -0.001 & 37.923 & -0.002 & 37.928 & 0.003 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 37.928 & 0.003 & 37.931 & 0.005 & 37.934 & 0.009 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 36.674 & -1.251 & 35.081 & -2.844 & 33.560 & -4.365 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{White} & 0.772 & 0 & 0.772 & 0 & 0.772 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{White} & 0.774 & 0.002 & 0.777 & 0.006 & 0.782 & 0.010 \\ 
-\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{White} & 0.774 & 0.002 & 0.778 & 0.006 & 0.782 & 0.010 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{White} & 0.772 & 0 & 0.772 & 0 & 0.772 & -0.0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{White} & 0.772 & -0.0001 & 0.771 & -0.0005 & 0.771 & -0.001 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{White} & 0.745 & -0.026 & 0.698 & -0.074 & 0.632 & -0.140 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Female} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Female} & 0.466 & -0.0004 & 0.465 & -0.002 & 0.464 & -0.002 \\ 
-\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{Female} & 0.466 & -0.001 & 0.464 & -0.003 & 0.462 & -0.004 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Female} & 0.467 & 0 & 0.467 & 0 & 0.467 & 0 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Female} & 0.467 & 0.0001 & 0.467 & 0.0002 & 0.467 & 0.0003 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Female} & 0.429 & -0.037 & 0.377 & -0.089 & 0.323 & -0.144 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 3.216 & 0 & 3.216 & 0 & 3.216 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 3.199 & -0.017 & 3.171 & -0.045 & 3.146 & -0.070 \\ 
-\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{interest} & 3.197 & -0.019 & 3.162 & -0.054 & 3.135 & -0.081 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 3.217 & 0.0003 & 3.216 & 0.0001 & 3.216 & -0.0002 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 3.216 & 0 & 3.216 & -0.0002 & 3.216 & -0.001 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 3.149 & -0.067 & 3.039 & -0.178 & 2.897 & -0.320 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{Dem} & .4666 & 0 & .4666 & 0 & .4666 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{Dem} & .4667 & .0001 & .4668 & .0002 & .4675 & .0009 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{Dem} & .4671 & .0005 & .4678 & .0012 & .4686 & .0020 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{Dem} & .4665 & .0001 & .4665 & .0001 & .4667 & .0001 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{Dem} & .4665 & .0001 & .4666 & 0 & .4669 & .0003 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{Dem} & .4339 & .0327 & .3898 & .0768 & .3438 & .1228 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{inc} & 3.0927 & 0 & 3.0927 & 0 & 3.0927 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{inc} & 3.0864 & .0063 & 3.0703 & .0224 & 3.0531 & .0396 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{inc} & 3.0798 & .0129 & 3.0524 & .0403 & 3.0319 & .0608 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{inc} & 3.0925 & .0002 & 3.0928 & .0001 & 3.0933 & .0006 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{inc} & 3.0937 & .0010 & 3.0949 & .0022 & 3.0956 & .0029 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{inc} & 2.9773 & .1154 & 2.8260 & .2667 & 2.6674 & .4253 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{age} & 37.9252 & 0 & 37.9252 & 0 & 37.9252 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{age} & 37.6382 & .2870 & 37.0970 & .8282 & 36.6639 & 1.2613 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{age} & 37.5650 & .3602 & 36.9376 & .9876 & 36.5279 & 1.3973 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{age} & 37.9238 & .0014 & 37.9234 & .0018 & 37.9278 & .0026 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{age} & 37.9281 & .0029 & 37.9305 & .0053 & 37.9345 & .0093 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{age} & 36.6743 & 1.2509 & 35.0811 & 2.8441 & 33.5601 & 4.3651 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{White} & .7717 & 0 & .7717 & 0 & .7717 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{White} & .7738 & .0021 & .7772 & .0055 & .7815 & .0098 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{White} & .7742 & .0025 & .7778 & .0061 & .7821 & .0104 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{White} & .7717 & 0 & .7717 & 0 & .7716 & .0001 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{White} & .7716 & .0001 & .7712 & .0005 & .7709 & .0008 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{White} & .7453 & .0264 & .6980 & .0737 & .6321 & .1396 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{Female} & .4666 & 0 & .4666 & 0 & .4666 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{Female} & .4662 & .0004 & .4650 & .0016 & .4641 & .0025 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{Female} & .4658 & .0008 & .4638 & .0028 & .4624 & .0042 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{Female} & .4666 & 0 & .4666 & 0 & .4666 & 0 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{Female} & .4667 & .0001 & .4668 & .0002 & .4669 & .0003 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{Female} & .4293 & .0373 & .3774 & .0892 & .3231 & .1435 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{interest} & 3.2164 & 0 & 3.2164 & 0 & 3.2164 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{interest} & 3.1990 & .0174 & 3.1712 & .0452 & 3.1462 & .0702 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{interest} & 3.1970 & .0194 & 3.1623 & .0541 & 3.1353 & .0811 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{interest} & 3.2167 & .0003 & 3.2165 & .0001 & 3.2162 & .0002 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{interest} & 3.2164 & 0 & 3.2162 & .0002 & 3.2158 & .0006 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{interest} & 3.1490 & .0674 & 3.0386 & .1778 & 2.8969 & .3195 \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table} 
 
 
-As Table \ref{amp.old.frame.acc} shows, `amelia` performs best, followed by `mice`. `hd.ord` outperforms `hd.norm.orig`. `Amelia` is better than `mice` for `inc` and `age`. It is also better for `interest`, except for 20 percent NAs. For `Dem`, `Female`, and `White`, `amelia` edges ahead, though `mice` sometimes is ahead by one unit or so in the fourth decimal. The differences between the methods are less pronounced for the binary variables and most visible in the nominal ones. It is worst for `age`, which has the most unique values. As the percentage of NAs increases, the estimates are further off from the true means. This is to be expected for all methods, but it affects `hd.ord` and `hot.deck` more than `amelia` and `mice`.
+Table \ref{amp.oldframe.acc} uses ampute, the old framing data (n = 1,003), and inserts NAs at 20, 50, and 80 percent MAR. `amelia` performs best, followed by `mice`. `hd.ord` outperforms `hd.norm`. `Amelia` is better than `mice` for `inc`, `age`, and `interest` (except for 20 percent NAs for the latter). For `Dem`, `Female`, and `White`, `Amelia` is also ahead, though `mice` sometimes edges it by one unit or so in the fourth decimal. The differences between the methods are less pronounced for the binary variables and most visible in the nominal ones. It is worst for `age`, which has the most unique values. As the percentage of NAs increases, the estimates are further off from the true means. This is to be expected for all methods, but it affects `hd.ord` and `hd.norm` more than `amelia` and `mice`.
 
-These results are confirmed when `ampute()` is run with the options `bycoases=FALSE` and `cont=FALSE`, as shown in Table \ref{amp.bycases.old.frame.acc}, and when `ampute()` is run on the 2016 ANES data, as shown in Table \ref{amp.anes.acc}. It is noticeable, however, that the differences in method performance are somewhat reduced with the ANES data. This is likely due to the increased number of observations in the data.
+\clearpage
 
-
-```{r results='asis', echo=FALSE}
-amp.bycases.old.frame <- read.csv("data/bycases=FALSE_cont=FALSE/framing.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1]
-colnames(amp.bycases.old.frame) <- c("Method", "Variable", "Value", "Diff")
-stargazer(amp.bycases.old.frame, 
-          summary = FALSE,
-          align = TRUE,
-          header = FALSE,
-          rownames = FALSE,
-          title = "Accuracy of Multiple Imputation Methods (ampute with bycases, old framing data)",
-          label = "amp.bycases.old.frame.acc")
-
-```
+These results are overall confirmed when `ampute()` is run on the 2016 ANES data (n = 3,223), as shown in Table \ref{amp.anes.acc}. It is noticeable, however, that the differences in method performance are somewhat reduced with the ANES data (n = 3,223). This is likely due to the increased number of observations in the data. For reasons of brevity, this analysis and all further analyses insert 20 percent NAs only. 
 
 
 ```{r results='asis', echo=FALSE}
-amp.anes <- read.csv("data/anes.results.5var.3223n.2396it.20perc.csv") %>% .[,-1]
+amp.anes <- read.csv("data/anes/anes.results.5var.3223n.2396it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+levels(amp.anes$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+# change "Male" to "Female" to make table automation easier (and it makes no substantive difference)
+levels(amp.anes$variable) <- c("age", "Dem", "inc", "interest", "Female")
 colnames(amp.anes) <- c("Method", "Variable", "Value", "Diff")
 stargazer(amp.anes, 
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
-          title = "Accuracy of Multiple Imputation Methods (ampute, ANES)",
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods (ampute, ANES 2016 (n = 3,223))",
           label = "amp.anes.acc")
 
 ```
 
 
+### With Modified `ampute()` {#ordmiss-results-acc-ampute-mod}
 
-### With My Own Amputation Method {#ordmiss-results-acc-ownNA}
+Table \ref{amp.oldframe.bycases.acc} shows the results of using `ampute()` with the options `bycases=FALSE` and `cont=FALSE` on the old framing data (n = 1,003). `hd.ord` overall performs worse than the analyses presented in Tables \ref{amp.oldframe.acc} and \ref{amp.anes.acc} above.
+
 
 ```{r results='asis', echo=FALSE}
-own.NA.old.frame <- read.csv("data/own.na/framing.results.3var.1003n.12324it.20perc.csv") %>% .[,-1]
-colnames(own.NA.old.frame) <- c("Method", "Variable", "Value", "Diff")
-stargazer(own.NA.old.frame, 
+amp.oldframe.bycases <- read.csv("data/framing/bycases=FALSE_cont=FALSE/framing.bycases.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+levels(amp.oldframe.bycases$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(amp.oldframe.bycases) <- c("Method", "Variable", "Value", "Diff")
+stargazer(amp.oldframe.bycases, 
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
-          title = "Accuracy of Multiple Imputation Methods (ownNA, old framing data)",
-          label = "ownNA.old.frame.acc")
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods (ampute with bycases, old framing data (n = 1,003))",
+          label = "amp.oldframe.bycases.acc")
+
+```
+
+\clearpage
+
+```{r include=FALSE}
+amp.oldframe.mnar <- read.csv("data/framing/mnar/framing.mnar.results.5var.1003n.12499it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+amp.anes.mnar <- read.csv("data/anes/mnar/anes.mnar.results.5var.3223n.2351it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+# change "Male" to "Female" to make table automation easier (and it makes no substantive difference)
+levels(amp.anes.mnar$variable) <- c("age", "Dem", "inc", "interest", "Female")
+levels(amp.oldframe.mnar$method) <- levels(amp.anes.mnar$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(amp.oldframe.mnar) <- colnames(amp.anes.mnar) <- c("Method", "Variable", "Value", "Diff")
+amp.mnar.acc <- cbind(amp.oldframe.mnar, amp.anes.mnar[,3:4])
+colnames(amp.mnar.acc) <- c("Method", "Variable", "ValueF", "DiffF", "ValueA", "DiffA")
+# to make the in-text citations shorter
+diffF <- amp.mnar.acc$DiffF
+diffA <- amp.mnar.acc$DiffA
+meth <- amp.mnar.acc$Method
+varb <-  amp.mnar.acc$Variable
+stargazer(amp.mnar.acc, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods (ampute with MNAR)",
+          label = "amp.mnar.acc")
 
 ```
 
 
-Table \ref{ownNA.old.frame.acc} shows that method performance does not change when a different function to create NAs is applied. Note that the number of amputed and imputed variables is lower here, as my method depends on other variables to create NAs. However, it seems my method is closer to being MCAR than MAR, as `na.omit` outperforms other methods here.
+Table \ref{amp.mnar.acc} shows the results of using `ampute()` with MNAR as the missing data mechanism on the old framing (n = 1,003) and the 2016 ANES data (n = 3,223). The results are in line with those presented in Tables \ref{amp.oldframe.acc} and \ref{amp.anes.acc}. It is noteworthy, however, that `na.omit` is overall much closer to the other methods. It actually performs better than `hd.norm` for `age` (`r diffF[meth == "na.omit" & varb == "age"]` vs. `r diffF[meth == "hd.norm" & varb == "age"]`) in the old framing data (n = 1,003) and is the best method for `interest` for the ANES data (n = 3,223) (`r diffA[meth == "na.omit" & varb == "interest"]`).
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods (ampute with MNAR)} 
+  \label{amp.mnar.acc} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{4}{c}{Data} \\ 
+\hline \\[-1.8ex] 
+ & & \multicolumn{2}{c}{Old Framing (n = 1,003)} & \multicolumn{2}{c}{ANES (n = 3,223)}\\
+\cline{3-6}\\[-1.8ex]
+ & & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff}\\
+\cline{3-4} 
+\cline{5-6}\\[-1.8ex]
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{Dem} & .4666 & 0 & .3549 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{Dem} & .4630 & .0036 & .3527 & .0022 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{Dem} & .4629 & .0037 & .3527 & .0022 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{Dem} & .4619 & .0047 & .3526 & .0023 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{Dem} & .4629 & .0037 & .3526 & .0023 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{Dem} & .4456 & .0210 & .3395 & .0154 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{inc} & 3.0927 & 0 & 15.5740 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{inc} & 3.0357 & .0570 & 15.3948 & .1792 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{inc} & 3.0298 & .0629 & 15.3922 & .1818 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{inc} & 3.0469 & .0458 & 15.4136 & .1604 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{inc} & 3.0486 & .0441 & 15.4137 & .1603 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{inc} & 3.0210 & .0717 & 15.3494 & .2246 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{age} & 37.9252 & 0 & 49.0400 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{age} & 37.2342 & .6910 & 48.7292 & .3108 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{age} & 37.1753 & .7499 & 48.7378 & .3022 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{age} & 37.6363 & .2889 & 48.7809 & .2591 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{age} & 37.6411 & .2841 & 48.7818 & .2582 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{age} & 37.2016 & .7236 & 48.5130 & .5270 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{Female} & .4666 & 0 & .4682 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{Female} & .4520 & .0146 & .4539 & .0143 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{Female} & .4520 & .0146 & .4539 & .0143 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{Female} & .4524 & .0142 & .4541 & .0141 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{Female} & .4526 & .0140 & .4541 & .0141 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{Female} & .4445 & .0221 & .4521 & .0161 \\ 
+\multicolumn{1}{l}{true} & \multicolumn{1}{l}{interest} & 3.2164 & 0 & 2.2197 & 0 \\ 
+\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{interest} & 3.1821 & .0343 & 2.1956 & .0241 \\ 
+\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{interest} & 3.1797 & .0367 & 2.1954 & .0243 \\ 
+\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{interest} & 3.2028 & .0136 & 2.1965 & .0232 \\ 
+\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{interest} & 3.2025 & .0139 & 2.1965 & .0232 \\ 
+\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{interest} & 3.1768 & .0396 & 2.2038 & .0159 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+```{r include=FALSE}
+# I don't want to risk referring to the wrong table by mistake, so I'm deleting
+# the objects for referral after I no longer refer to them
+rm(diffF, diffA, meth, varb) 
+```
+
+\clearpage
+
+
+### With My Own Amputation Methods {#ordmiss-results-acc-own}
+
+Table \ref{own.NA.oldframe.acc} shows the results of using my own function to insert NAs MAR into the old framing data (n = 1,003), `own.NA()`. In general, something is MAR if you ampute values in column A based on values in column B, e.g. if you ampute the values for `age` where `income = 1` and where `income = 5`. `own.NA()` applies this procedure for any combination of columns. Here, the chosen columns to be amputed are `Dem`, `age`, and `interest`. The chosen columns the amputations depend on are `inc`, `Female`, and `Black`. The function samples 20 percent of observations for each unique value of `inc`. For those observations, the values of `Dem` are amputed. Accordingly, the function samples 20 percent of observations for each unique value of `Female`. For those observations, the values of `age` are amputed. The same occurs for `Black` and `interest`. The resulting data frame is then imputed. Note that the number of amputed and imputed variables is generally lower, as a pair of variables is needed to ampute one variable. As Table \ref{own.NA.oldframe.acc} shows, `hd.ord` does not perform particularly well. It beats `hd.norm` for all three variables but falls considerably short of `amelia` and `mice`. It is notable, however, that my method seems closer to being MCAR than MAR, as `na.omit` performs well and sometimes even outperforms other methods, for instance for `interest`. It is thus questionable how much use `own.NA()` is in its current form.
+
+
+```{r results='asis', echo=FALSE}
+own.NA.oldframe <- read.csv("data/framing/own.na/framing.own.na.results.3var.1003n.12324it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+levels(own.NA.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(own.NA.oldframe) <- c("Method", "Variable", "Value", "Diff")
+stargazer(own.NA.oldframe, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods (own.NA, old framing data (n = 1,003))",
+          label = "own.NA.oldframe.acc")
+
+```
+
+
+\clearpage
+
+`ampute()` seems to spread NAs evenly across columns. This means that observations are mostly complete, with not more than one or two missing values. I wrote another function, `own.NA.rows()`, that changes this. `own.NA.rows()` inserts missingness for a percentage of observations across all columns except `education`. This means that the majority of observations are complete but a percentage of observations misses data on almost all variables. Table \ref{own.NA.rows.oldframe.acc} shows the results, with the missingess percentage set to 20.
+
+
+```{r include=FALSE}
+own.NA.rows.oldframe <- read.csv("data/framing/own.na.rows/framing.own.na.rows.results.17var.1003n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+levels(own.NA.rows.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(own.NA.rows.oldframe) <- c("Method", "Variable", "Value", "Diff")
+# to make the in-text citations shorter
+diff <- own.NA.rows.oldframe$Diff
+meth <- own.NA.rows.oldframe$Method
+varb <- own.NA.rows.oldframe$Variable
+stargazer(own.NA.rows.oldframe, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods (own.NA.rows, old framing data (n = 1,003))",
+          label = "own.NA.rows.oldframe.acc")
+
+```
+
+
+\ssp
+
+\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+  \caption{\textit{Accuracy of Multiple Imputation Methods (own.NA.rows, old framing data (n = 1,003))}} 
+  \label{own.NA.rows.oldframe.acc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & .4666 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & .4666 & 0 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & .4670 & .0004 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Ind} & .2802 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Ind} & .2795 & .0007 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Ind} & .2817 & .0015 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Cons} & .2832 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Cons} & .2830 & .0002 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Cons} & .2823 & .0009 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Lib} & .5174 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Lib} & .5182 & .0008 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Lib} & .5173 & .0001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & .0702 & .0004 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & .0731 & .0033 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & .0546 & .0002 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & .0589 & .0041 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{White} & .7712 & .0005 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{White} & .7613 & .0104 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Asian} & .0812 & .0004 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Asian} & .0809 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Asian} & .0835 & .0027 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Female} & .4666 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Female} & .4673 & .0007 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Unempl} & .1615 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Unempl} & .1610 & .0005 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Unempl} & .1624 & .0009 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Ret} & .0508 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Ret} & .0506 & .0002 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Ret} & .0508 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Ret} & .0509 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Ret} & .0505 & .0003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Ret} & .0509 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & .0446 & .0007 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & .0466 & .0027 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 3.2164 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 3.2161 & .0003 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{interest} & 3.2163 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 3.2164 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 3.2122 & .0042 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 3.2163 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{media} & 1.7268 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{media} & 1.7294 & .0026 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{media} & 1.7270 & .0002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{media} & 1.7270 & .0002 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{media} & 1.7259 & .0009 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{media} & 1.7269 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{part} & .9575 & .0014 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{part} & .9560 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{part} & .9546 & .0015 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & 3.0927 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & 3.0906 & .0021 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & 3.0949 & .0022 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 37.9252 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 37.9000 & .0252 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{age} & 37.9250 & .0002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 37.9243 & .0009 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 37.8789 & .0463 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 37.9250 & .0002 \\ 
+\hline \\[-1.8ex] 
+\end{longtable} 
+
+\dsp
+
+`hd.norm`, `amelia`, and `na.omit` perform very well. No difference to the true value for any variable is greater than `r diff[meth == "amelia" & varb == "age"]` and most are `r diff[meth == "hd.norm" & varb == "media"]`. 
+
+`hd.ord` performs on similar levels except for the nominal variables (`media` (`r diff[meth == "hd.ord" & varb == "media"]`), `part` (`r diff[meth == "hd.ord" & varb == "part"]`), `inc` (`r diff[meth == "hd.ord" & varb == "inc"]`), `age` (`r diff[meth == "hd.ord" & varb == "age"]`)).
+
+Somewhat surprisingly, `mice` performs worst overall for many variables (`Ind` (`r diff[meth == "mice" & varb == "Ind"]`), `Black` (`r diff[meth == "mice" & varb == "Black"]`), `Hisp` (`r diff[meth == "mice" & varb == "Hisp"]`), `White` (`r diff[meth == "mice" & varb == "White"]`), `Asian` (`r diff[meth == "mice" & varb == "Asian"]`), `Stud` (`r diff[meth == "mice" & varb == "Stud"]`), `interest` (`r diff[meth == "mice" & varb == "interest"]`), `part` (`r diff[meth == "mice" & varb == "part"]`), `inc` (`r diff[meth == "mice" & varb == "inc"]`), `age` (`r diff[meth == "mice" & varb == "age"]`)) by some margin.
+
+It is also noteable how often the difference amounts to zero and how well `na.omit` performs overall.
+
+
+```{r include=FALSE}
+# I don't want to risk referring to the wrong table by mistake, so I'm deleting
+# the objects for referral after I no longer refer to them
+rm(diff, meth, varb) 
+```
+
+
 
 
 ### Overall Table Analysis So Far
 
-For binary variables (`Dem`, `White`, `Female`, `Male`), `hd.ord` is very close to `amelia` and `mice` for the old framing and the ANES data. The differences here are on the level of the third or fourth decimals for all tested 20 percent NA variations (`bycases`, old framing, ANES) (I am not including `own.na` here for now, since I very likely need to further adjust that function). With increased NA percentages `amelia` and `mice` get worse only very slightly, whereas `hd.ord` and `hd.norm.orig` get progressively worse. This is to be expected, since the latter methods are based on hot decking replacement. In addition, missingness levels of 50 and 80 percent are substantively almost irrelevant.
+This is the summary of all analyses conducted so far, except for the ones with my own functions `own.NA()` and `own.NA.rows()`. The results for these functions showed such a strong performance of `na.omit` that the functions' design needs to be questioned and reworked. `na.omit` should not perform so strongly for a missingness mechanism that is supposed to be MAR, so the functions likely represent a version of MCAR. This puts the usefulness of their imputation results in doubt.
 
-For the nominal variable `age`, `hd.ord` performs much worse with `bycases`. The difference value is on the third and second decimals for `amelia` and `mice`, whereas the value for `hd.ord` is on full digits. There is potentially some slight improvement when comparing the ANES to the old framing data: `amelia` and `mice` show difference values on the third decimals for both, whereas `hd.ord` is on the first decimal for the old framing data and on the second decimal for the ANES data. The ANES data contains more observations and was run for fewer iterations. The `age` variable consists of 58 unique values in the old framing data and 73 unique values in the ANES data.
-
-The other nominal variable, `inc`, seems to confirm this very, very slight trend: `amelia` is on the fourth decimal for the old framing data, with `hd.ord` and `mice` on the third. However, all methods are on the third decimal for the ANES data, with `hd.ord` even showing the same difference value as `mice`. As was the case for `age`, the ANES variable contains more unique values -- `inc` contains 7 unique values in the old framing data but 27 in the ANES data.
-
-For the ordinal variable `interest`, `hd.ord` also appears to get somewhat closer to the performance of `amelia` and `mice`: `mice` is on the full digit zero, `amelia` on the fourth, and `hd.ord` on the second decimal for the old framing data. For the ANES data, `amelia` and `mice` are on the fourth and `hd.ord` on the third decimal. `interest` consists of the same number of unique values (4) in both data sets.
-
-It thus appears that `hd.ord` is getting somewhat slightly closer to the performance of `amelia` and `mice` for the `age`, `inc`, and `interest` variables when we switch from the old framing to the ANES data. This could be due to the higher number of observations and. In the case of `age` and `inc`, the higher number of unique values is also noticeable.
+For all the other analyses, I am setting a 'threshold' of the fourth decimal to determine 'closeness'. This means the performance of `hd.ord` is only considered close to the best-performing method (`amelia` or `mice`) when the difference between the best-performing method and `hd.ord` is no higher than a value in the fourth decimal. 
 
 
+```{r include=FALSE}
+
+# The following collects the differences between hd.ord and amelia/mice
+# (whichever is best) for all variables across the analyses I have done so far
+listed <- list(amp.oldframe.20, amp.anes, amp.oldframe.bycases, amp.anes.mnar, amp.oldframe.mnar)
+datasets <- c("amp.oldframe.20", "amp.anes", "amp.oldframe.bycases", "amp.anes.mnar", "amp.oldframe.mnar")
+vars <- levels(amp.anes.mnar$Variable)
+dfs <- data.frame(matrix(NA, length(datasets), 3))
+colnames(dfs) <- c("Dataset", "Variable", "Diff")
+dfs$Dataset <- datasets
+list.of.dfs <- rep(list(dfs), length(vars))
+
+# make everything numeric (dropping the leading zeroes makes it character),
+# otherwise I can't take absolute values
+for(n in 1:length(datasets)){
+  listed[[n]]$Diff <- listed[[n]]$Diff %>% as.numeric
+}
+
+names(list.of.dfs) <- vars
+
+# save the differences for the best performing method and hd.ord
+for(x in 1:length(vars)){
+  for(n in 1:length(datasets)){
+    list.of.dfs[[vars[x]]]$Diff[n] <- c(listed[[n]]$Diff[listed[[n]]$Method == "mice" & listed[[n]]$Variable == vars[x]] %>% abs,
+                                        listed[[n]]$Diff[listed[[n]]$Method == "amelia" & listed[[n]]$Variable == vars[x]] %>% abs) %>%
+      min %>%
+      - (listed[[n]]$Diff[listed[[n]]$Method == "hd.ord" & listed[[n]]$Variable == vars[x]] %>% abs) %>%
+      abs
+    list.of.dfs[[vars[x]]]$Variable <- rep(vars[x], 5)
+  }
+}
+
+# drop leading zeroes (turns it back into character)
+for(i in 1: length(list.of.dfs)){
+  list.of.dfs[[i]] <- drop.zero(list.of.dfs[[i]])
+}
+
+# to make the in-text citations shorter
+dem <- list.of.dfs[["Dem"]]
+fem <- list.of.dfs[["Female"]]
+inc <- list.of.dfs[["inc"]]
+age <- list.of.dfs[["age"]]
+int <- list.of.dfs[["interest"]]
+
+```
+
+
+
+For `Dem`, `hd.ord` is close for all combinations: Old framing (n = 1,003) ampute standard (identical values), ANES (n = 3,223) MNAR (`r dem$Diff[dem$Dataset == "amp.anes.mnar"]`), framing (n = 1,003) MNAR (`r dem$Diff[dem$Dataset == "amp.oldframe.mnar"]`), ANES (n = 3,223) ampute standard (`r dem$Diff[dem$Dataset == "amp.anes"]`), and framing (n = 1,003) bycases (`r dem$Diff[dem$Dataset == "amp.oldframe.bycases"]`).
+
+For `Female`, `hd.ord` is close for ANES (n = 3,223) MNAR (`r fem$Diff[fem$Dataset == "amp.anes.mnar"]`), ANES (n = 3,223) ampute standard (`r fem$Diff[fem$Dataset == "amp.anes"]`), framing (n = 1,003) ampute standard (`r fem$Diff[fem$Dataset == "amp.anes"]`), and framing (n = 1,003) MNAR (`r fem$Diff[fem$Dataset == "amp.oldframe.mnar"]`). It is not close for framing (n = 1,003) bycases (`r fem$Diff[fem$Dataset == "amp.oldframe.bycases"]`).
+
+For `inc`, `hd.ord` is close for ANES (n = 3,223) ampute standard (`r inc$Diff[inc$Dataset == "amp.anes"]`). It is not close framing (n = 1,003) ampute standard (`r inc$Diff[inc$Dataset == "amp.oldframe.20"]`), framing (n = 1,003) MNAR (`r inc$Diff[inc$Dataset == "amp.oldframe.mnar"]`), and ANES (n = 3,223) MNAR (`r inc$Diff[inc$Dataset == "amp.anes.mnar"]`). It is by far the worst for framing (n = 1,003) bycases (`r inc$Diff[inc$Dataset == "amp.oldframe.bycases"]`).
+
+For `age`, `hd.ord` is not close for any combination. It is closest for ANES (n = 3,223) ampute standard (`r age$Diff[age$Dataset == "amp.anes"]`) and ANES (n = 3,223) MNAR (`r age$Diff[age$Dataset == "amp.anes.mnar"]`). Further away are framing (n = 1,003) ampute standard ( `r age$Diff[age$Dataset == "amp.oldframe.20"]`) and framing (n = 1,003) MNAR (`r age$Diff[age$Dataset == "amp.oldframe.mnar"]`). It is by far the worst for framing (n = 1,003) bycases (`r age$Diff[age$Dataset == "amp.oldframe.bycases"]`).
+
+For `interest`, `hd.ord` is close for ANES (n = 3,223) MNAR (`r int$Diff[int$Dataset == "amp.anes.mnar"]`). It is not close for ANES (n = 3,223) ampute standard (`r int$Diff[int$Dataset == "amp.anes"]`), framing (n = 1,003) ampute standard (`r int$Diff[int$Dataset == "amp.oldframe.20"]`), and framing (n = 1,003) MNAR (`r int$Diff[int$Dataset == "amp.oldframe.mnar"]`). It is by far the worst for framing (n = 1,003) bycases (`r int$Diff[int$Dataset == "amp.oldframe.bycases"]`).
+
+<!-- inc, age, interest: None. Closest is interest ANES (n = 3,223) MNAR (.001, the rest for interest is max .02 away), then inc (.0058, the rest is max .019 away). All for age are at least .03 away -->
+
+<!-- Dem, Female/Male: All except framing (n = 1,003) MNAR (Dem), ANES (n = 3,223) MNAR and ANES (n = 3,223) ampute standard (Male) -->
+
+
+It thus appears that `hd.ord` is very close to `amelia` and `mice` for binary variables (`Dem`, `Female`) for both missing data mechanisms (MAR, MNAR). All combinations for `Dem` and all but one combination for `Female` (framing (n = 1,003) bycases, `r fem$Diff[fem$Dataset == "amp.oldframe.bycases"]`) fall within the closeness threshold.
+
+`hd.ord` performs worse for the nominal variables `age` and `inc` as well as the ordinal variable `interest`. Only two combinations overall (ANES (n = 3,223) ampute standard for `inc`, `r inc$Diff[inc$Dataset == "amp.anes"]`; ANES (n = 3,223) MNAR for `interest`, `r int$Diff[int$Dataset == "amp.anes.mnar"]`) fall within the closeness threshold. However, there is a slight tendency that `hd.ord` performs slightly better when applied to the ANES data (n = 3,223): The two closest `interest` values (ANES (n = 3,223) MNAR, `r int$Diff[int$Dataset == "amp.anes.mnar"]`; ANES (n = 3,223) ampute standard, `r int$Diff[int$Dataset == "amp.anes"]`), the closest `inc` value (ANES (n = 3,223) ampute standard, `r inc$Diff[inc$Dataset == "amp.anes"]`), and the two closest `age` values (ANES (n = 3,223) ampute standard, `r age$Diff[age$Dataset == "amp.anes"]`; ANES (n = 3,223) MNAR, `r age$Diff[age$Dataset == "amp.anes.mnar"]`) all concern the ANES (n = 3,223) data. This slight tendency could be due to the higher number of observations and, in the case of `age` and `inc`, the higher number of unique values: `age` contains 73 and `inc` 27 unique values in the ANES (n = 3,223) data, compared to 58 and 7 in the old framing data (n = 1,003) (`interest` consists of the same number of unique values (4) in both data sets). In addition, the ANES (n = 3,223) data was run for fewer iterations. Nonetheless, the distances are still rather big in some cases (particularly for `age`).
+
+`hd.ord` overall performs worse with the `ampute()` options `bycases=FALSE` and `cont=FALSE`, except for `Dem`. 
+
+Running `ampute()` with MNAR as the missing data mechanism does not yield systematically different results than its default setting of MAR. 
+
+With increased NA percentages, imputation methods are bound to get worse. `amelia` and `mice` get worse only slightly as the percentage increases. This impact is much more pronounced for `hd.ord` and `hd.norm`. This is to be expected, since the latter methods are based on hot decking with replacement. Missingness levels of 50 and 80 percent are extremely rare in practice, however, so these results do not carry high importance.
+
+
+
+```{r include=FALSE}
+# I don't want to risk referring to the wrong table by mistake, so I'm deleting
+# the objects for referral after I no longer refer to them
+rm(dem, fem, inc, age, int)
+```
 
 
 
@@ -293,10 +660,28 @@ Run in R 3.6 on a Code Ocean AWS EC2 instance with 16 cores and 120 GB of memory
 
 ```{r Runtimes MI Methods, include=FALSE}
 
-old.frame.runtime <- read.csv("data/framing.runtime.5var.1003n.12500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
-anes.runtime <- read.csv("data/anes.runtime.5var.3223n.2396it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
-runtimes <- cbind(old.frame.runtime, anes.runtime[,2])
-colnames(runtimes) <- c("Method", "OldFraming", "ANES2016")
+oldframe.runtime <- read.csv("data/framing/framing.runtime.5var.1003n.12500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.runtime <- read.csv("data/anes/anes.runtime.5var.3223n.2396it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.5lev.runtime <- read.csv("data/anes/5lev/anes.5lev.runtime.5var.3145n.2500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+oldframe.quadrobs.runtime <- read.csv("data/framing/quadrupleObs/framing.quadrobs.runtime.5var.4012n.1500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+oldframe.2000it.runtime <- read.csv("data/framing/framing.runtime.5var.1003n.2000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+
+runtimes <- data.frame(matrix(NA, 7, 6))
+colnames(runtimes) <- c("Method", "OldFraming", "ANES2016", "ANES2016_5lev", "OldFramingQuadrObs", "OldFraming_2000it")
+runtimes$Method <- c("hd.ord", "hd.norm", "amelia", "mice", "Observations", "Iterations", "Levels")
+runtimes$OldFraming <- c(oldframe.runtime[,2], 1003, 12500, 7)
+runtimes$ANES2016 <- c(anes.runtime[,2], 3223, 2396, 16)
+runtimes$ANES2016_5lev <- c(anes.5lev.runtime[,2], 3145, 2500, 5)
+runtimes$OldFramingQuadrObs <- c(oldframe.quadrobs.runtime[,2], 4012, 1500, 7)
+runtimes$OldFraming_2000it <- c(oldframe.2000it.runtime[,2], 1003, 2000, 7)
+
+# to make in-text citations shorter
+runFullF <- runtimes$OldFraming
+runFullA <- runtimes$ANES2016
+runFullA5 <- runtimes$ANES2016_5lev
+runFullFQ <- runtimes$OldFramingQuadrObs
+runFullF2k <- runtimes$OldFraming_2000it
+methFull <- runtimes$Method
 stargazer(runtimes, 
           summary = FALSE,
           align = TRUE,
@@ -304,33 +689,431 @@ stargazer(runtimes,
           rownames = FALSE,
           title = "Runtimes of Multiple Imputation Methods (in Minutes)",
           label = "runtimes")
-
 ```
+
 
 \begin{table}[!htbp] \centering 
   \caption{Runtimes of Multiple Imputation Methods (in Minutes)} 
   \label{runtimes} 
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
-\multicolumn{1}{c}{Method} & \multicolumn{2}{c}{Data}\\ 
-\hline \\[-1.8ex] 
- & \multicolumn{1}{c}{Old Framing} & \multicolumn{1}{c}{ANES 2016}\\
+ & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES2016} & \multicolumn{1}{c}{ANES2016\_5lev} & \multicolumn{1}{c}{OldFramingQuadrObs} \\ 
 \cline{2-2} 
-\cline{3-3}\\[-1.8ex]
-\multicolumn{1}{c}{hd.ord} & 32.954 & 32.642 \\ 
-\multicolumn{1}{c}{hd.norm.orig} & 33.396 & 32.669 \\ 
-\multicolumn{1}{c}{amelia} & 71.719 & 33.051 \\ 
-\multicolumn{1}{c}{mice} & 597.034 & 293.722 \\ 
+\cline{3-3} 
+\cline{4-4}
+\cline{5-5}\\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 34.457 & 32.642 & 32.668 & 31.519 \\ 
+\multicolumn{1}{c}{hd.norm} & 34.660 & 32.669 & 32.881 & 31.810 \\ 
+\multicolumn{1}{c}{amelia} & 77.956 & 33.051 & 33.691 & 30.035 \\ 
+\multicolumn{1}{c}{mice} & 616.023 & 293.722 & 298.919 & 277.021 \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Observations} & 1,003 & 3,223 & 3,145 & 4,012 \\ 
+\multicolumn{1}{c}{Iterations} & 12,500 & 2,396 & 2,500 & 1,500 \\ 
+\multicolumn{1}{c}{Levels} & 7 & 16 & 5 & 7 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+
+As can be seen in Table \ref{runtimes}, `hd.ord` and `hot.deck` show virtually identical imputation times for the old framing data (n = 1,003), with `hd.ord` being `r ((runFullF[methFull == "hd.norm"]-runFullF[methFull == "hd.ord"])*60) %>% round(., digits = 0)` seconds faster. `amelia`, however, is `r (runFullF[methFull == "amelia"] / runFullF[methFull == "hd.ord"]) %>% round(., digits = 1)` times slower than `hd.ord`. `mice` is `r (runFullF[methFull == "mice"] / runFullF[methFull == "hd.ord"]) %>% round(., digits = 1)` times slower than `hd.ord`. This is a dramatic speed gain. The ANES (n = 3,223) data show only a reduced speed gain. `mice` is still drastically slower than `hd.ord` (by a magnitude of `r (runFullA[methFull == "mice"] / runFullA[methFull == "hd.ord"]) %>% round(., digits = 1)`), but the speed gain is cut in half. The previous speed gain over `amelia` is no longer observable. `hd.ord` and `amelia` now show virtually identical runtimes (with a difference of `r round((runFullA[methFull == "amelia"] - runFullA[methFull == "hd.ord"]) * 60, digits = 0)` seconds in favor of `hd.ord`). 
+
+Three factors might explain this sudden and surprising increase in the performance of `amelia`: The levels of the ordinal variable in question (`education`), the number of iterations, and the number of observations in a data set. The ANES (n = 3,223) data contain 17 levels of `education`, whereas the old framing data (n = 1,003) contain only 7. However, when run with 5 levels of `education` and otherwise virtually identical data, the method performances remain unchanged (see column "ANES2016_5lev"). This rules out the levels of the ordinal variable. Another explanation could be the number of observations and the corresponding possible number of iterations. A high number of observations reduces the computationally feasible number of iterations that can be performed before even powerful machines with 120 GB RAM are maxed out. The old framing data (n = 1,003) contain 1,003 observations and can be computationally run for 12,500 iterations. The 2016 ANES data (n = 3,223) contain more than triple the observations than the old framing data (n = 1,003) and can only be run for 2,396 iterations. Indeed, when we quadruple the number of observations in the old framing data (n = 4,012) and are thus forced to reduce the number of possible iterations to 1,500, we observe that `amelia` is now the fastest method (see column "OldFramingQuadrObs"). It thus appears that `amelia` is fast with a low number of iterations and slow with a high number of iterations. 
+
+This would lead us to predict that `amelia` should be the fastest method when the old framing data (n = 1,003) is run for a low number of iterations (2,000). That is not the case: `amelia` is `r (runFullF2k[methFull == "amelia"] / runFullF2k[methFull == "hd.ord"]) %>% round(., digits = 1)` times slower than `hd.ord` (see column "OldFraming_2000it"); on the same level as the 12,500-iteration-run of the old framing data (n = 1,003). This means it's not the number of iterations but the number of observations that affects `amelia`'s relative lack of speed compared to `hd.ord`. `amelia` appears to be much slower than `hd.ord` for around 1,000 observations but on equal footing for 3,000+ observations. 
+
+<!--
+Note for me: amelia kept being a bitch when I tried to run the ANES 10,000 times, even with 7 levels. After endless trying, I figured out I had to reduce the collinearity threshold to .6 (CCES and old framing worked fine with .7). That meant the age variable got dropped. To keep things at 5 variables, I added Empl. So the results for ANES 10,000 times with 7 levels contain one different variablel than the results for CCES and old framing. Doesn't matter since I only care about the running times, but important to note for later.
+-->
+
+
+```{r Runtimes MI Methods 1000 Observations 10000 Iterations, include=FALSE}
+
+cces.runtime.1000n.10000it <- read.csv("data/cces/cces.runtime.5var.1000n.10000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+oldframe.runtime.1000n.10000it <- read.csv("data/framing/framing.runtime.5var.1000n.10000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.7lev.runtime.1000n.10000it <- read.csv("data/anes/7lev/anes.7lev.runtime.5var.1000n.10000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+
+cces.runtime.1000n.1000it.more.var <- read.csv("data/cces/cces.runtime.16var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+oldframe.runtime.1000n.1000it.more.var <- read.csv("data/framing/framing.runtime.13var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.7lev.runtime.1000n.1000it.more.var <- read.csv("data/anes/7lev/anes.7lev.runtime.22var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+
+
+runtimes.1000n <- data.frame(matrix(NA, 8, 7))
+colnames(runtimes.1000n) <- c("Method", 
+                              "CCES10kIt", "OldFraming10kIt", "ANES10kIt", 
+                              "CCES1kIt", "OldFraming1kIt", "ANES1kIt")
+runtimes.1000n$Method <- c("hd.ord", "hd.norm", "amelia", "mice", 
+                           "Observations", "Iterations", "Ordinal Levels", 
+                           "Variables with NAs")
+
+runtimes.1000n$CCES10kIt <- c(cces.runtime.1000n.10000it[,2], 1000, 10000, 6, 5)
+runtimes.1000n$OldFraming10kIt <- c(oldframe.runtime.1000n.10000it[,2], 1000, 10000, 7, 5)
+runtimes.1000n$ANES10kIt <- c(anes.7lev.runtime.1000n.10000it[,2], 1000, 10000, 7, 5)
+
+runtimes.1000n$CCES1kIt <- c(cces.runtime.1000n.1000it.more.var[,2], 1000, 1000, 6, 16)
+runtimes.1000n$OldFraming1kIt <- c(oldframe.runtime.1000n.1000it.more.var[,2], 1000, 1000, 7, 13)
+runtimes.1000n$ANES1kIt <- c(anes.7lev.runtime.1000n.1000it.more.var[,2], 1000, 1000, 7, 22)
+
+
+# to make in-text citations shorter
+# run1k10kC <- runtimes.1000n$CCES10kIt
+# run1k10kF <- runtimes.1000n$OldFraming10kIt
+# run1k10kA <- runtimes.1000n$ANES10kIt
+# 
+# run1k1kC <- runtimes.1000n$CCES1kIt
+# run1k1kF <- runtimes.1000n$OldFraming1kIt
+# run1k1kA <- runtimes.1000n$ANES1kIt
+
+meth <- runtimes.1000n$Method
+
+hd.am.div <- sapply(2:7, 
+                    function(x)
+                      runtimes.1000n[meth == "amelia", x] / 
+                      runtimes.1000n[meth == "hd.ord", x]) 
+
+stargazer(runtimes.1000n, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes), 1000 Observations",
+          label = "runtimes1000n")
+```
+
+
+This is indeed confirmed by Table \ref{runtimes1000n}, where the old framing, the ANES, and the CCES data have all been reduced to 1,000 observations. The left half of the table shows the results for 10,000 iterations and low numbers of variables with NAs (Note: `education` in the ANES data was reduced to 7 levels to make this number of iterations computationally feasible). The right half of the table shows the results for 1,000 iterations and high numbers of variables with NAs. `amelia` is consistently between `r hd.am.div %>% min %>% round(., digits = 1)` and `r hd.am.div %>% max %>% round(., digits = 1)` times slower than `hd.ord` for all three data sets, regardless of the number of iterations and the number of variables with NAs.
+
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes), 1000 Observations} 
+  \label{runtimes1000n} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{10,000 Iterations} & \multicolumn{3}{c}{1,000 Iterations}\\
+\cline{2-7} \\[-1.8ex]
+ & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES} \\ 
+\cline{2-4} 
+\cline{5-7} \\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 24.394 & 26.461 & 24.294 & 2.714 & 2.588 & 4.103 \\ 
+\multicolumn{1}{c}{hd.norm} & 24.540 & 26.620 & 24.316 & 2.723 & 2.617 & 4.300 \\ 
+\multicolumn{1}{c}{amelia} & 57.403 & 68.862 & 50.630 & 7.787 & 6.926 & 8.758 \\ 
+\multicolumn{1}{c}{mice} & 449.027 & 527.532 & 390.690 & 158.583 & 116.609 & 336.038 \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Ordinal Levels} & 6 & 7 & 7 & 6 & 7 & 7 \\ 
+\multicolumn{1}{c}{Variables with NAs} & 5 & 5 & 5 & 16 & 13 & 22 \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table} 
 
 
-As can be seen in Table \ref{runtimes}, `hd.ord` and `hot.deck` show virtually identical imputation times for the old framing data, with `hd.ord` being `r ((runtimes$OldFraming[runtimes$Method == "hd.norm.orig"]-runtimes$OldFraming[runtimes$Method == "hd.ord"])*60) %>% round(., digits = 0)` seconds faster. `amelia`, however, is `r (runtimes$OldFraming[runtimes$Method == "amelia"] / runtimes$OldFraming[runtimes$Method == "hd.ord"]) %>% round(., digits = 0)` times slower than `hd.ord`. `mice` is `r (runtimes$OldFraming[runtimes$Method == "mice"] / runtimes$OldFraming[runtimes$Method == "hd.ord"]) %>% round(., digits = 0)` times slower than `hd.ord`. This is a dramatic speed gain. The ANES data show only a reduced speed gain. `mice` is still drastically slower than `hd.ord` (by a magnitude of `r (runtimes$ANES2016[runtimes$Method == "mice"] / runtimes$ANES2016[runtimes$Method == "hd.ord"]) %>% round(., digits = 0)`), but the speed gain is cut in half. The previous speed gain over `amelia` is no longer observable. `hd.ord` and `amelia` now show virtually identical runtimes (with a difference of `r round((runtimes$ANES2016[runtimes$Method == "amelia"] - runtimes$ANES2016[runtimes$Method == "hd.ord"]) * 60, digits = 0)` seconds in favor of `hd.ord`). Note that the ANES data contain more than triple the observations than the old framing data, which reduces the number of computationally feasible overall iterations for these data.
+
+```{r include=FALSE}
+# I don't want to risk referring to the wrong table by mistake, so I'm deleting
+# the objects for referral after I no longer refer to them
+rm(runFullF, runFullA, runFullA5, runFullFQ, runFullF2k, methFull,
+   run1k10kF, run1k10kC, run1k10kA, run1k1kC, run1k1kF, run1k1kA,
+   meth)
+```
 
 
 
 
 
 
+
+### What doesn't work
+
+-- Increasing percentage of NAs == worse `hd.ord` performance
+-- Ordinal and nominal variables == worse `hd.ord` performance
+-- High number of observations == reduced number of iterations (crashes and/or RAM maxing out)
+-- High number of observations == makes `amelia` faster relative to `hd.ord`
+-- 17 ANES education levels == increases needed number of iterations
+-- 17 ANES education levels == causes `amelia` to stop on CO and Jeff
+-- 10,000 iterations == results with 1,000 iterations are just as good
+-- `ampute()` with `bycases=FALSE` and `cont=FALSE` == worse `hd.ord` performance, good `na.omit` performance
+-- `own.NA()` == `na.omit` performs best
+-- `own.NA.rows()`== pretty much everything is zero, incl. `na.omit`; `mice` is awful
+-- Running `hd.ord` with `method = p.draw` == worse `hd.ord` performance
+-- Running `hd.ord` with `method = p.draw` == only works with only binary vars in the data
+-- Increasing `sdCutoff` == only does something with only binary vars in the data
+-- Only binary vars in data == no gain in `hd.ord` performance
+
+
+
+### What works
+
+-- Results for binary variables == equal performance of `hd.ord`, `mice`, `amelia`
+-- Increasing number of variables with NAs (all, not just binary) == better `hd.ord` performance
+-- 1000 observations in data sets == increases `amelia` running time
+-- MNAR == MAR in terms of `hd.ord` performance
+-- Multiple ordinal variables == same performance as with one ordinal variable
+
+
+
+```{r include=FALSE}
+cces.1000.7var <- read.csv("data/cces/cces.results.7var.1000n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+cces.1000.10var <- read.csv("data/cces/cces.results.10var.1000n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+
+temp <- data.frame(matrix("---", (nrow(cces.1000.10var) - nrow(cces.1000.7var)), 4))
+colnames(temp) <- names(cces.1000.7var)
+cces.1000.allvar <- cbind(cces.1000.10var[,1:2], 
+                          rbind(cces.1000.7var, temp)[,3:4], 
+                          cces.1000.10var[,3:4])
+levels(cces.1000.allvar$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(cces.1000.allvar) <- c("Method", "Variable", "Value", "Diff", "Value", "Diff")
+stargazer(cces.1000.allvar, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "CCES 1000 Observations, Increasing Variables",
+          label = "cces.1000.incr.vars")
+
+```
+
+
+\ssp
+
+\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+  \caption{\textit{CCES 1000 Observations, Increasing Variables}}
+  \label{cces.1000.incr.vars} 
+\\[-1.8ex]\hline 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{4}{c}{Data}\\
+\hline \\[-1.8ex] 
+ & & \multicolumn{2}{c}{7 vars} & \multicolumn{2}{c}{10 vars}\\
+\hline \\[-1.8ex] 
+ & & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\ 
+\cline{3-4} 
+\cline{5-6} \\[-1.8ex]
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4330} & \multicolumn{1}{c}{.0010} & \multicolumn{1}{c}{.4326} & \multicolumn{1}{c}{.0006} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4332} & \multicolumn{1}{c}{.0012} & \multicolumn{1}{c}{.4326} & \multicolumn{1}{c}{.0006} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4321} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4085} & \multicolumn{1}{c}{.0235} & \multicolumn{1}{c}{.4163} & \multicolumn{1}{c}{.0157} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2823} & \multicolumn{1}{c}{.0003} & \multicolumn{1}{c}{.2821} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2821} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.2821} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.2819} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2716} & \multicolumn{1}{c}{.0104} & \multicolumn{1}{c}{.2719} & \multicolumn{1}{c}{.0101} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1074} & \multicolumn{1}{c}{.0004} & \multicolumn{1}{c}{.1072} & \multicolumn{1}{c}{.0002} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1073} & \multicolumn{1}{c}{.0003} & \multicolumn{1}{c}{.1071} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1068} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.0837} & \multicolumn{1}{c}{.0233} & \multicolumn{1}{c}{.0926} & \multicolumn{1}{c}{.0144} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0913} & \multicolumn{1}{c}{.0003} & \multicolumn{1}{c}{.0911} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0912} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0909} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0667} & \multicolumn{1}{c}{.0243} & \multicolumn{1}{c}{.0756} & \multicolumn{1}{c}{.0154} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4260} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4260} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4274} & \multicolumn{1}{c}{.0014} & \multicolumn{1}{c}{.4263} & \multicolumn{1}{c}{.0003} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4276} & \multicolumn{1}{c}{.0016} & \multicolumn{1}{c}{.4265} & \multicolumn{1}{c}{.0005} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4262} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.4261} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4263} & \multicolumn{1}{c}{.0003} & \multicolumn{1}{c}{.4261} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.3956} & \multicolumn{1}{c}{.0304} & \multicolumn{1}{c}{.3958} & \multicolumn{1}{c}{.0302} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0490} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.0490} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0492} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.0493} & \multicolumn{1}{c}{.0003} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.0489} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0343} & \multicolumn{1}{c}{.0147} & \multicolumn{1}{c}{.0448} & \multicolumn{1}{c}{.0042} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4631} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4627} & \multicolumn{1}{c}{.0003} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4631} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.4629} & \multicolumn{1}{c}{.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4632} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4328} & \multicolumn{1}{c}{.0302} & \multicolumn{1}{c}{.4273} & \multicolumn{1}{c}{.0357} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3840} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3795} & \multicolumn{1}{c}{.0045} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3723} & \multicolumn{1}{c}{.0117} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3832} & \multicolumn{1}{c}{.0008} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3836} & \multicolumn{1}{c}{.0004} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.1499} & \multicolumn{1}{c}{.2341} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.4010} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.3646} & \multicolumn{1}{c}{.0364} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.3082} & \multicolumn{1}{c}{.0928} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.3981} & \multicolumn{1}{c}{.0029} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.3979} & \multicolumn{1}{c}{.0031} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{48.9935} & \multicolumn{1}{c}{.4075} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1920} & \multicolumn{1}{c}{.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1903} & \multicolumn{1}{c}{.0017} \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1877} & \multicolumn{1}{c}{.0043} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1923} & \multicolumn{1}{c}{.0003} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1922} & \multicolumn{1}{c}{.0002} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1297} & \multicolumn{1}{c}{.0623} \\ 
+\hline \\[-1.8ex] 
+\end{longtable} 
+
+\dsp
+
+
+
+```{r include=FALSE}
+cces.7.var <- read.csv("data/cces/cces.results.7var.1000n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+cces.10.var <- read.csv("data/cces/cces.results.10var.1000n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+cces.16.var <- read.csv("data/cces/cces.results.16var.1000n.1000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+cces.15.var.mult <- read.csv("data/cces/cces.mult.results.15var.1000n.1000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+
+foundation <- cbind(cces.7.var,
+                    subset(cces.10.var, subset = c(variable == "Dem" | variable=="Ind" | variable=="Black" |  variable=="Hisp" | variable=="Empl" | variable=="Stud" | variable=="Male")),
+                    subset(cces.15.var.mult, subset = c(variable == "Rep" | variable=="Ind" | variable=="Black" |  variable=="Hisp" | variable== "Empl" | variable=="Stud" | variable=="Male")),
+                    subset(cces.16.var, subset = c(variable == "Rep" | variable=="Ind" | variable=="Black" |  variable=="Hisp" | variable=="Empl" | variable=="Stud" | variable=="Male")))
+
+
+rr <- data.frame(matrix(NA, 6, 4))
+colnames(rr) <- colnames(cces.7.var)
+dd <-cbind(rr, 
+           subset(cces.10.var, subset = c(variable == "inc")),
+      subset(cces.15.var.mult, subset = c(variable == "inc")),
+      subset(cces.16.var, subset = c(variable == "inc")))
+
+ee <- cbind(rr, subset(cces.10.var, subset = c(variable == "interest")),
+            rr,subset(cces.16.var, subset = c(variable == "interest")))
+
+ss <- rr
+ss$variable <- "age"
+ss$method <- cces.7.var[1:6,1]
+
+ff <- cbind(rr, subset(cces.10.var, subset = c(variable == "age")),
+            rr, ss)
+
+gg <- cbind(rr, rr, 
+            subset(cces.15.var.mult, subset = c(variable == "Gay" | variable == "StudLoans" | variable == "InternetHome" | variable == "Moderate" | variable == "NotReligious" | variable == "RentHome" | variable == "Separated")),
+            subset(cces.16.var, subset = c(variable == "Gay" | variable == "StudLoans" | variable == "InternetHome" | variable == "Moderate" | variable == "NotReligious" | variable == "RentHome" | variable == "Separated")))
+
+
+uu <- rbind(foundation, dd, ee, ff, gg)
+
+
+vv <- uu[, -c(1, 2, 5, 6, 9, 10)]
+
+ww <- vv[, c(7, 8, 1:6, 9, 10)]
+
+xx <- ww[, -c(3,5,7,9)]
+
+yy <- xx[, c(1:4, 6, 5)]
+colnames(yy) <- c("method", "variable", "CCES7Var", "CCES10Var", "CCES16Var", "CCES15VarMult")
+
+stargazer(yy, summary = FALSE, rownames = FALSE,header = FALSE)
+```
+
+\ssp
+
+\begin{longtable}{@{\extracolsep{5pt}} cccccc}
+  \caption{\textit{Influence of Number of Variables (CCES 1,000)}} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+method & variable & CCES7Var & CCES10Var & CCES16Var & CCES15VarMult \\ 
+\hline \\[-1.8ex] 
+true & Rep & .0000 & .0000 & .0000 & .0000 \\ 
+hd.ord & Rep & .0010 & .0006 & .0003 & .0003 \\ 
+hd.norm.orig & Rep & .0012 & .0006 & .0005 & .0006 \\ 
+amelia & Rep & .0001 & .0000 & .0001 & .0001 \\ 
+mice & Rep & .0000 & .0000 & .0000 & .0000 \\ 
+na.omit & Rep & .0235 & .0157 & .0039 & .0049 \\ 
+true & Ind & .0000 & .0000 & .0000 & .0000 \\ 
+hd.ord & Ind & .0003 & .0001 & .0003 & .0003 \\ 
+hd.norm.orig & Ind & .0001 & .0001 & .0003 & .0004 \\ 
+amelia & Ind & .0000 & .0000 & .0001 & .0001 \\ 
+mice & Ind & .0000 & .0001 & .0002 & .0001 \\ 
+na.omit & Ind & .0104 & .0101 & .0158 & .0163 \\ 
+true & Black & .0000 & .0000 & .0000 & .0000 \\ 
+hd.ord & Black & .0004 & .0002 & .0001 & .0001 \\ 
+hd.norm.orig & Black & .0003 & .0001 & .0002 & .0002 \\ 
+amelia & Black & .0000 & .0000 & .0000 & .0000 \\ 
+mice & Black & .0002 & .0000 & .0001 & .0001 \\ 
+na.omit & Black & .0233 & .0144 & .0028 & .0049 \\ 
+true & Hisp & .0000 & .0000 & .0000 & .0000 \\ 
+hd.ord & Hisp & .0003 & .0001 & .0000 & .0002 \\ 
+hd.norm.orig & Hisp & .0002 & .0000 & .0002 & .0001 \\ 
+amelia & Hisp & .0000 & .0000 & .0000 & .0001 \\ 
+mice & Hisp & .0001 & .0000 & .0001 & .0002 \\ 
+na.omit & Hisp & .0243 & .0154 & .0076 & .0097 \\ 
+true & Empl & .0000 & .0000 & .0000 & .0000 \\ 
+hd.ord & Empl & .0014 & .0003 & .0000 & .0000 \\ 
+hd.norm.orig & Empl & .0016 & .0005 & .0000 & .0000 \\ 
+amelia & Empl & .0002 & .0001 & .0000 & .0001 \\ 
+mice & Empl & .0003 & .0001 & .0000 & .0001 \\ 
+na.omit & Empl & .0304 & .0302 & .0341 & .0354 \\ 
+true & Stud & .0000 & .0000 & .0000 & .0000 \\ 
+hd.ord & Stud & .0002 & .0003 & .0001 & .0001 \\ 
+hd.norm.orig & Stud & .0001 & .0001 & .0001 & .0001 \\ 
+amelia & Stud & .0001 & .0001 & .0000 & .0000 \\ 
+mice & Stud & .0001 & .0001 & .0001 & .0001 \\ 
+na.omit & Stud & .0147 & .0042 & .0052 & .0059 \\ 
+true & Male & .0000 & .0000 & .0000 & .0000 \\ 
+hd.ord & Male & .0001 & .0000 & .0000 & .0003 \\ 
+hd.norm.orig & Male & .0000 & .0003 & .0000 & .0001 \\ 
+amelia & Male & .0001 & .0001 & .0000 & .0001 \\ 
+mice & Male & .0002 & .0000 & .0001 & .0001 \\ 
+na.omit & Male & .0302 & .0357 & .0310 & .0283 \\ 
+true & inc &  & .0000 & .0000 & .0000 \\ 
+hd.ord & inc &  & .0045 & .0104 & .0101 \\ 
+hd.norm.orig & inc &  & .0117 & .0146 & .0148 \\ 
+amelia & inc &  & .0008 & .0006 & .0005 \\ 
+mice & inc &  & .0004 & .0005 & .0003 \\ 
+na.omit & inc &  & .2341 & .2446 & .2255 \\ 
+true & interest &  & .0000 & .0000 &  \\ 
+hd.ord & interest &  & .0017 & .0041 &  \\ 
+hd.norm.orig & interest &  & .0043 & .0057 &  \\ 
+amelia & interest &  & .0003 & .0000 &  \\ 
+mice & interest &  & .0002 & .0001 &  \\ 
+na.omit & interest &  & .0623 & .0334 &  \\ 
+true & age &  & .0000 &  &  \\ 
+hd.ord & age &  & .0364 &  &  \\ 
+hd.norm.orig & age &  & .0928 &  &  \\ 
+amelia & age &  & .0029 &  &  \\ 
+mice & age &  & .0031 &  &  \\ 
+na.omit & age &  & .4075 &  &  \\ 
+true & Gay &  &  & .0000 & .0000 \\ 
+hd.ord & Gay &  &  & .0000 & .0001 \\ 
+hd.norm.orig & Gay &  &  & .0001 & .0001 \\ 
+amelia & Gay &  &  & .0000 & .0000 \\ 
+mice & Gay &  &  & .0001 & .0001 \\ 
+na.omit & Gay &  &  & .0098 & .0102 \\ 
+true & StudLoans &  &  & .0000 & .0000 \\ 
+hd.ord & StudLoans &  &  & .0003 & .0004 \\ 
+hd.norm.orig & StudLoans &  &  & .0001 & .0002 \\ 
+amelia & StudLoans &  &  & .0000 & .0001 \\ 
+mice & StudLoans &  &  & .0000 & .0001 \\ 
+na.omit & StudLoans &  &  & .0213 & .0231 \\ 
+true & InternetHome &  &  & .0000 & .0000 \\ 
+hd.ord & InternetHome &  &  & .0001 & .0000 \\ 
+hd.norm.orig & InternetHome &  &  & .0001 & .0001 \\ 
+amelia & InternetHome &  &  & .0001 & .0000 \\ 
+mice & InternetHome &  &  & .0000 & .0000 \\ 
+na.omit & InternetHome &  &  & .0038 & .0038 \\ 
+true & Moderate &  &  & .0000 & .0000 \\ 
+hd.ord & Moderate &  &  & .0002 & .0001 \\ 
+hd.norm.orig & Moderate &  &  & .0003 & .0005 \\ 
+amelia & Moderate &  &  & .0000 & .0001 \\ 
+mice & Moderate &  &  & .0001 & .0001 \\ 
+na.omit & Moderate &  &  & .0178 & .0200 \\ 
+true & NotReligious &  &  & .0000 & .0000 \\ 
+hd.ord & NotReligious &  &  & .0001 & .0001 \\ 
+hd.norm.orig & NotReligious &  &  & .0002 & .0002 \\ 
+amelia & NotReligious &  &  & .0000 & .0001 \\ 
+mice & NotReligious &  &  & .0000 & .0001 \\ 
+na.omit & NotReligious &  &  & .0215 & .0237 \\ 
+true & RentHome &  &  & .0000 & .0000 \\ 
+hd.ord & RentHome &  &  & .0000 & .0000 \\ 
+hd.norm.orig & RentHome &  &  & .0002 & .0002 \\ 
+amelia & RentHome &  &  & .0001 & .0000 \\ 
+mice & RentHome &  &  & .0000 & .0000 \\ 
+na.omit & RentHome &  &  & .0107 & .0146 \\ 
+true & Separated &  &  & .0000 & .0000 \\ 
+hd.ord & Separated &  &  & .0004 & .0003 \\ 
+hd.norm.orig & Separated &  &  & .0003 & .0003 \\ 
+amelia & Separated &  &  & .0001 & .0001 \\ 
+mice & Separated &  &  & .0001 & .0001 \\ 
+na.omit & Separated &  &  & .0002 & .0002 \\ 
+\hline \\[-1.8ex] 
+\end{longtable} 
+
+\dsp
