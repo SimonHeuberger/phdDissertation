@@ -1,32 +1,83 @@
-# PRECISION IN SURVEY MEASUREMENT -- A NEW METHOD TO IMPUTE MISSING DATA FROM ORDINAL VARIABLES {#ordmiss}
+# QUALITY COMPARISON OF MAJOR MISSING DATA SOLUTIONS FOR DISCRETE DATA WITH A PROPOSED NEW METHOD FOR ORDINAL VARIABLES {#ordmiss}
 
 ## Introduction {#ordmiss-intro}
 
+```{r include=FALSE}
+# function to make all diff columns absolute values
+abs.diff <- function(df){
+  df$diff <- df$diff %>% abs
+  return(df)
+}
+
+# function to drop leading zeroes in numeric columns in data frames (adapted
+# from f_num()) and add a plus sign for positive values
+dropZero.addPlus <- function (df, digits = 4){
+  x <- dplyr::select_if(df, is.numeric)
+  for(i in 1:ncol(x)){
+    x[,i] <- round(as.numeric(x[,i]), digits)
+    x[,i] <- sprintf(paste0("%.", digits, "f"), x[,i])
+    x[,i] <- gsub("^0(?=\\.)|(?<=-)0", "", x[,i], perl = TRUE)
+  }
+  df[, colnames(x)] <- x
+  
+  for(i in 1:nrow(df)){
+    if(grepl("-", df$diff[i]) == FALSE){
+      df$diff[i] <- paste0("+", df$diff[i])
+    }else{
+      df$diff[i] <- paste0("-", df$diff[i])
+    }
+  }
+  return(df)
+}
+
+drop.zero <- function (df, digits = 4, p, s, pad.char = NA, ...){
+    library(dplyr)
+    ldots <- list(...)
+    if (length(ldots) > 0) {
+        if (!is.null(ldots[["prefix"]]) & missing(p)) 
+            p <- ldots[["prefix"]]
+        if (!is.null(ldots[["suffix"]]) & missing(s)) 
+            s <- ldots[["suffix"]]
+    }
+    x <- dplyr::select_if(df, is.numeric)
+    for(i in 1:ncol(x)){
+      x[,i] <- round(as.numeric(x[,i]), digits)
+      x[,i] <- sprintf(paste0("%.", digits, "f"), x[,i])
+      x[,i] <- gsub("^0(?=\\.)|(?<=-)0", "", x[,i], perl = TRUE)
+    }
+    df[, colnames(x)] <- x
+    return(df)
+}
+
+```
+
 Missing data are ubiquitous in survey research [@allison_2002_missing;@raghunathan_2016_missing]. Respondents frequently refuse to answer questions, select "Don't Know" as a response option, or drop out during the response collection process [@honaker_2010_what]. Missing data pose a big problem for researchers because data can typically not be analyzed with statistical software if they contain missing values [@little_2002_statistical;@molenberghs_2007_missing]. 
 
-Scholars have developed several general ways to treat missing data. These range from deleting all observations with missing data (listwise deletion) over randomly drawing a 'similar' respondent to provide a fill-in value for a missing slot (hot decking) to estimating missing values from conditional distributions (multiple imputation) [@rubin_1976_inference;@king_2001_analyzing;@fay_1996_alternative]. Listwise deletion has been shown to induce bias with political data, and hot decking does not reflect statistical uncertainty in the filled-in values since there is only one draw [@kroh_2006_taking;@gill_2013_bayesian;@rees_1997_methods]. While multiple implementation has become and remains the state of the art in missing data management, it is not necessarily always suitable for all types of variables. Multiple hot deck imputation, an improvement over generic multiple imputation, solves this for non-granular discrete data [@gill_2012_have;@reilly_1993_data]. However, the underlying algorithm assumes even distances between categories in discrete data, which makes it unsuitable for ordinal variables. I propose a method designed to impute missing data specifically from ordinal variables that fills this gap in multiple hot deck imputation. 
+Scholars have developed several general ways to treat missing data. These range from deleting all observations with missing data (listwise deletion) over randomly drawing a 'similar' respondent to provide a fill-in value for a missing slot (hot decking) to estimating missing values from conditional distributions (multiple imputation) [@rubin_1976_inference;@king_2001_analyzing;@fay_1996_alternative]. 
 
-Multiple hot deck imputation uses draws of values from the variable with the missing values (hot decking) to impute them distributionally (multiple imputation) and estimate affinity scores. This score measures how close other respondents are to the one with the missing value. 'Closeness' is measured as the distance between respondents in the variables that do not contain missing values. This is best illustrated with simplified data shown in Table \ref{ordmiss-affscore}.
+Listwise deletion has been shown to induce bias with political data [@rees_1997_methods;@reilly_1993_data]. +++ more citations, examples of how widely used listwise deletion is
 
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{lccccc}
-  \bottomrule 
-  \midrule
-  Respondent & Age & Party ID & Education & Income & Gender\\
-  \hline
-  A & 25 & Republican & High School Graduate & \$40-50,000 & Male \\
-  B & 40 & NA & Some High School &  \$30-40,000 & Female\\
-  C & 30 & Democrat & Bachelor's Degree &  \$60-70,000 & Female\\
-  \bottomrule 
-  \end{tabular}
-  \caption{Illustrative Data}
-  \label{ordmiss-affscore}
-\end{table}
+Hot decking does not reflect statistical uncertainty in the filled-in values since there is only one draw [@kroh_2006_taking;@gill_2013_bayesian]. +++ More detail about the method
 
-Respondent B shows missing data for party ID. To impute a fill-in value, we look at how close respondents A and C are to B in terms of age, education, income, and gender. C is closer to B in terms of age and they share the same gender. A is closer to B on education and income. Multiple hot deck imputation measures these distances and estimates affinity scores for respondents A and C. B then receives the party ID fill-in value from whichever respondent has the higher score. The algorithm building the affinity score, however, assumes evenly spaced distances between categories. This is the case for age, income, and gender, but not for education, since education is an ordinal variable. Applying multiple hot deck imputation here would misrepresent the data.
+Multiple implementation has become the state of the art in missing data management +++ citations, examples, reasons why it's the state of the art
 
-Instead, I propose a weighted distance solution with the estimated numeric thresholds from the ordered probit model approach in chapter II to measure the distances between the categories and calculate the affinity score. I demonstrate the benefits of this method with several Monte Carlo simulations. As in chapter II, simulations are crucial as they allow comparison to the 'true' results, which is not possible with actual data. They show that weighted distance multiple hot decking imputation outperforms current general missing data techniques for ordinal variables.
+However, multiple imputation is not necessarily always the most suitable method for all types of variables. For non-granular discrete data, for instance, multiple hot deck imputation, a variation over generic multiple imputation, proves more precise [@gill_2012_have]. +++ how does it achieve that
+
+However, multiple hot deck imputation assumes even distances between categories in discrete data. This assumption does not necessarily apply for ordinal variables. I propose a method designed to impute discrete missing data specifically from ordinal variables. Because of the success of multiple hot deck imputation, this method is based on multiple hot deck imputation and adapted to account for the specific circumstances of ordinal variables. Based on the ordered probit model approach in chapter II, it applies a weighted distance solution with newly estimated numeric thresholds from an assumed underlying latent continuous variable to measure the distances between the categories and calculate an affinity score.
+
+
+This chapter will:
+
+-- Provide theory behind missing data mechanisms, deletion, imputation, multiple imputation
+-- Outline `R` packages/functions that implement listwise deletion and variations of multiple imputation, including my proposed new method
+  -- `na.omit()`
+  -- `amelia()`
+  -- `mice()`
+  -- `hot.deck()`
+  -- `hd.ord()`
+-- Apply these `R` packages to three different sets of survey data
+-- Test each package for accuracy and speed for differing types of variables
+-- Assess the usefulness of my proposed new method
 
 
 ## Theory {#ordmiss-theory}
@@ -65,6 +116,7 @@ Hot decking (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (198
 -- nearest neighbor
 -- sequential ordered by a covariate
 
+`R` package: +++
 
 
 ### Multiple Imputation {#ordmiss-theory-multimpute}
@@ -73,7 +125,9 @@ Hot decking (Marker, Juddkins, Winglee (2002), Ernst (198), Kalton and Kish (198
 
 #### `mice` {#ordmiss-theory-multimpute-mice}
 
-#### Multiple Hot Decking {#ordmiss-theory-multimpute-hdnorm}
+#### Multiple Hot Deck Imputation {#ordmiss-theory-multimpute-hdnorm}
+
+`R` package: `hot.deck`
 
 Multiple hot deck imputation (all COPIED OVER from Cranmer, Gill):
 -- A non-parametric alternative to multiple imputation
@@ -94,7 +148,7 @@ Concrete estimation steps:
 (5) Combine the estimates of the statistic into a single estimate using the combination rules of parametric multiple imputation
 
 
-#### Ordinal Variable Multiple Hot Decking {#ordmiss-theory-multimpute-hdord}
+#### Ordinal Variable Multiple Hot Deck Imputation {#ordmiss-theory-multimpute-hdord}
 
 Imputation techniques rely on continuous distributional assumptions.
 I use my ordered probit estimated latent underlying continuous variable.
@@ -105,557 +159,1423 @@ Ordinal hot deck imputation:
 -- Fully utilizes the unevenly spaced yet ordered information provided in ordinal variables
 -- A key variable in political science surveys is ordinal: Education. Ordinal hot deck imputation enables researchers to impute missing data using the full information provided in this most important predictor variable
 
+Multiple hot deck imputation uses draws of values from the variable with the missing values (hot decking) to impute them distributionally (multiple imputation) and estimate affinity scores. This score measures how close other respondents are to the one with the missing value. 'Closeness' is measured as the distance between respondents in the variables that do not contain missing values. This is best illustrated with simplified data shown in Table \ref{ordmiss-affscore}.
 
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{lccccc}
+  \bottomrule 
+  \midrule
+  Respondent & Age & Party ID & Education & Income & Gender\\
+  \hline
+  A & 25 & Republican & High School Graduate & \$40-50,000 & Male \\
+  B & 40 & NA & Some High School &  \$30-40,000 & Female\\
+  C & 30 & Democrat & Bachelor's Degree &  \$60-70,000 & Female\\
+  \bottomrule 
+  \end{tabular}
+  \caption{Illustrative Data}
+  \label{ordmiss-affscore}
+\end{table}
 
-### Amputation {#ordmiss-theory-ampute}
+Respondent B shows missing data for party ID. To impute a fill-in value, we look at how close respondents A and C are to B in terms of age, education, income, and gender. C is closer to B in terms of age and they share the same gender. A is closer to B on education and income. Multiple hot deck imputation measures these distances and estimates affinity scores for respondents A and C. B then receives the party ID fill-in value from whichever respondent has the higher score. The algorithm building the affinity score, however, assumes evenly spaced distances between categories. This is the case for age, income, and gender, but not for education, since education is an ordinal variable. Applying multiple hot deck imputation here would misrepresent the data.
 
-`ampute()` from `mice` and my own functions. Explain all here.
+`R` functions: `hd.ord()`
+
+`education` is crucial to test the performance of `hd.ord`, which was designed specifically for ordinal variables. `hd.ord` in turn depends on another specifically designed function called `OPMOrd`. `OPMOrd` applies `polr()` to an ordinal variable (here `education`) to estimate the underlying latent continuous variable. `polr()` can only be run on data without missing variables. +++
+
 
 
 ## Data {#ordmiss-data}
 
+I ampute data for three different sets of survey data: An experiment on moral framing I ran on MTurk in 2017 (original data), data from the 2016 ANES, and data from the 2016 CCES. All data are amputed with the `ampute()` function from the `mice` package (+++ some citation that talks about ampute here). Each data set is imputed with five different functions: `amelia()`, `mice()`, `hd.ord()`, `hot.deck()`, and `na.omit()`.
+
+`amelia()` is from the `Amelia` package. `mice()` is from the `mice` package. Both are used with their default settings unless specified otherwise. `hot.deck()` is from Gill and Cranmer's multiple hot deck imputation package `hot.deck`. `hd.ord()` is my ordinal variable adaptation of `hot.deck()`. `na.omit()` applies list-wise deletion. I test each function for imputation accuracy and speed for binary, ordinal, and nominal variables in all three data sets. Each data set contains two ordinal (`Education`, `Interest`), two nominal (`Age`, `Income`) and numerous binary variables. In order to enable factually accurate comparison and unless specified otherwise, each data set contains 1,000 observations and six levels of the ordinal variable `Education`. 1,000 observations represent a common size for survey experiment data, and the `polr()` analysis from section \ref{ordblock-data} estimates five or six levels to best represent `Education` in a US context. Imputation of each data set was carried out with each of the five imputation methods for 1,000 iterations. With the exception of Table \ref{mar.5var.old.frame}, 20 percent NA were randomly amputed in each iteration for each data set.
+
+Sections \ref{ordmiss-results-mar} to \ref{ordmiss-results-increaseNA} show the results in terms of performance accuracy. Since each data set is complete, we know the true variable mean of all variables. This serves as the baseline of comparison for the performance of each imputation method. First, I impute all data sets MAR (section \ref{ordmiss-results-mar}) and MNAR (section \ref{ordmiss-results-mnar}) for five and 12 amputed variables. The five amputed variables are consistent across all three data sets: `Democrat` (binary), `Male` (binary), `Interest` (ordinal), `Income` (nominal), and `Age` (nominal). The 12 amputed variables contain additional variables that differ between each data set due to availability in the data. In section \ref{ordmiss-results-increaseOrd}, I then increase the number of ordinal variables to be treated by `polr()` for `hd.ord()` by including `Interest`. Imputations also also conducted MAR and MNAR for four and 11 amputed variables. The variables are the same as in sections \ref{ordmiss-results-mar} and \ref{ordmiss-results-mnar}, but without including `Interest`. Finally, I increase the amount of missing data to 50 and 80 percent (section \ref{ordmiss-results-increaseNA}).
+
+Section \ref{ordmiss-results-speed} shows the results in terms of performance speed by the number of imputed variables (Table \ref{runtimes5var12var}) and the percentage of missingness (Table \ref{run.all.perc}). All running times were achieved on a Code Ocean AWS EC2 instance with 16 cores and 120 GB of memory.
+
+
+
+
 ## Results {#ordmiss-results}
 
-## Accuracy of Imputation Methods {#ordmiss-results-acc-stand}
+<!-- ---- MAIN TEXT ---- -->
 
-We test the accuracy of five multiple imputation methods (`hd.ord`, `hd.norm`, `amelia`, `mice`, `na.omit`) on several data sets (old framing experiment, ANES, framing survey). `hd.ord` is my ordinal multiple hot decking function. `hd.norm` is Gill and Cranmer's multiple hot decking function. `amelia` and `mice` are used in its default settings unless specified otherwise. The 'old framing experiment' consists of data from a framing experiment I ran on MTurk on 2017. ANES refers to the 2016 ANES data. The framing survey data will come from the eventual framing experiment I will run with Lucid (and is thus obviously not included in this write-up right now). NAs are inserted with three amputation methods (`ampute`, `own.NA`, `own.NA.rows`) and some variations of the options within these methods. `ampute` is included in the `Amelia` package. `own.NA` and and `own.NA.rows` are functions I have written, the details of which will be explained below.
+<!-- MAR  -->
+<!-- 5 variables: Dem, Male, Interest, Inc, Age -->
+<!-- 12 variables: Dem, Male, Interest, Inc, Age, Black, Empl + 5 selected -->
 
-The tables below provide an overview of the accuracy of each imputation method. All difference values are absolute values, since we care about the closeness of each method to the truth, regardless of whether closeness has a positive or negative value. The sign thus does not matter here. The analyses use differing data sets, differing missing data mechanisms, differing amputation functions, and differing settings for the respective amputation functions.
+<!-- MNAR -->
+<!-- 5 variables: Dem, Male, Interest, Inc, Age -->
+<!-- 12 variables: Dem, Male, Interest, Inc, Age, Black, Empl + 5 selected -->
 
-Table \ref{amp.oldframe.acc} uses `ampute`, the old framing data (n = 1,003), and inserts NAs MAR for 5 variables at 20, 50, and 80 percent for 12,500, 12,462, and 10,566 iterations.
+<!-- INCREASED ORDINAL VARIABLES (DVs: educ, interest): -->
+<!-- MAR -->
+<!-- 4 variables: Dem, Male, Inc, Age -->
+<!-- 11 variables: Dem, Male, Inc, Age, Black, Empl + 5 selected -->
 
-Table \ref{amp.anes.acc} uses `ampute`, the 2016 ANES data (n = 3,223), and inserts NAs MAR for 5 variables at 20 percent for 2,396 iterations.
+<!-- MNAR -->
+<!-- 4 variables: Dem, Male, Inc, Age -->
+<!-- 11 variables: Dem, Male, Inc, Age, Black, Empl + 5 selected -->
 
-Table \ref{amp.oldframe.bycases.acc} uses `ampute` with the options `bycases=FALSE` and `cont=FALSE`, the old framing data (n = 1,003), and inserts NAs MAR for 5 variables at 20 percent for 9,644 iterations.
+<!-- INCREASED MISSINGNESS (MAR, 20, 50, 80 percent): -->
+<!-- Framing, 1000 iterations, 5 variables: Dem, Male, Interest, Inc, Age -->
 
-Table \ref{amp.mnar.acc} uses `ampute` and inserts NAs MNAR for 5 variables at 20 percent. This is done for the old framing data (n = 1,003) for 12,499 iterations and for the 2016 ANES data (n = 3,223) for 2,351 iterations. 
-
-Table \ref{own.NA.oldframe.acc} uses my own function `own.NA`, the old framing data (n = 1,003), and inserts NAs MAR for 3 variables at 20 percent for 12,324 iterations.
-
-Table \ref{own.NA.rows.oldframe.acc} uses my own function `own.NA.rows`, the old framing (n = 1,003) data, and inserts NAs MAR for 17 variables at 20 percent for 10,000 iterations.
-
-The number of iterations differs due to the percentage of missingness, the amputation function used, the `ampute` options, the missingness mechanism, and the levels of `education` in each data set. `education` is crucial to these analyes as the point of conducting them is to test the performance of `hd.ord`; a multiple hot decking function designed specifically for ordinal variables. `hd.ord` in turn depends on another specifically designed function called `OPMOrd`. `OPMOrd` applies `polr()` to an ordinal variable (here `education`) to estimate the underlying latent continuous variable. `polr()` can only be run on data without missing variables, which means the amputation process sometimes leads to fewer levels of `education` levels in some amputation iterations. Since a comparison of data with differing variable levels makes little sense, these iterations are discarded. That in turn leads to differing numbers of iterations across analyses.
-
+<!-- SPEED: -->
+<!-- MAR 5 variables, MAR 12 variables -->
+<!-- MAR 20, 50, 80 percent framing -->
 
 
-```{r include=FALSE}
-# function to make all diff columns absolute values
-abs.diff <- function(df){
-  df$diff <- df$diff %>% abs
-  return(df)
-}
 
-# function to drop leading zeroes in numeric columns in data frames (adapted
-# from f_num())
-drop.zero <- function (df, digits = 4, p, s, pad.char = NA, ...){
-    library(dplyr)
-    ldots <- list(...)
-    if (length(ldots) > 0) {
-        if (!is.null(ldots[["prefix"]]) & missing(p)) 
-            p <- ldots[["prefix"]]
-        if (!is.null(ldots[["suffix"]]) & missing(s)) 
-            s <- ldots[["suffix"]]
-    }
-    x <- dplyr::select_if(df, is.numeric)
-    for(i in 1:ncol(x)){
-      x[,i] <- round(as.numeric(x[,i]), digits)
-      x[,i] <- sprintf(paste0("%.", digits, "f"), x[,i])
-      x[,i] <- gsub("^0(?=\\.)|(?<=-)0", "", x[,i], perl = TRUE)
-    }
-    df[, colnames(x)] <- x
-    return(df)
-}
+<!-- ---- APPENDIX ---- -->
 
+<!-- ALL OBSERVATIONS (section \ref{app-ordmiss-allObs}): -->
+<!-- ANES all obs. 1000 iterations, CCES all obs. 10 iterations (maxed out RAM) -->
+<!-- 5 variables: Dem, Male, Interest, Inc, Age -->
+<!-- MAR (Table \ref{mar.5var.all}) and MNAR (\ref{mnar.5var.all}) -->
+
+
+<!-- INCREASED MISSINGNESS (section \ref{app-ordmiss-increaseNA}): -->
+<!-- CCES 10,000 iterations -->
+<!-- 5 variables: Dem, Male, Interest, Inc, Age -->
+<!-- MAR -->
+<!-- 20, 50, 80 percent -->
+
+
+<!-- SPEED (section \ref{app-ordmiss-speed}): -->
+<!-- CCES 10,000 iterations -->
+<!-- 5 variables: Dem, Male, Interest, Inc, Age -->
+<!-- MAR -->
+<!-- 20, 50, 80 percent -->
+
+<!-- ANES all obs. 1000 iterations, CCES all obs. 10 iterations (maxed out RAM) -->
+<!-- 5 variables: Dem, Male, Interest, Inc, Age -->
+<!-- MAR -->
+
+
+
+
+
+
+### MAR {#ordmiss-results-mar}
+
+```{r Levels Overall, include=FALSE}
+levs <- c("amelia", "hot.deck", "hd.ord", "mice", "na.omit", "true")
+col.names <- c("Method", "Variable", "ANES", "CCES", "Framing")
 ```
 
 
-### With Standard `ampute()` {#ordmiss-results-acc-ampute}
+```{r MAR 5 Variables, include=FALSE}
 
+mar.5var.anes <- read.csv("data/anes/mar/results/anes.mar.results.5var.1000n.1000it.20perc.csv")  %>% .[,-1] %>% dropZero.addPlus
+mar.5var.cces <- read.csv("data/cces/mar/results/cces.mar.results.5var.1000n.1000it.20perc.csv")  %>% .[,-1] %>% dropZero.addPlus
+mar.5var.frame <- read.csv("data/framing/mar/results/framing.mar.results.5var.1000n.1000it.20perc.csv")  %>% .[,-1] %>% dropZero.addPlus
 
-```{r include=FALSE}
-amp.oldframe.20 <- read.csv("data/framing/framing.results.6var.1003n.12500it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-amp.oldframe.50 <- read.csv("data/framing/framing.results.6var.1003n.12462it.50perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-amp.oldframe.80 <- read.csv("data/framing/framing.results.6var.1003n.10566it.80perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-levels(amp.oldframe.20$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-levels(amp.oldframe.50$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-levels(amp.oldframe.80$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-colnames(amp.oldframe.20) <- c("Method", "Variable", "Value", "Diff")
-colnames(amp.oldframe.50) <- c("Method", "Variable", "Value", "Diff")
-colnames(amp.oldframe.80) <- c("Method", "Variable", "Value", "Diff")
-amp.oldframe.acc <- cbind(amp.oldframe.20, amp.oldframe.50[,3:4], amp.oldframe.80[,3:4])
-stargazer(amp.oldframe.acc, 
+mar.5var.anes$diff[mar.5var.anes$method == "true"] <- mar.5var.anes$value[mar.5var.anes$method == "true"]
+mar.5var.cces$diff[mar.5var.cces$method == "true"] <- mar.5var.cces$value[mar.5var.cces$method == "true"]
+mar.5var.frame$diff[mar.5var.frame$method == "true"] <- mar.5var.frame$value[mar.5var.frame$method == "true"]
+
+levels(mar.5var.anes$method) <- levels(mar.5var.cces$method) <- levels(mar.5var.frame$method) <-
+  levs
+
+mar.5var <- cbind(mar.5var.anes[, c(1,2,4)], mar.5var.cces[,4], mar.5var.frame[,4])
+colnames(mar.5var) <- col.names
+
+# to make the in-text citations shorter
+mar.5.anes <- mar.5var$ANES
+mar.5.cces <- mar.5var$CCES
+mar.5.frame <- mar.5var$Framing
+mar.5.meth <- mar.5var$Method
+mar.5.var <- mar.5var$Variable
+
+stargazer(mar.5var, 
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
           digits = 4,
-          title = "Accuracy of Multiple Imputation Methods (ampute, old framing data (n = 1,003))",
-          label = "amp.oldframe.acc")
+          title = "Accuracy of Multiple Imputation Methods. MAR, 5 Variables with NA",
+          label = "mar.5var")
+
+```
+
+
+
+
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods. MAR, 5 Variables with NA} 
+  \label{mar.5var} 
+\begin{threeparttable}
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3420} & \multicolumn{1}{c}{.3770} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0010} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0011} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{+.0008} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0004} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0290} & \multicolumn{1}{c}{--.0229} & \multicolumn{1}{c}{--.0340} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4890} & \multicolumn{1}{c}{.4830} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0013} & \multicolumn{1}{c}{--.0011} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0013} & \multicolumn{1}{c}{--.0014} & \multicolumn{1}{c}{+.0005} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0392} & \multicolumn{1}{c}{--.0414} & \multicolumn{1}{c}{--.0256} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{2.9340} & \multicolumn{1}{c}{3.3290} & \multicolumn{1}{c}{3.2170} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0130} & \multicolumn{1}{c}{--.0125} & \multicolumn{1}{c}{--.0213} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0191} & \multicolumn{1}{c}{--.0196} & \multicolumn{1}{c}{--.0248} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0003} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0705} & \multicolumn{1}{c}{--.0724} & \multicolumn{1}{c}{--.0714} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6140} & \multicolumn{1}{c}{6.4810} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1068} & \multicolumn{1}{c}{--.0259} & \multicolumn{1}{c}{--.0119} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1278} & \multicolumn{1}{c}{--.0407} & \multicolumn{1}{c}{--.0192} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{+.0008} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{+.0003} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{+.0014} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.5631} & \multicolumn{1}{c}{--.2468} & \multicolumn{1}{c}{--.1367} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.0410} & \multicolumn{1}{c}{52.8230} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3888} & \multicolumn{1}{c}{--.2616} & \multicolumn{1}{c}{--.3650} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.4597} & \multicolumn{1}{c}{--.3895} & \multicolumn{1}{c}{--.3923} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0007} & \multicolumn{1}{c}{--.0033} & \multicolumn{1}{c}{--.0039} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0017} & \multicolumn{1}{c}{--.0073} & \multicolumn{1}{c}{--.0049} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--1.1875} & \multicolumn{1}{c}{--1.2361} & \multicolumn{1}{c}{--1.0641} \\
+\hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+
+
+
+
+
+\clearpage
+
+```{r MAR 12 Variables, include=FALSE}
+
+mar.12var.anes <- read.csv("data/anes/mar/results/anes.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.12var.cces <- read.csv("data/cces/mar/results/cces.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.12var.frame<- read.csv("data/framing/mar/results/framing.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mar.12var.anes$diff[mar.12var.anes$method == "true"] <- mar.12var.anes$value[mar.12var.anes$method == "true"]
+mar.12var.cces$diff[mar.12var.cces$method == "true"] <- mar.12var.cces$value[mar.12var.cces$method == "true"]
+mar.12var.frame$diff[mar.12var.frame$method == "true"] <- mar.12var.frame$value[mar.12var.frame$method == "true"]
+
+levels(mar.12var.anes$method) <- levels(mar.12var.cces$method) <- levels(mar.12var.frame$method) <-
+  levs
+
+un.meth <- mar.12var.anes$method %>% unique
+un.meth.len <- un.meth %>% length
+un.vars <- c(mar.12var.anes$variable %>% as.character,
+                 mar.12var.cces$variable %>% as.character, 
+                 mar.12var.frame$variable %>% as.character) %>%
+  unique
+un.vars.len <- un.vars %>% length
+un.anes.len <- mar.12var.anes$variable %>% unique %>% length
+un.cces.var <- mar.12var.cces$variable %>% unique %>% as.character
+un.cces.len <- un.cces.var %>% length
+un.frame.var <- mar.12var.frame$variable %>% unique %>% as.character
+un.frame.len <- un.frame.var %>% length
+Variable <- rep(un.vars, each = un.meth.len)
+Method <- rep(un.meth, un.vars.len) %>% as.character
+meth.len <- Method %>% length
+
+mar.12var <- cbind(Method, Variable) %>% as.data.frame
+
+mar.12var$mar.anes.col <- c(mar.12var.anes$diff, 
+                            rep("---", 
+                                un.meth.len * (un.vars.len - un.anes.len)))
+mar.12var$mar.cces.col <- rep("---", meth.len) %>% as.character
+mar.12var$mar.frame.col <- rep("---", meth.len) %>% as.character
+
+for(i in 1:(un.cces.len)){
+  mar.12var$mar.cces.col[mar.12var$Variable == un.cces.var[i]] <- mar.12var.cces$diff[mar.12var.cces$variable == un.cces.var[i]]
+  mar.12var$mar.frame.col[mar.12var$Variable == un.frame.var[i]] <- mar.12var.frame$diff[mar.12var.frame$variable == un.frame.var[i]]
+}
+
+colnames(mar.12var) <- col.names
+
+# to make the in-text citations shorter
+mar.12.anes <- mar.12var$ANES
+mar.12.cces <- mar.12var$CCES
+mar.12.frame <- mar.12var$Framing
+mar.12.meth <- mar.12var$Method
+mar.12.var <- mar.12var$Variable
+
+stargazer(mar.12var, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods. MAR, 12 Variables with NA",
+          label = "mar.12var")
+
+```
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+  \caption{Accuracy of Multiple Imputation Methods. MAR, 12 Variables with NA} 
+  \label{mar.12var} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3420} & \multicolumn{1}{c}{.3770} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{+.0004} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0191} & \multicolumn{1}{c}{--.0172} & \multicolumn{1}{c}{--.0280} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4890} & \multicolumn{1}{c}{.4830} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0256} & \multicolumn{1}{c}{--.0364} & \multicolumn{1}{c}{--.0154} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{2.9340} & \multicolumn{1}{c}{3.3290} & \multicolumn{1}{c}{3.2170} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0053} & \multicolumn{1}{c}{--.0041} & \multicolumn{1}{c}{--.0095} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0077} & \multicolumn{1}{c}{--.0067} & \multicolumn{1}{c}{--.0106} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0002} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0620} & \multicolumn{1}{c}{--.0515} & \multicolumn{1}{c}{--.0721} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6140} & \multicolumn{1}{c}{6.4810} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0470} & \multicolumn{1}{c}{--.0130} & \multicolumn{1}{c}{--.0060} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0591} & \multicolumn{1}{c}{--.0212} & \multicolumn{1}{c}{--.0089} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0007} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0013} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.6303} & \multicolumn{1}{c}{--.2860} & \multicolumn{1}{c}{--.0960} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.0410} & \multicolumn{1}{c}{52.8230} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.1391} & \multicolumn{1}{c}{--.0883} & \multicolumn{1}{c}{--.1494} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.1835} & \multicolumn{1}{c}{--.1435} & \multicolumn{1}{c}{--.1592} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0056} & \multicolumn{1}{c}{--.0015} & \multicolumn{1}{c}{--.0041} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0048} & \multicolumn{1}{c}{--.0050} & \multicolumn{1}{c}{--.0029} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.8638} & \multicolumn{1}{c}{--.5974} & \multicolumn{1}{c}{--.6434} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.0790} & \multicolumn{1}{c}{.0950} & \multicolumn{1}{c}{.0690} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0003} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0092} & \multicolumn{1}{c}{--.0090} & \multicolumn{1}{c}{--.0110} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.6610} & \multicolumn{1}{c}{.4370} & \multicolumn{1}{c}{.7430} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{+.0006} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0007} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{+.0006} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0006} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0087} & \multicolumn{1}{c}{--.0301} & \multicolumn{1}{c}{--.0157} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{.6460} & \multicolumn{1}{c}{.6420} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0006} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0166} & \multicolumn{1}{c}{--.0234} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{.5290} & \multicolumn{1}{c}{.6310} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0384} & \multicolumn{1}{c}{--.0326} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{.6820} & \multicolumn{1}{c}{.7010} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0334} & \multicolumn{1}{c}{--.0304} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{.0830} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0191} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{.1390} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0320} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0420} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0112} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.1910} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0117} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0550} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0072} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.3560} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0003} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0385} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0440} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0012} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{1.7240} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0049} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0060} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0984} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.9540} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0021} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0027} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0003} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.1003} \\ 
+\hline \\[-1.8ex] 
+\end{longtable} 
+
+\dsp
+
+\normalsize
+
+
+
+
+
+### MNAR {#ordmiss-results-mnar}
+
+```{r MNAR 5 Variables, include=FALSE}
+
+mnar.5var.anes <- read.csv("data/anes/mnar/results/anes.mnar.results.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.5var.cces <- read.csv("data/cces/mnar/results/cces.mnar.results.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.5var.frame <- read.csv("data/framing/mnar/results/framing.mnar.results.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mnar.5var.anes$diff[mnar.5var.anes$method == "true"] <- mnar.5var.anes$value[mnar.5var.anes$method == "true"]
+mnar.5var.cces$diff[mnar.5var.cces$method == "true"] <- mnar.5var.cces$value[mnar.5var.cces$method == "true"]
+mnar.5var.frame$diff[mnar.5var.frame$method == "true"] <- mnar.5var.frame$value[mnar.5var.frame$method == "true"]
+
+levels(mnar.5var.anes$method) <- levels(mnar.5var.cces$method) <- levels(mnar.5var.frame$method) <-
+  levs
+
+mnar.5var <- cbind(mnar.5var.anes[,c(1,2,4)], mnar.5var.cces[,4], mnar.5var.frame[,4])
+colnames(mnar.5var) <- col.names
+
+# to make the in-text citations shorter
+mnar.5.anes <- mnar.5var$ANES
+mnar.5.cces <- mnar.5var$CCES
+mnar.5.frame <- mnar.5var$Framing
+mnar.5.meth <- mnar.5var$Method
+mnar.5.var <- mnar.5var$Variable
+
+stargazer(mnar.5var,
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods. MNAR, 5 Variables with NA",
+          label = "mnar.5var")
 
 ```
 
 
 \begin{table}[!htbp] \centering 
-  \caption{Accuracy of Multiple Imputation Methods (ampute, old framing data (n = 1,003))} 
-  \label{amp.oldframe.acc} 
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+  \caption{Accuracy of Multiple Imputation Methods. MNAR, 5 Variables with NA} 
+  \label{mnar.5var} 
+\begin{threeparttable}
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
-\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{6}{c}{NAs} \\ 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
 \hline \\[-1.8ex] 
- & & \multicolumn{2}{c}{20 Percent} & \multicolumn{2}{c}{50 Percent}& \multicolumn{2}{c}{80 Percent} \\
-\cline{3-8}\\[-1.8ex]
- & & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\
-\cline{3-4} 
-\cline{5-6} 
-\cline{7-8}  \\[-1.8ex]
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{Dem} & .4666 & 0 & .4666 & 0 & .4666 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{Dem} & .4667 & .0001 & .4668 & .0002 & .4675 & .0009 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{Dem} & .4671 & .0005 & .4678 & .0012 & .4686 & .0020 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{Dem} & .4665 & .0001 & .4665 & .0001 & .4667 & .0001 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{Dem} & .4665 & .0001 & .4666 & 0 & .4669 & .0003 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{Dem} & .4339 & .0327 & .3898 & .0768 & .3438 & .1228 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{inc} & 3.0927 & 0 & 3.0927 & 0 & 3.0927 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{inc} & 3.0864 & .0063 & 3.0703 & .0224 & 3.0531 & .0396 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{inc} & 3.0798 & .0129 & 3.0524 & .0403 & 3.0319 & .0608 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{inc} & 3.0925 & .0002 & 3.0928 & .0001 & 3.0933 & .0006 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{inc} & 3.0937 & .0010 & 3.0949 & .0022 & 3.0956 & .0029 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{inc} & 2.9773 & .1154 & 2.8260 & .2667 & 2.6674 & .4253 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{age} & 37.9252 & 0 & 37.9252 & 0 & 37.9252 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{age} & 37.6382 & .2870 & 37.0970 & .8282 & 36.6639 & 1.2613 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{age} & 37.5650 & .3602 & 36.9376 & .9876 & 36.5279 & 1.3973 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{age} & 37.9238 & .0014 & 37.9234 & .0018 & 37.9278 & .0026 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{age} & 37.9281 & .0029 & 37.9305 & .0053 & 37.9345 & .0093 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{age} & 36.6743 & 1.2509 & 35.0811 & 2.8441 & 33.5601 & 4.3651 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{White} & .7717 & 0 & .7717 & 0 & .7717 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{White} & .7738 & .0021 & .7772 & .0055 & .7815 & .0098 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{White} & .7742 & .0025 & .7778 & .0061 & .7821 & .0104 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{White} & .7717 & 0 & .7717 & 0 & .7716 & .0001 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{White} & .7716 & .0001 & .7712 & .0005 & .7709 & .0008 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{White} & .7453 & .0264 & .6980 & .0737 & .6321 & .1396 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{Female} & .4666 & 0 & .4666 & 0 & .4666 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{Female} & .4662 & .0004 & .4650 & .0016 & .4641 & .0025 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{Female} & .4658 & .0008 & .4638 & .0028 & .4624 & .0042 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{Female} & .4666 & 0 & .4666 & 0 & .4666 & 0 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{Female} & .4667 & .0001 & .4668 & .0002 & .4669 & .0003 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{Female} & .4293 & .0373 & .3774 & .0892 & .3231 & .1435 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{interest} & 3.2164 & 0 & 3.2164 & 0 & 3.2164 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{interest} & 3.1990 & .0174 & 3.1712 & .0452 & 3.1462 & .0702 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{interest} & 3.1970 & .0194 & 3.1623 & .0541 & 3.1353 & .0811 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{interest} & 3.2167 & .0003 & 3.2165 & .0001 & 3.2162 & .0002 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{interest} & 3.2164 & 0 & 3.2162 & .0002 & 3.2158 & .0006 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{interest} & 3.1490 & .0674 & 3.0386 & .1778 & 2.8969 & .3195 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3420} & \multicolumn{1}{c}{.3770} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0114} & \multicolumn{1}{c}{--.0099} & \multicolumn{1}{c}{--.0038} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0120} & \multicolumn{1}{c}{--.0105} & \multicolumn{1}{c}{--.0033} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0106} & \multicolumn{1}{c}{--.0102} & \multicolumn{1}{c}{--.0046} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0099} & \multicolumn{1}{c}{--.0101} & \multicolumn{1}{c}{--.0036} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0176} & \multicolumn{1}{c}{--.0140} & \multicolumn{1}{c}{--.0185} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4890} & \multicolumn{1}{c}{.4830} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0136} & \multicolumn{1}{c}{--.0116} & \multicolumn{1}{c}{--.0127} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0133} & \multicolumn{1}{c}{--.0124} & \multicolumn{1}{c}{--.0125} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0132} & \multicolumn{1}{c}{--.0121} & \multicolumn{1}{c}{--.0133} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0132} & \multicolumn{1}{c}{--.0120} & \multicolumn{1}{c}{--.0135} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0214} & \multicolumn{1}{c}{--.0219} & \multicolumn{1}{c}{--.0133} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{2.9340} & \multicolumn{1}{c}{3.3290} & \multicolumn{1}{c}{3.2170} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0288} & \multicolumn{1}{c}{--.0246} & \multicolumn{1}{c}{--.0333} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0335} & \multicolumn{1}{c}{--.0296} & \multicolumn{1}{c}{--.0369} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0167} & \multicolumn{1}{c}{--.0146} & \multicolumn{1}{c}{--.0133} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0167} & \multicolumn{1}{c}{--.0146} & \multicolumn{1}{c}{--.0135} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0379} & \multicolumn{1}{c}{--.0372} & \multicolumn{1}{c}{--.0379} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6140} & \multicolumn{1}{c}{6.4810} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2299} & \multicolumn{1}{c}{--.0928} & \multicolumn{1}{c}{--.0591} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2554} & \multicolumn{1}{c}{--.1038} & \multicolumn{1}{c}{--.0648} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1225} & \multicolumn{1}{c}{--.0578} & \multicolumn{1}{c}{--.0463} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1229} & \multicolumn{1}{c}{--.0566} & \multicolumn{1}{c}{--.0445} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2770} & \multicolumn{1}{c}{--.1334} & \multicolumn{1}{c}{--.0740} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.0410} & \multicolumn{1}{c}{52.8230} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.6319} & \multicolumn{1}{c}{--.4596} & \multicolumn{1}{c}{--.7147} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.7415} & \multicolumn{1}{c}{--.5929} & \multicolumn{1}{c}{--.7477} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2450} & \multicolumn{1}{c}{--.2266} & \multicolumn{1}{c}{--.2875} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2369} & \multicolumn{1}{c}{--.2160} & \multicolumn{1}{c}{--.2888} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.6427} & \multicolumn{1}{c}{--.6392} & \multicolumn{1}{c}{--.5853} \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
-\end{table} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
 
 
-Table \ref{amp.oldframe.acc} uses ampute, the old framing data (n = 1,003), and inserts NAs at 20, 50, and 80 percent MAR. `amelia` performs best, followed by `mice`. `hd.ord` outperforms `hd.norm`. `Amelia` is better than `mice` for `inc`, `age`, and `interest` (except for 20 percent NAs for the latter). For `Dem`, `Female`, and `White`, `Amelia` is also ahead, though `mice` sometimes edges it by one unit or so in the fourth decimal. The differences between the methods are less pronounced for the binary variables and most visible in the nominal ones. It is worst for `age`, which has the most unique values. As the percentage of NAs increases, the estimates are further off from the true means. This is to be expected for all methods, but it affects `hd.ord` and `hd.norm` more than `amelia` and `mice`.
+
 
 \clearpage
 
-These results are overall confirmed when `ampute()` is run on the 2016 ANES data (n = 3,223), as shown in Table \ref{amp.anes.acc}. It is noticeable, however, that the differences in method performance are somewhat reduced with the ANES data (n = 3,223). This is likely due to the increased number of observations in the data. For reasons of brevity, this analysis and all further analyses insert 20 percent NAs only. 
+```{r MNAR 12 Variables, include=FALSE}
 
+mnar.12var.anes <- read.csv("data/anes/mnar/results/anes.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.12var.cces <- read.csv("data/cces/mnar/results/cces.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.12var.frame <- read.csv("data/framing/mnar/results/framing.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
 
-```{r results='asis', echo=FALSE}
-amp.anes <- read.csv("data/anes/anes.results.5var.3223n.2396it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-levels(amp.anes$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-# change "Male" to "Female" to make table automation easier (and it makes no substantive difference)
-levels(amp.anes$variable) <- c("age", "Dem", "inc", "interest", "Female")
-colnames(amp.anes) <- c("Method", "Variable", "Value", "Diff")
-stargazer(amp.anes, 
-          summary = FALSE,
-          align = TRUE,
-          header = FALSE,
-          rownames = FALSE,
-          digits = 4,
-          title = "Accuracy of Multiple Imputation Methods (ampute, ANES 2016 (n = 3,223))",
-          label = "amp.anes.acc")
+mnar.12var.anes$diff[mnar.12var.anes$method == "true"] <- mnar.12var.anes$value[mnar.12var.anes$method == "true"]
+mnar.12var.cces$diff[mnar.12var.cces$method == "true"] <- mnar.12var.cces$value[mnar.12var.cces$method == "true"]
+mnar.12var.frame$diff[mnar.12var.frame$method == "true"] <- mnar.12var.frame$value[mnar.12var.frame$method == "true"]
 
-```
+levels(mnar.12var.anes$method) <- levels(mnar.12var.cces$method) <- levels(mnar.12var.frame$method) <-
+  levs
 
+# there are several in-between code steps that are identical to MAR 12 Variables
+# above, so I didn't include them here
 
-### With Modified `ampute()` {#ordmiss-results-acc-ampute-mod}
+mnar.12var <- cbind(Method, Variable) %>% as.data.frame
 
-Table \ref{amp.oldframe.bycases.acc} shows the results of using `ampute()` with the options `bycases=FALSE` and `cont=FALSE` on the old framing data (n = 1,003). `hd.ord` overall performs worse than the analyses presented in Tables \ref{amp.oldframe.acc} and \ref{amp.anes.acc} above.
+mnar.12var$mnar.anes.col <- c(mnar.12var.anes$diff,
+                              rep("---",
+                                  un.meth.len * (un.vars.len - un.anes.len)))
+mnar.12var$mnar.cces.col <- rep("---", meth.len) %>% as.character
+mnar.12var$mnar.frame.col <- rep("---", meth.len) %>% as.character
 
+for(i in 1:(un.cces.len)){
+  mnar.12var$mnar.cces.col[mnar.12var$Variable == un.cces.var[i]] <- mnar.12var.cces$diff[mnar.12var.cces$variable == un.cces.var[i]]
+  mnar.12var$mnar.frame.col[mnar.12var$Variable == un.frame.var[i]] <- mnar.12var.frame$diff[mnar.12var.frame$variable == un.frame.var[i]]
+}
 
-```{r results='asis', echo=FALSE}
-amp.oldframe.bycases <- read.csv("data/framing/bycases=FALSE_cont=FALSE/framing.bycases.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-levels(amp.oldframe.bycases$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-colnames(amp.oldframe.bycases) <- c("Method", "Variable", "Value", "Diff")
-stargazer(amp.oldframe.bycases, 
-          summary = FALSE,
-          align = TRUE,
-          header = FALSE,
-          rownames = FALSE,
-          digits = 4,
-          title = "Accuracy of Multiple Imputation Methods (ampute with bycases, old framing data (n = 1,003))",
-          label = "amp.oldframe.bycases.acc")
+colnames(mnar.12var) <- col.names
 
-```
-
-\clearpage
-
-```{r include=FALSE}
-amp.oldframe.mnar <- read.csv("data/framing/mnar/framing.mnar.results.5var.1003n.12499it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-amp.anes.mnar <- read.csv("data/anes/mnar/anes.mnar.results.5var.3223n.2351it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-# change "Male" to "Female" to make table automation easier (and it makes no substantive difference)
-levels(amp.anes.mnar$variable) <- c("age", "Dem", "inc", "interest", "Female")
-levels(amp.oldframe.mnar$method) <- levels(amp.anes.mnar$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-colnames(amp.oldframe.mnar) <- colnames(amp.anes.mnar) <- c("Method", "Variable", "Value", "Diff")
-amp.mnar.acc <- cbind(amp.oldframe.mnar, amp.anes.mnar[,3:4])
-colnames(amp.mnar.acc) <- c("Method", "Variable", "ValueF", "DiffF", "ValueA", "DiffA")
 # to make the in-text citations shorter
-diffF <- amp.mnar.acc$DiffF
-diffA <- amp.mnar.acc$DiffA
-meth <- amp.mnar.acc$Method
-varb <-  amp.mnar.acc$Variable
-stargazer(amp.mnar.acc, 
+mnar.12.anes <- mnar.12var$ANES
+mnar.12.cces <- mnar.12var$CCES
+mnar.12.frame <- mnar.12var$Framing
+meth <- mnar.12var$Method
+varb <- mnar.12var$Variable
+
+stargazer(mnar.12var,
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
           digits = 4,
-          title = "Accuracy of Multiple Imputation Methods (ampute with MNAR)",
-          label = "amp.mnar.acc")
+          title = "Accuracy of Multiple Imputation Methods. MNAR, 12 Variables with NA",
+          label = "mnar.12var")
 
 ```
 
+\ssp
 
-Table \ref{amp.mnar.acc} shows the results of using `ampute()` with MNAR as the missing data mechanism on the old framing (n = 1,003) and the 2016 ANES data (n = 3,223). The results are in line with those presented in Tables \ref{amp.oldframe.acc} and \ref{amp.anes.acc}. It is noteworthy, however, that `na.omit` is overall much closer to the other methods. It actually performs better than `hd.norm` for `age` (`r diffF[meth == "na.omit" & varb == "age"]` vs. `r diffF[meth == "hd.norm" & varb == "age"]`) in the old framing data (n = 1,003) and is the best method for `interest` for the ANES data (n = 3,223) (`r diffA[meth == "na.omit" & varb == "interest"]`).
+\footnotesize
+
+\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+  \caption{Accuracy of Multiple Imputation Methods. MNAR, 12 Variables with NA} 
+  \label{mnar.12var} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3420} & \multicolumn{1}{c}{.3770} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{--.0046} & \multicolumn{1}{c}{--.0015} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{--.0013} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0043} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{--.0018} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{--.0044} & \multicolumn{1}{c}{--.0014} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0092} & \multicolumn{1}{c}{--.0081} & \multicolumn{1}{c}{--.0106} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4890} & \multicolumn{1}{c}{.4830} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0055} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{--.0052} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0053} & \multicolumn{1}{c}{--.0051} & \multicolumn{1}{c}{--.0051} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0055} & \multicolumn{1}{c}{--.0050} & \multicolumn{1}{c}{--.0054} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0055} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{--.0055} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0093} & \multicolumn{1}{c}{--.0119} & \multicolumn{1}{c}{--.0060} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{2.9340} & \multicolumn{1}{c}{3.3290} & \multicolumn{1}{c}{3.2170} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0113} & \multicolumn{1}{c}{--.0090} & \multicolumn{1}{c}{--.0139} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0134} & \multicolumn{1}{c}{--.0113} & \multicolumn{1}{c}{--.0150} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0068} & \multicolumn{1}{c}{--.0061} & \multicolumn{1}{c}{--.0053} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0068} & \multicolumn{1}{c}{--.0061} & \multicolumn{1}{c}{--.0054} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0236} & \multicolumn{1}{c}{--.0161} & \multicolumn{1}{c}{--.0252} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6140} & \multicolumn{1}{c}{6.4810} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0899} & \multicolumn{1}{c}{--.0350} & \multicolumn{1}{c}{--.0239} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1046} & \multicolumn{1}{c}{--.0421} & \multicolumn{1}{c}{--.0262} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0495} & \multicolumn{1}{c}{--.0223} & \multicolumn{1}{c}{--.0184} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0503} & \multicolumn{1}{c}{--.0218} & \multicolumn{1}{c}{--.0177} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2088} & \multicolumn{1}{c}{--.0970} & \multicolumn{1}{c}{--.0333} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.0410} & \multicolumn{1}{c}{52.8230} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2571} & \multicolumn{1}{c}{--.1732} & \multicolumn{1}{c}{--.2811} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3081} & \multicolumn{1}{c}{--.2251} & \multicolumn{1}{c}{--.2989} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.1100} & \multicolumn{1}{c}{--.1014} & \multicolumn{1}{c}{--.1159} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.1047} & \multicolumn{1}{c}{--.0986} & \multicolumn{1}{c}{--.1159} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3397} & \multicolumn{1}{c}{--.1367} & \multicolumn{1}{c}{--.2239} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.0790} & \multicolumn{1}{c}{.0950} & \multicolumn{1}{c}{.0690} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0035} & \multicolumn{1}{c}{--.0038} & \multicolumn{1}{c}{--.0028} \\
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0037} & \multicolumn{1}{c}{--.0038} & \multicolumn{1}{c}{--.0029} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0037} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{--.0011} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0034} & \multicolumn{1}{c}{--.0038} & \multicolumn{1}{c}{--.0010} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{--.0052} & \multicolumn{1}{c}{--.0045} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.6610} & \multicolumn{1}{c}{.4370} & \multicolumn{1}{c}{.7430} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0034} & \multicolumn{1}{c}{--.0053} & \multicolumn{1}{c}{--.0022} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0033} & \multicolumn{1}{c}{--.0053} & \multicolumn{1}{c}{--.0022} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0031} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{--.0024} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0031} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{--.0025} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0014} & \multicolumn{1}{c}{--.0111} & \multicolumn{1}{c}{--.0037} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{.6460} & \multicolumn{1}{c}{.6420} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{--.0039} & \multicolumn{1}{c}{---} \\
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0043} & \multicolumn{1}{c}{--.0038} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{--.0073} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{.5290} & \multicolumn{1}{c}{.6310} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0041} & \multicolumn{1}{c}{--.0038} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{--.0037} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0042} & \multicolumn{1}{c}{--.0037} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0042} & \multicolumn{1}{c}{--.0037} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0122} & \multicolumn{1}{c}{--.0096} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{.6820} & \multicolumn{1}{c}{.7010} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0030} & \multicolumn{1}{c}{--.0030} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0028} & \multicolumn{1}{c}{--.0027} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0027} & \multicolumn{1}{c}{--.0030} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0027} & \multicolumn{1}{c}{--.0030} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0111} & \multicolumn{1}{c}{--.0090} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{.0830} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0043} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0042} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0039} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0077} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{.1390} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0051} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0054} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0048} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0122} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0420} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0024} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0025} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0026} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0024} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0035} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.1910} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0058} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0058} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0051} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0050} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0070} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0550} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0027} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0027} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0011} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0010} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0033} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.3560} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0054} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0054} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0049} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0048} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0142} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0440} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0026} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0025} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0023} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0020} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0017} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{1.7240} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0142} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0152} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0101} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0101} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0363} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.9540} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0115} \\
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0115} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0099} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0094} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0358} \\ 
+\hline \\[-1.8ex] 
+\end{longtable} 
+
+\dsp
+
+\normalsize
+
+
+
+
+### Increased Ordinal Variables {#ordmiss-results-increaseOrd}
+
+
+```{r MULT MAR 4 Variables, include=FALSE}
+
+mult.mar.4var.anes <- read.csv("data/anes/mar/results/anes.mar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mar.4var.cces <- read.csv("data/cces/mar/results/cces.mar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mar.4var.frame <- read.csv("data/framing/mar/results/framing.mar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mult.mar.4var.anes$diff[mult.mar.4var.anes$method == "true"] <- mult.mar.4var.anes$value[mult.mar.4var.anes$method == "true"]
+mult.mar.4var.cces$diff[mult.mar.4var.cces$method == "true"] <- mult.mar.4var.cces$value[mult.mar.4var.cces$method == "true"]
+mult.mar.4var.frame$diff[mult.mar.4var.frame$method == "true"] <- mult.mar.4var.frame$value[mult.mar.4var.frame$method == "true"]
+
+levels(mult.mar.4var.anes$method) <- levels(mult.mar.4var.cces$method) <- levels(mult.mar.4var.frame$method) <-
+  levs
+
+mult.mar.4var <- cbind(mult.mar.4var.anes[, c(1,2,4)], mult.mar.4var.cces[,4], mult.mar.4var.frame[,4])
+colnames(mult.mar.4var) <- col.names
+
+# to make the in-text citations shorter
+mult.mar.4.anes <- mult.mar.4var$ANES
+mult.mar.4.cces <- mult.mar.4var$CCES
+mult.mar.4.frame <- mult.mar.4var$Framing
+mult.mar.4.meth <- mult.mar.4var$Method
+mult.mar.4.varb <- mult.mar.4var$Variable
+
+stargazer(mult.mar.4var, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MAR, 4 Variables with NA",
+          label = "mult.mar.4var")
+
+```
 
 
 \begin{table}[!htbp] \centering 
-  \caption{Accuracy of Multiple Imputation Methods (ampute with MNAR)} 
-  \label{amp.mnar.acc} 
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+  \caption{Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MAR, 4 Variables with NA} 
+  \label{mult.mar.4var} 
+\begin{threeparttable}
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
-\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{4}{c}{Data} \\ 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
 \hline \\[-1.8ex] 
- & & \multicolumn{2}{c}{Old Framing (n = 1,003)} & \multicolumn{2}{c}{ANES (n = 3,223)}\\
-\cline{3-6}\\[-1.8ex]
- & & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff}\\
-\cline{3-4} 
-\cline{5-6}\\[-1.8ex]
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{Dem} & .4666 & 0 & .3549 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{Dem} & .4630 & .0036 & .3527 & .0022 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{Dem} & .4629 & .0037 & .3527 & .0022 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{Dem} & .4619 & .0047 & .3526 & .0023 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{Dem} & .4629 & .0037 & .3526 & .0023 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{Dem} & .4456 & .0210 & .3395 & .0154 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{inc} & 3.0927 & 0 & 15.5740 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{inc} & 3.0357 & .0570 & 15.3948 & .1792 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{inc} & 3.0298 & .0629 & 15.3922 & .1818 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{inc} & 3.0469 & .0458 & 15.4136 & .1604 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{inc} & 3.0486 & .0441 & 15.4137 & .1603 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{inc} & 3.0210 & .0717 & 15.3494 & .2246 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{age} & 37.9252 & 0 & 49.0400 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{age} & 37.2342 & .6910 & 48.7292 & .3108 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{age} & 37.1753 & .7499 & 48.7378 & .3022 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{age} & 37.6363 & .2889 & 48.7809 & .2591 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{age} & 37.6411 & .2841 & 48.7818 & .2582 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{age} & 37.2016 & .7236 & 48.5130 & .5270 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{Female} & .4666 & 0 & .4682 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{Female} & .4520 & .0146 & .4539 & .0143 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{Female} & .4520 & .0146 & .4539 & .0143 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{Female} & .4524 & .0142 & .4541 & .0141 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{Female} & .4526 & .0140 & .4541 & .0141 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{Female} & .4445 & .0221 & .4521 & .0161 \\ 
-\multicolumn{1}{l}{true} & \multicolumn{1}{l}{interest} & 3.2164 & 0 & 2.2197 & 0 \\ 
-\multicolumn{1}{l}{hd.ord} & \multicolumn{1}{l}{interest} & 3.1821 & .0343 & 2.1956 & .0241 \\ 
-\multicolumn{1}{l}{hd.norm} & \multicolumn{1}{l}{interest} & 3.1797 & .0367 & 2.1954 & .0243 \\ 
-\multicolumn{1}{l}{amelia} & \multicolumn{1}{l}{interest} & 3.2028 & .0136 & 2.1965 & .0232 \\ 
-\multicolumn{1}{l}{mice} & \multicolumn{1}{l}{interest} & 3.2025 & .0139 & 2.1965 & .0232 \\ 
-\multicolumn{1}{l}{na.omit} & \multicolumn{1}{l}{interest} & 3.1768 & .0396 & 2.2038 & .0159 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3420} & \multicolumn{1}{c}{.3770} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0008} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{+.0005} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0018} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{+.0012} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0333} & \multicolumn{1}{c}{--.0294} & \multicolumn{1}{c}{--.0357} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4890} & \multicolumn{1}{c}{.4830} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0022} & \multicolumn{1}{c}{--.0019} & \multicolumn{1}{c}{+.0015} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0015} & \multicolumn{1}{c}{--.0018} & \multicolumn{1}{c}{+.0011} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0002} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0396} & \multicolumn{1}{c}{--.0407} & \multicolumn{1}{c}{--.0297} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6140} & \multicolumn{1}{c}{6.4810} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0830} & \multicolumn{1}{c}{--.0246} & \multicolumn{1}{c}{--.0093} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1523} & \multicolumn{1}{c}{--.0516} & \multicolumn{1}{c}{--.0225} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{+.0010} & \multicolumn{1}{c}{--.0006} & \multicolumn{1}{c}{+.0009} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0008} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{+.0020} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.5771} & \multicolumn{1}{c}{--.2564} & \multicolumn{1}{c}{--.1400} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.0410} & \multicolumn{1}{c}{52.8230} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2889} & \multicolumn{1}{c}{--.2350} & \multicolumn{1}{c}{--.3546} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.5431} & \multicolumn{1}{c}{--.4664} & \multicolumn{1}{c}{--.4583} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0018} & \multicolumn{1}{c}{+.0085} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0024} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{--.0022} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--1.1521} & \multicolumn{1}{c}{--1.1228} & \multicolumn{1}{c}{--.9688} \\  
 \hline \\[-1.8ex] 
 \end{tabular} 
-\end{table} 
-
-```{r include=FALSE}
-# I don't want to risk referring to the wrong table by mistake, so I'm deleting
-# the objects for referral after I no longer refer to them
-rm(diffF, diffA, meth, varb) 
-```
-
-\clearpage
-
-
-### With My Own Amputation Methods {#ordmiss-results-acc-own}
-
-Table \ref{own.NA.oldframe.acc} shows the results of using my own function to insert NAs MAR into the old framing data (n = 1,003), `own.NA()`. In general, something is MAR if you ampute values in column A based on values in column B, e.g. if you ampute the values for `age` where `income = 1` and where `income = 5`. `own.NA()` applies this procedure for any combination of columns. Here, the chosen columns to be amputed are `Dem`, `age`, and `interest`. The chosen columns the amputations depend on are `inc`, `Female`, and `Black`. The function samples 20 percent of observations for each unique value of `inc`. For those observations, the values of `Dem` are amputed. Accordingly, the function samples 20 percent of observations for each unique value of `Female`. For those observations, the values of `age` are amputed. The same occurs for `Black` and `interest`. The resulting data frame is then imputed. Note that the number of amputed and imputed variables is generally lower, as a pair of variables is needed to ampute one variable. As Table \ref{own.NA.oldframe.acc} shows, `hd.ord` does not perform particularly well. It beats `hd.norm` for all three variables but falls considerably short of `amelia` and `mice`. It is notable, however, that my method seems closer to being MCAR than MAR, as `na.omit` performs well and sometimes even outperforms other methods, for instance for `interest`. It is thus questionable how much use `own.NA()` is in its current form.
-
-
-```{r results='asis', echo=FALSE}
-own.NA.oldframe <- read.csv("data/framing/own.na/framing.own.na.results.3var.1003n.12324it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-levels(own.NA.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-colnames(own.NA.oldframe) <- c("Method", "Variable", "Value", "Diff")
-stargazer(own.NA.oldframe, 
-          summary = FALSE,
-          align = TRUE,
-          header = FALSE,
-          rownames = FALSE,
-          digits = 4,
-          title = "Accuracy of Multiple Imputation Methods (own.NA, old framing data (n = 1,003))",
-          label = "own.NA.oldframe.acc")
-
-```
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
 
 
 \clearpage
 
-`ampute()` seems to spread NAs evenly across columns. This means that observations are mostly complete, with not more than one or two missing values. I wrote another function, `own.NA.rows()`, that changes this. `own.NA.rows()` inserts missingness for a percentage of observations across all columns except `education`. This means that the majority of observations are complete but a percentage of observations misses data on almost all variables. Table \ref{own.NA.rows.oldframe.acc} shows the results, with the missingess percentage set to 20.
+```{r MULT MAR 11 Variables, include=FALSE}
+
+mult.mar.11var.anes <- read.csv("data/anes/mar/results/anes.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mar.11var.cces <- read.csv("data/cces/mar/results/cces.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mar.11var.frame <- read.csv("data/framing/mar/results/framing.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mult.mar.11var.anes$diff[mult.mar.11var.anes$method == "true"] <- mult.mar.11var.anes$value[mult.mar.11var.anes$method == "true"]
+mult.mar.11var.cces$diff[mult.mar.11var.cces$method == "true"] <- mult.mar.11var.cces$value[mult.mar.11var.cces$method == "true"]
+mult.mar.11var.frame$diff[mult.mar.11var.frame$method == "true"] <- mult.mar.11var.frame$value[mult.mar.11var.frame$method == "true"]
+
+levels(mult.mar.11var.anes$method) <- levels(mult.mar.11var.cces$method) <- levels(mult.mar.11var.frame$method) <-
+  levs
 
 
-```{r include=FALSE}
-own.NA.rows.oldframe <- read.csv("data/framing/own.na.rows/framing.own.na.rows.results.17var.1003n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-levels(own.NA.rows.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-colnames(own.NA.rows.oldframe) <- c("Method", "Variable", "Value", "Diff")
+mult.un.meth <- mult.mar.11var.anes$method %>% unique
+mult.un.meth.len <- mult.un.meth %>% length
+mult.un.vars <- c(mult.mar.11var.anes$variable %>% as.character,
+                  mult.mar.11var.cces$variable %>% as.character,
+                  mult.mar.11var.frame$variable %>% as.character) %>%
+  unique
+mult.un.vars.len <- mult.un.vars %>% length
+mult.un.anes.len <- mult.mar.11var.anes$variable %>% unique %>% length
+mult.un.cces.var <- mult.mar.11var.cces$variable %>% unique %>% as.character
+mult.un.cces.len <- mult.un.cces.var %>% length
+mult.un.frame.var <- mult.mar.11var.frame$variable %>% unique %>% as.character
+mult.un.frame.len <- mult.un.frame.var %>% length
+
+mult.variable <- rep(mult.un.vars, each = mult.un.meth.len)
+mult.method <- rep(mult.un.meth, mult.un.vars.len) %>% as.character
+mult.meth.len <- mult.method %>% length
+
+mult.mar.11var <- cbind(mult.method, mult.variable) %>% as.data.frame
+
+mult.mar.11var$mult.anes.col <- c(mult.mar.11var.anes$diff,
+                                  rep("---",
+                                      mult.un.meth.len * (mult.un.vars.len - mult.un.anes.len)))
+mult.mar.11var$mult.cces.col <- rep("---", mult.meth.len) %>% as.character
+mult.mar.11var$mult.frame.col <- rep("---", mult.meth.len) %>% as.character
+
+for(i in 1:(mult.un.cces.len)){
+  mult.mar.11var$mult.cces.col[mult.mar.11var$mult.variable == mult.un.cces.var[i]] <- mult.mar.11var.cces$diff[mult.mar.11var.cces$variable == mult.un.cces.var[i]]
+  mult.mar.11var$mult.frame.col[mult.mar.11var$mult.variable == mult.un.frame.var[i]] <- mult.mar.11var.frame$diff[mult.mar.11var.frame$variable == mult.un.frame.var[i]]
+}
+
+colnames(mult.mar.11var) <- col.names
+
 # to make the in-text citations shorter
-diff <- own.NA.rows.oldframe$Diff
-meth <- own.NA.rows.oldframe$Method
-varb <- own.NA.rows.oldframe$Variable
-stargazer(own.NA.rows.oldframe, 
+mult.mar.11.anes <- mult.mar.11var$ANES
+mult.mar.11.cces <- mult.mar.11var$CCES
+mult.mar.11.frame <- mult.mar.11var$Framing
+mult.mar.11.meth <- mult.mar.11var$Method
+mult.mar.11.varb <- mult.mar.11var$Variable
+
+stargazer(mult.mar.11var, 
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
           digits = 4,
-          title = "Accuracy of Multiple Imputation Methods (own.NA.rows, old framing data (n = 1,003))",
-          label = "own.NA.rows.oldframe.acc")
+          title = "Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MAR, 11 Variables with NA",
+          label = "mult.mar.11var")
+
+
+```
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+  \caption{Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MAR, 11 Variables with NA} 
+  \label{mult.mar.11var} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3420} & \multicolumn{1}{c}{.3770} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{+.0002} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{+.0005} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0200} & \multicolumn{1}{c}{--.0213} & \multicolumn{1}{c}{--.0294} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4890} & \multicolumn{1}{c}{.4830} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{+.0002} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0254} & \multicolumn{1}{c}{--.0350} & \multicolumn{1}{c}{--.0174} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6140} & \multicolumn{1}{c}{6.4810} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0346} & \multicolumn{1}{c}{--.0114} & \multicolumn{1}{c}{--.0054} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0657} & \multicolumn{1}{c}{--.0241} & \multicolumn{1}{c}{--.0095} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0018} & \multicolumn{1}{c}{--.0007} & \multicolumn{1}{c}{--.0004} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0027} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.6432} & \multicolumn{1}{c}{--.2888} & \multicolumn{1}{c}{--.0983} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.0410} & \multicolumn{1}{c}{52.8230} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.0887} & \multicolumn{1}{c}{--.0704} & \multicolumn{1}{c}{--.1379} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.1951} & \multicolumn{1}{c}{--.1532} & \multicolumn{1}{c}{--.1640} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0010} & \multicolumn{1}{c}{--.0021} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.0016} & \multicolumn{1}{c}{--.0055} & \multicolumn{1}{c}{+.0022} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.8025} & \multicolumn{1}{c}{--.4330} & \multicolumn{1}{c}{--.5290} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.0790} & \multicolumn{1}{c}{.0950} & \multicolumn{1}{c}{.0690} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0103} & \multicolumn{1}{c}{--.0122} & \multicolumn{1}{c}{--.0134} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.6610} & \multicolumn{1}{c}{.4370} & \multicolumn{1}{c}{.7430} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{+.0007} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{+.0008} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{+.0008} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0007} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0109} & \multicolumn{1}{c}{--.0328} & \multicolumn{1}{c}{--.0159} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{.6460} & \multicolumn{1}{c}{.6420} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0174} & \multicolumn{1}{c}{--.0241} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{.5290} & \multicolumn{1}{c}{.6310} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0390} & \multicolumn{1}{c}{--.0324} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{.6820} & \multicolumn{1}{c}{.7010} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0005} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0341} & \multicolumn{1}{c}{--.0295} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{.0830} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{+.0002} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0186} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{.1390} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0007} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0310} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0420} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0113} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.1910} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0146} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0550} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0091} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.3560} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0006} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0004} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0373} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0440} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0026} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{1.7240} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0047} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0059} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0002} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0002} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0921} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.9540} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0019} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0026} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0963} \\
+\hline \\[-1.8ex] 
+\end{longtable} 
+
+\dsp
+
+\normalsize
+
+
+
+```{r MULT MNAR 4 Variables, include=FALSE}
+
+mult.mnar.4var.anes <- read.csv("data/anes/mnar/results/anes.mnar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mnar.4var.cces <- read.csv("data/cces/mnar/results/cces.mnar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mnar.4var.frame <- read.csv("data/framing/mnar/results/framing.mnar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mult.mnar.4var.anes$diff[mult.mnar.4var.anes$method == "true"] <- mult.mnar.4var.anes$value[mult.mnar.4var.anes$method == "true"]
+mult.mnar.4var.cces$diff[mult.mnar.4var.cces$method == "true"] <- mult.mnar.4var.cces$value[mult.mnar.4var.cces$method == "true"]
+mult.mnar.4var.frame$diff[mult.mnar.4var.frame$method == "true"] <- mult.mnar.4var.frame$value[mult.mnar.4var.frame$method == "true"]
+
+levels(mult.mnar.4var.anes$method) <- levels(mult.mnar.4var.cces$method) <- levels(mult.mnar.4var.frame$method) <-
+  levs
+
+mult.mnar.4var <- cbind(mult.mnar.4var.anes[, c(1,2,4)], mult.mnar.4var.cces[,4], mult.mnar.4var.frame[,4])
+colnames(mult.mnar.4var) <- col.names
+
+# to make the in-text citations shorter
+mult.mnar.4.anes <- mult.mnar.4var$ANES
+mult.mnar.4.cces <- mult.mnar.4var$CCES
+mult.mnar.4.frame <- mult.mnar.4var$Framing
+mult.mnar.4.meth <- mult.mnar.4var$Method
+mult.mnar.4.varb <- mult.mnar.4var$Variable
+
+stargazer(mult.mnar.4var, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MNAR, 4 Variables with NA",
+          label = "mult.mnar.4var")
+
+
+```
+
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MNAR, 4 Variables with NA} 
+  \label{mult.mnar.4var} 
+\begin{threeparttable}
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3420} & \multicolumn{1}{c}{.3770} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0142} & \multicolumn{1}{c}{--.0133} & \multicolumn{1}{c}{--.0043} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0155} & \multicolumn{1}{c}{--.0131} & \multicolumn{1}{c}{--.0042} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0136} & \multicolumn{1}{c}{--.0131} & \multicolumn{1}{c}{--.0059} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0127} & \multicolumn{1}{c}{--.0130} & \multicolumn{1}{c}{--.0046} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0211} & \multicolumn{1}{c}{--.0185} & \multicolumn{1}{c}{--.0207} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4890} & \multicolumn{1}{c}{.4830} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0180} & \multicolumn{1}{c}{--.0162} & \multicolumn{1}{c}{--.0167} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0172} & \multicolumn{1}{c}{--.0160} & \multicolumn{1}{c}{--.0157} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0170} & \multicolumn{1}{c}{--.0154} & \multicolumn{1}{c}{--.0170} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0170} & \multicolumn{1}{c}{--.0153} & \multicolumn{1}{c}{--.0172} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0233} & \multicolumn{1}{c}{--.0241} & \multicolumn{1}{c}{--.0169} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6140} & \multicolumn{1}{c}{6.4810} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2481} & \multicolumn{1}{c}{--.1034} & \multicolumn{1}{c}{--.0728} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.3174} & \multicolumn{1}{c}{--.1303} & \multicolumn{1}{c}{--.0812} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1555} & \multicolumn{1}{c}{--.0741} & \multicolumn{1}{c}{--.0589} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1568} & \multicolumn{1}{c}{--.0730} & \multicolumn{1}{c}{--.0565} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.3114} & \multicolumn{1}{c}{--.1513} & \multicolumn{1}{c}{--.0852} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.0410} & \multicolumn{1}{c}{52.8230} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.6020} & \multicolumn{1}{c}{--.4844} & \multicolumn{1}{c}{--.8613} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.8997} & \multicolumn{1}{c}{--.7259} & \multicolumn{1}{c}{--.9349} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3103} & \multicolumn{1}{c}{--.2831} & \multicolumn{1}{c}{--.3702} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2994} & \multicolumn{1}{c}{--.2702} & \multicolumn{1}{c}{--.3705} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.6726} & \multicolumn{1}{c}{--.6482} & \multicolumn{1}{c}{--.6213} \\
+\hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+
+
+\clearpage
+
+
+```{r MULT MNAR 11 Variables, include=FALSE}
+
+mult.mnar.11var.anes <- read.csv("data/anes/mnar/results/anes.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mnar.11var.cces <- read.csv("data/cces/mnar/results/cces.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mnar.11var.frame <- read.csv("data/framing/mnar/results/framing.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mult.mnar.11var.anes$diff[mult.mnar.11var.anes$method == "true"] <- mult.mnar.11var.anes$value[mult.mnar.11var.anes$method == "true"]
+mult.mnar.11var.cces$diff[mult.mnar.11var.cces$method == "true"] <- mult.mnar.11var.cces$value[mult.mnar.11var.cces$method == "true"]
+mult.mnar.11var.frame$diff[mult.mnar.11var.frame$method == "true"] <- mult.mnar.11var.frame$value[mult.mnar.11var.frame$method == "true"]
+
+levels(mult.mnar.11var.anes$method) <- levels(mult.mnar.11var.cces$method) <- levels(mult.mnar.11var.frame$method) <-
+  levs
+
+
+mult.un.meth <- mult.mnar.11var.anes$method %>% unique
+mult.un.meth.len <- mult.un.meth %>% length
+mult.un.vars <- c(mult.mnar.11var.anes$variable %>% as.character,
+                  mult.mnar.11var.cces$variable %>% as.character,
+                  mult.mnar.11var.frame$variable %>% as.character) %>%
+  unique
+mult.un.vars.len <- mult.un.vars %>% length
+mult.un.anes.len <- mult.mnar.11var.anes$variable %>% unique %>% length
+mult.un.cces.var <- mult.mnar.11var.cces$variable %>% unique %>% as.character
+mult.un.cces.len <- mult.un.cces.var %>% length
+mult.un.frame.var <- mult.mnar.11var.frame$variable %>% unique %>% as.character
+mult.un.frame.len <- mult.un.frame.var %>% length
+
+mult.variable <- rep(mult.un.vars, each = mult.un.meth.len)
+mult.method <- rep(mult.un.meth, mult.un.vars.len) %>% as.character
+mult.meth.len <- mult.method %>% length
+
+mult.mnar.11var <- cbind(mult.method, mult.variable) %>% as.data.frame
+
+mult.mnar.11var$mult.anes.col <- c(mult.mnar.11var.anes$diff,
+                                  rep("---",
+                                      mult.un.meth.len * (mult.un.vars.len - mult.un.anes.len)))
+mult.mnar.11var$mult.cces.col <- rep("---", mult.meth.len) %>% as.character
+mult.mnar.11var$mult.frame.col <- rep("---", mult.meth.len) %>% as.character
+
+for(i in 1:(mult.un.cces.len)){
+  mult.mnar.11var$mult.cces.col[mult.mnar.11var$mult.variable == mult.un.cces.var[i]] <- mult.mnar.11var.cces$diff[mult.mnar.11var.cces$variable == mult.un.cces.var[i]]
+  mult.mnar.11var$mult.frame.col[mult.mnar.11var$mult.variable == mult.un.frame.var[i]] <- mult.mnar.11var.frame$diff[mult.mnar.11var.frame$variable == mult.un.frame.var[i]]
+}
+
+colnames(mult.mnar.11var) <- col.names
+
+# to make the in-text citations shorter
+mult.mnar.11.anes <- mult.mnar.11var$ANES
+mult.mnar.11.cces <- mult.mnar.11var$CCES
+mult.mnar.11.frame <- mult.mnar.11var$Framing
+mult.mnar.11.meth <- mult.mnar.11var$Method
+mult.mnar.11.varb <- mult.mnar.11var$Variable
+
+stargazer(mult.mnar.11var, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MNAR, 11 Variables with NA",
+          label = "mult.mnar.11var")
+
 
 ```
 
 
 \ssp
 
-\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
-  \caption{\textit{Accuracy of Multiple Imputation Methods (own.NA.rows, old framing data (n = 1,003))}} 
-  \label{own.NA.rows.oldframe.acc} 
+\footnotesize
+
+\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+  \caption{Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MNAR, 11 Variables with NA} 
+  \label{mult.mnar.11var} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
-\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\ 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
 \hline \\[-1.8ex] 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & .4666 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & .4666 & 0 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & .4670 & .0004 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Ind} & .2802 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Ind} & .2795 & .0007 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Ind} & .2817 & .0015 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Cons} & .2832 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Cons} & .2830 & .0002 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Cons} & .2823 & .0009 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Lib} & .5174 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Lib} & .5182 & .0008 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Lib} & .5173 & .0001 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & .0702 & .0004 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & .0731 & .0033 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & .0546 & .0002 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & .0589 & .0041 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{White} & .7712 & .0005 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{White} & .7613 & .0104 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Asian} & .0812 & .0004 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Asian} & .0809 & .0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Asian} & .0835 & .0027 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Female} & .4666 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Female} & .4673 & .0007 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Unempl} & .1615 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Unempl} & .1610 & .0005 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Unempl} & .1624 & .0009 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Ret} & .0508 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Ret} & .0506 & .0002 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Ret} & .0508 & 0 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Ret} & .0509 & .0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Ret} & .0505 & .0003 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Ret} & .0509 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & .0446 & .0007 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & .0466 & .0027 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 3.2164 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 3.2161 & .0003 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{interest} & 3.2163 & .0001 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 3.2164 & 0 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 3.2122 & .0042 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 3.2163 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{media} & 1.7268 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{media} & 1.7294 & .0026 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{media} & 1.7270 & .0002 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{media} & 1.7270 & .0002 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{media} & 1.7259 & .0009 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{media} & 1.7269 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{part} & .9575 & .0014 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{part} & .9560 & .0001 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{part} & .9546 & .0015 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & 3.0927 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & 3.0906 & .0021 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & 3.0949 & .0022 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 37.9252 & 0 \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 37.9000 & .0252 \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{age} & 37.9250 & .0002 \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 37.9243 & .0009 \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 37.8789 & .0463 \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 37.9250 & .0002 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3420} & \multicolumn{1}{c}{.3770} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0050} & \multicolumn{1}{c}{--.0053} & \multicolumn{1}{c}{--.0022} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0053} & \multicolumn{1}{c}{--.0053} & \multicolumn{1}{c}{--.0024} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0047} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{--.0024} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0044} & \multicolumn{1}{c}{--.0048} & \multicolumn{1}{c}{--.0019} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0097} & \multicolumn{1}{c}{--.0097} & \multicolumn{1}{c}{--.0109} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4890} & \multicolumn{1}{c}{.4830} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0061} & \multicolumn{1}{c}{--.0058} & \multicolumn{1}{c}{--.0061} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0057} & \multicolumn{1}{c}{--.0056} & \multicolumn{1}{c}{--.0057} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0060} & \multicolumn{1}{c}{--.0054} & \multicolumn{1}{c}{--.0059} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0060} & \multicolumn{1}{c}{--.0054} & \multicolumn{1}{c}{--.0060} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0088} & \multicolumn{1}{c}{--.0116} & \multicolumn{1}{c}{--.0068} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6140} & \multicolumn{1}{c}{6.4810} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0841} & \multicolumn{1}{c}{--.0349} & \multicolumn{1}{c}{--.0258} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1142} & \multicolumn{1}{c}{--.0473} & \multicolumn{1}{c}{--.0291} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0540} & \multicolumn{1}{c}{--.0250} & \multicolumn{1}{c}{--.0206} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0549} & \multicolumn{1}{c}{--.0249} & \multicolumn{1}{c}{--.0199} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2112} & \multicolumn{1}{c}{--.0982} & \multicolumn{1}{c}{--.0342} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.0410} & \multicolumn{1}{c}{52.8230} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2124} & \multicolumn{1}{c}{--.1607} & \multicolumn{1}{c}{--.2819} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3329} & \multicolumn{1}{c}{--.2424} & \multicolumn{1}{c}{--.3271} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.1194} & \multicolumn{1}{c}{--.1135} & \multicolumn{1}{c}{--.1257} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.1141} & \multicolumn{1}{c}{--.1102} & \multicolumn{1}{c}{--.1244} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2978} & \multicolumn{1}{c}{--.0974} & \multicolumn{1}{c}{--.2074} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.0790} & \multicolumn{1}{c}{.0950} & \multicolumn{1}{c}{.0690} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0036} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{--.0024} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{--.0042} & \multicolumn{1}{c}{--.0031} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0041} & \multicolumn{1}{c}{--.0044} & \multicolumn{1}{c}{--.0012} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0037} & \multicolumn{1}{c}{--.0041} & \multicolumn{1}{c}{--.0011} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{--.0050} & \multicolumn{1}{c}{--.0066} & \multicolumn{1}{c}{--.0054} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.6610} & \multicolumn{1}{c}{.4370} & \multicolumn{1}{c}{.7430} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0042} & \multicolumn{1}{c}{--.0057} & \multicolumn{1}{c}{--.0027} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0036} & \multicolumn{1}{c}{--.0058} & \multicolumn{1}{c}{--.0024} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0034} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{--.0025} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0033} & \multicolumn{1}{c}{--.0044} & \multicolumn{1}{c}{--.0026} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{--.0022} & \multicolumn{1}{c}{--.0122} & \multicolumn{1}{c}{--.0033} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{.6460} & \multicolumn{1}{c}{.6420} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{--.0044} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0047} & \multicolumn{1}{c}{--.0042} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0043} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0043} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Religious} & \multicolumn{1}{c}{--.0055} & \multicolumn{1}{c}{--.0077} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{.5290} & \multicolumn{1}{c}{.6310} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0047} & \multicolumn{1}{c}{--.0043} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0042} & \multicolumn{1}{c}{--.0040} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0046} & \multicolumn{1}{c}{--.0039} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{--.0039} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Married} & \multicolumn{1}{c}{--.0120} & \multicolumn{1}{c}{--.0095} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{.6820} & \multicolumn{1}{c}{.7010} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0037} & \multicolumn{1}{c}{--.0035} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0030} & \multicolumn{1}{c}{--.0030} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0031} & \multicolumn{1}{c}{--.0033} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0030} & \multicolumn{1}{c}{--.0033} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{OwnHome} & \multicolumn{1}{c}{--.0112} & \multicolumn{1}{c}{--.0088} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{.0830} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0047} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0047} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0045} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0044} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Rally} & \multicolumn{1}{c}{--.0080} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{.1390} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0057} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0060} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0054} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0053} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Donate} & \multicolumn{1}{c}{--.0122} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0420} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0027} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0026} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0028} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0027} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Gay} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0037} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.1910} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0067} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0064} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0057} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0056} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{StudLoans} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0082} & \multicolumn{1}{c}{---} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0550} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0027} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0028} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0012} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0012} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0037} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.3560} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0067} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0061} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0055} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0054} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Official} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0139} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.0440} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0026} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0025} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0025} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0021} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0021} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{1.7240} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0156} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0164} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0110} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0110} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Media} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0345} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{.9540} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0138} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0130} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0111} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0105} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Participation} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{--.0348} \\ 
 \hline \\[-1.8ex] 
 \end{longtable} 
 
 \dsp
 
-`hd.norm`, `amelia`, and `na.omit` perform very well. No difference to the true value for any variable is greater than `r diff[meth == "amelia" & varb == "age"]` and most are `r diff[meth == "hd.norm" & varb == "media"]`. 
-
-`hd.ord` performs on similar levels except for the nominal variables (`media` (`r diff[meth == "hd.ord" & varb == "media"]`), `part` (`r diff[meth == "hd.ord" & varb == "part"]`), `inc` (`r diff[meth == "hd.ord" & varb == "inc"]`), `age` (`r diff[meth == "hd.ord" & varb == "age"]`)).
-
-Somewhat surprisingly, `mice` performs worst overall for many variables (`Ind` (`r diff[meth == "mice" & varb == "Ind"]`), `Black` (`r diff[meth == "mice" & varb == "Black"]`), `Hisp` (`r diff[meth == "mice" & varb == "Hisp"]`), `White` (`r diff[meth == "mice" & varb == "White"]`), `Asian` (`r diff[meth == "mice" & varb == "Asian"]`), `Stud` (`r diff[meth == "mice" & varb == "Stud"]`), `interest` (`r diff[meth == "mice" & varb == "interest"]`), `part` (`r diff[meth == "mice" & varb == "part"]`), `inc` (`r diff[meth == "mice" & varb == "inc"]`), `age` (`r diff[meth == "mice" & varb == "age"]`)) by some margin.
-
-It is also noteable how often the difference amounts to zero and how well `na.omit` performs overall.
-
-
-```{r include=FALSE}
-# I don't want to risk referring to the wrong table by mistake, so I'm deleting
-# the objects for referral after I no longer refer to them
-rm(diff, meth, varb) 
-```
+\normalsize
 
 
 
-
-### Overall Table Analysis So Far
-
-This is the summary of all analyses conducted so far, except for the ones with my own functions `own.NA()` and `own.NA.rows()`. The results for these functions showed such a strong performance of `na.omit` that the functions' design needs to be questioned and reworked. `na.omit` should not perform so strongly for a missingness mechanism that is supposed to be MAR, so the functions likely represent a version of MCAR. This puts the usefulness of their imputation results in doubt.
-
-For all the other analyses, I am setting a 'threshold' of the fourth decimal to determine 'closeness'. This means the performance of `hd.ord` is only considered close to the best-performing method (`amelia` or `mice`) when the difference between the best-performing method and `hd.ord` is no higher than a value in the fourth decimal. 
+### Increased Missingness {#ordmiss-results-increaseNA}
 
 
-```{r include=FALSE}
+```{r Increasing Missingness Percentage, include=FALSE}
 
-# The following collects the differences between hd.ord and amelia/mice
-# (whichever is best) for all variables across the analyses I have done so far
-listed <- list(amp.oldframe.20, amp.anes, amp.oldframe.bycases, amp.anes.mnar, amp.oldframe.mnar)
-datasets <- c("amp.oldframe.20", "amp.anes", "amp.oldframe.bycases", "amp.anes.mnar", "amp.oldframe.mnar")
-vars <- levels(amp.anes.mnar$Variable)
-dfs <- data.frame(matrix(NA, length(datasets), 3))
-colnames(dfs) <- c("Dataset", "Variable", "Diff")
-dfs$Dataset <- datasets
-list.of.dfs <- rep(list(dfs), length(vars))
+mar.5var.frame.20 <- mar.5var.frame
+mar.5var.frame.50 <- read.csv("data/framing/mar/results/framing.mar.results.5var.1000n.1000it.50perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.5var.frame.80 <- read.csv("data/framing/mar/results/framing.mar.results.5var.1000n.1000it.80perc.csv") %>% .[,-1] %>% dropZero.addPlus
 
-# make everything numeric (dropping the leading zeroes makes it character),
-# otherwise I can't take absolute values
-for(n in 1:length(datasets)){
-  listed[[n]]$Diff <- listed[[n]]$Diff %>% as.numeric
-}
+mar.5var.frame.20$diff[mar.5var.frame.20$method == "true"] <- 
+  mar.5var.frame.50$diff[mar.5var.frame.50$method == "true"] <- 
+  mar.5var.frame.80$diff[mar.5var.frame.80$method == "true"] <- 
+  mar.5var.frame.20$value[mar.5var.frame.20$method == "true"]
 
-names(list.of.dfs) <- vars
+levels(mar.5var.frame.20$method) <- 
+  levels(mar.5var.frame.50$method) <- 
+  levels(mar.5var.frame.80$method) <- 
+  levs
 
-# save the differences for the best performing method and hd.ord
-for(x in 1:length(vars)){
-  for(n in 1:length(datasets)){
-    list.of.dfs[[vars[x]]]$Diff[n] <- c(listed[[n]]$Diff[listed[[n]]$Method == "mice" & listed[[n]]$Variable == vars[x]] %>% abs,
-                                        listed[[n]]$Diff[listed[[n]]$Method == "amelia" & listed[[n]]$Variable == vars[x]] %>% abs) %>%
-      min %>%
-      - (listed[[n]]$Diff[listed[[n]]$Method == "hd.ord" & listed[[n]]$Variable == vars[x]] %>% abs) %>%
-      abs
-    list.of.dfs[[vars[x]]]$Variable <- rep(vars[x], 5)
-  }
-}
-
-# drop leading zeroes (turns it back into character)
-for(i in 1: length(list.of.dfs)){
-  list.of.dfs[[i]] <- drop.zero(list.of.dfs[[i]])
-}
+mar.5var.old.frame <- cbind(mar.5var.frame.20[,c(1,2,4)], mar.5var.frame.50[,4], mar.5var.frame.80[,4])
+colnames(mar.5var.old.frame) <- c("Method", "Variable", "20% NA", "50% NA", "80% NA")
 
 # to make the in-text citations shorter
-dem <- list.of.dfs[["Dem"]]
-fem <- list.of.dfs[["Female"]]
-inc <- list.of.dfs[["inc"]]
-age <- list.of.dfs[["age"]]
-int <- list.of.dfs[["interest"]]
+frame.NA20 <- mar.5var.old.frame$`20% NA`
+frame.NA50 <- mar.5var.old.frame$`50% NA`
+frame.NA80 <- mar.5var.old.frame$`80% NA`
+frame.80.meth <- mar.5var.old.frame$Method
+frame.80.var <- mar.5var.old.frame$Variable
+
+stargazer(mar.5var.old.frame, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods for Increasing Percentages of Missing Data (Framing Experiment Data)",
+          label = "mar.5var.old.frame")
 
 ```
 
 
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods for Increasing Percentages of Missing Data (Framing Experiment Data)} 
+  \label{mar.5var.old.frame} 
+\begin{threeparttable}
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{20\% NA} & \multicolumn{1}{c}{50\% NA} & \multicolumn{1}{c}{80\% NA} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4660} & \multicolumn{1}{c}{.4660} & \multicolumn{1}{c}{.4660} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0016} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0008} & \multicolumn{1}{c}{+.0018} & \multicolumn{1}{c}{+.0037} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{+.0004} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{+.0004} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0340} & \multicolumn{1}{c}{--.0841} & \multicolumn{1}{c}{--.1393} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.5260} & \multicolumn{1}{c}{.5260} & \multicolumn{1}{c}{.5260} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0004} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0005} & \multicolumn{1}{c}{+.0009} & \multicolumn{1}{c}{+.0014} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0003} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{--.0006} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0256} & \multicolumn{1}{c}{--.0632} & \multicolumn{1}{c}{--.1051} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{3.2170} & \multicolumn{1}{c}{3.2170} & \multicolumn{1}{c}{3.2170} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0213} & \multicolumn{1}{c}{--.0604} & \multicolumn{1}{c}{--.0908} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0248} & \multicolumn{1}{c}{--.0679} & \multicolumn{1}{c}{--.1007} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{+.0003} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0003} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0714} & \multicolumn{1}{c}{--.1833} & \multicolumn{1}{c}{--.3219} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{3.0890} & \multicolumn{1}{c}{3.0890} & \multicolumn{1}{c}{3.0890} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0119} & \multicolumn{1}{c}{--.0371} & \multicolumn{1}{c}{--.0594} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0192} & \multicolumn{1}{c}{--.0550} & \multicolumn{1}{c}{--.0805} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{+.0003} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0009} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{+.0014} & \multicolumn{1}{c}{+.0028} & \multicolumn{1}{c}{+.0039} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1367} & \multicolumn{1}{c}{--.3076} & \multicolumn{1}{c}{--.4850} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{37.9120} & \multicolumn{1}{c}{37.9120} & \multicolumn{1}{c}{37.9120} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3650} & \multicolumn{1}{c}{--1.0406} & \multicolumn{1}{c}{--1.5789} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3923} & \multicolumn{1}{c}{--1.1319} & \multicolumn{1}{c}{--1.6962} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.0039} & \multicolumn{1}{c}{+.0043} & \multicolumn{1}{c}{--.0005} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.0049} & \multicolumn{1}{c}{+.0047} & \multicolumn{1}{c}{+.0034} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--1.0641} & \multicolumn{1}{c}{--2.3051} & \multicolumn{1}{c}{--3.4885} \\  
+\hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
 
-For `Dem`, `hd.ord` is close for all combinations: Old framing (n = 1,003) ampute standard (identical values), ANES (n = 3,223) MNAR (`r dem$Diff[dem$Dataset == "amp.anes.mnar"]`), framing (n = 1,003) MNAR (`r dem$Diff[dem$Dataset == "amp.oldframe.mnar"]`), ANES (n = 3,223) ampute standard (`r dem$Diff[dem$Dataset == "amp.anes"]`), and framing (n = 1,003) bycases (`r dem$Diff[dem$Dataset == "amp.oldframe.bycases"]`).
+\clearpage
 
-For `Female`, `hd.ord` is close for ANES (n = 3,223) MNAR (`r fem$Diff[fem$Dataset == "amp.anes.mnar"]`), ANES (n = 3,223) ampute standard (`r fem$Diff[fem$Dataset == "amp.anes"]`), framing (n = 1,003) ampute standard (`r fem$Diff[fem$Dataset == "amp.anes"]`), and framing (n = 1,003) MNAR (`r fem$Diff[fem$Dataset == "amp.oldframe.mnar"]`). It is not close for framing (n = 1,003) bycases (`r fem$Diff[fem$Dataset == "amp.oldframe.bycases"]`).
-
-For `inc`, `hd.ord` is close for ANES (n = 3,223) ampute standard (`r inc$Diff[inc$Dataset == "amp.anes"]`). It is not close framing (n = 1,003) ampute standard (`r inc$Diff[inc$Dataset == "amp.oldframe.20"]`), framing (n = 1,003) MNAR (`r inc$Diff[inc$Dataset == "amp.oldframe.mnar"]`), and ANES (n = 3,223) MNAR (`r inc$Diff[inc$Dataset == "amp.anes.mnar"]`). It is by far the worst for framing (n = 1,003) bycases (`r inc$Diff[inc$Dataset == "amp.oldframe.bycases"]`).
-
-For `age`, `hd.ord` is not close for any combination. It is closest for ANES (n = 3,223) ampute standard (`r age$Diff[age$Dataset == "amp.anes"]`) and ANES (n = 3,223) MNAR (`r age$Diff[age$Dataset == "amp.anes.mnar"]`). Further away are framing (n = 1,003) ampute standard ( `r age$Diff[age$Dataset == "amp.oldframe.20"]`) and framing (n = 1,003) MNAR (`r age$Diff[age$Dataset == "amp.oldframe.mnar"]`). It is by far the worst for framing (n = 1,003) bycases (`r age$Diff[age$Dataset == "amp.oldframe.bycases"]`).
-
-For `interest`, `hd.ord` is close for ANES (n = 3,223) MNAR (`r int$Diff[int$Dataset == "amp.anes.mnar"]`). It is not close for ANES (n = 3,223) ampute standard (`r int$Diff[int$Dataset == "amp.anes"]`), framing (n = 1,003) ampute standard (`r int$Diff[int$Dataset == "amp.oldframe.20"]`), and framing (n = 1,003) MNAR (`r int$Diff[int$Dataset == "amp.oldframe.mnar"]`). It is by far the worst for framing (n = 1,003) bycases (`r int$Diff[int$Dataset == "amp.oldframe.bycases"]`).
-
-<!-- inc, age, interest: None. Closest is interest ANES (n = 3,223) MNAR (.001, the rest for interest is max .02 away), then inc (.0058, the rest is max .019 away). All for age are at least .03 away -->
-
-<!-- Dem, Female/Male: All except framing (n = 1,003) MNAR (Dem), ANES (n = 3,223) MNAR and ANES (n = 3,223) ampute standard (Male) -->
+### Speed {#ordmiss-results-speed}
 
 
-It thus appears that `hd.ord` is very close to `amelia` and `mice` for binary variables (`Dem`, `Female`) for both missing data mechanisms (MAR, MNAR). All combinations for `Dem` and all but one combination for `Female` (framing (n = 1,003) bycases, `r fem$Diff[fem$Dataset == "amp.oldframe.bycases"]`) fall within the closeness threshold.
+```{r Runtimes 5/12 Variables MAR, include=FALSE}
 
-`hd.ord` performs worse for the nominal variables `age` and `inc` as well as the ordinal variable `interest`. Only two combinations overall (ANES (n = 3,223) ampute standard for `inc`, `r inc$Diff[inc$Dataset == "amp.anes"]`; ANES (n = 3,223) MNAR for `interest`, `r int$Diff[int$Dataset == "amp.anes.mnar"]`) fall within the closeness threshold. However, there is a slight tendency that `hd.ord` performs slightly better when applied to the ANES data (n = 3,223): The two closest `interest` values (ANES (n = 3,223) MNAR, `r int$Diff[int$Dataset == "amp.anes.mnar"]`; ANES (n = 3,223) ampute standard, `r int$Diff[int$Dataset == "amp.anes"]`), the closest `inc` value (ANES (n = 3,223) ampute standard, `r inc$Diff[inc$Dataset == "amp.anes"]`), and the two closest `age` values (ANES (n = 3,223) ampute standard, `r age$Diff[age$Dataset == "amp.anes"]`; ANES (n = 3,223) MNAR, `r age$Diff[age$Dataset == "amp.anes.mnar"]`) all concern the ANES (n = 3,223) data. This slight tendency could be due to the higher number of observations and, in the case of `age` and `inc`, the higher number of unique values: `age` contains 73 and `inc` 27 unique values in the ANES (n = 3,223) data, compared to 58 and 7 in the old framing data (n = 1,003) (`interest` consists of the same number of unique values (4) in both data sets). In addition, the ANES (n = 3,223) data was run for fewer iterations. Nonetheless, the distances are still rather big in some cases (particularly for `age`).
+run.5var.anes <- read.csv("data/anes/mar/runtimes/anes.mar.runtime.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.5var.cces <- read.csv("data/cces/mar/runtimes/cces.mar.runtime.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.5var.frame <- read.csv("data/framing/mar/runtimes/framing.mar.runtime.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
 
-`hd.ord` overall performs worse with the `ampute()` options `bycases=FALSE` and `cont=FALSE`, except for `Dem`. 
+run.12var.anes <- read.csv("data/anes/mar/runtimes/anes.mar.runtime.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.12var.cces <- read.csv("data/cces/mar/runtimes/cces.mar.runtime.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.12var.frame <- read.csv("data/framing/mar/runtimes/framing.mar.runtime.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
 
-Running `ampute()` with MNAR as the missing data mechanism does not yield systematically different results than its default setting of MAR. 
+run.5var.12var <- data.frame(matrix(NA, 4, 7))
+colnames(run.5var.12var) <- c("Method", "ANES5", "CCES5", "Framing5", "ANES12", "CCES12", "Framing12")
+run.5var.12var$Method <- run.5var.anes$V2
 
-With increased NA percentages, imputation methods are bound to get worse. `amelia` and `mice` get worse only slightly as the percentage increases. This impact is much more pronounced for `hd.ord` and `hd.norm`. This is to be expected, since the latter methods are based on hot decking with replacement. Missingness levels of 50 and 80 percent are extremely rare in practice, however, so these results do not carry high importance.
+runs <- list(run.5var.anes, run.5var.cces, run.5var.frame,
+             run.12var.anes, run.12var.cces, run.12var.frame)
+
+for(x in 1:length(runs)){
+  run.5var.12var[1:4, x+1] <- runs[[x]][,2]
+}
+
+run.meth <- run.5var.12var$Method
+
+# so I can use how much slower amelia is than hd.ord
+hd.am.div <- sapply(2:7, 
+                    function(x)
+                      run.5var.12var[run.meth == "amelia", x] / 
+                      run.5var.12var[run.meth == "hd.ord", x]) 
+
+stargazer(run.5var.12var, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes) by Number of Imputed Variables",
+          label = "runtimes5var12var")
 
 
-
-```{r include=FALSE}
-# I don't want to risk referring to the wrong table by mistake, so I'm deleting
-# the objects for referral after I no longer refer to them
-rm(dem, fem, inc, age, int)
 ```
 
 
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes) by Number of Imputed Variables} 
+  \label{runtimes5var12var} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{5 Variables with NA} & \multicolumn{3}{c}{12 Variables with NA}\\ 
+\cline{2-7}  \\[-1.8ex]
+ & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{Framing} \\ 
+\cline{2-4} 
+\cline{5-7}  \\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 2.632 & 2.778 & 2.559 & 2.614 & 2.679 & 2.555 \\ 
+\multicolumn{1}{c}{hot.deck} & 2.628 & 2.786 & 2.567 & 2.640 & 2.690 & 2.582 \\ 
+\multicolumn{1}{c}{amelia} & 9.052 & 10.611 & 8.079 & 9.038 & 10.345 & 8.109 \\ 
+\multicolumn{1}{c}{mice} & 50.445 & 57.205 & 48.436 & 104.143 & 113.390 & 103.953 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
 
 
-## Runtimes {#ordmiss-results-runtimes}
+```{r Runtimes Increased Missingness MAR, results='asis', echo=FALSE}
 
-Run in R 3.6 on a Code Ocean AWS EC2 instance with 16 cores and 120 GB of memory. Amputed with `ampute`.
+run.20 <- run.5var.frame
+run.50 <- read.csv("data/framing/mar/runtimes/framing.mar.runtime.5var.1000n.1000it.50perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.80 <- read.csv("data/framing/mar/runtimes/framing.mar.runtime.5var.1000n.1000it.80perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+
+run.all.perc <- cbind(run.20$V1, run.50$V1, run.80$V1) %>% as.data.frame %>% round(., digits = 2)
+run.all.perc$V4 <- run.20$V2 %>% as.character
+run.all.perc <- run.all.perc[,c(4, 1:3)]
+colnames(run.all.perc) <- c("Method", "20% NA", "50% NA", "80% NA")
+
+stargazer(run.all.perc, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes) by Percentage of Missingness (Framing Experiment Data)",
+          label = "run.all.perc")
+```
+
+
+\clearpage
+
+\clearpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### From Before
 
 
 ```{r Runtimes MI Methods, include=FALSE}
@@ -721,9 +1641,6 @@ Three factors might explain this sudden and surprising increase in the performan
 
 This would lead us to predict that `amelia` should be the fastest method when the old framing data (n = 1,003) is run for a low number of iterations (2,000). That is not the case: `amelia` is `r (runFullF2k[methFull == "amelia"] / runFullF2k[methFull == "hd.ord"]) %>% round(., digits = 1)` times slower than `hd.ord` (see column "OldFraming_2000it"); on the same level as the 12,500-iteration-run of the old framing data (n = 1,003). This means it's not the number of iterations but the number of observations that affects `amelia`'s relative lack of speed compared to `hd.ord`. `amelia` appears to be much slower than `hd.ord` for around 1,000 observations but on equal footing for 3,000+ observations. 
 
-<!--
-Note for me: amelia kept being a bitch when I tried to run the ANES 10,000 times, even with 7 levels. After endless trying, I figured out I had to reduce the collinearity threshold to .6 (CCES and old framing worked fine with .7). That meant the age variable got dropped. To keep things at 5 variables, I added Empl. So the results for ANES 10,000 times with 7 levels contain one different variablel than the results for CCES and old framing. Doesn't matter since I only care about the running times, but important to note for later.
--->
 
 
 ```{r Runtimes MI Methods 1000 Observations 10000 Iterations, include=FALSE}
@@ -822,26 +1739,33 @@ rm(runFullF, runFullA, runFullA5, runFullFQ, runFullF2k, methFull,
 
 
 
-### What doesn't work
+
+
+## Conclusion {#ordmiss-conclusion}
+
+What doesn't work
 
 -- Increasing percentage of NAs == worse `hd.ord` performance
--- Ordinal and nominal variables == worse `hd.ord` performance
+-- Ordinal and interval variables == worse `hd.ord` performance
 -- High number of observations == reduced number of iterations (crashes and/or RAM maxing out)
 -- High number of observations == makes `amelia` faster relative to `hd.ord`
 -- 17 ANES education levels == increases needed number of iterations
 -- 17 ANES education levels == causes `amelia` to stop on CO and Jeff
 -- 10,000 iterations == results with 1,000 iterations are just as good
 -- `ampute()` with `bycases=FALSE` and `cont=FALSE` == worse `hd.ord` performance, good `na.omit` performance
--- `own.NA()` == `na.omit` performs best
--- `own.NA.rows()`== pretty much everything is zero, incl. `na.omit`; `mice` is awful
+-- `own.NA()` == `na.omit` performs best (currently in appendix)
+-- `own.NA.rows()`== pretty much everything is zero, incl. `na.omit`; `mice` is awful (currently in appendix)
 -- Running `hd.ord` with `method = p.draw` == worse `hd.ord` performance
 -- Running `hd.ord` with `method = p.draw` == only works with only binary vars in the data
 -- Increasing `sdCutoff` == only does something with only binary vars in the data
 -- Only binary vars in data == no gain in `hd.ord` performance
 
+`own.NA()` and `own.NA.rows()` resulted in a strong performance of `na.omit`, which should not happen in a missingness mechanism that is supposed to be MAR. The functions thus likely represent a version of MCAR, which puts the usefulness of their imputation results in doubt.
 
 
-### What works
+
+
+What works
 
 -- Results for binary variables == equal performance of `hd.ord`, `mice`, `amelia`
 -- Increasing number of variables with NAs (all, not just binary) == better `hd.ord` performance
@@ -849,271 +1773,3 @@ rm(runFullF, runFullA, runFullA5, runFullFQ, runFullF2k, methFull,
 -- MNAR == MAR in terms of `hd.ord` performance
 -- Multiple ordinal variables == same performance as with one ordinal variable
 
-
-
-```{r include=FALSE}
-cces.1000.7var <- read.csv("data/cces/cces.results.7var.1000n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-cces.1000.10var <- read.csv("data/cces/cces.results.10var.1000n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-
-temp <- data.frame(matrix("---", (nrow(cces.1000.10var) - nrow(cces.1000.7var)), 4))
-colnames(temp) <- names(cces.1000.7var)
-cces.1000.allvar <- cbind(cces.1000.10var[,1:2], 
-                          rbind(cces.1000.7var, temp)[,3:4], 
-                          cces.1000.10var[,3:4])
-levels(cces.1000.allvar$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
-colnames(cces.1000.allvar) <- c("Method", "Variable", "Value", "Diff", "Value", "Diff")
-stargazer(cces.1000.allvar, 
-          summary = FALSE,
-          align = TRUE,
-          header = FALSE,
-          rownames = FALSE,
-          digits = 4,
-          title = "CCES 1000 Observations, Increasing Variables",
-          label = "cces.1000.incr.vars")
-
-```
-
-
-\ssp
-
-\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
-  \caption{\textit{CCES 1000 Observations, Increasing Variables}}
-  \label{cces.1000.incr.vars} 
-\\[-1.8ex]\hline 
-\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{4}{c}{Data}\\
-\hline \\[-1.8ex] 
- & & \multicolumn{2}{c}{7 vars} & \multicolumn{2}{c}{10 vars}\\
-\hline \\[-1.8ex] 
- & & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\ 
-\cline{3-4} 
-\cline{5-6} \\[-1.8ex]
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4330} & \multicolumn{1}{c}{.0010} & \multicolumn{1}{c}{.4326} & \multicolumn{1}{c}{.0006} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4332} & \multicolumn{1}{c}{.0012} & \multicolumn{1}{c}{.4326} & \multicolumn{1}{c}{.0006} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4321} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4320} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.4085} & \multicolumn{1}{c}{.0235} & \multicolumn{1}{c}{.4163} & \multicolumn{1}{c}{.0157} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2823} & \multicolumn{1}{c}{.0003} & \multicolumn{1}{c}{.2821} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2821} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.2821} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2820} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.2819} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Ind} & \multicolumn{1}{c}{.2716} & \multicolumn{1}{c}{.0104} & \multicolumn{1}{c}{.2719} & \multicolumn{1}{c}{.0101} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1074} & \multicolumn{1}{c}{.0004} & \multicolumn{1}{c}{.1072} & \multicolumn{1}{c}{.0002} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1073} & \multicolumn{1}{c}{.0003} & \multicolumn{1}{c}{.1071} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.1068} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.1070} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{.0837} & \multicolumn{1}{c}{.0233} & \multicolumn{1}{c}{.0926} & \multicolumn{1}{c}{.0144} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0913} & \multicolumn{1}{c}{.0003} & \multicolumn{1}{c}{.0911} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0912} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0909} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.0910} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & \multicolumn{1}{c}{.0667} & \multicolumn{1}{c}{.0243} & \multicolumn{1}{c}{.0756} & \multicolumn{1}{c}{.0154} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4260} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4260} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4274} & \multicolumn{1}{c}{.0014} & \multicolumn{1}{c}{.4263} & \multicolumn{1}{c}{.0003} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4276} & \multicolumn{1}{c}{.0016} & \multicolumn{1}{c}{.4265} & \multicolumn{1}{c}{.0005} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4262} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.4261} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.4263} & \multicolumn{1}{c}{.0003} & \multicolumn{1}{c}{.4261} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Empl} & \multicolumn{1}{c}{.3956} & \multicolumn{1}{c}{.0304} & \multicolumn{1}{c}{.3958} & \multicolumn{1}{c}{.0302} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0490} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.0490} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0492} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.0493} & \multicolumn{1}{c}{.0003} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.0489} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.0491} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & \multicolumn{1}{c}{.0343} & \multicolumn{1}{c}{.0147} & \multicolumn{1}{c}{.0448} & \multicolumn{1}{c}{.0042} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4631} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} & \multicolumn{1}{c}{.4627} & \multicolumn{1}{c}{.0003} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4631} & \multicolumn{1}{c}{.0001} & \multicolumn{1}{c}{.4629} & \multicolumn{1}{c}{.0001} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4632} & \multicolumn{1}{c}{.0002} & \multicolumn{1}{c}{.4630} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4328} & \multicolumn{1}{c}{.0302} & \multicolumn{1}{c}{.4273} & \multicolumn{1}{c}{.0357} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3840} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3795} & \multicolumn{1}{c}{.0045} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3723} & \multicolumn{1}{c}{.0117} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3832} & \multicolumn{1}{c}{.0008} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.3836} & \multicolumn{1}{c}{.0004} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{6.1499} & \multicolumn{1}{c}{.2341} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.4010} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.3646} & \multicolumn{1}{c}{.0364} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.3082} & \multicolumn{1}{c}{.0928} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.3981} & \multicolumn{1}{c}{.0029} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{49.3979} & \multicolumn{1}{c}{.0031} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{48.9935} & \multicolumn{1}{c}{.4075} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1920} & \multicolumn{1}{c}{.0000} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1903} & \multicolumn{1}{c}{.0017} \\ 
-\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1877} & \multicolumn{1}{c}{.0043} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1923} & \multicolumn{1}{c}{.0003} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1922} & \multicolumn{1}{c}{.0002} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{---}  & \multicolumn{1}{c}{3.1297} & \multicolumn{1}{c}{.0623} \\ 
-\hline \\[-1.8ex] 
-\end{longtable} 
-
-\dsp
-
-
-
-```{r include=FALSE}
-cces.7.var <- read.csv("data/cces/cces.results.7var.1000n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-cces.10.var <- read.csv("data/cces/cces.results.10var.1000n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-cces.16.var <- read.csv("data/cces/cces.results.16var.1000n.1000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-cces.15.var.mult <- read.csv("data/cces/cces.mult.results.15var.1000n.1000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
-
-foundation <- cbind(cces.7.var,
-                    subset(cces.10.var, subset = c(variable == "Dem" | variable=="Ind" | variable=="Black" |  variable=="Hisp" | variable=="Empl" | variable=="Stud" | variable=="Male")),
-                    subset(cces.15.var.mult, subset = c(variable == "Rep" | variable=="Ind" | variable=="Black" |  variable=="Hisp" | variable== "Empl" | variable=="Stud" | variable=="Male")),
-                    subset(cces.16.var, subset = c(variable == "Rep" | variable=="Ind" | variable=="Black" |  variable=="Hisp" | variable=="Empl" | variable=="Stud" | variable=="Male")))
-
-
-rr <- data.frame(matrix(NA, 6, 4))
-colnames(rr) <- colnames(cces.7.var)
-dd <-cbind(rr, 
-           subset(cces.10.var, subset = c(variable == "inc")),
-      subset(cces.15.var.mult, subset = c(variable == "inc")),
-      subset(cces.16.var, subset = c(variable == "inc")))
-
-ee <- cbind(rr, subset(cces.10.var, subset = c(variable == "interest")),
-            rr,subset(cces.16.var, subset = c(variable == "interest")))
-
-ss <- rr
-ss$variable <- "age"
-ss$method <- cces.7.var[1:6,1]
-
-ff <- cbind(rr, subset(cces.10.var, subset = c(variable == "age")),
-            rr, ss)
-
-gg <- cbind(rr, rr, 
-            subset(cces.15.var.mult, subset = c(variable == "Gay" | variable == "StudLoans" | variable == "InternetHome" | variable == "Moderate" | variable == "NotReligious" | variable == "RentHome" | variable == "Separated")),
-            subset(cces.16.var, subset = c(variable == "Gay" | variable == "StudLoans" | variable == "InternetHome" | variable == "Moderate" | variable == "NotReligious" | variable == "RentHome" | variable == "Separated")))
-
-
-uu <- rbind(foundation, dd, ee, ff, gg)
-
-
-vv <- uu[, -c(1, 2, 5, 6, 9, 10)]
-
-ww <- vv[, c(7, 8, 1:6, 9, 10)]
-
-xx <- ww[, -c(3,5,7,9)]
-
-yy <- xx[, c(1:4, 6, 5)]
-colnames(yy) <- c("method", "variable", "CCES7Var", "CCES10Var", "CCES16Var", "CCES15VarMult")
-
-stargazer(yy, summary = FALSE, rownames = FALSE,header = FALSE)
-```
-
-\ssp
-
-\begin{longtable}{@{\extracolsep{5pt}} cccccc}
-  \caption{\textit{Influence of Number of Variables (CCES 1,000)}} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
-method & variable & CCES7Var & CCES10Var & CCES16Var & CCES15VarMult \\ 
-\hline \\[-1.8ex] 
-true & Rep & .0000 & .0000 & .0000 & .0000 \\ 
-hd.ord & Rep & .0010 & .0006 & .0003 & .0003 \\ 
-hd.norm.orig & Rep & .0012 & .0006 & .0005 & .0006 \\ 
-amelia & Rep & .0001 & .0000 & .0001 & .0001 \\ 
-mice & Rep & .0000 & .0000 & .0000 & .0000 \\ 
-na.omit & Rep & .0235 & .0157 & .0039 & .0049 \\ 
-true & Ind & .0000 & .0000 & .0000 & .0000 \\ 
-hd.ord & Ind & .0003 & .0001 & .0003 & .0003 \\ 
-hd.norm.orig & Ind & .0001 & .0001 & .0003 & .0004 \\ 
-amelia & Ind & .0000 & .0000 & .0001 & .0001 \\ 
-mice & Ind & .0000 & .0001 & .0002 & .0001 \\ 
-na.omit & Ind & .0104 & .0101 & .0158 & .0163 \\ 
-true & Black & .0000 & .0000 & .0000 & .0000 \\ 
-hd.ord & Black & .0004 & .0002 & .0001 & .0001 \\ 
-hd.norm.orig & Black & .0003 & .0001 & .0002 & .0002 \\ 
-amelia & Black & .0000 & .0000 & .0000 & .0000 \\ 
-mice & Black & .0002 & .0000 & .0001 & .0001 \\ 
-na.omit & Black & .0233 & .0144 & .0028 & .0049 \\ 
-true & Hisp & .0000 & .0000 & .0000 & .0000 \\ 
-hd.ord & Hisp & .0003 & .0001 & .0000 & .0002 \\ 
-hd.norm.orig & Hisp & .0002 & .0000 & .0002 & .0001 \\ 
-amelia & Hisp & .0000 & .0000 & .0000 & .0001 \\ 
-mice & Hisp & .0001 & .0000 & .0001 & .0002 \\ 
-na.omit & Hisp & .0243 & .0154 & .0076 & .0097 \\ 
-true & Empl & .0000 & .0000 & .0000 & .0000 \\ 
-hd.ord & Empl & .0014 & .0003 & .0000 & .0000 \\ 
-hd.norm.orig & Empl & .0016 & .0005 & .0000 & .0000 \\ 
-amelia & Empl & .0002 & .0001 & .0000 & .0001 \\ 
-mice & Empl & .0003 & .0001 & .0000 & .0001 \\ 
-na.omit & Empl & .0304 & .0302 & .0341 & .0354 \\ 
-true & Stud & .0000 & .0000 & .0000 & .0000 \\ 
-hd.ord & Stud & .0002 & .0003 & .0001 & .0001 \\ 
-hd.norm.orig & Stud & .0001 & .0001 & .0001 & .0001 \\ 
-amelia & Stud & .0001 & .0001 & .0000 & .0000 \\ 
-mice & Stud & .0001 & .0001 & .0001 & .0001 \\ 
-na.omit & Stud & .0147 & .0042 & .0052 & .0059 \\ 
-true & Male & .0000 & .0000 & .0000 & .0000 \\ 
-hd.ord & Male & .0001 & .0000 & .0000 & .0003 \\ 
-hd.norm.orig & Male & .0000 & .0003 & .0000 & .0001 \\ 
-amelia & Male & .0001 & .0001 & .0000 & .0001 \\ 
-mice & Male & .0002 & .0000 & .0001 & .0001 \\ 
-na.omit & Male & .0302 & .0357 & .0310 & .0283 \\ 
-true & inc &  & .0000 & .0000 & .0000 \\ 
-hd.ord & inc &  & .0045 & .0104 & .0101 \\ 
-hd.norm.orig & inc &  & .0117 & .0146 & .0148 \\ 
-amelia & inc &  & .0008 & .0006 & .0005 \\ 
-mice & inc &  & .0004 & .0005 & .0003 \\ 
-na.omit & inc &  & .2341 & .2446 & .2255 \\ 
-true & interest &  & .0000 & .0000 &  \\ 
-hd.ord & interest &  & .0017 & .0041 &  \\ 
-hd.norm.orig & interest &  & .0043 & .0057 &  \\ 
-amelia & interest &  & .0003 & .0000 &  \\ 
-mice & interest &  & .0002 & .0001 &  \\ 
-na.omit & interest &  & .0623 & .0334 &  \\ 
-true & age &  & .0000 &  &  \\ 
-hd.ord & age &  & .0364 &  &  \\ 
-hd.norm.orig & age &  & .0928 &  &  \\ 
-amelia & age &  & .0029 &  &  \\ 
-mice & age &  & .0031 &  &  \\ 
-na.omit & age &  & .4075 &  &  \\ 
-true & Gay &  &  & .0000 & .0000 \\ 
-hd.ord & Gay &  &  & .0000 & .0001 \\ 
-hd.norm.orig & Gay &  &  & .0001 & .0001 \\ 
-amelia & Gay &  &  & .0000 & .0000 \\ 
-mice & Gay &  &  & .0001 & .0001 \\ 
-na.omit & Gay &  &  & .0098 & .0102 \\ 
-true & StudLoans &  &  & .0000 & .0000 \\ 
-hd.ord & StudLoans &  &  & .0003 & .0004 \\ 
-hd.norm.orig & StudLoans &  &  & .0001 & .0002 \\ 
-amelia & StudLoans &  &  & .0000 & .0001 \\ 
-mice & StudLoans &  &  & .0000 & .0001 \\ 
-na.omit & StudLoans &  &  & .0213 & .0231 \\ 
-true & InternetHome &  &  & .0000 & .0000 \\ 
-hd.ord & InternetHome &  &  & .0001 & .0000 \\ 
-hd.norm.orig & InternetHome &  &  & .0001 & .0001 \\ 
-amelia & InternetHome &  &  & .0001 & .0000 \\ 
-mice & InternetHome &  &  & .0000 & .0000 \\ 
-na.omit & InternetHome &  &  & .0038 & .0038 \\ 
-true & Moderate &  &  & .0000 & .0000 \\ 
-hd.ord & Moderate &  &  & .0002 & .0001 \\ 
-hd.norm.orig & Moderate &  &  & .0003 & .0005 \\ 
-amelia & Moderate &  &  & .0000 & .0001 \\ 
-mice & Moderate &  &  & .0001 & .0001 \\ 
-na.omit & Moderate &  &  & .0178 & .0200 \\ 
-true & NotReligious &  &  & .0000 & .0000 \\ 
-hd.ord & NotReligious &  &  & .0001 & .0001 \\ 
-hd.norm.orig & NotReligious &  &  & .0002 & .0002 \\ 
-amelia & NotReligious &  &  & .0000 & .0001 \\ 
-mice & NotReligious &  &  & .0000 & .0001 \\ 
-na.omit & NotReligious &  &  & .0215 & .0237 \\ 
-true & RentHome &  &  & .0000 & .0000 \\ 
-hd.ord & RentHome &  &  & .0000 & .0000 \\ 
-hd.norm.orig & RentHome &  &  & .0002 & .0002 \\ 
-amelia & RentHome &  &  & .0001 & .0000 \\ 
-mice & RentHome &  &  & .0000 & .0000 \\ 
-na.omit & RentHome &  &  & .0107 & .0146 \\ 
-true & Separated &  &  & .0000 & .0000 \\ 
-hd.ord & Separated &  &  & .0004 & .0003 \\ 
-hd.norm.orig & Separated &  &  & .0003 & .0003 \\ 
-amelia & Separated &  &  & .0001 & .0001 \\ 
-mice & Separated &  &  & .0001 & .0001 \\ 
-na.omit & Separated &  &  & .0002 & .0002 \\ 
-\hline \\[-1.8ex] 
-\end{longtable} 
-
-\dsp

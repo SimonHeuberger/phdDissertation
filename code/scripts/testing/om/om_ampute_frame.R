@@ -8,8 +8,9 @@ library(dplyr)
 library(hot.deck)
 library(magrittr)
 library(rlist)
-library(Amelia)
+library(mice)
 library(caret)
+library(Amelia)
 
 if(run == "mine"){
   library(here)
@@ -31,48 +32,74 @@ if(run == "CO"){
   df <- read.csv("../data/second_framing_experiment.csv")
 }
 
-
-
 # Make all needed columns numeric/integer (needed for hot.deck())
 df <- mutate(df,
-                  Dem = ifelse(pid == "Democrat", 1, 0),
-                  Rep = ifelse(pid == "Republican", 1, 0),
-                  Ind = ifelse(pid == "Independent", 1, 0),
-                  Cons = ifelse(ideol == "Conservative", 1, 0),
-                  Lib = ifelse(ideol == "Liberal", 1, 0),
-                  Black = ifelse(race == "Black or African-American", 1, 0),
-                  Hisp = ifelse(race == "Hispanic", 1, 0),
-                  White = ifelse(race == "White", 1, 0),
-                  Arab = ifelse(race == "Arabic", 1, 0),
-                  Asian = ifelse(race == "Asian", 1, 0),
-                  Female = ifelse(gender == "Female", 1, 0),
-                  Male = ifelse(gender == "Male", 1, 0),
-                  Empl = ifelse(empl == "Employed full time outside of the home" |
-                                  empl == "Employed part time outside of the home", 1, 0),
-                  Unempl = ifelse(empl == "Unemployed", 1, 0),
-                  Ret = ifelse(empl == "Retired", 1, 0),
-                  Stud = ifelse(empl == "Student", 1, 0)
-                  )
+             Dem = ifelse(pid == "Democrat", 1, 0),
+             Rep = ifelse(pid == "Republican", 1, 0),
+             Ind = ifelse(pid == "Independent", 1, 0),
+             Conservative = ifelse(ideol == "Conservative", 1, 0),
+             Liberal = ifelse(ideol == "Liberal", 1, 0),
+             Moderate = ifelse(ideol == "Something else", 1, 0),
+             Black = ifelse(race == "Black or African-American", 1, 0),
+             Hisp = ifelse(race == "Hispanic", 1, 0),
+             White = ifelse(race == "White", 1, 0),
+             Arab = ifelse(race == "Arabic", 1, 0),
+             Asian = ifelse(race == "Asian", 1, 0),
+             Female = ifelse(gender == "Female", 1, 0),
+             Male = ifelse(gender == "Male", 1, 0),
+             Empl = ifelse(empl == "Employed full time outside of the home" |
+                             empl == "Employed part time outside of the home", 1, 0),
+             Unempl = ifelse(empl == "Unemployed", 1, 0),
+             Ret = ifelse(empl == "Retired", 1, 0),
+             Stud = ifelse(empl == "Student", 1, 0)
+             )
+
+names(df)[names(df) == "official"] <- "Official"
+names(df)[names(df) == "media"] <- "Media"
+names(df)[names(df) == "part"] <- "Participation"
+names(df)[names(df) == "educ"] <- "Educ"
+names(df)[names(df) == "inc"] <- "Inc"
+names(df)[names(df) == "interest"] <- "Interest"
+names(df)[names(df) == "age"] <- "Age"
+
+# I'm reducing it by one education level so that it has the same levels as the
+# CCES data. I combined levels 4 and 5, which are Associate degree and
+# Bachelor's degree
+df <- mutate(df, Educ = ifelse(Educ == 1, 1,
+                        ifelse(Educ == 2, 2,
+                        ifelse(Educ == 3, 3,
+                        ifelse(Educ == 4 | Educ == 5, 4,
+                        ifelse(Educ == 6, 5, 6))))))
+
 
 
 # Select needed columns and save complete data under a different name
 # interest: following public affairs (ordinal, 4 levels)
 # media: media consumption (numeric, accumulative count of activities)
 # part: political participation (numeric, accumulative count of activities)
-df_true <- df[, c("Dem", "Rep", "Ind", "Cons", "Lib", "Black", "Hisp",         
-                                       "White", "Asian", "Female", "Male", "Empl", "Unempl",        
-                                       "Ret", "Stud", "interest", "media", "part", "inc",           
-                                       "age", "educ")]                                              
+df_true <- df[, c("Dem", "Rep", "Ind", "Conservative", "Liberal", 
+                  "Black", "Hisp", "White", "Asian", "Female", "Male", 
+                  "Empl", "Unempl", "Ret", "Stud", "Official", "Media", 
+                  "Participation", "Interest", "Inc", "Age", "Educ")]
+nrow(df_true)
+# I'm not including "Moderate" because it returns NA in the correlation matrix
+# I'm not including "Arab" because it's perfectly collinear with another variable
 
+# take a sample of 1000 observations, then save it, to try to get around the CO RAM collapses
+# set.seed(150)
+# df_true$Educ %>% unique %>% length
+# framing_1000 <- sample(nrow(df_true), 1000) %>% df_true[.,]
+# framing_1000$Educ %>% unique %>% length
+# saveRDS(framing_1000, here("data", "framing", "framing_1000.rds"))
 
 # identify and discard highly collinear variables
 coll.var <- df_true %>% cor() %>% abs() %>% findCorrelation(., cutoff = .7) %>% sort()         
 df_true <- df_true[,-c(coll.var)]                                                         
 # save name of all EVs
-all.evs <- colnames(df_true)[-which(colnames(df_true) == "educ")]                         
+all.evs <- colnames(df_true)[-which(colnames(df_true) == "Educ")]                         
 
 # variables to insert NAs into
-add.nas.columns <- c("Dem", "inc", "age", "Female", "interest")                            
+add.nas.columns <- c("Dem", "Inc", "Age", "Female", "Interest")                            
 # separate df_true into columns with and without NAs
 no.nas <- df_true[,!names(df_true) %in% add.nas.columns]                                  
 yes.nas <- df_true[,names(df_true) %in% add.nas.columns]
@@ -83,25 +110,13 @@ prop <- .2
 m <- prop*100
 
 # imputation methods
-methods <- c("hd.ord", "hd.norm.orig", "amelia", "mice", "na.omit")                                 
-# methods <- c("hd.ord", "hd.norm.cut", "hd.norm.orig", "amelia", "mice", "na.omit")
+methods <- c("hd.ord", "hot.deck", "amelia", "mice", "na.omit")                                 
 # true variable means
 true <- sapply(df_true[, add.nas.columns], mean)
 # the complete number of education levels
-min.lev <- df_true$educ %>% unique() %>% length()
+min.lev <- df_true$Educ %>% unique() %>% length()
 
-# specifications for ampute()
-# mech = "MAR"
-# bycases = FALSE
-# cont = FALSE
-#   if(cont == TRUE){
-#     type = "MID"
-#   }else{
-#     type = NULL
-#   }
 
-# empty list to store amputed data sets
-list.ampute <- list()
 # empty list to store OPMord output
 OPMord.dat <- list()
 # set up the percentage progress bar across the sampled numbers
@@ -109,13 +124,11 @@ pb <- txtProgressBar(min = 1, max = mc.iterations, style = 3)
 for(mc in 1:mc.iterations){
   # load the percentage progress bar into the loop
   setTxtProgressBar(pb, mc)
-  # ampute to create NAs and save amputations
-  list.ampute[[mc]] <- ampute(yes.nas, prop = prop, mech = "MNAR")
   # combine columns with NAs and columns without NAs and run ordinal polr() function on data
-  OPMord.dat[[mc]] <- cbind(no.nas, list.ampute[[mc]]$amp) %>%
-    OPMord(., dv = "educ", evs = all.evs)
+  OPMord.dat[[mc]] <- cbind(no.nas, ampute(yes.nas, prop = prop, mech = "MAR", cont = FALSE)$amp) %>%
+    OPMord(., dv = "Educ", evs = all.evs)
     # print whenever int.df doesn't have all rows, which means it doesn't have all education levels (6 rows for 7 levels)
-    if(OPMord.dat[[mc]]$data.short.na.omit %>% .$educ %>% unique() %>% length() < min.lev){
+    if(OPMord.dat[[mc]]$data.short.na.omit %>% .$Educ %>% unique() %>% length() < min.lev){
       print("Fewer than original levels")
     }
   rm(amputed)
@@ -125,7 +138,7 @@ for(mc in 1:mc.iterations){
 
 empty <- c()
 for (i in 1:mc.iterations){                                                                       
-  empty[i] <- OPMord.dat[[i]]$data.short.na.omit %>% .$educ %>% unique() %>% length()
+  empty[i] <- OPMord.dat[[i]]$data.short.na.omit %>% .$Educ %>% unique() %>% length()
 }
 # show how many imputed data sets don't have all education levels
 table(empty)                                                                                        
@@ -134,36 +147,13 @@ table(empty)
 # remove all data that don't have all education levels and overwrite output
 if(all.equal(length(empty), sum(empty == min.lev)) != TRUE){                                      
   OPMord.dat <- list.remove(OPMord.dat, which(empty != min.lev))
-  list.ampute <- list.remove(list.ampute, which(empty != min.lev))
 }else{
   OPMord.dat <- OPMord.dat
-  list.ampute <- list.ampute
 }
 
 rm(empty)
 
 OPMord.dat %>% length()
-list.ampute %>% length()
-
-
-# save all amputed output
-if(run == "mine"){
-  saveRDS(list.ampute, file = here("scripts", "testing", "om", paste0("ampute.", length(add.nas.columns), "var.",
-                                      nrow(df_true), "n.", length(OPMord.dat), "it.",
-                                      prop*100, "perc.rds")))
-}
-if(run == "jeff"){
-  saveRDS(list.ampute, file = paste0("ampute.", length(add.nas.columns), "var.",
-                                    nrow(df_true), "n.", length(OPMord.dat), "it.",
-                                    prop*100, "perc.rds"))
-}
-if(run == "CO"){
-  saveRDS(list.ampute, file = paste0("../results/ampute.", length(add.nas.columns), "var.",
-                                     nrow(df_true), "n.", length(OPMord.dat), "it.",
-                                     prop*100, "perc.rds"))
-}
-
-
 
 # empty list of lists of vectors to store results
 results.list <- rep(list(rep(list(c()), length(methods))), length(add.nas.columns))                 
@@ -175,35 +165,98 @@ names(results.list) <- add.nas.columns
     names(results.list[[t]]) <- methods 
   }
 
-# empty list to store data.nas data frames
-list.data.nas <- list()
+OPMcut.dat <- list()
 
 pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
-
   for(n in 1:length(OPMord.dat)){
     setTxtProgressBar(pb, n)
-    list.data.nas[[n]] <- OPMord.dat[[n]]$data.full.nas
     # replace ordinal values with mid-cutpoints
-    OPMcut.dat <- OPMcut(data = OPMord.dat[[n]]$data.full.nas,                                  
-                           dv = "educ", OPMordOut = OPMord.dat[[n]]) 
-    # run hot.deck.ord() on OPMcut education values, which scales the ordinal variable
-    hd.ord.dat <- hot.deck.ord(OPMcut.dat, m = m, ord = "educ", 
-                                 sdCutoff = sd(OPMcut.dat$educ), method = "best.cell")            
-    # hd.norm.cut.dat <- hot.deck(OPMcut.dat, m = m, sdCutoff = sd(OPMcut.dat$educ), 
-    #                               method = "best.cell") # run normal hot.deck() on OPMcut values
-    # run normal hot.deck() on original education values
-    hd.norm.orig.dat <- hot.deck(OPMord.dat[[n]]$data.full.nas, m = m,                          
-                                   sdCutoff = sd(OPMord.dat[[n]]$data.full.nas$educ), 
-                                   method = "best.cell") 
-    # run amelia() on original education values (ps2 sets the console printing)
-    am.orig.dat <- amelia(OPMord.dat[[n]]$data.full.nas, m = m, p2s = 0)                        
-    # run mice() on original education values (print sets the console)
-    mice.orig.dat <- mice(OPMord.dat[[n]]$data.full.nas, m = m, print = FALSE)                  
+    OPMcut.dat[[n]] <- OPMcut(data = OPMord.dat[[n]]$data.full.nas,                                  
+                           dv = "Educ", OPMordOut = OPMord.dat[[n]]) 
+    }
 
+
+start_time <- Sys.time()
+hd.ord.dat <- list()
+pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
+  for(n in 1:length(OPMord.dat)){
+    setTxtProgressBar(pb, n)
+    # run hot.deck.ord() on OPMcut education values, which scales the ordinal variable
+    hd.ord.dat[[n]] <- hot.deck.ord(OPMcut.dat[[n]], m = m, ord = "Educ", 
+                                 sdCutoff = sd(OPMcut.dat[[n]]$educ), method = "best.cell")
+      }
+end_time <- Sys.time()
+hd.ord.time <- difftime(end_time, start_time, units = "mins")
+
+
+start_time <- Sys.time()
+hot.deck.dat <- list()
+pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
+  for(n in 1:length(OPMord.dat)){
+    setTxtProgressBar(pb, n)
+    # run normal hot.deck() on original education values
+    hot.deck.dat[[n]] <- hot.deck(OPMord.dat[[n]]$data.full.nas, m = m,                          
+                                   sdCutoff = sd(OPMord.dat[[n]]$data.full.nas$Educ), 
+                                   method = "best.cell") 
+      }
+end_time <- Sys.time()
+hot.deck.time <- difftime(end_time, start_time, units = "mins")
+
+
+start_time <- Sys.time()
+am.orig.dat <- list()
+pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
+  for(n in 1:length(OPMord.dat)){
+    setTxtProgressBar(pb, n)
+    # run amelia() on original education values (ps2 sets the console printing)
+    am.orig.dat[[n]] <- amelia(OPMord.dat[[n]]$data.full.nas, m = m, p2s = 0)
+      }
+end_time <- Sys.time()
+am.time <- difftime(end_time, start_time, units = "mins")
+
+
+start_time <- Sys.time()
+mice.orig.dat <- list()
+pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
+  for(n in 1:length(OPMord.dat)){
+    setTxtProgressBar(pb, n)
+    # run mice() on original education values (print sets the console)
+    mice.orig.dat[[n]] <- mice(OPMord.dat[[n]]$data.full.nas, m = m, print = FALSE)
+      }
+end_time <- Sys.time()
+mice.time <- difftime(end_time, start_time, units = "mins")
+
+
+runtime <- cbind(c(hd.ord.time, hot.deck.time, am.time, mice.time),
+                   methods[1:4])
+
+
+if(run == "mine"){
+  write.csv(runtime, file = here("scripts", "testing", "om", paste0("runtime.", length(add.nas.columns), "var.",
+                          nrow(df_true), "n.", length(OPMord.dat), "it.",
+                          prop*100, "perc.csv")))
+}
+if(run == "jeff"){
+  write.csv(runtime, paste0("runtime.", length(add.nas.columns), "var.",
+                          nrow(df_true), "n.", length(OPMord.dat), "it.",
+                          prop*100, "perc.csv"))
+}
+if(run == "CO"){
+  write.csv(runtime, paste0("../results/runtime.", length(add.nas.columns), "var.",
+                          nrow(df_true), "n.", length(OPMord.dat), "it.",
+                          prop*100, "perc.csv"))
+}
+
+
+
+
+pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
+  for(n in 1:length(OPMord.dat)){
+    setTxtProgressBar(pb, n)
     # empty dfs to store variable means
-    # means.mice.orig <- means.am.orig <- means.hd.norm.cut <-means.hd.norm.orig <- means.hd.ord <-
+    # means.mice.orig <- means.am.orig <- means.hot.deck.cut <-means.hot.deck <- means.hd.ord <-
     #   data.frame(matrix(NA, m, length(add.nas.columns))) # empty dfs to store variable means
-    means.mice.orig <- means.am.orig <- means.hd.norm.orig <- means.hd.ord <-                       
+    means.mice.orig <- means.am.orig <- means.hot.deck <- means.hd.ord <-                       
       data.frame(matrix(NA, m, length(add.nas.columns))) 
     # which rows and columns have NAs
     na.rows.cols <- which(is.na(OPMord.dat[[n]]$data.full.nas), arr.ind=TRUE)                     
@@ -213,17 +266,17 @@ pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
       # fill in means dfs
       for (x in 1:length(na.cols)){                                                                 
         for (i in 1:m){
-          means.hd.ord[i,x] <- hd.ord.dat$data[[i]] %>% .[, add.nas.columns[x]] %>% mean()
-          # means.hd.norm.cut[i,x] <- hd.norm.cut.dat$data[[i]] %>% 
+          means.hd.ord[i,x] <- hd.ord.dat[[n]]$data[[i]] %>% .[, add.nas.columns[x]] %>% mean()
+          # means.hot.deck.cut[i,x] <- hot.deck.cut.dat$data[[i]] %>% 
           #   .[, add.nas.columns[x]] %>% 
           #   mean()
-          means.hd.norm.orig[i,x] <- hd.norm.orig.dat$data[[i]] %>%
+          means.hot.deck[i,x] <- hot.deck.dat[[n]]$data[[i]] %>%
             .[, add.nas.columns[x]] %>%
             mean()
-          means.am.orig[i,x] <- am.orig.dat$imputations[[i]] %>%
+          means.am.orig[i,x] <- am.orig.dat[[n]]$imputations[[i]] %>%
             .[, add.nas.columns[x]] %>%
             mean()
-          means.mice.orig[i,x] <- mice::complete(mice.orig.dat, action = i) %>%
+          means.mice.orig[i,x] <- mice::complete(mice.orig.dat[[n]], action = i) %>%
             .[, add.nas.columns[x]] %>%
             mean()
         }
@@ -231,8 +284,8 @@ pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
 
     # take mean of each means df
     hd.ord <- sapply(means.hd.ord, mean)                                                            
-    # hd.norm.cut <- sapply(means.hd.norm.cut, mean)
-    hd.norm.orig <- sapply(means.hd.norm.orig, mean)
+    # hot.deck.cut <- sapply(means.hot.deck.cut, mean)
+    hot.deck <- sapply(means.hot.deck, mean)
     am.orig <- sapply(means.am.orig, mean)
     mice.orig <- sapply(means.mice.orig, mean)
     # take means of variables from data without NAs
@@ -241,44 +294,29 @@ pb <- txtProgressBar(min = 1, max = length(OPMord.dat), style = 3)
       # fill in results.list
       for (ss in 1:length(add.nas.columns)){                                                        
         results.list[[ss]][["hd.ord"]][n] <- hd.ord[ss]
-        # results.list[[ss]][["hd.norm.cut"]][n] <- hd.norm.cut[ss]
-        results.list[[ss]][["hd.norm.orig"]][n] <- hd.norm.orig[ss]
+        # results.list[[ss]][["hot.deck.cut"]][n] <- hot.deck.cut[ss]
+        results.list[[ss]][["hot.deck"]][n] <- hot.deck[ss]
         results.list[[ss]][["amelia"]][n] <- am.orig[ss]
         results.list[[ss]][["mice"]][n] <- mice.orig[ss]
         results.list[[ss]][["na.omit"]][n] <- na.omit[ss]
       }
   
-  }
+ }
 
 
-
+# save results.list
 if(run == "mine"){
-  # save results
   saveRDS(results.list, file = here("scripts", "testing", "om", paste0("results.", length(add.nas.columns), "var.",
                                     nrow(df_true), "n.", length(OPMord.dat), "it.",
                                     prop*100, "perc.rds")))
-  # save data.nas data frames
-  saveRDS(list.data.nas, file = here("scripts", "testing", "om", paste0("data.nas.", length(add.nas.columns), "var.",
-                                      nrow(df_true), "n.", length(OPMord.dat), "it.",
-                                      prop*100, "perc.rds")))
 }
 if(run == "jeff"){
-  # save results
   saveRDS(results.list, file = paste0("results.", length(add.nas.columns), "var.",
-                                    nrow(df_true), "n.", length(OPMord.dat), "it.",
-                                    prop*100, "perc.rds"))
-  # save data.nas data frames
-  saveRDS(list.data.nas, file = paste0("data.nas.", length(add.nas.columns), "var.",
                                     nrow(df_true), "n.", length(OPMord.dat), "it.",
                                     prop*100, "perc.rds"))
 }
 if(run == "CO"){
-  # save results
   saveRDS(results.list, file = paste0("../results/results.", length(add.nas.columns), "var.",
-                                    nrow(df_true), "n.", length(OPMord.dat), "it.",
-                                    prop*100, "perc.rds"))
-    # save data.nas data frames
-  saveRDS(list.data.nas, file = paste0("../results/data.nas.", length(add.nas.columns), "var.",
                                     nrow(df_true), "n.", length(OPMord.dat), "it.",
                                     prop*100, "perc.rds"))
 }
@@ -290,25 +328,25 @@ results <- data.frame(cbind(
   "variable" = rep(add.nas.columns, each = length(methods)+1),
   "value" = rep(NA, (length(methods)+1)*length(add.nas.columns)),
   "diff" = rep(NA, (length(methods)+1)*length(add.nas.columns))
-))
+  ))
 results$value <- as.numeric(results$value)
 results$diff <- as.numeric(results$diff)
 
 
-for (xs in 1:length(add.nas.columns)){
-  results$value[results$method == "true" & results$variable == add.nas.columns[xs]] <- true[xs]
-  for(vv in 1:length(methods)){
-    results$value[results$method == methods[vv] & results$variable == add.nas.columns[xs]] <-
-      results.list[[add.nas.columns[xs]]][[methods[vv]]] %>% mean()
+  for (xs in 1:length(add.nas.columns)){
+    results$value[results$method == "true" & results$variable == add.nas.columns[xs]] <- true[xs]
+      for(vv in 1:length(methods)){
+        results$value[results$method == methods[vv] & results$variable == add.nas.columns[xs]] <- 
+          results.list[[add.nas.columns[xs]]][[methods[vv]]] %>% mean()
+      }
   }
-}
 
 results[, "value"] <- results[, "value"] %>% round(., digits = 4)
 
 
 for(vv in 1:length(add.nas.columns)){
-  results$diff[results$variable == add.nas.columns[vv]] <-
-    results$value[results$variable == add.nas.columns[vv]] -
+  results$diff[results$variable == add.nas.columns[vv]] <- 
+    results$value[results$variable == add.nas.columns[vv]] - 
     results$value[results$variable == add.nas.columns[vv] & results$method == "true"]
 }
 
@@ -331,3 +369,7 @@ if(run == "CO"){
                                     nrow(df_true), "n.", length(OPMord.dat), "it.",
                                     prop*100, "perc.csv"))
 }
+
+
+
+

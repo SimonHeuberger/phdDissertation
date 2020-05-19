@@ -387,6 +387,15 @@
 				\item After investigating a bit, we found that \texttt{\$lp} gave 5 categories but \texttt{\$fitted.values} only 4
 				\item I calculated the percentages of observations within each category (all in \texttt{opm\_create\_model.R}) and found the results very confusing. I sent them to Ryan. He didn't respond, and it's been ages, so I'm just going to leave this be
 			\end{coi}
+		\item Repeat and visualize Table 2.2
+			\begin{coi}
+				\item The table is created with a placebo treatment, i.e. there is no real treatment. That means Group T2 should be zero. The table is not evidence that the OP method is better
+				\item Repeat the estimations for Table 2.2 100 times and visualize the distribution of the Group T2 coefficients. This will show which category estimation is closer to zero, which is the true value of that coefficient
+				\item I set all this up in the \texttt{opm\_test\_model\_regression\_100\_obs} and\\ \texttt{opm\_test\_model\_regression\_all\_obs} files
+				\item The setup works for 100 observations (to test it) and all observations
+				\item I ran 100 repeats for all observations
+				\item I ran 1,000 repeats for all observations
+			\end{coi} 
 		\item Do Monte Carlo simulations
 			\begin{coi}
 				\item MVN data with some cross-correlations
@@ -406,22 +415,14 @@
 						\item The results never really change, no matter what I do with the correlations
 						\item I implemented exactly what was in the link; now Jeff tells me that this doesn't create realistic data and doesn't go anywhere. Then what was the point of the link?
 					\end{coi}
-				\item \hl{Read through the resources Jeff sent me}
+				\item \hl{Pick this up again when the ordinal missing write-up is done and has been signed off on}
+				\item Read through the resources Jeff sent me
 					\begin{coi}
 						\item \href{https://scholar.cu.edu.eg/sites/default/files/mohamed_abonazel/files/how_to_create_a_monte_carlo_simulation_study_using_r_with_applications_on_econometric_models.pdf}{https://scholar.cu.edu.eg/sites/default/files/mohamed\_abonazel/files/how\_to\_create\_a\_monte\_carlo\_simulation\_study\_using\_r\_with\_applications\_on\_econometric\_models.pdf}
 						\item \href{https://statweb.stanford.edu/~owen/mc/}{https://statweb.stanford.edu/~owen/mc/}
 						\item \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.703.5878&rep=rep1&type=pdf}{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.703.5878\&rep=rep1\&type=pdf}
 					\end{coi}
 			\end{coi}
-		\item Repeat and visualize Table 2.2
-			\begin{coi}
-				\item The table is created with a placebo treatment, i.e. there is no real treatment. That means Group T2 should be zero. The table is not evidence that the OP method is better
-				\item Repeat the estimations for Table 2.2 100 times and visualize the distribution of the Group T2 coefficients. This will show which category estimation is closer to zero, which is the true value of that coefficient
-				\item I set all this up in the \texttt{opm\_test\_model\_regression\_100\_obs} and\\ \texttt{opm\_test\_model\_regression\_all\_obs} files
-				\item The setup works for 100 observations (to test it) and all observations
-				\item I ran 100 repeats for all observations
-				\item I ran 1,000 repeats for all observations
-			\end{coi} 
 	\end{coi}
 	
 	

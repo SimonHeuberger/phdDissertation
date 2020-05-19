@@ -62,7 +62,7 @@ df_true <- df[, c("Dem", "Rep", "Ind", "Cons", "Lib", "Black", "Hisp",
                                        "White", "Asian", "Female", "Male", "Empl", "Unempl",        
                                        "Ret", "Stud", "interest", "media", "part", "inc",           
                                        "age", "educ")]                                              
-
+nrow(df_true)
 
 # identify and discard highly collinear variables
 coll.var <- df_true %>% cor() %>% abs() %>% findCorrelation(., cutoff = .7) %>% sort()         

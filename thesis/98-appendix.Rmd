@@ -1,7 +1,6 @@
 \appendix
 
-# SURVEY ENVIRONMENT {#app-survey}
-
+# ORDINAL BLOCKING {#app-ordblock}
 
 In order to conduct this experiment, I created an online survey environment based on `R` with `shiny` [@boas_fielding_2013], as there currently is no available tool to block sequentially online. Popular online survey platforms, such as Qualtrics, do not have offer this functionality, and none of the attempts to combine `R` code work with Qualtrics concern the 'injection' of `R` code into the Qualtrics randomization engine, which blocking would require [@hainmueller_2014_causal;@barari_2017_package;@testa_2017_qualtricstools;@ginn_2018_package]. The following is a basic outline of the mechanisms behind this survey environment.
 
@@ -32,4 +31,463 @@ The survey questions, i.e. questions that collect demographic information and qu
 A participant clicks on the survey link and answers the demographic question. After she selects her level of education, `R` code in the background pulls previous participants' covariate information from a Dropbox server. Based on this information and her chosen education level, the `R` code sequentially blocks and assigns her to a treatment group. The participant then sees and answers the respective treatment question(s). Her responses are then saved on the same Dropbox server. This process is repeated for all incoming participants. If the participant is the first person to take the survey, i.e. if there is no covariate information from previous participants yet, the code randomly assigns her to one of the treatment groups. All subsequent participants are then blocked and assigned as just described.
 
 To recruit participants, the cloud-based website can easily be linked to online market platforms, such as MTurk. MTurk is a service where researchers can host tasks to be completed by anonymous participants. Participants receive financial compensation for their work and Amazon collects a commission. MTurk samples have been shown to be internally valid in survey experiments [@berinsky_evaluating_2012]. The use of MTurk in political science experiments has increased dramatically over the past decade and is now common practice [@hauser_attentive_2016]. I use Lucid for my experiment, which has been shown to be equally reliable and performs well on a national scale in survey experiments [@coppock_2019_validating].
+
+
+# ORDINAL MISSING {#app-ordmiss}
+
+
+## All Observations {#app-ordmiss-allObs}
+
+ANES all obs. 1000 iterations, CCES all obs. 10 iterations (maxed out RAM)
+5 variables: Dem, Male, Interest, Inc, Age
+MAR (Table \ref{mar.5var.all}) and MNAR (\ref{mnar.5var.all})
+
+
+```{r MAR 5 Variables All Observations, include=FALSE}
+
+mar.5var.anes.all <- read.csv("data/anes/mar/results/anes.mar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.5var.cces.all <- read.csv("data/cces/mar/results/cces.mar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mar.5var.anes.all$diff[mar.5var.anes.all$method == "true"] <- mar.5var.anes.all$value[mar.5var.anes.all$method == "true"]
+mar.5var.cces.all$diff[mar.5var.cces.all$method == "true"] <- mar.5var.cces.all$value[mar.5var.cces.all$method == "true"]
+
+levels(mar.5var.anes.all$method) <- levels(mar.5var.cces.all$method) <-
+  levs
+
+mar.5var.all <- cbind(mar.5var.anes.all[, c(1,2,4)], mar.5var.cces.all[,4])
+
+for(i in 1:ncol(mar.5var.all)){
+  mar.5var.all[,i] <- mar.5var.all[,i] %>% as.character
+}
+
+mar.5var.all <- rbind(mar.5var.all, c("Observations", "", 2395, 42205), c("Iterations", "", 1000, 10))
+colnames(mar.5var.all) <- col.names[-5]
+
+stargazer(mar.5var.all, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Accuracy of Multiple Imputation Methods. MAR, 5 Variables with NA, all observations",
+          label = "mar.5var.all")
+
+
+```
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods. MAR, 5 Variables with NA, all observations} 
+  \label{mar.5var.all} 
+\begin{threeparttable}
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3370} & \multicolumn{1}{c}{.4032} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0006} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{+.0006} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0003} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0003} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0302} & \multicolumn{1}{c}{--.0250} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4868} & \multicolumn{1}{c}{.4521} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{--.0001} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0008} & \multicolumn{1}{c}{--.0002} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0365} & \multicolumn{1}{c}{--.0436} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{2.8806} & \multicolumn{1}{c}{3.3301} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0087} & \multicolumn{1}{c}{--.0033} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0135} & \multicolumn{1}{c}{--.0046} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0741} & \multicolumn{1}{c}{--.0763} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6894} & \multicolumn{1}{c}{6.5830} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0606} & \multicolumn{1}{c}{--.0009} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1030} & \multicolumn{1}{c}{--.0073} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{+.0009} & \multicolumn{1}{c}{--.0021} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0007} & \multicolumn{1}{c}{--.0022} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.5574} & \multicolumn{1}{c}{--.2592} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.3745} & \multicolumn{1}{c}{52.8639} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2355} & \multicolumn{1}{c}{--.0221} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3698} & \multicolumn{1}{c}{--.0790} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0056} & \multicolumn{1}{c}{--.0006} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0053} & \multicolumn{1}{c}{--.0132} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--1.2785} & \multicolumn{1}{c}{--1.2190} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{2}{c}{Observations} & \multicolumn{1}{c}{2395} & \multicolumn{1}{c}{42205} \\ 
+\multicolumn{2}{c}{Iterations} & \multicolumn{1}{c}{1000} & \multicolumn{1}{c}{10} \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Due to the very high number of observations, the CCES data can only be run for a low number of iterations. Anything above that maxes out the 120 GB of RAM available to me. The framing data are not included since their total number of observations (1,003) is virtually identical to the sample of 1,000.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+
+
+
+```{r MNAR 5 Variables All Observations, include=FALSE}
+
+mnar.5var.anes.all <- read.csv("data/anes/mnar/results/anes.mnar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.5var.cces.all <- read.csv("data/cces/mnar/results/cces.mnar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mnar.5var.anes.all$diff[mnar.5var.anes.all$method == "true"] <- mnar.5var.anes.all$value[mnar.5var.anes.all$method == "true"]
+mnar.5var.cces.all$diff[mnar.5var.cces.all$method == "true"] <- mnar.5var.cces.all$value[mnar.5var.cces.all$method == "true"]
+
+levels(mnar.5var.anes.all$method) <- levels(mnar.5var.cces.all$method) <-
+  levs
+
+mnar.5var.all <- cbind(mnar.5var.anes.all[, c(1,2,4)], mnar.5var.cces.all[,4])
+
+for(i in 1:ncol(mnar.5var.all)){
+  mnar.5var.all[,i] <- mnar.5var.all[,i] %>% as.character
+}
+
+mnar.5var.all <- rbind(mnar.5var.all, c("Observations", "", 2395, 42205), c("Iterations", "", 1000, 10))
+colnames(mnar.5var.all) <- col.names[-5]
+
+stargazer(mnar.5var.all, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Accuracy of Multiple Imputation Methods. MNAR, 5 Variables with NA, all observations",
+          label = "mnar.5var.all")
+
+
+```
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Accuracy of Multiple Imputation Methods. MNAR, 5 Variables with NA, all observations} 
+  \label{mnar.5var.all} 
+\begin{threeparttable}
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3370} & \multicolumn{1}{c}{.4032} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0109} & \multicolumn{1}{c}{--.0105} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0113} & \multicolumn{1}{c}{--.0105} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0110} & \multicolumn{1}{c}{--.0109} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0103} & \multicolumn{1}{c}{--.0106} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0185} & \multicolumn{1}{c}{--.0145} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4868} & \multicolumn{1}{c}{.4521} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0138} & \multicolumn{1}{c}{--.0129} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0136} & \multicolumn{1}{c}{--.0131} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0134} & \multicolumn{1}{c}{--.0132} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0134} & \multicolumn{1}{c}{--.0131} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0196} & \multicolumn{1}{c}{--.0244} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{2.8806} & \multicolumn{1}{c}{3.3301} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0257} & \multicolumn{1}{c}{--.0171} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0299} & \multicolumn{1}{c}{--.0179} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0178} & \multicolumn{1}{c}{--.0147} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0179} & \multicolumn{1}{c}{--.0148} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0407} & \multicolumn{1}{c}{--.0418} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6894} & \multicolumn{1}{c}{6.5830} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1874} & \multicolumn{1}{c}{--.0691} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2287} & \multicolumn{1}{c}{--.0696} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1292} & \multicolumn{1}{c}{--.0637} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1297} & \multicolumn{1}{c}{--.0634} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2729} & \multicolumn{1}{c}{--.1375} \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.3745} & \multicolumn{1}{c}{52.8639} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.5240} & \multicolumn{1}{c}{--.2331} \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.6609} & \multicolumn{1}{c}{--.2764} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2533} & \multicolumn{1}{c}{--.2342} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2474} & \multicolumn{1}{c}{--.2371} \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.7188} & \multicolumn{1}{c}{--.6476} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{2}{c}{Observations} & \multicolumn{1}{c}{2395} & \multicolumn{1}{c}{42205} \\ 
+\multicolumn{2}{c}{Iterations} & \multicolumn{1}{c}{1000} & \multicolumn{1}{c}{10} \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Due to the very high number of observations, the CCES data can only be run for a low number of iterations. Anything above that maxes out the 120 GB of RAM available to me. The framing data are not included since their total number of observations (1,003) is virtually identical to the sample of 1,000.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+
+\clearpage
+
+
+
+## Increased Missingness {#app-ordmiss-increaseNA}
+
+
+CCES 10,000 iterations +++
+5 variables: Dem, Male, Interest, Inc, Age
+MAR
+20, 50, 80 percent
+
+
+
+## Speed {#app-ordmiss-speed}
+
+CCES 10,000 iterations +++
+5 variables: Dem, Male, Interest, Inc, Age
+MAR
+20, 50, 80 percent
+
+
+
+
+```{r Runtimes All Observations, include=FALSE}
+
+run.all.obs.anes <- read.csv("data/anes/mar/runtimes/anes.mar.runtime.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.all.obs.cces <- read.csv("data/cces/mar/runtimes/cces.mar.runtime.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+
+run.all.obs <- cbind(run.all.obs.anes[, c(1,2)], run.all.obs.cces[,2])
+
+for(i in 1:ncol(run.all.obs)){
+  if(is.numeric(run.all.obs[,i])){
+     run.all.obs[,i] <- round(run.all.obs[,i], digits = 3)
+  }
+  run.all.obs[,i] <- run.all.obs[,i] %>% as.character
+}
+
+run.all.obs <- rbind(run.all.obs, c("Observations", 2395, 42205), c("Iterations", 1000, 10))
+colnames(run.all.obs) <- c("Method", "ANES", "CCES")
+
+stargazer(run.all.obs, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes) with All Available Observations",
+          label = "run.all.obs")
+
+```
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes) with All Available Observations} 
+  \label{run.all.obs} 
+\begin{threeparttable}
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{9.406} & \multicolumn{1}{c}{21.829} \\ 
+\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{9.374} & \multicolumn{1}{c}{21.429} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{12.393} & \multicolumn{1}{c}{2.602} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{99.455} & \multicolumn{1}{c}{100.253} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Observations} & \multicolumn{1}{c}{2395} & \multicolumn{1}{c}{42205} \\ 
+\multicolumn{1}{c}{Iterations} & \multicolumn{1}{c}{1000} & \multicolumn{1}{c}{10} \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Due to the very high number of observations, the CCES data can only be run for a low number of iterations. Anything above that maxes out the 120 GB of RAM available to me. The framing data are not included since their total number of observations (1,003) is virtually identical to the sample of 1,000.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+
+
+
+
+
+## With Modified `ampute()` {#app-ordmiss-modified.ampute}
+
+Table \ref{amp.oldframe.bycases.acc} shows the results of using `ampute()` with the options `bycases=FALSE` and `cont=FALSE` on the old framing data (n = 1,003) and inserts NAs MAR for 5 variables at 20 percent for 9,644 iterations. `hd.ord` overall performs worse in this scenario. 
+
+
+```{r results='asis', echo=FALSE}
+amp.oldframe.bycases <- read.csv("data/framing/bycases=FALSE_cont=FALSE/framing.bycases.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+levels(amp.oldframe.bycases$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(amp.oldframe.bycases) <- c("Method", "Variable", "Value", "Diff")
+stargazer(amp.oldframe.bycases, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Method. ampute() with bycases, old framing data (n = 1,003)",
+          label = "amp.oldframe.bycases.acc")
+
+```
+
+
+## With My Own Amputation Methods {#app-ordmiss-own}
+
+Table \ref{own.NA.oldframe.acc} shows the results of using my own function, `own.NA()`, to insert 20 percent NAs MAR into three variables in the old framing data (n = 1,003). In general, something is MAR if you ampute values in column A based on values in column B, e.g. if you ampute the values for `age` where `income = 1` and where `income = 5`. `own.NA()` applies this procedure for any combination of columns. Here, the chosen columns to be amputed are `Dem`, `age`, and `interest`. The chosen columns the amputations depend on are `inc`, `Female`, and `Black`. The function samples 20 percent of observations for each unique value of `inc`. For those observations, the values of `Dem` are amputed. Accordingly, the function samples 20 percent of observations for each unique value of `Female`. For those observations, the values of `age` are amputed. The same occurs for `Black` and `interest`. The resulting data frame is then imputed. Note that the number of amputed and imputed variables is generally lower, as a pair of variables is needed to ampute one variable. As Table \ref{own.NA.oldframe.acc} shows, `hd.ord` does not perform particularly well. It beats `hd.norm` for all three variables but falls considerably short of `amelia` and `mice`. It is notable, however, that my method seems closer to being MCAR than MAR, as `na.omit` performs well and sometimes even outperforms other methods, for instance for `interest`. It is thus questionable how much use `own.NA()` is in its current form.
+
+
+
+
+```{r results='asis', echo=FALSE}
+own.NA.oldframe <- read.csv("data/framing/own.na/framing.own.na.results.3var.1003n.12324it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+levels(own.NA.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(own.NA.oldframe) <- c("Method", "Variable", "Value", "Diff")
+stargazer(own.NA.oldframe, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods. own.NA(), old framing data (n = 1,003)",
+          label = "own.NA.oldframe.acc")
+
+```
+
+
+`ampute()` seems to spread NAs evenly across columns. This means that observations are mostly complete, with not more than one or two missing values. I wrote another function, `own.NA.rows()`, that changes this. `own.NA.rows()` inserts missingness for a percentage of observations MAR across all columns except `education`. This means that the majority of observations are complete but a percentage of observations misses data on almost all variables. Table \ref{own.NA.rows.oldframe.acc} shows the results, with the missingess percentage set to 20 and NAs inserted into 17 variables.
+
+
+
+```{r include=FALSE}
+own.NA.rows.oldframe <- read.csv("data/framing/own.na.rows/framing.own.na.rows.results.17var.1003n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+levels(own.NA.rows.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
+colnames(own.NA.rows.oldframe) <- c("Method", "Variable", "Value", "Diff")
+# to make the in-text citations shorter
+diff <- own.NA.rows.oldframe$Diff
+meth <- own.NA.rows.oldframe$Method
+varb <- own.NA.rows.oldframe$Variable
+stargazer(own.NA.rows.oldframe, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          digits = 4,
+          title = "Accuracy of Multiple Imputation Methods. own.NA.rows(), old framing data (n = 1,003)",
+          label = "own.NA.rows.oldframe.acc")
+
+```
+
+
+\ssp
+
+\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} D{.}{.}{-4} } 
+  \caption{Accuracy of Multiple Imputation Methods. own.NA.rows(), old framing data (n = 1,003)} 
+  \label{own.NA.rows.oldframe.acc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Diff} \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & .4666 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & .4666 & 0 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & .4670 & .0004 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & .4667 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Ind} & .2802 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Ind} & .2795 & .0007 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Ind} & .2817 & .0015 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Ind} & .2801 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Cons} & .2832 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Cons} & .2830 & .0002 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Cons} & .2823 & .0009 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Cons} & .2831 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Lib} & .5174 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Lib} & .5182 & .0008 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Lib} & .5173 & .0001 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Lib} & .5176 & .0002 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Black} & .0702 & .0004 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Black} & .0731 & .0033 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Black} & .0698 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Hisp} & .0546 & .0002 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Hisp} & .0589 & .0041 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Hisp} & .0548 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{White} & .7712 & .0005 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{White} & .7613 & .0104 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{White} & .7717 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Asian} & .0812 & .0004 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Asian} & .0809 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Asian} & .0835 & .0027 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Asian} & .0808 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Female} & .4666 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Female} & .4673 & .0007 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Female} & .4665 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Unempl} & .1615 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Unempl} & .1610 & .0005 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Unempl} & .1624 & .0009 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Unempl} & .1616 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Ret} & .0508 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Ret} & .0506 & .0002 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Ret} & .0508 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Ret} & .0509 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Ret} & .0505 & .0003 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Ret} & .0509 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Stud} & .0446 & .0007 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Stud} & .0466 & .0027 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Stud} & .0439 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{interest} & 3.2164 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{interest} & 3.2161 & .0003 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{interest} & 3.2163 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{interest} & 3.2164 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{interest} & 3.2122 & .0042 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{interest} & 3.2163 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{media} & 1.7268 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{media} & 1.7294 & .0026 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{media} & 1.7270 & .0002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{media} & 1.7270 & .0002 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{media} & 1.7259 & .0009 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{media} & 1.7269 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{part} & .9575 & .0014 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{part} & .9560 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{part} & .9546 & .0015 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{part} & .9561 & 0 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{inc} & 3.0927 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{inc} & 3.0906 & .0021 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{inc} & 3.0949 & .0022 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{inc} & 3.0926 & .0001 \\ 
+\multicolumn{1}{c}{true} & \multicolumn{1}{c}{age} & 37.9252 & 0 \\ 
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{age} & 37.9000 & .0252 \\ 
+\multicolumn{1}{c}{hd.norm} & \multicolumn{1}{c}{age} & 37.9250 & .0002 \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{age} & 37.9243 & .0009 \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{age} & 37.8789 & .0463 \\ 
+\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{age} & 37.9250 & .0002 \\ 
+\hline \\[-1.8ex] 
+\end{longtable} 
+
+\dsp
+
+`hd.norm`, `amelia`, and `na.omit` perform very well. No difference to the true value for any variable is greater than `r diff[meth == "amelia" & varb == "age"]` and most are `r diff[meth == "hd.norm" & varb == "media"]`. 
+
+`hd.ord` performs on similar levels except for the nominal variables (`media` (`r diff[meth == "hd.ord" & varb == "media"]`), `part` (`r diff[meth == "hd.ord" & varb == "part"]`), `inc` (`r diff[meth == "hd.ord" & varb == "inc"]`), `age` (`r diff[meth == "hd.ord" & varb == "age"]`)).
+
+Somewhat surprisingly, `mice` performs worst overall for many variables (`Ind` (`r diff[meth == "mice" & varb == "Ind"]`), `Black` (`r diff[meth == "mice" & varb == "Black"]`), `Hisp` (`r diff[meth == "mice" & varb == "Hisp"]`), `White` (`r diff[meth == "mice" & varb == "White"]`), `Asian` (`r diff[meth == "mice" & varb == "Asian"]`), `Stud` (`r diff[meth == "mice" & varb == "Stud"]`), `interest` (`r diff[meth == "mice" & varb == "interest"]`), `part` (`r diff[meth == "mice" & varb == "part"]`), `inc` (`r diff[meth == "mice" & varb == "inc"]`), `age` (`r diff[meth == "mice" & varb == "age"]`)) by some margin.
+
+It is also noteable how often the difference amounts to zero and how well `na.omit` performs overall.
+
+
+```{r include=FALSE}
+# I don't want to risk referring to the wrong table by mistake, so I'm deleting
+# the objects for referral after I no longer refer to them
+rm(diff, meth, varb) 
+```
+
+
 

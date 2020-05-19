@@ -152,21 +152,19 @@
 		\item I set up versions of all my functions to work with multiple ordinal variables: \texttt{OPMordMult}, \texttt{OPMcutMult}, \texttt{hot.deck.ord.mult}. I ran this for 1,000 iterations for CCES, ANES, and framing. It produced good results for all binary variables, though not better than before
 		\item So far, I have really good results that are on par with \texttt{amelia} for lots of binary variables. I also have great running times where \texttt{hd.ord} is consistently at least twice as fast as \texttt{amelia} for all data sets with 1,000 observations and 10,000 iterations. That's a good step forward
 		\item I don't think there is a scenario where \texttt{hd.ord} performs better. I'm reaching the stage where I would state that the theory of the latent underlying variable didn't pan out
-		\item \hl{Email Jeff}: I'm at the end of my research. I can't beat \texttt{amelia}, no matter the circumstances. But I get the same results for binary variables, with tons better running time. It looks like the theory of \texttt{polr} to estimate ordinal variables doesn't pay dividends. I want that to be enough for my diss
-		\item Fallback: If all else fails, a really thorough examination of when what package performs best in imputation, under what circumstances etc. is enough for the dissertation, says Jeff (perhaps called something like ``Understanding multiple imputation alternatives in differing circumstances")
+		\item Emailed Jeff: I'm at the end of my research. I can't beat \texttt{amelia}, no matter the circumstances. But I get the same results for binary variables, with tons better running time. It looks like the theory of \texttt{polr} to estimate ordinal variables doesn't pay dividends. I want that to be enough for my diss
+		\item Jeff responded: ``Go ahead and write it up focusing on the speed and the rigor of your testing of all of these packages. Something like `Quality Comparison of Major Missing Data Solutions for Discrete Data with a Proposed New Method'. That seems to reflect your extensive testing and understanding of software solutions"
 	\end{coi}
 
 
-
-\section*{Theory}
+\section*{Chapter write-up}
 	\begin{coi}
-		\item \hl{Step by step fill in the sections on Missing Data, Deletion, and Imputation}
-		\item Rework the introduction
-			\begin{coi}
-				\item Current stuff in there is very broad and nowhere near detailed enough (taken from the Kerwin application)
-			\end{coi}
+		\item \hl{Write up the chapter focusing on the performance and speed of the packages under the different circumstances I tested}
+		\item Reorganize headings and general outline
+		\item Identify where things are missing with +++
+		\item Gradually keep filling missing sections
 	\end{coi}
-
+	
 
 \end{document}			
 

@@ -1,0 +1,538 @@
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> 
+> # where to run code ("jeff", "CO", "mine")
+> run <- "jeff"
+> # which dataset ("anes", "cces", "framing")
+> ds <- "cces"
+> # how many observations ("1000", "all")
+> obs <- "all"
+> # MAR or MNAR as missing data mechanism
+> mech <- "MNAR"
+> # DV
+> dv <- "Educ"
+> # variables to insert NAs into
+> add.nas.columns <- c("Dem", "Male", "Interest", "Inc", "Age")
+> # imputation methods
+> methods <- c("hd.ord", "hot.deck", "amelia", "mice", "na.omit")                                 
+> # number of iterations
+> mc.iterations <- 10
+> # desired number of iterations (in case some levels need dropping)
+> mc.it.des <- 10
+> # to include ".mult" in saved doc names if needed (saved typing it manually
+> # afterwards). Includes nothing if it's just Educ
+> if(length(dv) > 1){
++   mult <- ".mult"
++ }else{
++   mult <- ""
++ }
+> 
+> library(plyr)
+> library(tidyverse)
+── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
+✔ ggplot2 3.3.0     ✔ purrr   0.3.3
+✔ tibble  3.0.0     ✔ dplyr   0.8.3
+✔ tidyr   1.0.0     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.5.0
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::arrange()   masks plyr::arrange()
+✖ purrr::compact()   masks plyr::compact()
+✖ dplyr::count()     masks plyr::count()
+✖ dplyr::failwith()  masks plyr::failwith()
+✖ dplyr::filter()    masks stats::filter()
+✖ dplyr::id()        masks plyr::id()
+✖ dplyr::lag()       masks stats::lag()
+✖ dplyr::mutate()    masks plyr::mutate()
+✖ dplyr::rename()    masks plyr::rename()
+✖ dplyr::summarise() masks plyr::summarise()
+✖ dplyr::summarize() masks plyr::summarize()
+Warning message:
+package ‘tibble’ was built under R version 3.6.2 
+> library(MASS)
+
+Attaching package: ‘MASS’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+> library(data.table)
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+The following object is masked from ‘package:purrr’:
+
+    transpose
+
+> library(reshape2)
+
+Attaching package: ‘reshape2’
+
+The following objects are masked from ‘package:data.table’:
+
+    dcast, melt
+
+The following object is masked from ‘package:tidyr’:
+
+    smiths
+
+> library(dplyr)
+> library(hot.deck)
+Loading required package: mice
+Loading required package: lattice
+
+Attaching package: ‘mice’
+
+The following object is masked from ‘package:tidyr’:
+
+    complete
+
+The following objects are masked from ‘package:base’:
+
+    cbind, rbind
+
+
+Attaching package: ‘hot.deck’
+
+The following object is masked from ‘package:plyr’:
+
+    is.discrete
+
+> library(magrittr)
+
+Attaching package: ‘magrittr’
+
+The following object is masked from ‘package:purrr’:
+
+    set_names
+
+The following object is masked from ‘package:tidyr’:
+
+    extract
+
+> library(rlist)
+> library(Amelia)
+Loading required package: Rcpp
+## 
+## Amelia II: Multiple Imputation
+## (Version 1.7.5, built: 2018-05-07)
+## Copyright (C) 2005-2020 James Honaker, Gary King and Matthew Blackwell
+## Refer to http://gking.harvard.edu/amelia/ for more information
+## 
+> library(caret)
+
+Attaching package: ‘caret’
+
+The following object is masked from ‘package:purrr’:
+
+    lift
+
+> 
+> if(run == "mine"){
++   library(here)
++   load(here("functions", "OPMord.Rdata"))
++   load(here("functions", "OPMcut.Rdata")) 
++   load(here("functions", "hot.deck.ord.Rdata"))
++   df_true <- readRDS(here("data", ds, paste0(ds, "_", obs, ".rds"))) # I took a sample of 1000 rows from the ANES data in the separate ANES script, then I saved that sample. It contains fewer levels, there is no way to get all
++ }
+> if(run == "jeff"){
++   load("OPMord.Rdata") 
++   load("OPMcut.Rdata") 
++   load("hot.deck.ord.Rdata") 
++   df_true <- readRDS(paste0(ds, "_", obs, ".rds")) 
++ }
+> if(run == "CO"){
++   load("../data/OPMord.Rdata") 
++   load("../data/OPMcut.Rdata") 
++   load("../data/hot.deck.ord.Rdata")
++   df_true <- readRDS(paste0("../data/", ds, "_", obs, ".rds"))
++ }
+> 
+> nrow(df_true)
+[1] 42205
+> 
+> # identify and discard highly collinear variables
+> coll.var <- df_true %>% cor() %>% abs() %>% findCorrelation(., cutoff = .5) %>% sort()         
+> df_true <- df_true[,-c(coll.var)]                                                         
+> # extract EVs
+> all.evs <- colnames(df_true)[-which(colnames(df_true) == dv)]                         
+> 
+> # separate df_true into columns with and without NAs
+> no.nas <- df_true[,!names(df_true) %in% add.nas.columns]                                  
+> yes.nas <- df_true[,names(df_true) %in% add.nas.columns]
+> 
+> # the proportions of NAs to insert
+> prop <- .2
+> # number of imputations (https://stats.stackexchange.com/questions/219013/how-do-the-number-of-imputations-the-maximum-iterations-affect-accuracy-in-mul)
+> m <- prop*100
+> 
+> # true variable means
+> true <- sapply(df_true[, add.nas.columns], mean)
+> # the complete number of education levels
+> min.lev <- df_true$Educ %>% unique() %>% length()
+> 
+> # empty list to store OPMord output
+> OPMord.few <- list()
+> OPMord.full <- list()
+> # set up the percentage progress bar across the sampled numbers
+> pb <- txtProgressBar(min = 1, max = mc.iterations, style = 3)
+> set.seed(123)
+> for(mc in 1:mc.iterations){
++   # load the percentage progress bar into the loop
++   setTxtProgressBar(pb, mc)
++   # combine columns with NAs and columns without NAs and run ordinal polr() function on data
++   data.amp <- cbind(no.nas, ampute(yes.nas, prop = prop, mech = mech)$amp)
++   if(na.omit(data.amp)  %>% .$Educ %>% unique() %>% length() < min.lev){
++     OPMord.few[[mc]] <- OPMord(data.amp, dv = dv, evs = all.evs)
++   }else{
++     OPMord.full[[mc]] <- OPMord(data.amp, dv = dv, evs = all.evs)
++   }
++ }
+  |                                                                              |                                                                      |   0%  |                                                                              |========                                                              |  11%  |                                                                              |================                                                      |  22%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================                                       |  44%  |                                                                              |=======================================                               |  56%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================                |  78%  |                                                                              |==============================================================        |  89%  |                                                                              |======================================================================| 100%> 
+> 
+> if(length(OPMord.few) != 0){
++   OPMord.full <- OPMord.full[-which(sapply(OPMord.full, is.null))]
++     if(length(OPMord.full) < mc.it.des){
++         stop("Fewer than", paste0(mc.it.des), "data sets with all levels")
++     }
++ }
+> 
+> if(length(OPMord.full) > mc.it.des){
++   OPMord.full <- sample(OPMord.full, mc.it.des)
++ }
+> 
+> 
+> 
+> 
+> # empty list of lists of vectors to store results
+> results.list <- rep(list(rep(list(c()), length(methods))), length(add.nas.columns))
+> # name first list after variables with NAs
+> names(results.list) <- add.nas.columns
+> 
+>   # name second lists after methods
+>   for (t in 1:length(add.nas.columns)){
++     names(results.list[[t]]) <- methods
++   }
+> 
+> 
+> start_time <- Sys.time()
+> am.orig.dat <- list()
+> pb <- txtProgressBar(min = 1, max = length(OPMord.full), style = 3)
+>   for(n in 1:length(OPMord.full)){
++     setTxtProgressBar(pb, n)
++     # run amelia() on original education values (ps2 sets the console printing)
++     am.orig.dat[[n]] <- amelia(OPMord.full[[n]]$data.full.nas, m = m, p2s = 0)
++       }
+  |                                                                              |                                                                      |   0%  |                                                                              |========                                                              |  11%  |                                                                              |================                                                      |  22%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================                                       |  44%  |                                                                              |=======================================                               |  56%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================                |  78%  |                                                                              |==============================================================        |  89%  |                                                                              |======================================================================| 100%> end_time <- Sys.time()
+> am.time <- difftime(end_time, start_time, units = "mins")
+> 
+> 
+> OPMcut.dat <- list()
+> 
+> pb <- txtProgressBar(min = 1, max = length(OPMord.full), style = 3)
+>   for(n in 1:length(OPMord.full)){
++     setTxtProgressBar(pb, n)
++     # replace ordinal values with mid-cutpoints
++     OPMcut.dat[[n]] <- OPMcut(data = OPMord.full[[n]]$data.full.nas,
++                            dv = dv, OPMordOut = OPMord.full[[n]])
++     }
+  |                                                                              |                                                                      |   0%  |                                                                              |========                                                              |  11%  |                                                                              |================                                                      |  22%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================                                       |  44%  |                                                                              |=======================================                               |  56%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================                |  78%  |                                                                              |==============================================================        |  89%  |                                                                              |======================================================================| 100%> 
+> 
+> start_time <- Sys.time()
+> hd.ord.dat <- list()
+> pb <- txtProgressBar(min = 1, max = length(OPMord.full), style = 3)
+>   for(n in 1:length(OPMord.full)){
++     setTxtProgressBar(pb, n)
++     # run hot.deck.ord() on OPMcut education values, which scales the ordinal variable
++     hd.ord.dat[[n]] <- hot.deck.ord(OPMcut.dat[[n]], m = m, 
++                                     ord = dv,
++                                     sdCutoff = sd(OPMcut.dat[[n]]$Educ*4), 
++                                     method = "best.cell")
++       }
+  |                                                                              |                                                                      |   0%  |                                                                              |========                                                              |  11%  |                                                                              |================                                                      |  22%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================                                       |  44%  |                                                                              |=======================================                               |  56%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================                |  78%  |                                                                              |==============================================================        |  89%  |                                                                              |======================================================================| 100%Warning messages:
+1: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2448 of 8575 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+2: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2403 of 8410 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+3: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2438 of 8626 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+4: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2426 of 8559 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+5: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2373 of 8425 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+6: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2489 of 8497 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+7: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2496 of 8595 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+8: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2376 of 8453 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+9: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2545 of 8615 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+10: In hot.deck.ord(OPMcut.dat[[n]], m = m, ord = dv, sdCutoff = sd(OPMcut.dat[[n]]$Educ *  :
+  2535 of 8660 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+> end_time <- Sys.time()
+> hd.ord.time <- difftime(end_time, start_time, units = "mins")
+> 
+> 
+> start_time <- Sys.time()
+> hot.deck.dat <- list()
+> pb <- txtProgressBar(min = 1, max = length(OPMord.full), style = 3)
+>   for(n in 1:length(OPMord.full)){
++     setTxtProgressBar(pb, n)
++     # run normal hot.deck() on original education values
++     hot.deck.dat[[n]] <- hot.deck(OPMord.full[[n]]$data.full.nas, m = m,
++                                       sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ*4),
++                                       method = "best.cell")
++   }
+  |                                                                              |                                                                      |   0%  |                                                                              |========                                                              |  11%  |                                                                              |================                                                      |  22%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================                                       |  44%  |                                                                              |=======================================                               |  56%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================                |  78%  |                                                                              |==============================================================        |  89%  |                                                                              |======================================================================| 100%Warning messages:
+1: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4492 of 8575 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+2: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4446 of 8410 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+3: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4543 of 8626 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+4: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4481 of 8559 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+5: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4413 of 8425 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+6: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4512 of 8497 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+7: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4527 of 8595 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+8: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4407 of 8453 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+9: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4590 of 8615 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+10: In hot.deck(OPMord.full[[n]]$data.full.nas, m = m, sdCutoff = sd(OPMord.full[[n]]$data.full.nas$Educ *  :
+  4708 of 8660 imputations with # donors < 20, consider increasing sdCutoff or using method='p.draw'
+
+> end_time <- Sys.time()
+> hot.deck.time <- difftime(end_time, start_time, units = "mins")
+> 
+> 
+> 
+> start_time <- Sys.time()
+> mice.orig.dat <- list()
+> pb <- txtProgressBar(min = 1, max = length(OPMord.full), style = 3)
+>   for(n in 1:length(OPMord.full)){
++     setTxtProgressBar(pb, n)
++     # run mice() on original education values (print sets the console)
++     mice.orig.dat[[n]] <- mice(OPMord.full[[n]]$data.full.nas, m = m, print = FALSE)
++       }
+  |                                                                              |                                                                      |   0%  |                                                                              |========                                                              |  11%  |                                                                              |================                                                      |  22%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================                                       |  44%  |                                                                              |=======================================                               |  56%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================                |  78%  |                                                                              |==============================================================        |  89%  |                                                                              |======================================================================| 100%> end_time <- Sys.time()
+> mice.time <- difftime(end_time, start_time, units = "mins")
+> 
+> 
+> runtime <- cbind(c(hd.ord.time, hot.deck.time, am.time, mice.time),
++                    methods[1:4])
+> 
+> 
+> if(run == "mine"){
++   write.csv(runtime, file = here("scripts", "testing", "om", 
++                                  paste0(ds, ".", tolower(mech),
++                                         mult, ".runtime.", 
++                                         length(add.nas.columns), "var.",
++                                         nrow(df_true), "n.", length(OPMord.full),
++                                         "it.", prop*100, "perc.csv")))
++ }
+> if(run == "jeff"){
++   write.csv(runtime, paste0(ds, ".", tolower(mech),
++                             mult, ".runtime.", 
++                             length(add.nas.columns), "var.",
++                             nrow(df_true), "n.", length(OPMord.full),
++                             "it.", prop*100, "perc.csv"))
++ }
+> if(run == "CO"){
++   write.csv(runtime, paste0("../results/", ds, ".", tolower(mech),
++                             mult, ".runtime.", 
++                             length(add.nas.columns), "var.",
++                             nrow(df_true), "n.", length(OPMord.full),
++                             "it.", prop*100, "perc.csv"))
++ }
+> 
+> 
+> 
+> pb <- txtProgressBar(min = 1, max = length(OPMord.full), style = 3)
+> for(n in 1:length(OPMord.full)){
++   setTxtProgressBar(pb, n)
++   # empty dfs to store variable means
++   # means.mice.orig <- means.am.orig <- means.hot.deck.cut <-means.hot.deck <- means.hd.ord <-
++   #   data.frame(matrix(NA, m, length(add.nas.columns))) # empty dfs to store variable means
++   means.mice.orig <- means.am.orig <- means.hot.deck <- means.hd.ord <-
++     data.frame(matrix(NA, m, length(add.nas.columns)))
++   # which rows and columns have NAs
++   na.rows.cols <- which(is.na(OPMord.full[[n]]$data.full.nas), arr.ind=TRUE)
++   # which column numbers have NAs in them
++   na.cols <- na.rows.cols %>% .[,2] %>% unique()
++ 
++   # fill in means dfs
++   for (x in 1:length(na.cols)){
++     for (i in 1:m){
++       means.hd.ord[i,x] <- hd.ord.dat[[n]]$data[[i]] %>% .[, add.nas.columns[x]] %>% mean()
++       # means.hot.deck.cut[i,x] <- hot.deck.cut.dat$data[[i]] %>%
++       #   .[, add.nas.columns[x]] %>%
++       #   mean()
++       means.hot.deck[i,x] <- hot.deck.dat[[n]]$data[[i]] %>%
++         .[, add.nas.columns[x]] %>%
++         mean()
++       means.am.orig[i,x] <- am.orig.dat[[n]]$imputations[[i]] %>%
++         .[, add.nas.columns[x]] %>%
++         mean()
++       means.mice.orig[i,x] <- mice::complete(mice.orig.dat[[n]], action = i) %>%
++         .[, add.nas.columns[x]] %>%
++         mean()
++     }
++   }
++ 
++   # take mean of each means df
++   hd.ord <- sapply(means.hd.ord, mean)
++   # hot.deck.cut <- sapply(means.hot.deck.cut, mean)
++   hot.deck <- sapply(means.hot.deck, mean)
++   am.orig <- sapply(means.am.orig, mean)
++   mice.orig <- sapply(means.mice.orig, mean)
++   # take means of variables from data without NAs
++   na.omit <- sapply(OPMord.full[[n]]$data.short.na.omit[, add.nas.columns], mean)
++ 
++   # fill in results.list
++   for (ss in 1:length(add.nas.columns)){
++     results.list[[ss]][["hd.ord"]][n] <- hd.ord[ss]
++     # results.list[[ss]][["hot.deck.cut"]][n] <- hot.deck.cut[ss]
++     results.list[[ss]][["hot.deck"]][n] <- hot.deck[ss]
++     results.list[[ss]][["amelia"]][n] <- am.orig[ss]
++     results.list[[ss]][["mice"]][n] <- mice.orig[ss]
++     results.list[[ss]][["na.omit"]][n] <- na.omit[ss]
++   }
++ 
++ }
+  |                                                                              |                                                                      |   0%  |                                                                              |========                                                              |  11%  |                                                                              |================                                                      |  22%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================                                       |  44%  |                                                                              |=======================================                               |  56%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================                |  78%  |                                                                              |==============================================================        |  89%  |                                                                              |======================================================================| 100%> 
+> 
+> # save results.list
+> # if(run == "mine"){
+> #   saveRDS(results.list, file = here("scripts", "testing", "om", paste0("results.", length(add.nas.columns), "var.",
+> #                                     nrow(df_true), "n.", length(OPMord.full), "it.",
+> #                                     prop*100, "perc.rds")))
+> # }
+> # if(run == "jeff"){
+> #   saveRDS(results.list, file = paste0("results.", length(add.nas.columns), "var.",
+> #                                     nrow(df_true), "n.", length(OPMord.full), "it.",
+> #                                     prop*100, "perc.rds"))
+> # }
+> # if(run == "CO"){
+> #   saveRDS(results.list, file = paste0("../results/results.", length(add.nas.columns), "var.",
+> #                                     nrow(df_true), "n.", length(OPMord.full), "it.",
+> #                                     prop*100, "perc.rds"))
+> # }
+> 
+> 
+> 
+> 
+> results <- data.frame(cbind(
++   "method" = rep(c("true", methods), length(add.nas.columns)),
++   "variable" = rep(add.nas.columns, each = length(methods)+1),
++   "value" = rep(NA, (length(methods)+1)*length(add.nas.columns)),
++   "diff" = rep(NA, (length(methods)+1)*length(add.nas.columns))
++ ))
+> results$value <- as.numeric(results$value)
+> results$diff <- as.numeric(results$diff)
+> 
+> 
+> for (xs in 1:length(add.nas.columns)){
++   results$value[results$method == "true" & results$variable == add.nas.columns[xs]] <- true[xs]
++   for(vv in 1:length(methods)){
++     results$value[results$method == methods[vv] & results$variable == add.nas.columns[xs]] <-
++       results.list[[add.nas.columns[xs]]][[methods[vv]]] %>% mean()
++   }
++ }
+> 
+> results[, "value"] <- results[, "value"] %>% round(., digits = 4)
+> 
+> 
+> for(vv in 1:length(add.nas.columns)){
++   results$diff[results$variable == add.nas.columns[vv]] <-
++     results$value[results$variable == add.nas.columns[vv]] -
++     results$value[results$variable == add.nas.columns[vv] & results$method == "true"]
++ }
+> 
+> # turn off scientific (e-04 etc.) notation
+> results[,3:4] <- format(results[,3:4], scientific = FALSE)
+> 
+> # save as .csv
+> if(run == "mine"){
++   write.csv(results, here("scripts", "testing", "om", 
++                           paste0(ds, ".", tolower(mech), mult, ".results.", 
++                                  length(add.nas.columns), "var.",
++                                  nrow(df_true), "n.", length(OPMord.full),
++                                  "it.", prop*100, "perc.csv")))
++ }
+> if(run == "jeff"){
++   write.csv(results, paste0(ds, ".", tolower(mech), mult, ".results.", 
++                             length(add.nas.columns), "var.",
++                             nrow(df_true), "n.", length(OPMord.full),
++                             "it.", prop*100, "perc.csv"))
++ }
+> if(run == "CO"){
++   write.csv(results, paste0("../results/", ds, ".", tolower(mech),
++                             mult, ".results.", 
++                             length(add.nas.columns), "var.",
++                             nrow(df_true), "n.", length(OPMord.full),
++                             "it.", prop*100, "perc.csv"))
++ }
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> proc.time()
+    user   system  elapsed 
+6689.722  556.057 7254.920 
