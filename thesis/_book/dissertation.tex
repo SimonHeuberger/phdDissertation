@@ -373,11 +373,11 @@ This chapter will:
 
 -- Provide theory behind missing data mechanisms, deletion, imputation, multiple imputation
 -- Outline \texttt{R} packages/functions that implement listwise deletion and variations of multiple imputation, including my proposed new method
--- \texttt{na.omit()}
--- \texttt{amelia()}
--- \texttt{mice()}
--- \texttt{hot.deck()}
--- \texttt{hd.ord()}
+-- \texttt{na.omit}
+-- \texttt{amelia}
+-- \texttt{mice}
+-- \texttt{hot.deck}
+-- \texttt{hd.ord}
 -- Apply these \texttt{R} packages to three different sets of survey data
 -- Test each package for accuracy and speed for differing types of variables
 -- Assess the usefulness of my proposed new method
@@ -485,18 +485,18 @@ Multiple hot deck imputation uses draws of values from the variable with the mis
 \end{table}
 Respondent B shows missing data for party ID. To impute a fill-in value, we look at how close respondents A and C are to B in terms of age, education, income, and gender. C is closer to B in terms of age and they share the same gender. A is closer to B on education and income. Multiple hot deck imputation measures these distances and estimates affinity scores for respondents A and C. B then receives the party ID fill-in value from whichever respondent has the higher score. The algorithm building the affinity score, however, assumes evenly spaced distances between categories. This is the case for age, income, and gender, but not for education, since education is an ordinal variable. Applying multiple hot deck imputation here would misrepresent the data.
 
-\texttt{R} functions: \texttt{hd.ord()}
+\texttt{R} functions: \texttt{hd.ord}
 
-\texttt{education} is crucial to test the performance of \texttt{hd.ord}, which was designed specifically for ordinal variables. \texttt{hd.ord} in turn depends on another specifically designed function called \texttt{OPMOrd}. \texttt{OPMOrd} applies \texttt{polr()} to an ordinal variable (here \texttt{education}) to estimate the underlying latent continuous variable. \texttt{polr()} can only be run on data without missing variables. +++
+\texttt{education} is crucial to test the performance of \texttt{hd.ord}, which was designed specifically for ordinal variables. \texttt{hd.ord} in turn depends on another specifically designed function called \texttt{OPMOrd}. \texttt{OPMOrd} applies \texttt{polr} to an ordinal variable (here \texttt{education}) to estimate the underlying latent continuous variable. \texttt{polr} can only be run on data without missing variables. +++
 
 \hypertarget{ordmiss-data}{%
 \section{Data}\label{ordmiss-data}}
 
-I ampute data for three different sets of survey data: An experiment on moral framing I ran on MTurk in 2017 (original data), data from the 2016 ANES, and data from the 2016 CCES. All data are amputed with the \texttt{ampute()} function from the \texttt{mice} package (+++ some citation that talks about ampute here). Each data set is imputed with five different functions: \texttt{amelia()}, \texttt{mice()}, \texttt{hd.ord()}, \texttt{hot.deck()}, and \texttt{na.omit()}.
+I ampute data for three different sets of survey data: An experiment on moral framing I ran on MTurk in 2017 (original data), data from the 2016 ANES, and data from the 2016 CCES. All data are amputed with the \texttt{ampute} function from the \texttt{mice} package (+++ some citation that talks about ampute here). Each data set is imputed with five different functions: \texttt{amelia}, \texttt{mice}, \texttt{hd.ord}, \texttt{hot.deck}, and \texttt{na.omit}.
 
-\texttt{amelia()} is from the \texttt{Amelia} package. \texttt{mice()} is from the \texttt{mice} package. Both are used with their default settings unless specified otherwise. \texttt{hot.deck()} is from Gill and Cranmer's multiple hot deck imputation package \texttt{hot.deck}. \texttt{hd.ord()} is my ordinal variable adaptation of \texttt{hot.deck()}. \texttt{na.omit()} applies list-wise deletion. I test each function for imputation accuracy and speed for binary, ordinal, and nominal variables in all three data sets. Each data set contains two ordinal (\texttt{Education}, \texttt{Interest}), two nominal (\texttt{Age}, \texttt{Income}) and numerous binary variables. In order to enable factually accurate comparison and unless specified otherwise, each data set contains 1,000 observations and six levels of the ordinal variable \texttt{Education}. 1,000 observations represent a common size for survey experiment data, and the \texttt{polr()} analysis from section \ref{ordblock-data} estimates five or six levels to best represent \texttt{Education} in a US context. Imputation of each data set was carried out with each of the five imputation methods for 1,000 iterations. With the exception of Table \ref{mar.5var.old.frame}, 20 percent NA were randomly amputed in each iteration for each data set.
+\texttt{amelia} is from the \texttt{Amelia} package. \texttt{mice} is from the \texttt{mice} package. Both are used with their default settings unless specified otherwise. \texttt{hot.deck} is from Gill and Cranmer's multiple hot deck imputation package \texttt{hot.deck}. \texttt{hd.ord} is my ordinal variable adaptation of \texttt{hot.deck}. \texttt{na.omit} applies list-wise deletion. I test each function for imputation accuracy and speed for binary, ordinal, and nominal variables in all three data sets. Each data set contains two ordinal (\texttt{Education}, \texttt{Interest}), two nominal (\texttt{Age}, \texttt{Income}) and numerous binary variables. In order to enable factually accurate comparison and unless specified otherwise, each data set contains 1,000 observations and six levels of the ordinal variable \texttt{Education}. 1,000 observations represent a common size for survey experiment data, and the \texttt{polr} analysis from section \ref{ordblock-data} estimates five or six levels to best represent \texttt{Education} in a US context. Imputation of each data set was carried out with each of the five imputation methods for 1,000 iterations. With the exception of Table \ref{mar.5var.old.frame}, 20 percent NA were randomly amputed in each iteration for each data set.
 
-Sections \ref{ordmiss-results-mar} to \ref{ordmiss-results-increaseNA} show the results in terms of performance accuracy. Since each data set is complete, we know the true variable mean of all variables. This serves as the baseline of comparison for the performance of each imputation method. First, I impute all data sets MAR (section \ref{ordmiss-results-mar}) and MNAR (section \ref{ordmiss-results-mnar}) for five and 12 amputed variables. The five amputed variables are consistent across all three data sets: \texttt{Democrat} (binary), \texttt{Male} (binary), \texttt{Interest} (ordinal), \texttt{Income} (nominal), and \texttt{Age} (nominal). The 12 amputed variables contain additional variables that differ between each data set due to availability in the data. In section \ref{ordmiss-results-increaseOrd}, I then increase the number of ordinal variables to be treated by \texttt{polr()} for \texttt{hd.ord()} by including \texttt{Interest}. Imputations also also conducted MAR and MNAR for four and 11 amputed variables. The variables are the same as in sections \ref{ordmiss-results-mar} and \ref{ordmiss-results-mnar}, but without including \texttt{Interest}. Finally, I increase the amount of missing data to 50 and 80 percent (section \ref{ordmiss-results-increaseNA}).
+Sections \ref{ordmiss-results-mar} to \ref{ordmiss-results-increaseNA} show the results in terms of performance accuracy. Since each data set is complete, we know the true variable mean of all variables. This serves as the baseline of comparison for the performance of each imputation method. First, I impute all data sets MAR (section \ref{ordmiss-results-mar}) and MNAR (section \ref{ordmiss-results-mnar}) for five and 12 amputed variables. The five amputed variables are consistent across all three data sets: \texttt{Democrat} (binary), \texttt{Male} (binary), \texttt{Interest} (ordinal, scaled from 1 to 4), \texttt{Income} (nominal), and \texttt{Age} (nominal). The 12 amputed variables contain additional variables that differ between each data set due to availability in the data. In section \ref{ordmiss-results-increaseOrd}, I then increase the number of ordinal variables to be treated by \texttt{polr} for \texttt{hd.ord} by including \texttt{Interest}. Imputations are also conducted MAR and MNAR for four and 11 amputed variables. The variables are the same as in sections \ref{ordmiss-results-mar} and \ref{ordmiss-results-mnar}, but without including \texttt{Interest}. Finally, I increase the amount of missing data to 50 and 80 percent (section \ref{ordmiss-results-increaseNA}).
 
 Section \ref{ordmiss-results-speed} shows the results in terms of performance speed by the number of imputed variables (Table \ref{runtimes5var12var}) and the percentage of missingness (Table \ref{run.all.perc}). All running times were achieved on a Code Ocean AWS EC2 instance with 16 cores and 120 GB of memory.
 
@@ -505,6 +505,8 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 
 \hypertarget{ordmiss-results-mar}{%
 \subsection{MAR}\label{ordmiss-results-mar}}
+
+This section shows the imputation results for the MAR missing data mechanism. MAR amputation was achieved by setting the \texttt{mech} argument in the \texttt{ampute} function to \texttt{MAR}. Table \ref{mar.5var} shows the results of imputing all data sets MAR for five amputed variables. For the two binary variables, \texttt{Dem} and \texttt{Male}, \texttt{hd.ord} performs on par or worse than \texttt{hot.deck} for all data sets, while \texttt{mice} and \texttt{amelia} perform best. \texttt{hd.ord} is relatively close for CCES \texttt{Dem} (+.0001 \texttt{amelia} vs.~--.0004 \texttt{hd.ord}) but further away for ANES ( +.0003 \texttt{mice} vs.~--.0011 \texttt{hd.ord} \texttt{Dem}; +.0001 \texttt{mice} vs.~--.0013 \texttt{hd.ord} \texttt{Male}) and CCES \texttt{Male} (--.0001 \texttt{amelia} vs.~--.0014 \texttt{hd.ord}).
 \begin{table}[!htbp] \centering 
   \caption{Accuracy of Multiple Imputation Methods. MAR, 5 Variables with NA} 
   \label{mar.5var} 
@@ -547,11 +549,15 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 \hline \\[-1.8ex] 
 \end{tabular} 
 \begin{tablenotes}[para,flushleft]
-\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
-\clearpage
+For the ordinal variable, \texttt{Interest}, \texttt{hd.ord} performs worst for all data sets, with considerable distance to \texttt{hot.deck} (--.0191 vs.~--.0130 ANES; --.0196 vs.~--.0125 CCES; --.0248 vs.~--.0213 Framing). \texttt{mice} and \texttt{amelia} perform by far best across all data sets. The performance differences between the methods are far larger for the ordinal than for the binary variables: \texttt{mice} is not more than +.0003 (ANES) away from the true value across all data sets, while the maximum difference for \texttt{hd.ord} amounts to --.0248 (Framing).
+
+For the nominal variables, \texttt{Inc} and \texttt{Age}, \texttt{hd.ord} also performs worst for all data sets. The distance to \texttt{hot.deck} is once more considerable. \texttt{mice} performs best for \texttt{Inc} and \texttt{amelia} shows the best results for \texttt{Age}. The performance differences between the methods are even larger here: For \texttt{Inc}, \texttt{mice} is not more than +.0014 (Framing) away from the true value across all data sets, but the maximum difference for \texttt{hd.ord} is --.1278 (ANES). Similarly, \texttt{amelia}'s largest deviation from the true value for \texttt{Age} is --.0039 (Framing) as opposed to \texttt{hd.ord}'s --.4597 (ANES).
+
+Table \ref{mar.12var} shows the results of imputing all data sets MAR for 12 amputed variables. The first five listed variables are the same as for the MAR analysis for five amputed variables in Table \ref{mar.5var}. The remaining variables were chosen based on availability in each data set. As much as possible, the same variables were selected across all data sets. \texttt{Black}, \texttt{Empl}, \texttt{Religious}, \texttt{Married}, \texttt{OwnHome}, \texttt{Rally}, \texttt{Donate}, \texttt{Gay}, \texttt{StudLoans}, \texttt{Hisp}, \texttt{Official}, and \texttt{Stud} are binary variables. \texttt{Black} indicates whether a respondent is of African-American origin, \texttt{Empl} whether she is currently employed, \texttt{Religious} whether she follows a religious belief, \texttt{Married} whether she is currently married, \texttt{OwnHome} whether she owns her home, \texttt{Rally} whether she has attended a political rally, \texttt{Donate} whether she has donated to a political candidate, \texttt{Gay} whether she identifies as homosexual, \texttt{StudLoans} whether she currently has student loans, \texttt{Hisp} whether she is of Hispanic origin, \texttt{Official} whether she has contacted her political representative, and \texttt{Stud} whether she currently is a student. \texttt{Media} is an ordinal variable and indicates how much she follows public affairs in the media (scaled from 1 to 5). \texttt{Participation} is a nominal variable and shows the accumulative count of political activities she has participated in (scaled from 0 to 4).
 
 \ssp
 
@@ -683,8 +689,14 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 
 \normalsize
 
+The results are consistent with those presented in Table \ref{mar.5var}. For the binary variables, \texttt{amelia} and \texttt{mice} again perform best with results actually matching the true variable values, though \texttt{hd.ord} arguably shows closer results than in Table \ref{mar.5var} with a maximum difference to a true value of +.0006 (ANES and Framing \texttt{Empl}). For the ordinal variable, \texttt{hd.ord} continues to perform worst across all data sets. The same applies to Framing \texttt{Media}. \texttt{mice} and \texttt{amelia} again show the best results. Note, however, that \texttt{hd.ord} is less worse in terms of performance differences when compared to the MAR analysis of five imputed variables. The maximum difference to the true \texttt{Interest} value is --.0106 (Framing) for 12 variables but --.0248 (Framing) for five variables. This is possibly explained by a thinner spread of missing values across a higher number of variables, resulting in a lower number of NAs in each amputed variable.
+
+The results for the nominal variables follow the same pattern. \texttt{hd.ord} displays the worst results for all data sets. The difference to \texttt{hot.deck} is still present though less pronounced than in the MAR analysis of five imputed variables. \texttt{mice} overall performs better than \texttt{amelia} for \texttt{Inc} and \texttt{Age}, with the exceptions of ANES \texttt{Inc} (--.0007 vs.~--.0013) and CCES \texttt{Age} (--.0015 vs.~--.0050). The results for Framing \texttt{Participation} confirm those for \texttt{Inc} and \texttt{Age}.
+
 \hypertarget{ordmiss-results-mnar}{%
 \subsection{MNAR}\label{ordmiss-results-mnar}}
+
+This section shows the imputation results for the MNAR missing data mechanism. MNAR amputation was achieved by setting the \texttt{mech} argument in the \texttt{ampute} function to \texttt{MNAR}. All MAR and MNAR analyses are otherwise identical. Table \ref{mnar.5var} shows the results of imputing all data sets MNAR for five amputed variables. It is immediately noticable that the differences between the methods' imputation results and the true values is much higher for all methods for all variables for all data sets. The results for \texttt{Dem}, for instance, hover around .0100 for ANES/CCES and around .004 for Framing, while the \texttt{Male} numbers center around .0125 across all data sets. In the corresponding MAR analysis, however, the results for \texttt{Dem} and \texttt{Male} revealed around .0005 for all data sets.
 \begin{table}[!htbp] \centering 
   \caption{Accuracy of Multiple Imputation Methods. MNAR, 5 Variables with NA} 
   \label{mnar.5var} 
@@ -727,11 +739,17 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 \hline \\[-1.8ex] 
 \end{tabular} 
 \begin{tablenotes}[para,flushleft]
-\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
-\clearpage
+For the binary variables, \texttt{hd.ord} performs more closely on par with \texttt{amelia} and \texttt{mice} than in the corresponding MAR analysis above, sometimes more (--.0133 \texttt{hd.ord} vs.~--.0132 \texttt{amelia} ANES \texttt{Male}) and sometimes less so (--.0120 \texttt{hd.ord} vs.~--.0099 \texttt{mice} ANES \texttt{Dem}). In addition, \texttt{hd.ord} actually represents the best method for both binary variables in the Framing data. Note the interesting results for \texttt{na.omit} here: It performs as well as \texttt{amelia} and \texttt{mice} for Framing \texttt{Male}.
+
+The results for the ordinal variables confirm those of the MAR analysis: \texttt{hd.ord} represents the worst method across all data sets. \texttt{amelia} and \texttt{mice} show by far the best results and are virtually identical with each other, though the differences to the true values are much higher than in the MAR analysis -- as is the case for the entire MNAR analysis. \texttt{na.omit} shows results that are close to \texttt{hd.ord}'s for Framing.
+
+The results for the nominal variables paint the same picture as the ordinal ones. \texttt{hd.ord} shows the worst performance. Note that \texttt{na.omit} now actually outperforms \texttt{hot.deck} for Framing \texttt{Age} and \texttt{hd.ord} for Framing and ANES \texttt{Age}.
+
+Table \ref{mnar.12var} shows the results of imputing all data sets MNAR for 12 amputed variables. The results are consistent with those obtained for five amputed variables MNAR. \texttt{amelia} and \texttt{mice} perform better than \texttt{hd.ord} for the binary variables overall, but often not by much. Occasionally, \texttt{hd.ord} eclipses them (--.0013 vs.~--.0014 \texttt{mice} Framing \texttt{Dem}; --.0053 vs.~--.0055 \texttt{mice} and \texttt{amelia} ANES \texttt{Male}). \texttt{na.omit} once more performs close to the other methods.
 
 \ssp
 
@@ -863,8 +881,14 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 
 \normalsize
 
+For the ordinal variable, \texttt{hd.ord} shows the worst performance across all data sets. \texttt{mice} and \texttt{amelia} perform far better and display virtually identical result. This also applies to Framing \texttt{Media}. \texttt{na.omit} does not perform as well as in the corresponding MAR analysis. \texttt{mice} and \texttt{amelia}'s superior performance is also visible in the results for the ordinal variables, including Framing \texttt{Participation}. \texttt{na.omit} performs better than \texttt{hot.deck} and \texttt{hd.ord} for Framing \texttt{Age} (--.2239 vs.~--.2811 and --.2989), and CCES \texttt{Age} (--.1367 vs.~--.1732 and --.2251).
+
 \hypertarget{ordmiss-results-increaseOrd}{%
-\subsection{Increased Ordinal Variables}\label{ordmiss-results-increaseOrd}}
+\subsection{Increased Number of Ordinal Variables}\label{ordmiss-results-increaseOrd}}
+
+This section shows the imputation results where I increase the number of ordinal variables to be treated by \texttt{polr} for \texttt{hd.ord}. Specifically, I include \texttt{Interest} in the \texttt{polr} treatment. The intuition behind this is a strengthening of the underlying latent continuous variable assumption. The results so far do not show superior performance by \texttt{hd.ord}. However, this might be due to a lack of `influence' so far. Perhaps one ordinal variable treated with \texttt{polr} is not enough to manifest itself in improved results. By including another ordinal variable in the treatment, this `influence' is strengthened and the \texttt{polr} assumption is put to another test. As in sections \ref{ordmiss-results-mar} and \ref{ordmiss-results-mnar}, imputations are conducted MAR and MNAR. Because \texttt{Interest} is moved to the \texttt{polr} treatment, the number of imputed variables is reduced to four and 11, respectively, to ensure accurate comparison. This means the amputed variables do not include an ordinal variable any more, since no suitable replacement could be found in the ANES and CCES data. The remaining variables are the same as before.
+
+Table \ref{mult.mar.4var} shows the results of imputing all data sets with two \texttt{polr}-treated variables MAR for four amputed variables. \texttt{hd.ord} displays the worst results for \texttt{Dem} across all data sets and beats only \texttt{hot.deck} for \texttt{Male}. \texttt{amelia} and \texttt{mice} perform best and show virtually identically results that often match the true variable means. Comparison with the MAR analysis of five imputed variables reveals that \texttt{hd.ord} consistently performs slightly worse here: --.0018, --.0005, +.0012 vs.~--.0011, --.0004, +.0008 for \texttt{Dem} and --.0015, --.0018, +.0011 vs.~--.0013, --.0014, +.0005 for \texttt{Male}.
 \begin{table}[!htbp] \centering 
   \caption{Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MAR, 4 Variables with NA} 
   \label{mult.mar.4var} 
@@ -901,11 +925,13 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 \hline \\[-1.8ex] 
 \end{tabular} 
 \begin{tablenotes}[para,flushleft]
-\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
-\clearpage
+\texttt{hd.ord} also performs worst for all data sets across both nominal variables. \texttt{amelia} and \texttt{mice} again perform best. \texttt{mice} does better for CCES, while \texttt{amelia} does better for Framing. Both perform equally well for ANES. As for the binary variables, the results for \texttt{hd.ord} consistently get slightly worse in the switch from one to two ordinal variables in \texttt{polr}-treatment: --.1523, --.0516, --.0225 vs.~--.1278, --.0407, --.0192 for \texttt{Inc} and --.5431, --.4664, --.4583 vs.~--.4597, --.3895, --.3923 for \texttt{Age}.
+
+Table \ref{mult.mar.11var} shows the results of imputing all data sets with two \texttt{polr}-treated variables MAR for 11 amputed variables. A similar picture fo Table \ref{mult.mar.4var} emerges for the binary variables, with \texttt{amelia} and \texttt{mice} once more displaying the best results, though \texttt{hd.ord} appears to perform somewhat closer here. Consistent with the deterioriation of \texttt{hd.ord} results from Table \ref{mar.5var} to Table \ref{mult.mar.4var}, \texttt{hd.ord} again consistently performs slightly worse when compared to the MAR analysis with 12 amputed variables and only \texttt{Education} treated by \texttt{polr}: --.0005, --.0005, +.0005 vs.~--.0005, --.0004, +.0004 for \texttt{Dem} and --.0001, --.0004, +.0002 vs.~--.0001, --.0003, +.0000 for \texttt{Male}.
 
 \ssp
 
@@ -1030,6 +1056,10 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 \dsp
 
 \normalsize
+
+The same can be observed for the nominal variables, with \texttt{hd.ord} again claiming last place across all data sets. The difference to \texttt{hot.deck} is still there but less pronounced than in Table \ref{mult.mar.4var}. \texttt{amelia} does best for \texttt{Age} while \texttt{mice} performs better for \texttt{Inc}, with the exception of the ANES (--.0027 \texttt{mice} vs.~--.0018 \texttt{amelia}). As for the binary variables, \texttt{hd.ord} also consistently performs slightly worse when compared to the MAR analysis with 12 amputed variables and only \texttt{Education} treated by \texttt{polr}: --.0657, --.0241, --.0095 vs.~--.0591, --.0212, --.0089 for \texttt{Inc} and --.1951, --.1532, --.1640 vs.~--.1835, --.1435, --.1592 for \texttt{Age}.
+
+Table \ref{mult.mnar.4var} shows the results of imputing all data sets with two \texttt{polr}-treated variables MNAR for four amputed variables. For the binary variables, \texttt{hd.ord} performs on the same level as \texttt{amelia} and \texttt{mice} when compared to the MNAR analysis of five imputed variables with only \texttt{Education} treated by \texttt{polr}; sometimes more (--.0131 \texttt{hd.ord} vs.~--.0130 \texttt{mice} CCES \texttt{Dem}), sometimes less so (--.0155 \texttt{hd.ord} vs.~--.0127 \texttt{mice} ANES \texttt{Dem}). \texttt{hd.ord} actually shows the best results of all methods for Framing for both variables. \texttt{na.omit} does not perform as well as it does in Table \ref{mnar.5var}. \texttt{hd.ord} again consistently performs slightly worse with the two-ordinal-variable-\texttt{polr}-treatment: --.0155,--.0131, --.0042 vs.~--.0120, --.0105, --.0033 for \texttt{Dem} and --.0172, --.0160, --.0157 vs.~--.0133, --.0124, --.0125 for \texttt{Male}.
 \begin{table}[!htbp] \centering 
   \caption{Accuracy of Multiple Imputation Methods. Two Ordinal Variables (Education, Interest), MNAR, 4 Variables with NA} 
   \label{mult.mnar.4var} 
@@ -1066,11 +1096,13 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 \hline \\[-1.8ex] 
 \end{tabular} 
 \begin{tablenotes}[para,flushleft]
-\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
-\clearpage
+The results for the nominal variables are consistent with the previous analyses. In addition, note that \texttt{na.omit} performs better than \texttt{hd.ord} for \texttt{Age} across all three data sets and for ANES \texttt{Inc}. Once more, \texttt{hd.ord} consistently performs slightly worse with more than two ordinal variables: --.3174, --.1303, --.0812 vs.~--.2554, --.1038, --.0648 for \texttt{Inc} and --.8997, --.7259, --.9349 vs.~--.7415, --.5929, --.7477 for \texttt{Age}.
+
+Table \ref{mult.mnar.11var} shows the results of imputing all data sets with two \texttt{polr}-treated variables MNAR for 11 amputed variables. For the binary variables, \texttt{amelia} and \texttt{mice} perform better, but often not by much. Occasionally, \texttt{hd.ord} eclipses them (--.0057 \texttt{hd.ord} vs.~--.0060 \texttt{mice} ANES \texttt{Male}; --.0057 \texttt{hd.ord} vs.~--.0059 \texttt{amelia} Framing \texttt{Male}). As was the case in the comparison between the MNAR analysis with four amputed variables and the MNAR analyis with five amputed variables, \texttt{hd.ord} consistently demonstrates slightly worse results in the switch from 12 (Table \ref{mnar.12var}) to 11 and one to two \texttt{polr}-treated variables: --.0053, --.0053, --.0024 vs.~--.0049, --.0049, --.0013 for \texttt{Dem} and --.0057, --.0056, --.0057 vs.~--.0053, --.0051, --.0051 for \texttt{Male}.
 
 \ssp
 
@@ -1196,9 +1228,13 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 
 \normalsize
 
+Finally, the results for the nominal variables confirm previous results, with \texttt{amelia} and \texttt{mice} demonstrating the best performance. In addition, note that \texttt{na.omit} delivers better results than \texttt{hd.ord} for \texttt{Age} for all data sets and represents the best method for CCES \texttt{Age}. Similar to the MNAR results for four variables, the performance of \texttt{hd.ord} in the MNAR analysis of 11 variables deteriorates in the switch from one to two ordinal variables: --.1142, --.0473, --.0291 vs.~--.1046, --.0421, --.0262 for \texttt{Inc} and --.3329, --.2424, --.3271 vs.~--.3081, --.2251, --.2989 for \texttt{Age}.
+
 \hypertarget{ordmiss-results-increaseNA}{%
-\subsection{Increased Missingness}\label{ordmiss-results-increaseNA}}
-\begin{table}[!htbp] \centering 
+\subsection{Increased Percentage of Missingness}\label{ordmiss-results-increaseNA}}
+
+This brief section shows the imputation results when the percentage of missingness is increased. I conduct this here MAR for five variables in the Framing data. The results are shown in Table \ref{mar.5var.old.frame}. As was to be expected at this point, \texttt{hd.ord} displays the worst performance for all percentages for all binary variables.
+\begin{table}[!ht] \centering 
   \caption{Accuracy of Multiple Imputation Methods for Increasing Percentages of Missing Data (Framing Experiment Data)} 
   \label{mar.5var.old.frame} 
 \begin{threeparttable}
@@ -1240,14 +1276,18 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 \hline \\[-1.8ex] 
 \end{tabular} 
 \begin{tablenotes}[para,flushleft]
-\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean.}
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
-\clearpage
+\texttt{amelia} and \texttt{mice} show virtually identical results. Note that \texttt{hot.deck} appears to outperform \texttt{amelia} and \texttt{mice} for CCES \texttt{Dem} and \texttt{Male}. \texttt{hd.ord} also represents the worst method for all percentages for all ordinal and nominal variables. \texttt{amelia} and \texttt{mice} show virtually identical results and far outperform the other methods for the ordinal variables. Note that \texttt{amelia} also consistently outperforms \texttt{mice} for all percentages for all nominal variables.
 
 \hypertarget{ordmiss-results-speed}{%
 \subsection{Speed}\label{ordmiss-results-speed}}
+
+This section shows the running times for all methods. Specifically, I outline the speed differences by the number of imputed variables for all data sets (Table \ref{runtimes5var12var}) and by the percentage of missingness for the Framing data (Table \ref{run.all.perc}). Both analyses are conducted MAR, with the latter only for five imputed variables. All running times are given in minutes and apply to all 1,000 amputation/imputation iterations combined.
+
+We can see in Table \ref{runtimes5var12var} that \texttt{hd.ord} and \texttt{hot.deck} show virtually identical running times for all data sets for both numbers of imputed variables. This is to be expected as both methods are very similar in terms of their code build-up. More importantly, however, we observe that both methods are much faster than \texttt{amelia} and \texttt{mice}: \texttt{amelia} is at least 3.2 times slower than \texttt{hd.ord} (for the Framing data for both numbers of imputed variables). The highest difference amounts to 3.9 (for the CCES data with 12 imputed variables). \texttt{mice}, however, shows by far the highest running times. At its worst, \texttt{mice} is 42.3 times slower than \texttt{hd.ord} (for the CCES data with 12 imputed variables). At its best, this deficit still amounts 18.9 times slower (for the Framing data with five imputed variables).
 \begin{table}[!htbp] \centering 
   \caption{Runtimes of Multiple Imputation Methods (in Minutes) by Number of Imputed Variables} 
   \label{runtimes5var12var} 
@@ -1266,6 +1306,7 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table}
+Table \ref{run.all.perc} shows that \texttt{hd.ord} and \texttt{hot.deck} remain the fastest methods across all percentages of missingness, but the gap to \texttt{amelia} and \texttt{mice} narrows as the missingness increases. \texttt{amelia} improves from 3.2 times slower than \texttt{hd.ord} for 20 percent NA to 1.3 times slower for 80 percent NA. Similarly, \texttt{mice} speeds up from 18.9 to 8.7 times slower.
 \begin{table}[!htbp] \centering 
   \caption{Runtimes of Multiple Imputation Methods (in Minutes) by Percentage of Missingness (Framing Experiment Data)} 
   \label{run.all.perc} 
@@ -1281,62 +1322,6 @@ Section \ref{ordmiss-results-speed} shows the results in terms of performance sp
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table}
-\clearpage
-
-\clearpage
-
-\hypertarget{from-before}{%
-\subsection{From Before}\label{from-before}}
-\begin{table}[!htbp] \centering 
-  \caption{Runtimes of Multiple Imputation Methods (in Minutes)} 
-  \label{runtimes} 
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
- & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES2016} & \multicolumn{1}{c}{ANES2016\_5lev} & \multicolumn{1}{c}{OldFramingQuadrObs} \\ 
-\cline{2-2} 
-\cline{3-3} 
-\cline{4-4}
-\cline{5-5}\\[-1.8ex]
-\multicolumn{1}{c}{hd.ord} & 34.457 & 32.642 & 32.668 & 31.519 \\ 
-\multicolumn{1}{c}{hd.norm} & 34.660 & 32.669 & 32.881 & 31.810 \\ 
-\multicolumn{1}{c}{amelia} & 77.956 & 33.051 & 33.691 & 30.035 \\ 
-\multicolumn{1}{c}{mice} & 616.023 & 293.722 & 298.919 & 277.021 \\ 
-\hline \\[-1.8ex] 
-\multicolumn{1}{c}{Observations} & 1,003 & 3,223 & 3,145 & 4,012 \\ 
-\multicolumn{1}{c}{Iterations} & 12,500 & 2,396 & 2,500 & 1,500 \\ 
-\multicolumn{1}{c}{Levels} & 7 & 16 & 5 & 7 \\ 
-\hline \\[-1.8ex] 
-\end{tabular} 
-\end{table}
-As can be seen in Table \ref{runtimes}, \texttt{hd.ord} and \texttt{hot.deck} show virtually identical imputation times for the old framing data (n = 1,003), with \texttt{hd.ord} being 12 seconds faster. \texttt{amelia}, however, is 2.3 times slower than \texttt{hd.ord}. \texttt{mice} is 17.9 times slower than \texttt{hd.ord}. This is a dramatic speed gain. The ANES (n = 3,223) data show only a reduced speed gain. \texttt{mice} is still drastically slower than \texttt{hd.ord} (by a magnitude of 9), but the speed gain is cut in half. The previous speed gain over \texttt{amelia} is no longer observable. \texttt{hd.ord} and \texttt{amelia} now show virtually identical runtimes (with a difference of 25 seconds in favor of \texttt{hd.ord}).
-
-Three factors might explain this sudden and surprising increase in the performance of \texttt{amelia}: The levels of the ordinal variable in question (\texttt{education}), the number of iterations, and the number of observations in a data set. The ANES (n = 3,223) data contain 17 levels of \texttt{education}, whereas the old framing data (n = 1,003) contain only 7. However, when run with 5 levels of \texttt{education} and otherwise virtually identical data, the method performances remain unchanged (see column ``ANES2016\_5lev''). This rules out the levels of the ordinal variable. Another explanation could be the number of observations and the corresponding possible number of iterations. A high number of observations reduces the computationally feasible number of iterations that can be performed before even powerful machines with 120 GB RAM are maxed out. The old framing data (n = 1,003) contain 1,003 observations and can be computationally run for 12,500 iterations. The 2016 ANES data (n = 3,223) contain more than triple the observations than the old framing data (n = 1,003) and can only be run for 2,396 iterations. Indeed, when we quadruple the number of observations in the old framing data (n = 4,012) and are thus forced to reduce the number of possible iterations to 1,500, we observe that \texttt{amelia} is now the fastest method (see column ``OldFramingQuadrObs''). It thus appears that \texttt{amelia} is fast with a low number of iterations and slow with a high number of iterations.
-
-This would lead us to predict that \texttt{amelia} should be the fastest method when the old framing data (n = 1,003) is run for a low number of iterations (2,000). That is not the case: \texttt{amelia} is 2.2 times slower than \texttt{hd.ord} (see column ``OldFraming\_2000it''); on the same level as the 12,500-iteration-run of the old framing data (n = 1,003). This means it's not the number of iterations but the number of observations that affects \texttt{amelia}'s relative lack of speed compared to \texttt{hd.ord}. \texttt{amelia} appears to be much slower than \texttt{hd.ord} for around 1,000 observations but on equal footing for 3,000+ observations.
-
-This is indeed confirmed by Table \ref{runtimes1000n}, where the old framing, the ANES, and the CCES data have all been reduced to 1,000 observations. The left half of the table shows the results for 10,000 iterations and low numbers of variables with NAs (Note: \texttt{education} in the ANES data was reduced to 7 levels to make this number of iterations computationally feasible). The right half of the table shows the results for 1,000 iterations and high numbers of variables with NAs. \texttt{amelia} is consistently between 2.1 and 2.9 times slower than \texttt{hd.ord} for all three data sets, regardless of the number of iterations and the number of variables with NAs.
-\begin{table}[!htbp] \centering 
-  \caption{Runtimes of Multiple Imputation Methods (in Minutes), 1000 Observations} 
-  \label{runtimes1000n} 
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
- & \multicolumn{3}{c}{10,000 Iterations} & \multicolumn{3}{c}{1,000 Iterations}\\
-\cline{2-7} \\[-1.8ex]
- & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES} \\ 
-\cline{2-4} 
-\cline{5-7} \\[-1.8ex]
-\multicolumn{1}{c}{hd.ord} & 24.394 & 26.461 & 24.294 & 2.714 & 2.588 & 4.103 \\ 
-\multicolumn{1}{c}{hd.norm} & 24.540 & 26.620 & 24.316 & 2.723 & 2.617 & 4.300 \\ 
-\multicolumn{1}{c}{amelia} & 57.403 & 68.862 & 50.630 & 7.787 & 6.926 & 8.758 \\ 
-\multicolumn{1}{c}{mice} & 449.027 & 527.532 & 390.690 & 158.583 & 116.609 & 336.038 \\ 
-\hline \\[-1.8ex] 
-\multicolumn{1}{c}{Ordinal Levels} & 6 & 7 & 7 & 6 & 7 & 7 \\ 
-\multicolumn{1}{c}{Variables with NAs} & 5 & 5 & 5 & 16 & 13 & 22 \\ 
-\hline \\[-1.8ex] 
-\end{tabular} 
-\end{table}
 \hypertarget{ordmiss-conclusion}{%
 \section{Conclusion}\label{ordmiss-conclusion}}
 
@@ -1349,15 +1334,15 @@ What doesn't work
 -- 17 ANES education levels == increases needed number of iterations
 -- 17 ANES education levels == causes \texttt{amelia} to stop on CO and Jeff
 -- 10,000 iterations == results with 1,000 iterations are just as good
--- \texttt{ampute()} with \texttt{bycases=FALSE} and \texttt{cont=FALSE} == worse \texttt{hd.ord} performance, good \texttt{na.omit} performance
--- \texttt{own.NA()} == \texttt{na.omit} performs best (currently in appendix)
--- \texttt{own.NA.rows()}== pretty much everything is zero, incl.~\texttt{na.omit}; \texttt{mice} is awful (currently in appendix)
+-- \texttt{ampute} with \texttt{bycases=FALSE} and \texttt{cont=FALSE} == worse \texttt{hd.ord} performance, good \texttt{na.omit} performance
+-- \texttt{own.NA} == \texttt{na.omit} performs best (currently in appendix)
+-- \texttt{own.NA.rows}== pretty much everything is zero, incl.~\texttt{na.omit}; \texttt{mice} is awful (currently in appendix)
 -- Running \texttt{hd.ord} with \texttt{method\ =\ p.draw} == worse \texttt{hd.ord} performance
 -- Running \texttt{hd.ord} with \texttt{method\ =\ p.draw} == only works with only binary vars in the data
 -- Increasing \texttt{sdCutoff} == only does something with only binary vars in the data
 -- Only binary vars in data == no gain in \texttt{hd.ord} performance
 
-\texttt{own.NA()} and \texttt{own.NA.rows()} resulted in a strong performance of \texttt{na.omit}, which should not happen in a missingness mechanism that is supposed to be MAR. The functions thus likely represent a version of MCAR, which puts the usefulness of their imputation results in doubt.
+\texttt{own.NA} and \texttt{own.NA.rows} resulted in a strong performance of \texttt{na.omit}, which should not happen in a missingness mechanism that is supposed to be MAR. The functions thus likely represent a version of MCAR, which puts the usefulness of their imputation results in doubt.
 
 What works
 
@@ -1646,6 +1631,56 @@ MAR
 \footnotesize{\textit{Note:} Due to the very high number of observations, the CCES data can only be run for a low number of iterations. Anything above that maxes out the 120 GB of RAM available to me. The framing data are not included since their total number of observations (1,003) is virtually identical to the sample of 1,000.}
 \end{tablenotes}
 \end{threeparttable}
+\end{table}
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes)} 
+  \label{runtimes} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES2016} & \multicolumn{1}{c}{ANES2016\_5lev} & \multicolumn{1}{c}{OldFramingQuadrObs} \\ 
+\cline{2-2} 
+\cline{3-3} 
+\cline{4-4}
+\cline{5-5}\\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 34.457 & 32.642 & 32.668 & 31.519 \\ 
+\multicolumn{1}{c}{hd.norm} & 34.660 & 32.669 & 32.881 & 31.810 \\ 
+\multicolumn{1}{c}{amelia} & 77.956 & 33.051 & 33.691 & 30.035 \\ 
+\multicolumn{1}{c}{mice} & 616.023 & 293.722 & 298.919 & 277.021 \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Observations} & 1,003 & 3,223 & 3,145 & 4,012 \\ 
+\multicolumn{1}{c}{Iterations} & 12,500 & 2,396 & 2,500 & 1,500 \\ 
+\multicolumn{1}{c}{Levels} & 7 & 16 & 5 & 7 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+As can be seen in Table \ref{runtimes}, \texttt{hd.ord} and \texttt{hot.deck} show virtually identical imputation times for the old framing data (n = 1,003), with \texttt{hd.ord} being 12 seconds faster. \texttt{amelia}, however, is 2.3 times slower than \texttt{hd.ord}. \texttt{mice} is 17.9 times slower than \texttt{hd.ord}. This is a dramatic speed gain. The ANES (n = 3,223) data show only a reduced speed gain. \texttt{mice} is still drastically slower than \texttt{hd.ord} (by a magnitude of 9), but the speed gain is cut in half. The previous speed gain over \texttt{amelia} is no longer observable. \texttt{hd.ord} and \texttt{amelia} now show virtually identical runtimes (with a difference of 25 seconds in favor of \texttt{hd.ord}).
+
+Three factors might explain this sudden and surprising increase in the performance of \texttt{amelia}: The levels of the ordinal variable in question (\texttt{education}), the number of iterations, and the number of observations in a data set. The ANES (n = 3,223) data contain 17 levels of \texttt{education}, whereas the old framing data (n = 1,003) contain only 7. However, when run with 5 levels of \texttt{education} and otherwise virtually identical data, the method performances remain unchanged (see column ``ANES2016\_5lev''). This rules out the levels of the ordinal variable. Another explanation could be the number of observations and the corresponding possible number of iterations. A high number of observations reduces the computationally feasible number of iterations that can be performed before even powerful machines with 120 GB RAM are maxed out. The old framing data (n = 1,003) contain 1,003 observations and can be computationally run for 12,500 iterations. The 2016 ANES data (n = 3,223) contain more than triple the observations than the old framing data (n = 1,003) and can only be run for 2,396 iterations. Indeed, when we quadruple the number of observations in the old framing data (n = 4,012) and are thus forced to reduce the number of possible iterations to 1,500, we observe that \texttt{amelia} is now the fastest method (see column ``OldFramingQuadrObs''). It thus appears that \texttt{amelia} is fast with a low number of iterations and slow with a high number of iterations.
+
+This would lead us to predict that \texttt{amelia} should be the fastest method when the old framing data (n = 1,003) is run for a low number of iterations (2,000). That is not the case: \texttt{amelia} is 2.2 times slower than \texttt{hd.ord} (see column ``OldFraming\_2000it''); on the same level as the 12,500-iteration-run of the old framing data (n = 1,003). This means it's not the number of iterations but the number of observations that affects \texttt{amelia}'s relative lack of speed compared to \texttt{hd.ord}. \texttt{amelia} appears to be much slower than \texttt{hd.ord} for around 1,000 observations but on equal footing for 3,000+ observations.
+
+This is indeed confirmed by Table \ref{runtimes1000n}, where the old framing, the ANES, and the CCES data have all been reduced to 1,000 observations. The left half of the table shows the results for 10,000 iterations and low numbers of variables with NAs (Note: \texttt{education} in the ANES data was reduced to 7 levels to make this number of iterations computationally feasible). The right half of the table shows the results for 1,000 iterations and high numbers of variables with NAs. \texttt{amelia} is consistently between 2.1 and 2.9 times slower than \texttt{hd.ord} for all three data sets, regardless of the number of iterations and the number of variables with NAs.
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes), 1000 Observations} 
+  \label{runtimes1000n} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{10,000 Iterations} & \multicolumn{3}{c}{1,000 Iterations}\\
+\cline{2-7} \\[-1.8ex]
+ & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES} \\ 
+\cline{2-4} 
+\cline{5-7} \\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 24.394 & 26.461 & 24.294 & 2.714 & 2.588 & 4.103 \\ 
+\multicolumn{1}{c}{hd.norm} & 24.540 & 26.620 & 24.316 & 2.723 & 2.617 & 4.300 \\ 
+\multicolumn{1}{c}{amelia} & 57.403 & 68.862 & 50.630 & 7.787 & 6.926 & 8.758 \\ 
+\multicolumn{1}{c}{mice} & 449.027 & 527.532 & 390.690 & 158.583 & 116.609 & 336.038 \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Ordinal Levels} & 6 & 7 & 7 & 6 & 7 & 7 \\ 
+\multicolumn{1}{c}{Variables with NAs} & 5 & 5 & 5 & 16 & 13 & 22 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
 \end{table}
 \hypertarget{app-ordmiss-modified.ampute}{%
 \section{\texorpdfstring{With Modified \texttt{ampute()}}{With Modified ampute()}}\label{app-ordmiss-modified.ampute}}

@@ -45,8 +45,8 @@ MAR (Table \ref{mar.5var.all}) and MNAR (\ref{mnar.5var.all})
 
 ```{r MAR 5 Variables All Observations, include=FALSE}
 
-mar.5var.anes.all <- read.csv("data/anes/mar/results/anes.mar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-mar.5var.cces.all <- read.csv("data/cces/mar/results/cces.mar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.5var.anes.all <- read.csv("data/anes/appendix/anes.mar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.5var.cces.all <- read.csv("data/cces/appendix/cces.mar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
 
 mar.5var.anes.all$diff[mar.5var.anes.all$method == "true"] <- mar.5var.anes.all$value[mar.5var.anes.all$method == "true"]
 mar.5var.cces.all$diff[mar.5var.cces.all$method == "true"] <- mar.5var.cces.all$value[mar.5var.cces.all$method == "true"]
@@ -70,7 +70,6 @@ stargazer(mar.5var.all,
           rownames = FALSE,
           title = "Accuracy of Multiple Imputation Methods. MAR, 5 Variables with NA, all observations",
           label = "mar.5var.all")
-
 
 ```
 
@@ -130,8 +129,8 @@ stargazer(mar.5var.all,
 
 ```{r MNAR 5 Variables All Observations, include=FALSE}
 
-mnar.5var.anes.all <- read.csv("data/anes/mnar/results/anes.mnar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-mnar.5var.cces.all <- read.csv("data/cces/mnar/results/cces.mnar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.5var.anes.all <- read.csv("data/anes/appendix/anes.mnar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.5var.cces.all <- read.csv("data/cces/appendix/cces.mnar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
 
 mnar.5var.anes.all$diff[mnar.5var.anes.all$method == "true"] <- mnar.5var.anes.all$value[mnar.5var.anes.all$method == "true"]
 mnar.5var.cces.all$diff[mnar.5var.cces.all$method == "true"] <- mnar.5var.cces.all$value[mnar.5var.cces.all$method == "true"]
@@ -236,8 +235,8 @@ MAR
 
 ```{r Runtimes All Observations, include=FALSE}
 
-run.all.obs.anes <- read.csv("data/anes/mar/runtimes/anes.mar.runtime.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
-run.all.obs.cces <- read.csv("data/cces/mar/runtimes/cces.mar.runtime.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.all.obs.anes <- read.csv("data/anes/appendix/anes.mar.runtime.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.all.obs.cces <- read.csv("data/cces/appendix/cces.mar.runtime.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
 
 run.all.obs <- cbind(run.all.obs.anes[, c(1,2)], run.all.obs.cces[,2])
 
@@ -288,6 +287,150 @@ stargazer(run.all.obs,
 
 
 
+```{r Runtimes MI Methods From Before, include=FALSE}
+
+oldframe.runtime <- read.csv("data/framing/appendix/framing.runtime.5var.1003n.12500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.runtime <- read.csv("data/anes/appendix/anes.runtime.5var.3223n.2396it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.5lev.runtime <- read.csv("data/anes/appendix/anes.5lev.runtime.5var.3145n.2500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+oldframe.quadrobs.runtime <- read.csv("data/framing/appendix/quadrupleObs/framing.quadrobs.runtime.5var.4012n.1500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+oldframe.2000it.runtime <- read.csv("data/framing/appendix/framing.runtime.5var.1003n.2000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+
+runtimes <- data.frame(matrix(NA, 7, 6))
+colnames(runtimes) <- c("Method", "OldFraming", "ANES2016", "ANES2016_5lev", "OldFramingQuadrObs", "OldFraming_2000it")
+runtimes$Method <- c("hd.ord", "hd.norm", "amelia", "mice", "Observations", "Iterations", "Levels")
+runtimes$OldFraming <- c(oldframe.runtime[,2], 1003, 12500, 7)
+runtimes$ANES2016 <- c(anes.runtime[,2], 3223, 2396, 16)
+runtimes$ANES2016_5lev <- c(anes.5lev.runtime[,2], 3145, 2500, 5)
+runtimes$OldFramingQuadrObs <- c(oldframe.quadrobs.runtime[,2], 4012, 1500, 7)
+runtimes$OldFraming_2000it <- c(oldframe.2000it.runtime[,2], 1003, 2000, 7)
+
+# to make in-text citations shorter
+runFullF <- runtimes$OldFraming
+runFullA <- runtimes$ANES2016
+runFullA5 <- runtimes$ANES2016_5lev
+runFullFQ <- runtimes$OldFramingQuadrObs
+runFullF2k <- runtimes$OldFraming_2000it
+methFull <- runtimes$Method
+stargazer(runtimes, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes)",
+          label = "runtimes")
+```
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes)} 
+  \label{runtimes} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES2016} & \multicolumn{1}{c}{ANES2016\_5lev} & \multicolumn{1}{c}{OldFramingQuadrObs} \\ 
+\cline{2-2} 
+\cline{3-3} 
+\cline{4-4}
+\cline{5-5}\\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 34.457 & 32.642 & 32.668 & 31.519 \\ 
+\multicolumn{1}{c}{hd.norm} & 34.660 & 32.669 & 32.881 & 31.810 \\ 
+\multicolumn{1}{c}{amelia} & 77.956 & 33.051 & 33.691 & 30.035 \\ 
+\multicolumn{1}{c}{mice} & 616.023 & 293.722 & 298.919 & 277.021 \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Observations} & 1,003 & 3,223 & 3,145 & 4,012 \\ 
+\multicolumn{1}{c}{Iterations} & 12,500 & 2,396 & 2,500 & 1,500 \\ 
+\multicolumn{1}{c}{Levels} & 7 & 16 & 5 & 7 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+
+As can be seen in Table \ref{runtimes}, `hd.ord` and `hot.deck` show virtually identical imputation times for the old framing data (n = 1,003), with `hd.ord` being `r ((runFullF[methFull == "hd.norm"]-runFullF[methFull == "hd.ord"])*60) %>% round(., digits = 0)` seconds faster. `amelia`, however, is `r (runFullF[methFull == "amelia"] / runFullF[methFull == "hd.ord"]) %>% round(., digits = 1)` times slower than `hd.ord`. `mice` is `r (runFullF[methFull == "mice"] / runFullF[methFull == "hd.ord"]) %>% round(., digits = 1)` times slower than `hd.ord`. This is a dramatic speed gain. The ANES (n = 3,223) data show only a reduced speed gain. `mice` is still drastically slower than `hd.ord` (by a magnitude of `r (runFullA[methFull == "mice"] / runFullA[methFull == "hd.ord"]) %>% round(., digits = 1)`), but the speed gain is cut in half. The previous speed gain over `amelia` is no longer observable. `hd.ord` and `amelia` now show virtually identical runtimes (with a difference of `r round((runFullA[methFull == "amelia"] - runFullA[methFull == "hd.ord"]) * 60, digits = 0)` seconds in favor of `hd.ord`). 
+
+Three factors might explain this sudden and surprising increase in the performance of `amelia`: The levels of the ordinal variable in question (`education`), the number of iterations, and the number of observations in a data set. The ANES (n = 3,223) data contain 17 levels of `education`, whereas the old framing data (n = 1,003) contain only 7. However, when run with 5 levels of `education` and otherwise virtually identical data, the method performances remain unchanged (see column "ANES2016_5lev"). This rules out the levels of the ordinal variable. Another explanation could be the number of observations and the corresponding possible number of iterations. A high number of observations reduces the computationally feasible number of iterations that can be performed before even powerful machines with 120 GB RAM are maxed out. The old framing data (n = 1,003) contain 1,003 observations and can be computationally run for 12,500 iterations. The 2016 ANES data (n = 3,223) contain more than triple the observations than the old framing data (n = 1,003) and can only be run for 2,396 iterations. Indeed, when we quadruple the number of observations in the old framing data (n = 4,012) and are thus forced to reduce the number of possible iterations to 1,500, we observe that `amelia` is now the fastest method (see column "OldFramingQuadrObs"). It thus appears that `amelia` is fast with a low number of iterations and slow with a high number of iterations. 
+
+This would lead us to predict that `amelia` should be the fastest method when the old framing data (n = 1,003) is run for a low number of iterations (2,000). That is not the case: `amelia` is `r (runFullF2k[methFull == "amelia"] / runFullF2k[methFull == "hd.ord"]) %>% round(., digits = 1)` times slower than `hd.ord` (see column "OldFraming_2000it"); on the same level as the 12,500-iteration-run of the old framing data (n = 1,003). This means it's not the number of iterations but the number of observations that affects `amelia`'s relative lack of speed compared to `hd.ord`. `amelia` appears to be much slower than `hd.ord` for around 1,000 observations but on equal footing for 3,000+ observations. 
+
+
+
+```{r Runtimes MI Methods From Before, 1000 Observations 10000 Iterations, include=FALSE}
+
+cces.runtime.1000n.10000it <- read.csv("data/cces/appendix/cces.runtime.5var.1000n.10000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+oldframe.runtime.1000n.10000it <- read.csv("data/framing/appendix/framing.runtime.5var.1000n.10000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.7lev.runtime.1000n.10000it <- read.csv("data/anes/appendix/anes.7lev.runtime.5var.1000n.10000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+
+cces.runtime.1000n.1000it.more.var <- read.csv("data/cces/appendix/cces.runtime.16var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+oldframe.runtime.1000n.1000it.more.var <- read.csv("data/framing/appendix/framing.runtime.13var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+anes.7lev.runtime.1000n.1000it.more.var <- read.csv("data/anes/appendix/anes.7lev.runtime.22var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+
+runtimes.1000n <- data.frame(matrix(NA, 8, 7))
+colnames(runtimes.1000n) <- c("Method", 
+                              "CCES10kIt", "OldFraming10kIt", "ANES10kIt", 
+                              "CCES1kIt", "OldFraming1kIt", "ANES1kIt")
+runtimes.1000n$Method <- c("hd.ord", "hd.norm", "amelia", "mice", 
+                           "Observations", "Iterations", "Ordinal Levels", 
+                           "Variables with NAs")
+
+runtimes.1000n$CCES10kIt <- c(cces.runtime.1000n.10000it[,2], 1000, 10000, 6, 5)
+runtimes.1000n$OldFraming10kIt <- c(oldframe.runtime.1000n.10000it[,2], 1000, 10000, 7, 5)
+runtimes.1000n$ANES10kIt <- c(anes.7lev.runtime.1000n.10000it[,2], 1000, 10000, 7, 5)
+
+runtimes.1000n$CCES1kIt <- c(cces.runtime.1000n.1000it.more.var[,2], 1000, 1000, 6, 16)
+runtimes.1000n$OldFraming1kIt <- c(oldframe.runtime.1000n.1000it.more.var[,2], 1000, 1000, 7, 13)
+runtimes.1000n$ANES1kIt <- c(anes.7lev.runtime.1000n.1000it.more.var[,2], 1000, 1000, 7, 22)
+
+
+# to make in-text citations shorter
+# run1k10kC <- runtimes.1000n$CCES10kIt
+# run1k10kF <- runtimes.1000n$OldFraming10kIt
+# run1k10kA <- runtimes.1000n$ANES10kIt
+# 
+# run1k1kC <- runtimes.1000n$CCES1kIt
+# run1k1kF <- runtimes.1000n$OldFraming1kIt
+# run1k1kA <- runtimes.1000n$ANES1kIt
+
+meth <- runtimes.1000n$Method
+
+hd.am.div <- sapply(2:7, 
+                    function(x)
+                      runtimes.1000n[meth == "amelia", x] / 
+                      runtimes.1000n[meth == "hd.ord", x]) 
+
+stargazer(runtimes.1000n, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes), 1000 Observations",
+          label = "runtimes1000n")
+```
+
+
+This is indeed confirmed by Table \ref{runtimes1000n}, where the old framing, the ANES, and the CCES data have all been reduced to 1,000 observations. The left half of the table shows the results for 10,000 iterations and low numbers of variables with NAs (Note: `education` in the ANES data was reduced to 7 levels to make this number of iterations computationally feasible). The right half of the table shows the results for 1,000 iterations and high numbers of variables with NAs. `amelia` is consistently between `r hd.am.div %>% min %>% round(., digits = 1)` and `r hd.am.div %>% max %>% round(., digits = 1)` times slower than `hd.ord` for all three data sets, regardless of the number of iterations and the number of variables with NAs.
+
+\begin{table}[!htbp] \centering 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes), 1000 Observations} 
+  \label{runtimes1000n} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{10,000 Iterations} & \multicolumn{3}{c}{1,000 Iterations}\\
+\cline{2-7} \\[-1.8ex]
+ & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} & \multicolumn{1}{c}{OldFraming} & \multicolumn{1}{c}{ANES} \\ 
+\cline{2-4} 
+\cline{5-7} \\[-1.8ex]
+\multicolumn{1}{c}{hd.ord} & 24.394 & 26.461 & 24.294 & 2.714 & 2.588 & 4.103 \\ 
+\multicolumn{1}{c}{hd.norm} & 24.540 & 26.620 & 24.316 & 2.723 & 2.617 & 4.300 \\ 
+\multicolumn{1}{c}{amelia} & 57.403 & 68.862 & 50.630 & 7.787 & 6.926 & 8.758 \\ 
+\multicolumn{1}{c}{mice} & 449.027 & 527.532 & 390.690 & 158.583 & 116.609 & 336.038 \\ 
+\hline \\[-1.8ex] 
+\multicolumn{1}{c}{Ordinal Levels} & 6 & 7 & 7 & 6 & 7 & 7 \\ 
+\multicolumn{1}{c}{Variables with NAs} & 5 & 5 & 5 & 16 & 13 & 22 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+
 
 
 ## With Modified `ampute()` {#app-ordmiss-modified.ampute}
@@ -296,7 +439,7 @@ Table \ref{amp.oldframe.bycases.acc} shows the results of using `ampute()` with 
 
 
 ```{r results='asis', echo=FALSE}
-amp.oldframe.bycases <- read.csv("data/framing/bycases=FALSE_cont=FALSE/framing.bycases.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+amp.oldframe.bycases <- read.csv("data/framing/appendix/bycases=FALSE_cont=FALSE/framing.bycases.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
 levels(amp.oldframe.bycases$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
 colnames(amp.oldframe.bycases) <- c("Method", "Variable", "Value", "Diff")
 stargazer(amp.oldframe.bycases, 
@@ -319,7 +462,7 @@ Table \ref{own.NA.oldframe.acc} shows the results of using my own function, `own
 
 
 ```{r results='asis', echo=FALSE}
-own.NA.oldframe <- read.csv("data/framing/own.na/framing.own.na.results.3var.1003n.12324it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+own.NA.oldframe <- read.csv("data/framing/appendix/own.na/framing.own.na.results.3var.1003n.12324it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
 levels(own.NA.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
 colnames(own.NA.oldframe) <- c("Method", "Variable", "Value", "Diff")
 stargazer(own.NA.oldframe, 
@@ -339,7 +482,7 @@ stargazer(own.NA.oldframe,
 
 
 ```{r include=FALSE}
-own.NA.rows.oldframe <- read.csv("data/framing/own.na.rows/framing.own.na.rows.results.17var.1003n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+own.NA.rows.oldframe <- read.csv("data/framing/appendix/own.na.rows/framing.own.na.rows.results.17var.1003n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
 levels(own.NA.rows.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
 colnames(own.NA.rows.oldframe) <- c("Method", "Variable", "Value", "Diff")
 # to make the in-text citations shorter
@@ -482,12 +625,6 @@ Somewhat surprisingly, `mice` performs worst overall for many variables (`Ind` (
 
 It is also noteable how often the difference amounts to zero and how well `na.omit` performs overall.
 
-
-```{r include=FALSE}
-# I don't want to risk referring to the wrong table by mistake, so I'm deleting
-# the objects for referral after I no longer refer to them
-rm(diff, meth, varb) 
-```
 
 
 
