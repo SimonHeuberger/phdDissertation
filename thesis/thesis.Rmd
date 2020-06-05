@@ -1,6 +1,6 @@
 ---
 # AU dissertation fields
-title: "WHAT THE PEOPLE THINK: ADVANCES IN PUBLIC OPINION MEASUREMENT USING MODERN STATISTICAL METHODS"
+title: "WHAT THE PEOPLE THINK: ADVANCES IN PUBLIC OPINION MEASUREMENT USING ORDINAL VARIABLES"
 author: "Simon Heuberger"
 degreeyear: "2020"
 degree: "Doctor of Philosophy"
@@ -10,7 +10,7 @@ thirdreader: "Professor Elizabeth Suhay"
 fourthreader: "Professor R. Michael Alvarez"
 degreefield: "Government"
 abstract: |
-  Surveys are a central part of political science. Without surveys, we would not know what people think about political issues. Survey experiments further enable us to test how people react to given treatments. Surveys and survey experiments are only as good as the measurements and analytical techniques we as researchers employ, though. For one particular survey variable called ordinal variables, some of our current measurements and techniques are insufficient. Ordinal variables consist of ordered categories where the spacing between each category is uneven and not known. Ordinal variables are highly important because the most important predictor of political behavior is an ordinal variable: education. Ordinal example categories for education could be "Some High School", "High School Graduate", and "Bachelor's Degree". The literature currently often does not take the special nature of ordinal variables, i.e. their uneven spacing, into account. This could misrepresent the data and potentially distort survey results. It is important that we measure and use education and other ordinal variables correctly. My dissertation develops two methods to do so and applies them in original survey research. Chapter II develops a new method to improve the use of ordinal variables in the assignment of treatment in survey experiments. Chapter III develops a new method to treat missing survey data with ordinal variables. Chapter IV applies both methods in an online survey experiment on political framing. 
+  Surveys are a central part of political science. Without surveys, we would not know what people think about political issues. Survey experiments further enable us to test how people react to given treatments. Surveys and survey experiments are only as good as the measurements and analytical techniques we as researchers employ, though. For one particular survey variable called ordinal variables, some of our current measurements and techniques are insufficient. Ordinal variables consist of ordered categories where the spacing between each category is uneven and not known. Ordinal variables are highly important because the most important predictor of political behavior is an ordinal variable: Education. Ordinal example categories for education could be "Some High School", "High School Graduate", and "Bachelor's Degree". The literature currently often does not take the special nature of ordinal variables, i.e. their uneven spacing, into account. This could misrepresent the data and potentially distort survey results. It is important that we measure and use education and other ordinal variables correctly. My dissertation develops two methods to do so and applies them in original survey research. Chapter II develops a new method to improve the use of ordinal variables in the assignment of treatment in survey experiments. Chapter III develops a new method to treat missing survey data with ordinal variables. Chapter IV applies both methods in an online survey experiment on political framing. 
 acknowledgements: |
   I want to thank Fendi and Muesli, the two greatest creatures on the planet. And of course Waldemar Burgo.
 # End of AU dissertation fields
@@ -48,6 +48,8 @@ if(!require(forcats))
   install.packages("forcats", repos = "http://cran.rstudio.com")
 if(!require(magrittr))
   install.packages("magrittr", repos = "http://cran.rstudio.com")
+if(!require(mice))
+  install.packages("mice", repos = "http://cran.rstudio.com")
 library(devtools)
 library(stargazer)
 library(ggplot2)
@@ -57,6 +59,7 @@ library(blockTools)
 library(randomizr)
 library(forcats)
 library(magrittr)
+library(mice)
 options(scipen=999) # turn off scientific notation (e.g. e-04)
 
 

@@ -171,38 +171,15 @@ In political science, researchers often have an already-collected data set in fr
 
 Sequential blocking in political science is based on covariate-adaptive randomization, which varies probabilities based on knowledge about previous participants and the current participant [@chow_2007_adaptive]. Traditional covariate-adaptive approaches, such as the biased coin design [@efron_1971_forcing] and minimization [@pocock_1975_sequential], assign the incoming participant to the treatment group with the fewest participants with identical covariate information. This works for discrete covariates as the number of possible covariate levels is finite. For continuous covariates, the number of possible covariate levels rises exponentially. Participants are unlikely to look the same, and identical participants are rare. Blocking on continuous covariates is not possible with these traditional approaches [@markaryan_2010_exact;@rosenberger_2002_randomization;@eisele_1995_biased]. @moore_blocking_2013 develop a method to do so by exploiting relationships between the current participant's covariate profile and those of all previously assigned participants. They define the similarity between participants with the Mahalanobis distance (MD) between participants $q$ and $r$ with covariate vectors $\bm{x}_q$ and $\bm{x}_r$: \newline \noindent $MD_{qr} = \sqrt{(\bm{x}_q - \bm{x}_r)' \reallywidehat{\sum}^{-1} (\bm{x}_q - \bm{x}_r)}$. To aggregate pairwise similarity, they implement the mean, median, and trimmed mean of the pairwise MDs between the current participant and the participants in each treatment condition: Participants are indexed with treatment condition $t$ using $r \in \{1,...,R\}$. For each condition $t$, an average MD between the current participant, $q$, and the participants previously assigned, $t$. If the distance in terms of MD for the incoming participant is 2 in the control and 5 for the treatment condition, the incoming participant looks more similar to the control condition. To set the probability of assignment, @moore_blocking_2013 calculate the mean Mahalanobis distances for each incoming participant, $q$, for all treatment conditions, $t$, and sort the treatment conditions by these averages. Randomization is biased towards conditions with high scores. For each value of $k$, with $k \in \{2,3,...,6\}$, the condition with the highest average MD is then assigned a probability $k$ times larger than all other assignment probabilities. 
 
-Blocking is thus possible when all covariate information is known at the time of assignment and when this information 'trickles in' over time. Covariate information, however, is only one side of the coin. Researchers also need to take into consideration the characteristics of the variable to block on. Not all types of variables can and should be used the same way to be blocked on. Specifically, the current use of ordinal variables as blocking variables is somewhat problematic.
+Blocking is thus possible when all covariate information is known at the time of assignment and when this information 'trickles in' over time. Covariate information, however, is only one side of the coin. Researchers also need to take into consideration the characteristics of the variable to block on. Not all types of variables can and should be used the same way to be blocked on. Specifically, the current use of ordinal variables as blocking variables is somewhat problematic. I describe these problems and my proposed solution in section \ref{intro} above. The following section will apply this solution to differing types of data.
 
 
-### Ordinal Variables {#ordblock-theory-ordinal}
 
-Ordinal variables are part of the larger framework of categorical variables. Categorical variables represent types of data which are commonly divided into three groups: Nominal, interval, and ordinal variables. Nominal variables are categorical variables with two or more categories that are not intrinsically ordered. Examples include `gender` (Female, Male, Transgender etc.), `race` (African-American, White, Hispanic etc.), and `party ID` (Democrat, Republican, Independent) where the categories cannot be ordered sensibly into highest or lowest. Interval variables are ordered categorical variables with evenly spaced values. Examples include `income` (\$20,000, \$40,000, \$60,000, \$80,000 etc.), where the distance between \$20,000 and \$40,000 is the same as the distance between \$60,000 and \$80,000. Ordinal variables are ordered categorical variables where the spacing between values is not the same. Examples include `education` (Elementary school, Some high school, High school graduate etc.) where the distance between "Elementary school" and "Some high school" is likely different than the distance between "High school graduate" and "Some college". Each subsequent category has quantitatively more education than the previous, but the exact measure of the distance between the categories is unclear.  
-
-For blocking, the categories of nominal variables are often turned into binary variables. This manipulation does not impose any unnatural ordering onto the variable and thus does not require any theoretical assumptions. Interval variables are often made numeric, which is statistically sound. It makes sense to assign numeric values such as 1, 2, 3, and 4 to `income` categories of \$20,000, \$40,000, \$60,000, and \$80,000. The distance between each of these categories is identical between any adjacent pair and thus translates perfectly into the numeric values with equally identical distances. The distance between \$20,000 and \$40,000 is the same as the distance between 1 and 2. Ordinal variables are also often made numeric for blocking. This is problematic because of their unevenly spaced categories. If the `education` categories "Elementary school", "Some high school", and "High school graduate" were turned into the numeric values 1, 2, and 3, we would wrongly assume that the distances between the education categories correspond to these evenly spaced values. Do the numbers 1 to 3 really represent the distances between the categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all. We cannot answer this by making an arbitrary assumption that is not justified by the data. Alternatively, if "Elementary school", "Some high school", and "High school graduate" were turned into three separate dummy variables, we would wrongly assume that there is no ordering to these values. In both cases, important information would be lost, which could lead to a large degree of distortion [@obrien_1981_using]. To truly use the ordinal nature of a variable, we need to use both its quantitative and its inherent unevenly spaced ordered aspects to make a more underlying description of the data possible [@agresti_2010_analysis]. To fill this gap, I borrow from machine learning, which has close connections to problems of causal inference [@grimmer_2015_social], and propose an ordered probit model that estimates an ordinal variable's underlying latent continuous structure and is trained on external data.
-
-
-### Ordered Probit Approach {#ordblock-theory-op}
-
-Many approaches in the literature on the analysis of ordinal variables incorporate the distribution of the variable categories [@agresti_1996_introduction]. The most promising suggestions focus on natural extensions of probit and logit models [@winship_1984_regression] by assigning scores to be estimated from the data [@agresti_1990_categorical] and quantifying each non-quantitative variable according to the empirical distributions of the variable, assuming the presence of a continuous underlying variable for each ordinal indicator [@lucadamoa_2014_scaling]. In fact, @agresti_2010_analysis states "that the type of ordinal method used is not that crucial" but that the "results may be quite different, however, from those obtained using methods that treat all the variables as nominal" (p. 3). The same applies to methods which treat ordinal variables as interval [@gertheiss_2008_penalized]. This suggests that a probit or logit model is suitable to uncover the latent continuous variable underlying an ordinal variable, thus using the ordinal information provided and respecting uneven distances. In the literature, this approach is focused exclusively on the analysis of ordinal variables as a response variable. I propose an ordered probit model that applies to ordinal variables as a predictive variable.
-
-Let there be $\bm{X}$, an $n \times k$ matrix of explanatory variables. Let further $\bm{Y}$ be observed on the ordered categories $\bm{Y}_i \in [1,\ldots,k]$, for $i=1,\ldots n$, and let $\bm{Y}$ be assumed to be produced by the unobserved latent continuous variable $\bm{Y^*}$. $\bm{Y^*}$ is continuous on $\mathfrak{R}$ from $-\infty$ to $\infty$. The 'response mechanism' for the $r^{th}$ category is $Y=r \Longleftrightarrow \theta_{r-1} < Y^* < \theta_r$. This requires there to be thresholds on $\mathfrak{R}$:
-$Y^*_i: \; \theta_0 \underset{c=1}{\longleftarrow\!\longrightarrow} \theta_1 \underset{c=2}{\longleftarrow\!\longrightarrow} \theta_2 \underset{c=3}{\longleftarrow\!\longrightarrow} \theta_3\ldots \theta_{C-1} \underset{c=C}{\longleftarrow\!\longrightarrow} \theta_C$. The vector of (unseen) utilities across individuals in the sample, $Y^*$, is determined by a linear model of explanatory variables: $\bm{Y^*} = \bm{X} \bm{\beta} + \mathbf{E}$, where $\bm{\beta} =[\beta_1,\beta_2,\ldots,\beta_p]$ does not depend on the $\theta_j$ and $\mathbf{E} \sim F_{\mathbf{E}}$. For the observed vector $\bm{Y}$,
-            \begin{align*}
-                     p(\bm{Y} \leq r|\bm{X}) &= p(\bm{Y^*} \leq \theta_r) = p(\bm{X}\bm{\beta} + \mathbf{E} \leq \theta_r)\\
-                                      &= p(\mathbf{E} \leq \theta_r+\bm{X}\bm{\beta}) = F_{\mathbf{E}}(\theta_r + \bm{X}\bm{\beta})
-            \end{align*}
-            
-is called the cumulative model because $p(\bm{Y} \leq \theta_r|\bm{X}) = p(\bm{Y}=1|\bm{X}) + p(\bm{Y}=2|\bm{X}) + \ldots + p(\bm{Y}=r|\bm{X})$. A logistic distributional assumption on the errors produces the ordered logit specification: $F_{\mathbf{E}}(\theta_r - \bm{X}'\bm{\beta}) = P(\bm{Y} \leq r|\bm{X}) = [1+\exp(-\theta_r-\bm{X}'\bm{\beta})]^{-1}$. The likelihood function is: $L(\bm{\beta},\bm{\theta}|\bm{X},\bm{Y}) = \prod_{i=1}^{n}\prod_{j=1}^{C-1}\left[\Lambda(\theta_j + \bm{X}_i'\bm{\beta}) - \Lambda(\theta_{j-1} + \bm{X}_i'\bm{\beta}) \right]^{z_{ij}}$ where $z_{ij}=1$ if the $i^\text{th}$ case is in the $j^\text{th}$ category, and $z_{ij}=0$ otherwise. The thresholds on $\mathfrak{R}$ partition the variable into regions corresponding to the ordinal categories. The linear model, $Y^*$, bins the observations between these thresholds according to the linear predictors. 
-
-To use this ordered probit model for blocking, we need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. We then train this model on externally and internally valid data. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. We then block on the resulting categories.
 
 
 ## Data {#ordblock-data}
 
-
-#### ANES Model Training {#ordblock-data-opmodel}
-
-One of the most common ordinal variables in political science is education. It is widely established that education represents one of the major driving forces behind public opinion and political behavior, such as turnout or donations, in the U.S. [@dawood_campaign_2015; @fiorina_disconnect_2009; @leighley_who_2014; @abramowitz_disappearing_2010; @druckman_how_2013; @fiorina_culture_2011; @king_polarization_1997]. One of the most respected and recognized externally and internally valid data sets are the American National Election Studies. I thus choose the following ordered probit model with the 2016 ANES data (the predictors are standard linear predictors in political science literature): 
+One of the most respected and recognized externally and internally valid data sets are the American National Election Studies. I thus choose the following ordered probit model with the 2016 ANES data (the predictors are standard linear predictors in political science literature): 
 
 \vspace{-1cm}
 $$Education \sim Gender + Race + Age + Income + Occupation + Party ID$$
@@ -243,12 +220,13 @@ grid.arrange(plot.orig, plot.new, ncol = 2, nrow = 1, bottom = "Education", left
 As we can see, all categories 'below' "High school graduate" and 'above' "Master's" are collapsed because they do not fit the data. The ordered probit model uses the ordinal information with unevenly spaced distances provided and returns categories that do fit the data. We can now use these estimated education categories as the basis for blocking. Assigning numeric values to the new categories is now justifiable because they are based on data-driven estimations. This allows us to block on numerical values with the Mahalanobis distance, which would not be possible without empirical justification. The following sections show that the new estimated categories significantly affect analyses and results. 
 
 
+
 ### Simulations {#ordblock-data-sims}
 
 I conduct various simulations to compare the Ordered Probit Model and its resulting reestimated education categories with the original ANES categories.
 
 
-#### Placebo Regression {#ordblock-data-sims-plac}
+### Placebo Regression {#ordblock-data-plac}
 
 We separately block the 2016 ANES on the original and the ordered probit education categories into two treatment groups. We then model the following OLS regression on an interval response variable, a feeling thermometer towards Donald Trump as the Republican presidential candidate:
 
@@ -262,6 +240,9 @@ $$Feel.Trump \sim Group + Dem + Rep + Income + Male + White + Black + Hispanic$$
 
 
 ## Results {#ordblock-results}
+
+### Simulations {#ordblock-results-sims}
+
 
 ### Placebo Regression {#ordblock-results-plac}
 
@@ -299,5 +280,6 @@ Both distributions center around zero, as is the statistical expectation. Upon c
 Put text here
 
 
+## Conclusion {#ordblock-conclusion}
 
 

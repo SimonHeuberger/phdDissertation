@@ -623,7 +623,8 @@ stargazer(own.NA.rows.oldframe,
 
 Somewhat surprisingly, `mice` performs worst overall for many variables (`Ind` (`r diff[meth == "mice" & varb == "Ind"]`), `Black` (`r diff[meth == "mice" & varb == "Black"]`), `Hisp` (`r diff[meth == "mice" & varb == "Hisp"]`), `White` (`r diff[meth == "mice" & varb == "White"]`), `Asian` (`r diff[meth == "mice" & varb == "Asian"]`), `Stud` (`r diff[meth == "mice" & varb == "Stud"]`), `interest` (`r diff[meth == "mice" & varb == "interest"]`), `part` (`r diff[meth == "mice" & varb == "part"]`), `inc` (`r diff[meth == "mice" & varb == "inc"]`), `age` (`r diff[meth == "mice" & varb == "age"]`)) by some margin.
 
-It is also noteable how often the difference amounts to zero and how well `na.omit` performs overall.
+It is also noteable how often the difference amounts to zero and how well `na.omit` performs overall. Overall, `own.NA` and `own.NA.rows` result in a strong performance of `na.omit`, which should not happen in a missingness mechanism that is supposed to be MAR. The functions thus likely represents a version of MCAR, which puts the usefulness of their imputation results in doubt.
+
 
 
 
