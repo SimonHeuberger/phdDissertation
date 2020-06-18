@@ -60,6 +60,7 @@ library(randomizr)
 library(forcats)
 library(magrittr)
 library(mice)
+library(data.table)
 options(scipen=999) # turn off scientific notation (e.g. e-04)
 
 

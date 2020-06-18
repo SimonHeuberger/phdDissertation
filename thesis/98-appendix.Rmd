@@ -219,7 +219,7 @@ stargazer(mnar.5var.all,
 CCES 10,000 iterations +++
 5 variables: Dem, Male, Interest, Inc, Age
 MAR
-20, 50, 80 percent
+20, 50 percent
 
 
 
@@ -228,7 +228,7 @@ MAR
 CCES 10,000 iterations +++
 5 variables: Dem, Male, Interest, Inc, Age
 MAR
-20, 50, 80 percent
+20, 50 percent
 
 
 
