@@ -1,4 +1,4 @@
-\input{\string~"/Insync/Google Drive/templates/preamble"}
+\input{\string~"/Insync/templates/preamble"}
 
 \title{Ordinal Variables and Missing Data}
 
@@ -159,11 +159,28 @@
 
 \section*{Chapter write-up}
 	\begin{coi}
-		\item \hl{Write up the chapter focusing on the performance and speed of the packages under the different circumstances I tested}
+		\item Write up the chapter focusing on the performance and speed of the packages under the different circumstances I tested
 		\item Reorganize headings and general outline
 		\item Identify where things are missing with +++
 		\item Gradually keep filling missing sections
+		\item \hl{Work in Jeff's feedback (what's left)}
+			\begin{coi}
+				\item p. 41: ``Rather than assigning ...":
+					\begin{coi}
+						\item Take research (Dataverse) from prominent research people: Michigan folks, Larry Bartels
+						\item Take a glm regression (logit, probit, poisson model) with a RHS variable that is ordinal, perhaps scaled 1-7
+						\item Throw away the outcome variable, put the ordinal variable as the DV
+						\item Run polr and run linear regression on that
+						\item What I'm looking for: How different are the regression coefficients (the RHS) between the two models? This difference shows how important the re-estimating of the ordinal spaces is
+						\item If the results show no differences, this makes my speculation at the end, that the uneven spaces might not be that important after all, much stronger $\rightarrow$ and if the results show that there are actually big differences, this then excludes the this-isn't-that-important-after-all explanation as a possible reason why my analysis wasn't working $\rightarrow$ so it's a win-win situation no matter what the results show
+					\end{coi}
+				\item When I have done this, adjust/expand the Brief Evaluation section as needed
+			\end{coi}
+		\item When I have implemented all that, Jeff doesn't need to see it again. I can send it out directly to Ryan and Liz
 	\end{coi}
+
+
+
 	
 
 \end{document}			
