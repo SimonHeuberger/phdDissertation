@@ -1,13 +1,51 @@
 # MORAL ARGUMENTS AS A SOURCE OF FRAME STRENGTH {#framing}
 
 
+
+
+Moral conviction literature tells us that people with moralized attitudes hold those attitudes strongly. This indicates that these people's attitudes can't be easily be moved, no matter what frame they are presented with. As a result, we can only move the attitudes of people who don't hold highly moralized attitudes, since there is room for movement here.
+
+(ONE) Give descriptions of what 'moral' and 'self-interest' is.
+
+Ad hoc examples: "Moral concerns what people should or should not do", "Self-interest concerns actions and attitudes that only suit yourself".
+'Moral' description comes from Ryan, who extended Skitka's moral conviction measure. I extend this further by adding a 'self-interest' description, which I still need to find. 
+
+(TWO) Ask about respondents' moral conviction towards an issue.
+
+Moral conviction measure from Skitka: "To what extent is your position on [issue] a reflection of your core moral beliefs and convictions" and "... connected to your fundamental beliefs about right and wrong?".
+I ask how 'moral' they consider their position on the issue, but without actually asking them what their position is. This is to avoid anchoring.
+
+(THREE) Measure moral conviction towards the issue (1-5 Likert; "Not at all", "Slightly", "Moderately", "Much", "Very much").
+
+(FOUR) Randomly assign one of the five frames: Opposing moral frame, opposing self-interest frame, control frame, supporting moral frame, supporting self-interest frame. 
+
+(FIVE) Measure support/opposition for/to the issue (1-5 Likert; "Strongly oppose" ... "Strongly approve").
+
+Expectations: 
+
+For the respondents with highly moralized attitudes on the issue, their support/opposition for/to the issue should be statistically the same across all frames, since their attitudes are set and can't easily be moved. For the respondents without highly moralized attitudes on the issue, the frames should move responses towards support or opposition, depending on the direction of the frame. For these people, we can see whether the moral or the self-interest frames cause bigger shifts.
+
+To be gained from this experiment:
+
+-- We can test which issues are considered more moral than others
+
+-- We can test whether people with highly moralized attitudes really stick to their pre-formed attitudes, no matter what they're exposed to
+
+-- We can test whether people with low moralized attitudes are more influenced by moral or self-interest frames
+
+
+
 ## Introduction {#framing-intro}
 
 Barack Obama presented the first outline of the Affordable Care Act in the summer of 2009. The content of the reform was put online for everyone to see, but since the administration was still working on details, it refrained from actively communicating it. Published press releases simply stated that the ACA would expand coverage and lower health care costs for everyone. This hesitancy turned out to be a big mistake. At the end of July, support for the ACA hovered around 43 percent. Then Sarah Palin, John McCain's choice for running mate in 2008, posted the following statement on Facebook on August 7\textsuperscript{th}: "The America I know and love is not one in which my parents or my baby with Down Syndrome will have to stand in front of Obama's 'death panel' so his bureaucrats can decide, based on a subjective judgment of their 'level of productivity in society'" [@palin_statement_2009]. Palin implied that federal government workers would be able to refuse treatment to any patients and thus 'decide their fate'. Over the next two weeks, support for the ACA dropped to 35 percent while opposition rose to 52 percent. Republican lawmakers jumped at the opportunity and repeated the claim of 'death panels' whenever possible. The reform never recovered from this drop. In December 2009, four months after the statement, support and opposition were virtually identical to August. While the public was still uncertain about the exact contents of the law, Palin had asserted that it would include a Big Brother type panel that decided whether people would live or die. This drowned out any efforts by the Obama administration to show the law as a cost-reducing reform. Palin's frame of the ACA, in other words, drastically influenced public opinion of the reform.
 
 Framing is the practice of presenting an issue to affect the way people see it [@aaroe_investigating_2011;@druckman_evaluating_2001;@gross_framing_2008]. We learn about healthcare reform through articles, reports, speeches, commercials and social media. This mediated communication possesses tremendous potential influence on our perception of political issues [@iyengar_framing_1996;@kam_risk_2010;@tversky_framing_1981]. Framing research has established that a variety of frames substantively influence how people view and think about issues, such as the ACA [@price_switching_1997;@andsager_how_2000;@callaghan_introduction_2005;@entman_framing_1993;@entman_projections_2004;@gamson_media_1989;@lahav_ideological_2012;@pan_framing_1993;@slothuus_political_2010;@sniderman_structure_2004;@vreese_effects_2004]. But we do not know why these frames elicit these effects. A major challenge for framing research thus "concerns the identification of factors that make a frame strong'' [@chong_framing_2007, p. 116].
 
-I conduct a series of tests to examine whether moral arguments form a part of what makes a frame strong. These tests include two online polls and an online survey experiment. Both methods developed in chapters II and III are applied in the survey experiment and their performance is analyzed.
+ -- that moral stuff is said to be very powerful 
+ -- that self-interest is said to be very powerful 
+ -- that I'm combining everything.
+
+Both methods developed in chapters II and III are applied in the survey experiment and their performance is analyzed.
 
 
 
@@ -16,11 +54,36 @@ I conduct a series of tests to examine whether moral arguments form a part of wh
 
 ### Framing {#framing-theory-framing}
 
+
+-- Outline differences between equivalency and emphasis frames (I’m looking at emphasis)
+-- Outline differences between emphasis frames and new information (Leeper,Slothuus)
+-- Clearly express that we do know why frames work (Zaller: Frames move persuasive information to the top of one’s mind) but that we don’t know why some frames are successful at moving persuasive information to the top of one’s mind and others aren’t. This was not initially clear to Liz
+
+
 Despite the mass of experimental framing research, we still have little insight into what makes a frame strong. The larger persuasion literature "is not as illuminating as one might suppose... It is not yet known what it is about the 'strong arguments'... that makes them persuasive" [@okeefe_2002_persuasion]. One research direction is that frames are stronger overall when they cohere with an individual's personal value system. @feinberg_2012_moral frame environmental issues as a matter of 'purity', a theme that supposedly correlates with conservative ideology, and find this approach leads to increased conservative support of environmental policies. [@arceneaux_cognitive_2012, p. 280] on the other hand finds that "individuals are more likely to be persuaded by political arguments that evoke cognitive biases". Particularly, he asserts that messages which highlight out-group threats resonate to a greater extent than other, more coherent, arguments. In a study investigating the use of scientific data, @druckman_framing_2011 report that adding factual information to messages about carbon nanotubes does nothing to enhance their strength. Providing more scientific evidence seems to have the opposite effect, making the messages weaker. Overall, "it seems as if frame strength increases with frames that highlight specific emotions, invoke threat against one's own group interests, contain some incivility, include multiple, frequently appearing, arguments, and/or have been used in the past" [@druckman_political_2018, p. 22]. I attempt to provide an avenue of clarification by testing whether moral arguments are part of what makes frames strong.
 
-### Moralization {#framing-theory-moralization}
 
-Moralization literature conceptually defines moral arguments as (1) near-universal standards of truth, (2) almost objective facts about the world, and (3) independent of institutional authority [@skitka_psychology_2010]. Moral arguments are said to engage a distinctive mode of processing that invokes a whole range of emotions and to be distinct from other forms of arguments [@ryan_reconsidering_2014]. Scholars find that moral arguments are ubiquitous in political issues because they are essential to how people perceive and make sense of the world around them [@frank_whats_2005;@mooney_public_2001;@tatalovich_moral_1994]. @ryan_reconsidering_2014 finds evidence that some people perceive distinctly economic issues such as labor relations laws or social security reform in moral ways. Other studies similarly assert that the strength of attitudes meaningfully differs when they are held with moral conviction [@baron_protected_1997;@bennis_costs_2010;@ditto_motivated_2009;@tetlock_correspondence_2003]. It is also asserted that moral conviction represents an important force that guides citizen behavior and development of public opinion [@converse_nature_1964;@skitka_moral_2005;@skitka_moral_2011;@smith_typologies_2002;@tatalovich_moral_2011;@zaller_nature_1992]. It is widely argued that people rely to a disproportionate extent on moral arguments to form their opinions and apply this moralization to political issues [@ryan_no_2014;@ryan_reconsidering_2014;@smith_typologies_2002]. Moral arguments can achieve a much higher emotional connection with people because they invoke people's values and feelings [@skitka_moral_2005;@skitka_moral_2011;@haidt_moral_2003;@tatalovich_moral_2011]. These conceptual definitions are all encompassed in Moral Foundations Theory (MFT), developed by @haidt_2012_righteous and presented in Table \ref{framing-foundations} below.
+### Morality and Self-Interest {#framing-theory-morality-self_interest}
+
+
+[@stoker_1992_interest]:
+Central claim of economic theory: homo economicus, i.e. the rational man who pursues his selfish interests [@coleman_1986_individual]. There is weak and little evidence for that [@citrin_1990_self-interest; @mansbridge_1980_beyond; @sears_self-interest_1990]. In a follow-up approach, rational choice theorists claim people simply want to maximize their utility, defining self-interest to include material and immaterial, selfish and altruistic interests [@arrow_1967_values; @downs_economic_1957; @olson_logic_1965; @opp_rationality_1989]. A competing direction defines self-interest narrowly in a contrast between selfish and non-selfish preferences, highlighting the significance of non-selfish motives such as love [@mansbridge_1990_relation], sympathy [@sen_rational_1977], and justice [@tyler_1990_people]. The first apprach casts a wide net and says that people seek whatever they find to be in their interest. People pursue their interests but those interests may include non-selfish ones. The second equals self-interest with self-regarding and juxtaposes self-regarding interests with non-egoist ones. Non-egoist interests are here conceptually different from self-regarding ones. Stoker argues that people don't just want to satisfy their preferences (self-regarding or not self-regarding), but neither do they set aside their self-regarding preferences in favor of some non-self-regarding ones. Instead, they deal with the 'central problem of ethics': "how the lives, interests, and welfare of others make claims on us, and how these claims, of various forms, are to be reconciled with the aim of living our own lives" [@nagel_1970_possibility, p. 142]. Stoker paints citizens as ethical actors.
+
+ME: I ask people to assess issues on relevant moral grounds and in self-interest terms of the consequences for their lives. Then we can see whether people vary in their view of whether a policy advances their interests and whether people differ in the weight they give to different moral criteria when forming policy opinions.
+
+
+Unenlightened self-interest [@bartels_2005_homer]: A majority of Americans supported the 2001 and 2003 Bush administration tax cuts, even though they were designed to disproportionately benefit the rich. Economic self-interest can't explain this, since the majority of Americans suffered economically from the cuts. As Bartels shows, neither can people's attitudes towards the tax burden born by the rich. Instead, attitude towards the tax cuts was shaped by respodnents' perceived self-interest: The tax burden they had to endure. In grossly exaggerated terms: They felt their tax burden was too high, so they supported the tax cuts, even though, in material terms, the cuts hurt them. Bartels call this "unenlightened self-interest" (p. 23). Bartels further shows that highly informed respondents had a very different attitude: They overwhelmingly opposed the cuts. He suggests that it may be unreasonable to expect Americans to make informed decisions on highly complex issues such as tax reform, which is why they might revert to subjective perception (unenlightened self-interest) rather than objective calculation (material self-interest).
+
+
+Moralization literature conceptually defines moral arguments as (1) near-universal standards of truth, (2) almost objective facts about the world, and (3) independent of institutional authority [@skitka_psychology_2010]. 
+Moral arguments are said to engage a distinctive mode of processing that invokes a whole range of emotions and to be distinct from other forms of arguments [@ryan_reconsidering_2014]. 
+Scholars find that moral arguments are ubiquitous in political issues because they are essential to how people perceive and make sense of the world around them [@frank_whats_2005;@mooney_public_2001;@tatalovich_moral_1994]. 
+@ryan_reconsidering_2014 finds evidence that some people perceive distinctly economic issues such as labor relations laws or social security reform in moral ways. 
+Other studies similarly assert that the strength of attitudes meaningfully differs when they are held with moral conviction [@baron_protected_1997;@bennis_costs_2010;@ditto_motivated_2009;@tetlock_correspondence_2003]. 
+It is also asserted that moral conviction represents an important force that guides citizen behavior and development of public opinion [@converse_nature_1964;@skitka_moral_2005;@skitka_moral_2011;@smith_typologies_2002;@tatalovich_moral_2011;@zaller_nature_1992]. 
+It is widely argued that people rely to a disproportionate extent on moral arguments to form their opinions and apply this moralization to political issues [@ryan_no_2014;@ryan_reconsidering_2014;@smith_typologies_2002]. 
+Moral arguments can achieve a much higher emotional connection with people because they invoke people's values and feelings [@skitka_moral_2005;@skitka_moral_2011;@haidt_moral_2003;@tatalovich_moral_2011]. 
+These conceptual definitions are all encompassed in Moral Foundations Theory (MFT), developed by @haidt_2012_righteous and presented in Table \ref{framing-foundations} below.
 
 
 \begin{table}[ht]
@@ -59,44 +122,43 @@ To establish whether moral arguments are part of what makes a frame strong, we n
 
 Overall, experimental framing research has shown that many frames have significant framing effects. It is still unclear, however, what makes these, or indeed any, frame strong [@druckman_political_2018]. Moralization theory claims that moral arguments possess enormous power shape human behavior and influence public opinion [@haidt_moral_2003]. I combine these two sets of literature and analyze whether moral arguments form a part of what makes frames strong. I use a variety of data sources to investigate the following hypothesis:
 
+
+
+
+
+
+
+### Hypothesis {#framing-theory-hypothesis}
+
+
 \vspace{0.3cm}
 \begin{adjustwidth*}{+1cm}{+1cm}
 \textbf{H.} Moral arguments form a part of what makes political frames strong.
 \end{adjustwidth*}
 
 
-
 ## Data {#framing-data}
 
-First, I field an online poll that asks participant to assess how moral frames in published research are. Second, I design and test moral and amoral complementary frames to the ones used in previous research in a second online poll. Finally, I conduct the main online survey experiment.
+### Pre-Tests {#framing-data-pre_test}
 
-Testing and pre-testing frames is crucial in frame analysis. Frames need to be tested with participants who are not part of the main survey. These participants are exposed to the designed frames and asked whether they reflect the core ideas behind moral and pragmatic arguments. This pre-test structure builds on work by @slothuus_political_2010 and @chong_framing_2007, following the mass communication and persuasion literature [@okeefe_2002_persuasion]. The pre-test is carried out  on Amazon's online platform MTurk. Together with the post-test included in the survey, these tests represent a thorough, robust, spread-out safety net to ensure that the designed frames connect with participants, which in turn ensures meaningful survey results.
-
-
-### Online Poll #1: The Moral Content of Frames Used in Previous Studies {#framing-data-pollprevious}
-
-I test frames from previous in a simple online poll, which asks participants to rate how moral each argument in each frame is on a scale of 1 (Not moral at all) to 5 (Very moral). This provides me with a list of how moral or amoral the strong frames from previous research. The poll is fielded on MTurk. Survey questions are best designed if researchers have a firm grasp of the underlying realities that participants have to report [@carpini_1993_measuring;@stanley_2016_using;@conover_1991_nature].
+Survey questions are best designed if researchers have a firm grasp of the underlying realities that participants have to report [@carpini_1993_measuring;@stanley_2016_using;@conover_1991_nature]. Following this line of argument, pre-testing frames with participants who are not part of the main survey experiment is crucial in frame analysis. These participants are exposed to the designed frames and asked whether they reflect the core ideas behind 'moral' and 'self-interest'. This pre-test structure builds on work by @slothuus_political_2010 and @chong_framing_2007, following the mass communication and persuasion literature [@okeefe_2002_persuasion]. The pre-test is carried out on Amazon's online platform MTurk. MTurk is a service where researchers can host tasks to be completed by anonymous participants. Participants receive financial compensation for their work and Amazon collects a commission. MTurk samples have been shown to be internally valid in survey experiments [@berinsky_evaluating_2012]. The use of MTurk in political science experiments has increased dramatically over the past decade and is now common practice [@hauser_attentive_2016]. This pre-test represents a thorough, robust safety net to ensure that the designed frames connect with participants, which in turn ensures meaningful survey results.
 
 
-Because the design in previous experimental framing studies does not account for direction (see section \ref{framing-theory-moralization}), this list is a mixture of positive moral frames, negative moral frames, positive amoral frames, and negative amoral frames. Crucially, there will not be 'perfect pairings' that account for direction of support and moral content. To fill these missing 'slots', I design moral and amoral frames that complement the existing moral and amoral frames. Depending on what the missing 'slot' is, these frames are either positive moral, negative moral, positive amoral, or negative amoral. In order to do so, however, I first conduct another online poll, insights of which inform the design of said frames.
 
-
-### Online Poll #2: The Moral Content of Designed Complementary Frames {#framing-data-polldesigned}
-
-I use the insights from the second online poll to design several frames for each of the missing 'slots' in previous experiments.  I develop several frames for each missing 'slot'. Once I have designed these frames, I will conduct another simple online poll which asks participants to rate how moral each argument in each designed frame is on a scale of 1 (Not moral at all) to 5 (Very moral). Similar to the online poll in section \ref{framing-data-pollprevious}, this assesses the moral content of the frames I designed. This is to make sure that the designed frames connect with people in terms of moral content in the intended way. Like the previous poll, this poll is also fielded on MTurk.
 
 
 ### Survey Experiment {#framing-data-survey}
 
-Finally, I design a questionnaire for a survey experiment that combines all the insights from the previous tests and thoroughly examines whether moral arguments form a part of what makes a frame strong. The experiment is fielded online for a random sample of U.S. adults on Lucid. It features frames with moral and amoral arguments that have been shown to elicit effects (tested for moral content in the first online poll) and frames with moral and amoral arguments that fill missing 'slots' (designed based on insights from the second online poll). The survey also collects demographic information and includes post-treatment evaluations in terms of rating the arguments by their moral content. The political issues the frames apply are determined by the issues used in previous framing experiments. Both methodological contributions from chapters II and III are applied.
-
-Participants are separately sequentially blocked into five treatment groups. The blocking algorithm is performed once on the original ANES edcuation categories for one half of participants and once on the ordered probit education categories for the other half. We then conduct an ordered probit regression on an ordinal response variable on a 5-point Likert scale, ranging from "Strongly oppose" to "Strongly support". We then compare the differences between the ordered probit and the original results whilst knowing which one is closer to the truth based on the simulation results from section \ref{ordblock-data}. This thus tests the performance of the ordered probit method (chapter II).
-
-Participants are not given the option to select "Don't Know" or "Refuse", resulting in completely observed data. We then introduce random missing data, and show how the ordinal affinity score method (chapter III) performs on ordinal variables compared with other methods. We can assess the performance of the ordinal affinity score method because we know the true values of the completely observed data.
+The survey experiment builds on the insights from the pre-test. It is fielded online for a random sample of U.S. adults with Lucid. Lucid has been shown to be equally reliable and performs well on a national scale in survey experiments [@coppock_2019_validating].
+The experiment features frames with 'moral' and 'self-interest' arguments, reflecting the respective descriptions.
+The survey also collects demographic information on standard political science variables.
+The selected issues are chosen from previous research. The form a combination of big-hitter issues (gay marriage, abortion, climate change) and smaller issues (TBD) where you can move the needle.
+Respondents are blocked on ordinal variables with the method from chapter I. As part of the analysis, the ordinal variable imputation method from chapter II is applied to inserted missing data. We can assess the performance of ordinal variable imputation method because we know the true values of the completely observed data.
 
 
 ## Results {#framing-results}
 
+### Imputation {#framing-results-imputation}
 
 ## Conclusion {#framing-conclusion}
 

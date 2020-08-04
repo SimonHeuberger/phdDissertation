@@ -1,0 +1,38 @@
+The files "panel92p.raw" and "panel96p.raw" contain replication data sets in ASCII format for
+"Panel Effects in the American National Election Studies" by Larry M. Bartels.
+
+The file "panel92p.raw" includes 2485 observations on 29 variables recoded from the 1992
+American National Election Study:
+
+1.  Panel indicator
+2.  No post-election interview indicator
+3.  Age (in years)
+4.  Education (in years)
+5.  Income (percentile)
+6.  Black
+7.  Female
+8.  Married
+9.  Conservative ideology
+10.  Republican partisanship
+11.  Trust in government
+12.  Follow public affairs
+13.  Campaign interest
+14.  Presidential turnout
+15.  Presidential vote
+16.  Partisan strength
+17.  Days before election
+18.  Clinton morality
+19.  Correct ideological placements
+20.  Economy better
+21.  Ideological extremity
+22.  No ideological self-placement
+23.  Anti-aid to minorities
+24.  Pro-defense spending
+25.  Anti-abortion
+26.  Uniform random number (for jackknife estimation)
+27.  1990 Campaign interest
+28.  1990 Partisan strength
+29.  1990 Presidential turnout
+
+The file "panel96p.raw" includes 1714 observations on variables 1-25 in the above list recoded
+from the 1996 American National Election Study.

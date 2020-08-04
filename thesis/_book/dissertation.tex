@@ -649,11 +649,9 @@ Overall, \texttt{hot.deck} is a specialized function to improve the application 
 \end{table}
 Respondent B shows missing data for party ID. To impute a fill-in value, we look at how close respondents A and C are to B in terms of age, education, income, and gender. C is closer to B in terms of age and they share the same gender. A is closer to B on education and income. \texttt{hot.deck} measures these distances and estimates affinity scores for respondents A and C. The affinity scores measure how close A and C are to B on all variables except the missing one, i.e.~party ID. B then receives the party ID fill-in value from whichever respondent has the higher score. The algorithm building the affinity score is based on evenly spaced sequential numeric values, e.g.~1, 2, 3 etc. to represent the distances between the variable categories. This makes sense for age, income, and gender, but not for education, since education is an ordinal variable. Applying \texttt{hot.deck} to such a numeric representation would misrepresent the data.
 
-Instead, \texttt{hd.ord} applies \texttt{polr} from the \texttt{MASS} package to any specified number of ordinal variables in the data to estimate the underlying latent continuous variable. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. This can result in a reduction of education categories if the categories are too finely thinned out. \texttt{hd.ord} uses these newly estimated categories. Rather than assigning evenly spaced sequential numeric values to them, the function estimates the mid-cutpoints between each category, based on the \texttt{polr} results. We then replace the ordinal variable categories with the newly estimated numeric mid-cutpoints in the data. Finally, these values are scaled and used in the assessment of distance to calculate affinity scores.
+Instead, \texttt{hd.ord} applies \texttt{polr} from the \texttt{MASS} package to any specified number of ordinal variables in the data to estimate the underlying latent continuous variable. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. This can result in a reduction of education categories if the categories are too finely thinned out. \texttt{hd.ord} uses these newly estimated categories. Rather than following the convention of assigning evenly spaced sequential numeric values to them, the function estimates the mid-cutpoints between each category, based on the \texttt{polr} results. We then replace the ordinal variable categories with the newly estimated numeric mid-cutpoints in the data. Finally, these values are scaled and used in the assessment of distance to calculate affinity scores.
 
 Table \ref{ordmiss-ill-res} displays illustrative results from running \texttt{polr} on survey data, with column ``Thresholds'' showing the estimated cutoff thresholds between the education categories. Table \ref{ordmiss-ill-mid} in turn shows the estimated mid-cutpoints for each of the education categories. The mid-cutpoint values for the categories in Table \ref{ordmiss-ill-mid} fall between the adjacent values in Table \ref{ordmiss-ill-res}, i.e.~the mid-cutpoint of .547 for Some High School lies between the respective thresholds of .032 and 1.063. To estimate the beginning cutpoint for the first category (Less Than High School), we halve the difference between the first and second threshold and subtract this value from the first threshold: .032 \(-\) (1.063 \(-\) 0.032) / 2 = -0.483. The same process is applied to estimate the ending cutpoint for the last category (Master's Degree). The mid-cutpoint values are then scaled and used for the calculation of the affinity scores.
-
-\clearpage
 \begin{table}[!htbp] \centering 
   \caption{Illustrative Data polr Results} 
   \label{ordmiss-ill-res} 
@@ -1415,9 +1413,58 @@ Table \ref{run.cces.perc} shows that \texttt{hd.ord} and \texttt{hot.deck} remai
 \end{tabular} 
 \end{table}
 \hypertarget{ordmiss-eval}{%
-\section{\texorpdfstring{Brief Evaluation Shortcomings in \texttt{hd.ord}}{Brief Evaluation Shortcomings in hd.ord}}\label{ordmiss-eval}}
+\section{\texorpdfstring{Brief Evaluation of Shortcomings in \texttt{hd.ord}}{Brief Evaluation of Shortcomings in hd.ord}}\label{ordmiss-eval}}
 
-We can only speculate about the reasons behind \texttt{hd.ord}'s insufficient performance. Perhaps the importance of the uneven distances between ordinal variable categories is over-emphasized in the literature, with the distances potentially being not as uneven as previously thought. The fact that \texttt{hd.ord} consistently performs worse when a second ordinal variable is added to the \texttt{polr} treatment seems to point in this direction. It is also possible that the ordered probit approach implemented in \texttt{polr} does not accurately estimate the distances between categories. Based on evidence from these analyses alone, one could draw the preliminary conclusion that the uneven distances between ordinal variable categories are not of crucial importance when it comes to missing data imputation. More research is needed to further corroborate this tentative impression.
+Given \texttt{hd.ord}'s insufficient performance, we need to speculate about possible reasons. Perhaps the importance of the uneven distances between ordinal variable categories is over-emphasized in the literature, with the distances potentially being not as uneven as previously thought. The fact that \texttt{hd.ord} consistently performs worse when a second ordinal variable is added to the \texttt{polr} treatment seems to point in this direction. To further investigate this possibility, I test the influence of \texttt{polr} on regression coefficient transformations with data from previous publications.
+
+The first column of Table \ref{ordmiss-bartels-92} shows a replication of a linear model estimated by Bartels (1999) on the 1992 ANES data. Bartels regresses several explanatory variables on \texttt{Campaign\ Interest} (this estimation corresponds to the column ``Panel'' in Table 2 of the original publication). As we can see, the ordinal variable \texttt{Education} is part of the explanatory variables in the model. To test the transformations implemented by an ordered probit model for ordinal variables, I remove the current dependent variable (\texttt{Campaign\ Interest}) and replace it with \texttt{Education}. The resulting model is then estimated as a linear regression (column 2) and an ordered probit regression (column 3).
+\begin{table}[!htbp] \centering 
+  \caption{lm and polr Differences in 1992 ANES Data as used by Bartels (1999)} 
+  \label{ordmiss-bartels-92} 
+\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & \multicolumn{1}{c}{Campaign Interest} & \multicolumn{1}{c}{Education} & \multicolumn{1}{c}{Education} \\ 
+\\[-1.8ex] & \multicolumn{1}{c}{\textit{OLS}} & \multicolumn{1}{c}{\textit{OLS}} & \multicolumn{1}{c}{\textit{ordered}} \\ 
+ & \multicolumn{1}{c}{\textit{}} & \multicolumn{1}{c}{\textit{}} & \multicolumn{1}{c}{\textit{logistic}} \\ 
+\hline \\[-1.8ex] 
+ Education & 0.023^{} &  &  \\ 
+  & (0.004) &  &  \\ 
+  Age & 0.002^{} & -0.032^{} & -0.021^{} \\ 
+  & (0.001) & (0.004) & (0.003) \\ 
+  Income & 0.071^{} & 4.092^{} & 3.133^{} \\ 
+  & (0.037) & (0.245) & (0.204) \\ 
+  Black & -0.028 & -0.865^{} & -0.673^{} \\ 
+  & (0.028) & (0.198) & (0.150) \\ 
+  Female & -0.055^{} & -0.058 & -0.054 \\ 
+  & (0.018) & (0.133) & (0.102) \\ 
+  Partisan strength & 0.214^{} & 0.290 & 0.196 \\ 
+  & (0.027) & (0.198) & (0.152) \\ 
+  Days before election & -0.001^{} & 0.014^{} & 0.012^{} \\ 
+  & (0.0005) & (0.004) & (0.003) \\ 
+  Constant & 0.391^{} & -0.388 &  \\ 
+  & (0.038) & (0.273) &  \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{1,359} & \multicolumn{1}{c}{1,359} & \multicolumn{1}{c}{1,359} \\ 
+R$^{2}$ & \multicolumn{1}{c}{0.114} & \multicolumn{1}{c}{0.248} &  \\ 
+Adjusted R$^{2}$ & \multicolumn{1}{c}{0.109} & \multicolumn{1}{c}{0.245} &  \\ 
+Residual Std. Error & \multicolumn{1}{c}{0.331 (df = 1351)} & \multicolumn{1}{c}{2.401 (df = 1352)} &  \\ 
+F Statistic & \multicolumn{1}{c}{24.750$^{}$ (df = 7; 1351)} & \multicolumn{1}{c}{74.507$^{}$ (df = 6; 1352)} &  \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+To determine how statistically distinct the variables on the right-hand side in these models (\texttt{Age}, \texttt{Income}, \texttt{Black}, \texttt{Female}, \texttt{Partisan\ strength}, \texttt{Days\ before\ election}) are, I simulate the posterior distribution of each \(\beta\) coefficient from both regressions in columns 2 and 3 as a normal distribution with mean \(\hat{\beta}\), standard error \(SE(\hat{\beta})\), and \(n = 100,000\). I then plot the overlapping distributions of each linear regression coefficient with the corresponding ordered probit regression coefficient to assess the posterior percentage of overlay. The results are shown in Figure \ref{DensBart92}.
+\begin{figure}
+\centering
+\includegraphics{dissertation_files/figure-latex/Density-Plots-Bartels-1992-1.pdf}
+\caption{\label{fig:Density-Plots-Bartels-1992}Distributions of lm and polr coefficients\label{DensBart92}}
+\end{figure}
+We observe a small posterior percentage of overlay for the distributions of \texttt{Age} and \texttt{Income} (\textless{} 10 percent) and a large posterior percentage of overlay for the distributions of \texttt{Black}, \texttt{Female}, \texttt{Partisan\ strength}, and \texttt{Days\ before\ election} (\textgreater{} 40 percent). Since a large percentage indicates little difference in significance between the two sets of coefficients, these results appear to provide further proof against the importance of re-estimating ordinal variable categories with ordered probit approaches.
+
+Based on evidence from these brief investigative analyses, it thus seems that uneven distances between ordinal variable categories might not actually be of crucial importance when it comes to missing data imputation. These are mere preliminary conclusions, however, and more research is needed to further corroborate this tentative impression.
 
 \hypertarget{ordmiss-conclusion}{%
 \section{Conclusion}\label{ordmiss-conclusion}}
@@ -1433,6 +1480,36 @@ Given all the above, the result of this quality comparison of major missing data
 \hypertarget{framing}{%
 \chapter{MORAL ARGUMENTS AS A SOURCE OF FRAME STRENGTH}\label{framing}}
 
+Moral conviction literature tells us that people with moralized attitudes hold those attitudes strongly. This indicates that these people's attitudes can't be easily be moved, no matter what frame they are presented with. As a result, we can only move the attitudes of people who don't hold highly moralized attitudes, since there is room for movement here.
+
+(ONE) Give descriptions of what `moral' and `self-interest' is.
+
+Ad hoc examples: ``Moral concerns what people should or should not do'', ``Self-interest concerns actions and attitudes that only suit yourself''.
+`Moral' description comes from Ryan, who extended Skitka's moral conviction measure. I extend this further by adding a `self-interest' description, which I still need to find.
+
+(TWO) Ask about respondents' moral conviction towards an issue.
+
+Moral conviction measure from Skitka: ``To what extent is your position on {[}issue{]} a reflection of your core moral beliefs and convictions'' and ``\ldots{} connected to your fundamental beliefs about right and wrong?''.
+I ask how `moral' they consider their position on the issue, but without actually asking them what their position is. This is to avoid anchoring.
+
+(THREE) Measure moral conviction towards the issue (1-5 Likert; ``Not at all'', ``Slightly'', ``Moderately'', ``Much'', ``Very much'').
+
+(FOUR) Randomly assign one of the five frames: Opposing moral frame, opposing self-interest frame, control frame, supporting moral frame, supporting self-interest frame.
+
+(FIVE) Measure support/opposition for/to the issue (1-5 Likert; ``Strongly oppose'' \ldots{} ``Strongly approve'').
+
+Expectations:
+
+For the respondents with highly moralized attitudes on the issue, their support/opposition for/to the issue should be statistically the same across all frames, since their attitudes are set and can't easily be moved. For the respondents without highly moralized attitudes on the issue, the frames should move responses towards support or opposition, depending on the direction of the frame. For these people, we can see whether the moral or the self-interest frames cause bigger shifts.
+
+To be gained from this experiment:
+
+-- We can test which issues are considered more moral than others
+
+-- We can test whether people with highly moralized attitudes really stick to their pre-formed attitudes, no matter what they're exposed to
+
+-- We can test whether people with low moralized attitudes are more influenced by moral or self-interest frames
+
 \hypertarget{framing-intro}{%
 \section{Introduction}\label{framing-intro}}
 
@@ -1440,7 +1517,11 @@ Barack Obama presented the first outline of the Affordable Care Act in the summe
 
 Framing is the practice of presenting an issue to affect the way people see it (Aaroe, 2011; Druckman, 2001a; Gross, 2008). We learn about healthcare reform through articles, reports, speeches, commercials and social media. This mediated communication possesses tremendous potential influence on our perception of political issues (Iyengar, 1996; Kam \& Simas, 2010; Tversky \& Kahneman, 1981). Framing research has established that a variety of frames substantively influence how people view and think about issues, such as the ACA (Andsager, 2000; Callaghan \& Schnell, 2005; Entman, 1993, 2004; Gamson \& Modigliani, 1989; Lahav \& Courtemanche, 2012; Pan \& Kosicki, 1993; Price, Tewksbury, \& Powers, 1997; Slothuus \& Vreese, 2010; Sniderman \& Theriault, 2004; Vreese, 2004). But we do not know why these frames elicit these effects. A major challenge for framing research thus "concerns the identification of factors that make a frame strong'' (Chong \& Druckman, 2007, p. 116).
 
-I conduct a series of tests to examine whether moral arguments form a part of what makes a frame strong. These tests include two online polls and an online survey experiment. Both methods developed in chapters II and III are applied in the survey experiment and their performance is analyzed.
+-- that moral stuff is said to be very powerful
+-- that self-interest is said to be very powerful
+-- that I'm combining everything.
+
+Both methods developed in chapters II and III are applied in the survey experiment and their performance is analyzed.
 
 \hypertarget{framing-theory}{%
 \section{Theory}\label{framing-theory}}
@@ -1448,12 +1529,31 @@ I conduct a series of tests to examine whether moral arguments form a part of wh
 \hypertarget{framing-theory-framing}{%
 \subsection{Framing}\label{framing-theory-framing}}
 
+-- Outline differences between equivalency and emphasis frames (I'm looking at emphasis)
+-- Outline differences between emphasis frames and new information (Leeper,Slothuus)
+-- Clearly express that we do know why frames work (Zaller: Frames move persuasive information to the top of one's mind) but that we don't know why some frames are successful at moving persuasive information to the top of one's mind and others aren't. This was not initially clear to Liz
+
 Despite the mass of experimental framing research, we still have little insight into what makes a frame strong. The larger persuasion literature ``is not as illuminating as one might suppose\ldots{} It is not yet known what it is about the `strong arguments'\ldots{} that makes them persuasive'' (O'Keefe, 2002). One research direction is that frames are stronger overall when they cohere with an individual's personal value system. Feinberg \& Willer (2012) frame environmental issues as a matter of `purity', a theme that supposedly correlates with conservative ideology, and find this approach leads to increased conservative support of environmental policies. (Arceneaux, 2012, p. 280) on the other hand finds that ``individuals are more likely to be persuaded by political arguments that evoke cognitive biases''. Particularly, he asserts that messages which highlight out-group threats resonate to a greater extent than other, more coherent, arguments. In a study investigating the use of scientific data, Druckman \& Bolsen (2011) report that adding factual information to messages about carbon nanotubes does nothing to enhance their strength. Providing more scientific evidence seems to have the opposite effect, making the messages weaker. Overall, ``it seems as if frame strength increases with frames that highlight specific emotions, invoke threat against one's own group interests, contain some incivility, include multiple, frequently appearing, arguments, and/or have been used in the past'' (Druckman, Klar, Robison, \& Gubitz, 2018, p. 22). I attempt to provide an avenue of clarification by testing whether moral arguments are part of what makes frames strong.
 
-\hypertarget{framing-theory-moralization}{%
-\subsection{Moralization}\label{framing-theory-moralization}}
+\hypertarget{framing-theory-morality-self_interest}{%
+\subsection{Morality and Self-Interest}\label{framing-theory-morality-self_interest}}
 
-Moralization literature conceptually defines moral arguments as (1) near-universal standards of truth, (2) almost objective facts about the world, and (3) independent of institutional authority (Skitka, 2010). Moral arguments are said to engage a distinctive mode of processing that invokes a whole range of emotions and to be distinct from other forms of arguments (Ryan, 2014b). Scholars find that moral arguments are ubiquitous in political issues because they are essential to how people perceive and make sense of the world around them (Frank, 2005; Mooney, 2001; Tatalovich, Smith, \& Bobic, 1994). Ryan (2014b) finds evidence that some people perceive distinctly economic issues such as labor relations laws or social security reform in moral ways. Other studies similarly assert that the strength of attitudes meaningfully differs when they are held with moral conviction (Baron \& Spranca, 1997; Bennis, Medin, \& Bartels, 2010; Ditto, Pizarro, \& Tannenbaum, 2009; Tetlock, 2003). It is also asserted that moral conviction represents an important force that guides citizen behavior and development of public opinion (Converse, 1964; Skitka, Bauman, \& Sargis, 2005; Skitka \& Wisneski, 2011; Smith, 2002; Tatalovich \& Daynes, 2011; Zaller, 1992). It is widely argued that people rely to a disproportionate extent on moral arguments to form their opinions and apply this moralization to political issues (Ryan, 2014a, 2014b; Smith, 2002). Moral arguments can achieve a much higher emotional connection with people because they invoke people's values and feelings (Haidt, 2003; Skitka et al., 2005; Skitka \& Wisneski, 2011; Tatalovich \& Daynes, 2011). These conceptual definitions are all encompassed in Moral Foundations Theory (MFT), developed by Haidt (2012) and presented in Table \ref{framing-foundations} below.
+(Stoker, 1992):
+Central claim of economic theory: homo economicus, i.e.~the rational man who pursues his selfish interests (Coleman, 1986). There is weak and little evidence for that (Citrin \& Green, 1990; Mansbridge, 1980; Sears \& Funk, 1990). In a follow-up approach, rational choice theorists claim people simply want to maximize their utility, defining self-interest to include material and immaterial, selfish and altruistic interests (Arrow, 1967; Downs, 1957; Olson, 1965; Opp, 1989). A competing direction defines self-interest narrowly in a contrast between selfish and non-selfish preferences, highlighting the significance of non-selfish motives such as love (Mansbridge, 1990), sympathy (Sen, 1977), and justice (Tyler, 1990). The first apprach casts a wide net and says that people seek whatever they find to be in their interest. People pursue their interests but those interests may include non-selfish ones. The second equals self-interest with self-regarding and juxtaposes self-regarding interests with non-egoist ones. Non-egoist interests are here conceptually different from self-regarding ones. Stoker argues that people don't just want to satisfy their preferences (self-regarding or not self-regarding), but neither do they set aside their self-regarding preferences in favor of some non-self-regarding ones. Instead, they deal with the `central problem of ethics': ``how the lives, interests, and welfare of others make claims on us, and how these claims, of various forms, are to be reconciled with the aim of living our own lives'' (Nagel, 1970, p. 142). Stoker paints citizens as ethical actors.
+
+ME: I ask people to assess issues on relevant moral grounds and in self-interest terms of the consequences for their lives. Then we can see whether people vary in their view of whether a policy advances their interests and whether people differ in the weight they give to different moral criteria when forming policy opinions.
+
+Unenlightened self-interest (Bartels, 2005): A majority of Americans supported the 2001 and 2003 Bush administration tax cuts, even though they were designed to disproportionately benefit the rich. Economic self-interest can't explain this, since the majority of Americans suffered economically from the cuts. As Bartels shows, neither can people's attitudes towards the tax burden born by the rich. Instead, attitude towards the tax cuts was shaped by respodnents' perceived self-interest: The tax burden they had to endure. In grossly exaggerated terms: They felt their tax burden was too high, so they supported the tax cuts, even though, in material terms, the cuts hurt them. Bartels call this ``unenlightened self-interest'' (p.~23). Bartels further shows that highly informed respondents had a very different attitude: They overwhelmingly opposed the cuts. He suggests that it may be unreasonable to expect Americans to make informed decisions on highly complex issues such as tax reform, which is why they might revert to subjective perception (unenlightened self-interest) rather than objective calculation (material self-interest).
+
+Moralization literature conceptually defines moral arguments as (1) near-universal standards of truth, (2) almost objective facts about the world, and (3) independent of institutional authority (Skitka, 2010).
+Moral arguments are said to engage a distinctive mode of processing that invokes a whole range of emotions and to be distinct from other forms of arguments (Ryan, 2014b).
+Scholars find that moral arguments are ubiquitous in political issues because they are essential to how people perceive and make sense of the world around them (Frank, 2005; Mooney, 2001; Tatalovich, Smith, \& Bobic, 1994).
+Ryan (2014b) finds evidence that some people perceive distinctly economic issues such as labor relations laws or social security reform in moral ways.
+Other studies similarly assert that the strength of attitudes meaningfully differs when they are held with moral conviction (Baron \& Spranca, 1997; Bennis, Medin, \& Bartels, 2010; Ditto, Pizarro, \& Tannenbaum, 2009; Tetlock, 2003).
+It is also asserted that moral conviction represents an important force that guides citizen behavior and development of public opinion (Converse, 1964; Skitka, Bauman, \& Sargis, 2005; Skitka \& Wisneski, 2011; Smith, 2002; Tatalovich \& Daynes, 2011; Zaller, 1992).
+It is widely argued that people rely to a disproportionate extent on moral arguments to form their opinions and apply this moralization to political issues (Ryan, 2014a, 2014b; Smith, 2002).
+Moral arguments can achieve a much higher emotional connection with people because they invoke people's values and feelings (Haidt, 2003; Skitka et al., 2005; Skitka \& Wisneski, 2011; Tatalovich \& Daynes, 2011).
+These conceptual definitions are all encompassed in Moral Foundations Theory (MFT), developed by Haidt (2012) and presented in Table \ref{framing-foundations} below.
 \begin{table}[ht]
 \caption{Foundations of Moral Arguments}
 \centering
@@ -1488,6 +1588,9 @@ To establish whether moral arguments are part of what makes a frame strong, we n
 
 Overall, experimental framing research has shown that many frames have significant framing effects. It is still unclear, however, what makes these, or indeed any, frame strong (Druckman et al., 2018). Moralization theory claims that moral arguments possess enormous power shape human behavior and influence public opinion (Haidt, 2003). I combine these two sets of literature and analyze whether moral arguments form a part of what makes frames strong. I use a variety of data sources to investigate the following hypothesis:
 
+\hypertarget{framing-theory-hypothesis}{%
+\subsection{Hypothesis}\label{framing-theory-hypothesis}}
+
 \vspace{0.3cm}
 \begin{adjustwidth*}{+1cm}{+1cm}
 \textbf{H.} Moral arguments form a part of what makes political frames strong.
@@ -1495,33 +1598,25 @@ Overall, experimental framing research has shown that many frames have significa
 \hypertarget{framing-data}{%
 \section{Data}\label{framing-data}}
 
-First, I field an online poll that asks participant to assess how moral frames in published research are. Second, I design and test moral and amoral complementary frames to the ones used in previous research in a second online poll. Finally, I conduct the main online survey experiment.
+\hypertarget{framing-data-pre_test}{%
+\subsection{Pre-Tests}\label{framing-data-pre_test}}
 
-Testing and pre-testing frames is crucial in frame analysis. Frames need to be tested with participants who are not part of the main survey. These participants are exposed to the designed frames and asked whether they reflect the core ideas behind moral and pragmatic arguments. This pre-test structure builds on work by Slothuus \& Vreese (2010) and Chong \& Druckman (2007), following the mass communication and persuasion literature (O'Keefe, 2002). The pre-test is carried out on Amazon's online platform MTurk. Together with the post-test included in the survey, these tests represent a thorough, robust, spread-out safety net to ensure that the designed frames connect with participants, which in turn ensures meaningful survey results.
-
-\hypertarget{framing-data-pollprevious}{%
-\subsection{Online Poll \#1: The Moral Content of Frames Used in Previous Studies}\label{framing-data-pollprevious}}
-
-I test frames from previous in a simple online poll, which asks participants to rate how moral each argument in each frame is on a scale of 1 (Not moral at all) to 5 (Very moral). This provides me with a list of how moral or amoral the strong frames from previous research. The poll is fielded on MTurk. Survey questions are best designed if researchers have a firm grasp of the underlying realities that participants have to report (Carpini \& Keeter, 1993; Conover, Crewe, \& Searing, 1991; Stanley, 2016).
-
-Because the design in previous experimental framing studies does not account for direction (see section \ref{framing-theory-moralization}), this list is a mixture of positive moral frames, negative moral frames, positive amoral frames, and negative amoral frames. Crucially, there will not be `perfect pairings' that account for direction of support and moral content. To fill these missing `slots', I design moral and amoral frames that complement the existing moral and amoral frames. Depending on what the missing `slot' is, these frames are either positive moral, negative moral, positive amoral, or negative amoral. In order to do so, however, I first conduct another online poll, insights of which inform the design of said frames.
-
-\hypertarget{framing-data-polldesigned}{%
-\subsection{Online Poll \#2: The Moral Content of Designed Complementary Frames}\label{framing-data-polldesigned}}
-
-I use the insights from the second online poll to design several frames for each of the missing `slots' in previous experiments. I develop several frames for each missing `slot'. Once I have designed these frames, I will conduct another simple online poll which asks participants to rate how moral each argument in each designed frame is on a scale of 1 (Not moral at all) to 5 (Very moral). Similar to the online poll in section \ref{framing-data-pollprevious}, this assesses the moral content of the frames I designed. This is to make sure that the designed frames connect with people in terms of moral content in the intended way. Like the previous poll, this poll is also fielded on MTurk.
+Survey questions are best designed if researchers have a firm grasp of the underlying realities that participants have to report (Carpini \& Keeter, 1993; Conover, Crewe, \& Searing, 1991; Stanley, 2016). Following this line of argument, pre-testing frames with participants who are not part of the main survey experiment is crucial in frame analysis. These participants are exposed to the designed frames and asked whether they reflect the core ideas behind `moral' and `self-interest'. This pre-test structure builds on work by Slothuus \& Vreese (2010) and Chong \& Druckman (2007), following the mass communication and persuasion literature (O'Keefe, 2002). The pre-test is carried out on Amazon's online platform MTurk. MTurk is a service where researchers can host tasks to be completed by anonymous participants. Participants receive financial compensation for their work and Amazon collects a commission. MTurk samples have been shown to be internally valid in survey experiments (Berinsky, Huber, \& Lenz, 2012). The use of MTurk in political science experiments has increased dramatically over the past decade and is now common practice (Hauser \& Schwarz, 2016). This pre-test represents a thorough, robust safety net to ensure that the designed frames connect with participants, which in turn ensures meaningful survey results.
 
 \hypertarget{framing-data-survey}{%
 \subsection{Survey Experiment}\label{framing-data-survey}}
 
-Finally, I design a questionnaire for a survey experiment that combines all the insights from the previous tests and thoroughly examines whether moral arguments form a part of what makes a frame strong. The experiment is fielded online for a random sample of U.S. adults on Lucid. It features frames with moral and amoral arguments that have been shown to elicit effects (tested for moral content in the first online poll) and frames with moral and amoral arguments that fill missing `slots' (designed based on insights from the second online poll). The survey also collects demographic information and includes post-treatment evaluations in terms of rating the arguments by their moral content. The political issues the frames apply are determined by the issues used in previous framing experiments. Both methodological contributions from chapters II and III are applied.
-
-Participants are separately sequentially blocked into five treatment groups. The blocking algorithm is performed once on the original ANES edcuation categories for one half of participants and once on the ordered probit education categories for the other half. We then conduct an ordered probit regression on an ordinal response variable on a 5-point Likert scale, ranging from ``Strongly oppose'' to ``Strongly support''. We then compare the differences between the ordered probit and the original results whilst knowing which one is closer to the truth based on the simulation results from section \ref{ordblock-data}. This thus tests the performance of the ordered probit method (chapter II).
-
-Participants are not given the option to select ``Don't Know'' or ``Refuse'', resulting in completely observed data. We then introduce random missing data, and show how the ordinal affinity score method (chapter III) performs on ordinal variables compared with other methods. We can assess the performance of the ordinal affinity score method because we know the true values of the completely observed data.
+The survey experiment builds on the insights from the pre-test. It is fielded online for a random sample of U.S. adults with Lucid. Lucid has been shown to be equally reliable and performs well on a national scale in survey experiments (Coppock \& McClellan, 2019).
+The experiment features frames with `moral' and `self-interest' arguments, reflecting the respective descriptions.
+The survey also collects demographic information on standard political science variables.
+The selected issues are chosen from previous research. The form a combination of big-hitter issues (gay marriage, abortion, climate change) and smaller issues (TBD) where you can move the needle.
+Respondents are blocked on ordinal variables with the method from chapter I. As part of the analysis, the ordinal variable imputation method from chapter II is applied to inserted missing data. We can assess the performance of ordinal variable imputation method because we know the true values of the completely observed data.
 
 \hypertarget{framing-results}{%
 \section{Results}\label{framing-results}}
+
+\hypertarget{framing-results-imputation}{%
+\subsection{Imputation}\label{framing-results-imputation}}
 
 \hypertarget{framing-conclusion}{%
 \section{Conclusion}\label{framing-conclusion}}
@@ -1562,9 +1657,7 @@ The survey questions, i.e.~questions that collect demographic information and qu
 \end{tikzpicture}
 \caption{Online survey experiment workflow} \label{online-workflow}
 \end{figure}
-A participant clicks on the survey link and answers the demographic question. After she selects her level of education, \texttt{R} code in the background pulls previous participants' covariate information from a Dropbox server. Based on this information and her chosen education level, the \texttt{R} code sequentially blocks and assigns her to a treatment group. The participant then sees and answers the respective treatment question(s). Her responses are then saved on the same Dropbox server. This process is repeated for all incoming participants. If the participant is the first person to take the survey, i.e.~if there is no covariate information from previous participants yet, the code randomly assigns her to one of the treatment groups. All subsequent participants are then blocked and assigned as just described.
-
-To recruit participants, the cloud-based website can easily be linked to online market platforms, such as MTurk. MTurk is a service where researchers can host tasks to be completed by anonymous participants. Participants receive financial compensation for their work and Amazon collects a commission. MTurk samples have been shown to be internally valid in survey experiments (Berinsky, Huber, \& Lenz, 2012). The use of MTurk in political science experiments has increased dramatically over the past decade and is now common practice (Hauser \& Schwarz, 2016). I use Lucid for my experiment, which has been shown to be equally reliable and performs well on a national scale in survey experiments (Coppock \& McClellan, 2019).
+A participant clicks on the survey link and answers the demographic question. After she selects her level of education, \texttt{R} code in the background pulls previous participants' covariate information from a Dropbox server. Based on this information and her chosen education level, the \texttt{R} code sequentially blocks and assigns her to a treatment group. The participant then sees and answers the respective treatment question(s). Her responses are then saved on the same Dropbox server. This process is repeated for all incoming participants. If the participant is the first person to take the survey, i.e.~if there is no covariate information from previous participants yet, the code randomly assigns her to one of the treatment groups. All subsequent participants are then blocked and assigned as just described. To recruit participants, the cloud-based website can easily be linked to online market platforms, such as MTurk or Lucid.
 
 \hypertarget{app-ordmiss}{%
 \chapter{ORDINAL MISSING}\label{app-ordmiss}}
@@ -2001,6 +2094,9 @@ Andsager, J. (2000). How Interest Groups Attempt to Shape Public Opinion with Co
 \leavevmode\hypertarget{ref-arceneaux_cognitive_2012}{}%
 Arceneaux, K. (2012). Cognitive Biases and the Strength of Political Arguments. \emph{American Journal of Political Science}, \emph{56}(2), 271--285.
 
+\leavevmode\hypertarget{ref-arrow_1967_values}{}%
+Arrow, K. J. (1967). Values and Collective Decision-Making. In P. Laslett \& W. G. Runciman (Eds.), \emph{Philosophy, Politics, and Society} (pp. 215--232). New York, NY: Basic Books.
+
 \leavevmode\hypertarget{ref-bailar_1997_comparison}{}%
 Bailar, J. C., \& Bailar, B. A. (1997). Comparison of the Biases of the ``Hot Deck'' Imputation Procedure with an ``Equal Weights'' Imputation Procedure. \emph{Symposium on Incomplete Data: Panel on Incomplete Data of the Committee on National Statistics, National Research Council}, 422--447.
 
@@ -2009,6 +2105,12 @@ Barari, S., Berwick, E., Hainmueller, J., Hopkins, D. J., Liu, S., Strezhnev, A.
 
 \leavevmode\hypertarget{ref-baron_protected_1997}{}%
 Baron, J., \& Spranca, M. (1997). Protected Values. \emph{Organizational Behavior and Human Decision Processes}, \emph{70}, 1--16.
+
+\leavevmode\hypertarget{ref-bartels_2005_homer}{}%
+Bartels, L. (2005). Homer Gets a Tax Cut: Inequality and Public Policy in the American Mind. \emph{Perspectives on Politics}, \emph{3}(1), 15--31.
+
+\leavevmode\hypertarget{ref-bartels_1999_panel}{}%
+Bartels, L. M. (1999). Panel Effects in the American National Election Studies. \emph{Political Analysis}, \emph{8}(1), 1--8.
 
 \leavevmode\hypertarget{ref-bennis_costs_2010}{}%
 Bennis, W. M., Medin, D. L., \& Bartels, D. M. (2010). The Costs and Benefits of Calculation and Moral Rules. \emph{Perspectives on Psychological Science}, \emph{5}, 187--202.
@@ -2064,6 +2166,12 @@ Chong, D., \& Druckman, J. (2013). Counterframing Effects. \emph{Journal of Poli
 \leavevmode\hypertarget{ref-chow_2007_adaptive}{}%
 Chow, S.-C., \& Chang, M. (2007). \emph{Adaptive design methods in clinical trials}. Boca Raton, FL: Chapman; Hall.
 
+\leavevmode\hypertarget{ref-citrin_1990_self-interest}{}%
+Citrin, J., \& Green, D. P. (1990). The Self-Interest Motive in American Public Opinion. \emph{Research in Micropolitics}, \emph{3}, 1--28.
+
+\leavevmode\hypertarget{ref-coleman_1986_individual}{}%
+Coleman, J. S. (1986). \emph{Individual Interests and Collective Action}. Cambridge, MA: Cambridge University Press.
+
 \leavevmode\hypertarget{ref-collins_2001_comparison}{}%
 Collins, L. M., Schafer, J. L., \& Kam, C. M. (2001). A Comparison of Inclusive and Restrictive Strategies in Modern Missing-Data Procedures. \emph{Psychological Methods}, \emph{6}, 330--351.
 
@@ -2093,6 +2201,9 @@ Diggle, P. J., \& Kenward, M. G. (1994). Informative Dropout in Longitudinal Dat
 
 \leavevmode\hypertarget{ref-ditto_motivated_2009}{}%
 Ditto, P. H., Pizarro, D. A., \& Tannenbaum, D. (2009). Motivated Moral Reasoning. In B. H. Ross, D. M. Bartels, C. W. Bauman, L. J. Skitka, \& D. L. Medin (Eds.), \emph{Moral Judgment and Decision-Making} (pp. 307--338). San Diego, CA: Academic Press.
+
+\leavevmode\hypertarget{ref-downs_economic_1957}{}%
+Downs, A. (1957). \emph{An Economic Theory of Democracy}. New York, NY: Harper \& Row.
 
 \leavevmode\hypertarget{ref-drechsler_2008_does}{}%
 Drechsler, J., \& Rassler, S. (2008). Does Convergence Really Matter? In C. Shalabh (Ed.), \emph{Recent Advances in Linear Models and Related Areas} (pp. 341--355). Berlin, GER: Springer.
@@ -2313,6 +2424,12 @@ Little, R. J., \& Rubin, D. (2002). \emph{Statistical Analysis with Missing Data
 \leavevmode\hypertarget{ref-lucadamoa_2014_scaling}{}%
 Lucadamoa, A., \& Amenta, P. (2014). A new scaling proposal for handling ordinal categorical variables in co-inertia (-pls) analysis. \emph{Procedia Economics and Finance}, \emph{17}, 10--19.
 
+\leavevmode\hypertarget{ref-mansbridge_1980_beyond}{}%
+Mansbridge, J. J. (1980). \emph{Beyond Adversary Democracy}. New York, NY: Basic Books.
+
+\leavevmode\hypertarget{ref-mansbridge_1990_relation}{}%
+Mansbridge, J. J. (1990). On the Relation of Altruism and Self-Interest. In \emph{Beyond Self-Interest}. Chicago, IL: Chicago University Press.
+
 \leavevmode\hypertarget{ref-markaryan_2010_exact}{}%
 Markaryan, T., \& Rosenberger, W. F. (2010). Exact properties of efron's biased coin randomization procedure. \emph{The Annals of Statistics}, \emph{38}(3), 1546--1567.
 
@@ -2337,6 +2454,9 @@ Moore, R. T. (2012). Multivariate continuous blocking to improve political scien
 \leavevmode\hypertarget{ref-moore_blocking_2013}{}%
 Moore, R. T., \& Moore, S. A. (2013). Blocking for Sequential Political Experiments. \emph{Political Analysis}, \emph{21}(4), 507--523.
 
+\leavevmode\hypertarget{ref-nagel_1970_possibility}{}%
+Nagel, T. (1970). \emph{The Possibility of Altruism}. Oxford, UK: Clarendon.
+
 \leavevmode\hypertarget{ref-education-statistics_2002_nces}{}%
 NCES. (2002). \emph{NCES Statistical Standards}. National Center for Education Statistics.
 
@@ -2348,6 +2468,12 @@ O'Brien, R. M. (1981). Using Rank Category Variables to Represent Continuous Var
 
 \leavevmode\hypertarget{ref-okeefe_2002_persuasion}{}%
 O'Keefe, D. J. (2002). \emph{Persuasion: Theory \& research} (2nd ed.). Thousand Oaks, CA: SAGE Publications.
+
+\leavevmode\hypertarget{ref-olson_logic_1965}{}%
+Olson, M. (1965). \emph{The Logic of Collective Action: Public Goods and the Theory of Groups}. Cambridge, MA: Harvard University Press.
+
+\leavevmode\hypertarget{ref-opp_rationality_1989}{}%
+Opp, K.-D. (1989). \emph{The Rationality of Political Protest: A Comparative Analysis of Rational Choice Theory}. Boulder: Westview.
 
 \leavevmode\hypertarget{ref-palin_statement_2009}{}%
 Palin, S. (2009). Statement on the Current Health Care Debate. Retrieved from \url{https://www.facebook.com/notes/sarah-palin/statement-on-the-current-health-care-debate/113851103434/}
@@ -2421,6 +2547,12 @@ Schouten, R. M., Lugtig, P., \& Vink, G. (2018). Generating Missing Values For S
 \leavevmode\hypertarget{ref-schunk_2008_markov}{}%
 Schunk, D. (2008). A Markov Chain Monte Carlo Algorithm for Multiple Imputation in Large Surveys. \emph{Advances in Statistical Analysis}, \emph{92}(1), 101--114.
 
+\leavevmode\hypertarget{ref-sears_self-interest_1990}{}%
+Sears, D. O., \& Funk, C. L. (1990). Self-Interest in Americans' Political Opinions. In \emph{Beyond Self-Interest} (pp. 147--171). Chicago, IL: The University of Chicago Press.
+
+\leavevmode\hypertarget{ref-sen_rational_1977}{}%
+Sen, A. K. (1977). Rational Fools: A Critique of the Behavioral Foundations of Economic Theory. \emph{Philosophy and Public Affairs}, \emph{6}, 317--344.
+
 \leavevmode\hypertarget{ref-shao_1996_bootstrap}{}%
 Shao, J., \& Sitter, R. R. (1996). Bootstrap for Imputed Survey Data. \emph{Journal of the American Statistical Association}, \emph{91}(435), 1278--1288.
 
@@ -2448,6 +2580,9 @@ Sniderman, P. M., \& Theriault, S. M. (2004). The Structure of Political Argumen
 \leavevmode\hypertarget{ref-stanley_2016_using}{}%
 Stanley, L. (2016). Using focus groups in political science and international relations. \emph{Politics}, \emph{36}(3), 236--249.
 
+\leavevmode\hypertarget{ref-stoker_1992_interest}{}%
+Stoker, L. (1992). Interest and Ethics in Politics. \emph{American Political Science Review}, \emph{86}(2), 369--380.
+
 \leavevmode\hypertarget{ref-tanner_1996_tools}{}%
 Tanner, M. A. (1996). \emph{Tools for Statistical Inference: Methods for the Exploration of Posterior Distributions and Likelihood Functions} (3rd ed.). New York, NY: Springer.
 
@@ -2465,6 +2600,9 @@ Tetlock, P. E. (2003). Correspondence and Coherence Indicators of Good Judgment 
 
 \leavevmode\hypertarget{ref-tversky_framing_1981}{}%
 Tversky, A., \& Kahneman, D. (1981). The Framing of Decisions and the Psychology of Choice. \emph{Science}, \emph{211}, 453--458.
+
+\leavevmode\hypertarget{ref-tyler_1990_people}{}%
+Tyler, T. R. (1990). \emph{Why People Obey the Law}. Chicago, IL: Chicago University Press.
 
 \leavevmode\hypertarget{ref-urdan_statistics_2010}{}%
 Urdan, T. C. (2010). \emph{Statistics in Plain English}. New York, NY: Routledge.

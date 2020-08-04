@@ -40,6 +40,11 @@ where $z_{ij}=1$ if the $i^\text{th}$ case is in the $j^\text{th}$ category, and
 Practically, we need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. We then train this model on externally and internally valid data. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. We then replace the original categories with these re-estimated categories and conduct the statistical analysis of interest. In `R`, the ordered probit model can be implemented with the `polr` function from the `MASS` package [@ripley_2020_package].
 
 
+
+
+
+
+
 \clearpage
 
 ## Blocking {#intro-blocking}

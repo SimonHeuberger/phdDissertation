@@ -502,7 +502,8 @@ A character vector of variable names not to be used in the imputation, but to be
 
 Respondent B shows missing data for party ID. To impute a fill-in value, we look at how close respondents A and C are to B in terms of age, education, income, and gender. C is closer to B in terms of age and they share the same gender. A is closer to B on education and income. `hot.deck` measures these distances and estimates affinity scores for respondents A and C. The affinity scores measure how close A and C are to B on all variables except the missing one, i.e. party ID. B then receives the party ID fill-in value from whichever respondent has the higher score. The algorithm building the affinity score is based on evenly spaced sequential numeric values, e.g. 1, 2, 3 etc. to represent the distances between the variable categories. This makes sense for age, income, and gender, but not for education, since education is an ordinal variable. Applying `hot.deck` to such a numeric representation would misrepresent the data.
 
-Instead, `hd.ord` applies `polr` from the `MASS` package to any specified number of ordinal variables in the data to estimate the underlying latent continuous variable. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. This can result in a reduction of education categories if the categories are too finely thinned out. `hd.ord` uses these newly estimated categories. Rather than assigning evenly spaced sequential numeric values to them, the function estimates the mid-cutpoints between each category, based on the `polr` results. We then replace the ordinal variable categories with the newly estimated numeric mid-cutpoints in the data. Finally, these values are scaled and used in the assessment of distance to calculate affinity scores.
+Instead, `hd.ord` applies `polr` from the `MASS` package to any specified number of ordinal variables in the data to estimate the underlying latent continuous variable. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. This can result in a reduction of education categories if the categories are too finely thinned out. `hd.ord` uses these newly estimated categories. Rather than following the convention of assigning evenly spaced sequential numeric values to them, the function estimates the mid-cutpoints between each category, based on the `polr` results. We then replace the ordinal variable categories with the newly estimated numeric mid-cutpoints in the data. Finally, these values are scaled and used in the assessment of distance to calculate affinity scores.
+
 
 ```{r Illustrative Data Code, include=FALSE}
 
@@ -539,11 +540,7 @@ colnames(ill.data.cutp.tab) <- c("Original Education Categories", "Mid-Cutpoints
 ```
 
 
-
-
 Table \ref{ordmiss-ill-res} displays illustrative results from running `polr` on survey data, with column "Thresholds" showing the estimated cutoff thresholds between the education categories. Table \ref{ordmiss-ill-mid} in turn shows the estimated mid-cutpoints for each of the education categories. The mid-cutpoint values for the categories in Table \ref{ordmiss-ill-mid} fall between the adjacent values in Table \ref{ordmiss-ill-res}, i.e. the mid-cutpoint of `r ill.data.cutp$midc[ill.data.cutp$origed == "Some High School"]` for Some High School lies between the respective thresholds of `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"]` and `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"]`. To estimate the beginning cutpoint for the first category (Less Than High School), we halve the difference between the first and second threshold and subtract this value from the first threshold: `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"]` $-$ (`r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"]` $-$ `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric`) / 2 =  `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric - ((ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"] %>% as.numeric - ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric) / 2) %>% round(digits = 3)`. The same process is applied to estimate the ending cutpoint for the last category (Master's Degree). The mid-cutpoint values are then scaled and used for the calculation of the affinity scores.
-
-\clearpage
 
 
 ```{r Illustrative Data Table 1, results='asis', echo=FALSE}
@@ -2155,9 +2152,190 @@ stargazer(run.cces.perc,
 ```
 
 
-## Brief Evaluation Shortcomings in `hd.ord` {#ordmiss-eval}
+## Brief Evaluation of Shortcomings in `hd.ord` {#ordmiss-eval}
 
-We can only speculate about the reasons behind `hd.ord`'s insufficient performance. Perhaps the importance of the uneven distances between ordinal variable categories is over-emphasized in the literature, with the distances potentially being not as uneven as previously thought. The fact that `hd.ord` consistently performs worse when a second ordinal variable is added to the `polr` treatment seems to point in this direction. It is also possible that the ordered probit approach implemented in `polr` does not accurately estimate the distances between categories. Based on evidence from these analyses alone, one could draw the preliminary conclusion that the uneven distances between ordinal variable categories are not of crucial importance when it comes to missing data imputation. More research is needed to further corroborate this tentative impression.
+Given `hd.ord`'s insufficient performance, we need to speculate about possible reasons. Perhaps the importance of the uneven distances between ordinal variable categories is over-emphasized in the literature, with the distances potentially being not as uneven as previously thought. The fact that `hd.ord` consistently performs worse when a second ordinal variable is added to the `polr` treatment seems to point in this direction. To further investigate this possibility, I test the influence of `polr` on regression coefficient transformations with data from previous publications.
+
+<!-- 
+Background for this bit -- Jeff suggested this as part of his feedback:
+	\begin{coi}
+		\item Take research (Dataverse) from prominent research people: Michigan folks, Larry Bartels
+		\item Take a glm regression (logit, probit, poisson model) with a RHS variable that is ordinal, perhaps scaled 1-7
+		\item Throw away the outcome variable, put the ordinal variable as the DV
+		\item Run polr and run linear regression on that
+		\item What I'm looking for: How different are the regression coefficients (the RHS) between the two models? This difference shows how important the re-estimating of the ordinal spaces is
+		\item If the results show no differences, this makes my speculation at the end, that the uneven spaces might not be that important after all, much stronger $\rightarrow$ and if the results show that there are actually big differences, this then excludes the this-isn't-that-important-after-all explanation as a possible reason why my analysis wasn't working $\rightarrow$ so it's a win-win situation no matter what the results show
+	\end{coi}
+-->
+
+The first column of Table \ref{ordmiss-bartels-92} shows a replication of a linear model estimated by @bartels_1999_panel on the 1992 ANES data. Bartels regresses several explanatory variables on `Campaign Interest` (this estimation corresponds to the column "Panel" in Table 2 of the original publication). As we can see, the ordinal variable `Education` is part of the explanatory variables in the model. To test the transformations implemented by an ordered probit model for ordinal variables, I remove the current dependent variable (`Campaign Interest`) and replace it with `Education`. The resulting model is then estimated as a linear regression (column 2) and an ordered probit regression (column 3).
+
+
+```{r lm and polr Differences on External Data, include=FALSE}
+
+bart.92 <- read_sav("data/bartels/panel92p.sav")
+# bart.96 <- read_sav("data/bartels/panel96p.sav")
+# bart.96$V3b <- bart.96$V3^2
+
+# all variables taken from data/bartels/var_descriptions.txt
+bart.cols <- list(
+  c("V4", "V3", "V5", "V6", "V7", "V13", "V16", "V17")
+  # , c("V4", "V10", "V9", "V3", "V3b", "V8", "V6", "V12", "V18")
+  )
+
+bart.colnames <- list(
+  c("Education", "Age", "Income", "Black", "Female", "Camp_int", "Part_strength", "Days_bef_elec")
+  # , c("Education", "Rep_part", "Cons_ideol", "Age", "Age_squared", "Married", "Black", "Foll_pub_aff", "Clinton_morality")
+  )
+
+bart.dv.orig <- c("Camp_int"#, "Clinton_morality"
+                  )
+bart.dv.lm <- "Education"
+dv.polr <- paste0(bart.dv.lm, ".fac")
+
+bart.dfs <- list(bart.92#, bart.96
+                 )
+bart.dfs.sub <- list()
+bart.evs.orig <- list()
+bart.evs.new <- list()
+bart.reg.res <- rep(list(list()), length(bart.dfs))
+
+models <- c("orig", "lm", "polr")
+years <- c(92#, 96
+           )
+mod.temp <- rep(list(list()), length(models))
+names(mod.temp) <- models
+bart.reg.res <- rep(list(mod.temp), length(bart.dfs))
+names(bart.reg.res) <- years
+
+for (n in 1:length(bart.dfs)){
+  bart.dfs.sub <- subset(bart.dfs[[n]], subset = c(V1 == 1)) %>% .[bart.cols[[n]]]
+  colnames(bart.dfs.sub) <- bart.colnames[[n]]
+  bart.evs.orig <- colnames(bart.dfs.sub)[!colnames(bart.dfs.sub) %in% bart.dv.orig[n]]
+  bart.dfs.sub[[dv.polr]] <- bart.dfs.sub[[bart.dv.lm]] %>% as.factor
+  bart.evs.new <- bart.evs.orig[!bart.evs.orig %in% c(bart.dv.lm, dv.polr)]
+  bart.reg.res[[n]][["orig"]] <- lm(paste(bart.dv.orig[[n]], paste(bart.evs.orig, collapse = " + "), sep = " ~ "),
+                               data = bart.dfs.sub)
+  bart.reg.res[[n]][["lm"]] <- lm(paste(bart.dv.lm, paste(bart.evs.new, collapse = " + "), sep = " ~ "),
+                               data = bart.dfs.sub)
+  bart.reg.res[[n]][["polr"]] <- polr(paste(dv.polr, paste(bart.evs.new, collapse = " + "), sep = " ~ "),
+                                 data = bart.dfs.sub, Hess=TRUE)
+  }
+
+bart.92.lm <- bart.reg.res[["92"]][["lm"]] %>% 
+  summary %>% 
+  .$coefficients %>% 
+  data.frame %>% 
+  .[-1, 1:2]
+bart.92.polr <- bart.reg.res[["92"]][["polr"]] %>% 
+  summary %>% 
+  .$coefficients %>%
+  data.frame %>%
+  .[1:nrow(bart.92.lm), 1:2]
+
+xlab <- c("Age", "Income", "Black", "Female", "Partisan strength", "Days before election")
+
+plots.92 <- list()
+ov.perc <- c()
+reps <- 100000
+
+for (i in 1:nrow(bart.92.lm)){
+  set.seed(126)
+  lm.norm.92 <- rnorm(reps, mean = bart.92.lm[i,1], 
+                      sd = bart.92.lm[i,2])
+  polr.norm.92 <- rnorm(reps, mean = bart.92.polr[i,1], 
+                        sd = bart.92.polr[i,2])
+  
+  # # to possibly add to plots
+  # t.res <- t.test(lm.norm.92, polr.norm.92)
+  # t.res %>% .$statistic
+  # t.res %>% .$conf.int
+  lm.92 <- cbind(lm.norm.92, rep("lm", reps)) %>% data.frame
+  polr.92 <- cbind(polr.norm.92, rep("polr", reps)) %>% data.frame
+  colnames(lm.92) <- colnames(polr.92) <- c("Coefficient", "Model")
+  over.lap  <- list(lm.92$Coefficient %>% as.numeric, 
+                    polr.92$Coefficient %>% as.numeric) %>% 
+    overlap(.) %>%
+    .$OV * 100
+  ov.perc[i] <- round(over.lap, digits = 2)
+  df.92 <- rbind(lm.92, polr.92)
+  df.92$Coefficient <- df.92$Coefficient %>% as.numeric
+  grob <- grobTree(textGrob(paste("Overlap:",  paste0(ov.perc[i], " %"), sep="\n"),
+                            x=0.75,  y=0.75, hjust=0,
+                            gp=gpar(col="red", fontsize=10)))
+  if(i == 1){
+    plots.92[[i]] <- ggplot(df.92, aes(x=Coefficient, fill=Model)) + 
+      geom_density(alpha=0.2, aes(y=..density..), position="identity") + 
+      xlab(xlab[i]) + 
+      theme(axis.title.y=element_blank()) + 
+      theme(legend.title=element_blank()) + 
+      theme(legend.position = c(0.15, 0.75)) + 
+      theme(plot.title = element_text(hjust = 0.5)) +
+      annotation_custom(grob)
+  } else{
+    plots.92[[i]] <- ggplot(df.92, aes(x=Coefficient, fill=Model)) + 
+      geom_density(alpha=0.2, aes(y=..density..), position="identity") + 
+      xlab(xlab[i]) + 
+      theme(axis.title.y=element_blank()) + 
+      theme(legend.title=element_blank()) + 
+      theme(legend.position = "none") + 
+      theme(plot.title = element_text(hjust = 0.5)) +
+      annotation_custom(grob)
+  }
+}
+```
+
+```{r Bartels 1992 data, results='asis', echo=FALSE}
+stargazer(bart.reg.res[["92"]][["orig"]],
+          bart.reg.res[["92"]][["lm"]],
+          bart.reg.res[["92"]][["polr"]],
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          dep.var.labels = c("Campaign Interest", "Education", "Education"),
+          covariate.labels = c("Education", "Age", "Income", "Black", "Female", "Partisan strength", "Days before election"),
+          title = "lm and polr Differences in 1992 ANES Data as used by Bartels (1999)",
+          no.space = TRUE,
+          model.numbers = FALSE,
+          star.char = c("", "", ""),
+          label = "ordmiss-bartels-92",
+          omit.table.layout = "n")
+
+```
+
+
+To determine how statistically distinct the variables on the right-hand side in these models (`Age`, `Income`, `Black`, `Female`, `Partisan strength`, `Days before election`) are, I simulate the posterior distribution of each $\beta$ coefficient from both regressions in columns 2 and 3 as a normal distribution with mean $\hat{\beta}$, standard error $SE(\hat{\beta})$, and $n = 100,000$. I then plot the overlapping distributions of each linear regression coefficient with the corresponding ordered probit regression coefficient to assess the posterior percentage of overlay. The results are shown in Figure \ref{DensBart92}. 
+
+
+```{r Density-Plots-Bartels-1992, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distributions of lm and polr coefficients\\label{DensBart92}"}
+
+grid.arrange(grobs = plots.92, ncol = 2, left = "Density")
+
+```
+
+```{r Bartels 1996 data, results='asis', echo=FALSE}
+
+# stargazer(bart.reg.res[["96"]][["orig"]],
+#           bart.reg.res[["96"]][["lm"]],
+#           bart.reg.res[["96"]][["polr"]],
+#           align = TRUE,
+#           header = FALSE,
+#           rownames = FALSE,
+#           title = "lm and polr Differences in 1996 ANES Data as used by Bartels (1999)",
+#           dep.var.labels = c("Clinton Morality", "Education", "Education"),
+#           covariate.labels = c("Education", "Republican partisanship", "Conservative ideology", "Age", "Age squared", "Married", "Black", "Follow public affairs"),
+#           no.space = TRUE,
+#           model.numbers = FALSE,
+#           label = "ordmiss-bartels-96")
+
+```
+
+
+We observe a small posterior percentage of overlay for the distributions of `Age` and `Income` (< 10 percent) and a large posterior percentage of overlay for the distributions of `Black`, `Female`, `Partisan strength`, and `Days before election` (> 40 percent). Since a large percentage indicates little difference in significance between the two sets of coefficients, these results appear to provide further proof against the importance of re-estimating ordinal variable categories with ordered probit approaches.
+
+
+
+Based on evidence from these brief investigative analyses, it thus seems that uneven distances between ordinal variable categories might not actually be of crucial importance when it comes to missing data imputation. These are mere preliminary conclusions, however, and more research is needed to further corroborate this tentative impression.
 
 
 
