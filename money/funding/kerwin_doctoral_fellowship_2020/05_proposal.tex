@@ -87,7 +87,7 @@ breaklines=true
 
 \begin{center}
 \Large
-\textcolor{NavyBlue}{What the People Think: Advances in Public Opinion Measurement Using Modern Statistical Methods}\\
+\textcolor{NavyBlue}{What the People Think: Advances in Public Opinion Measurement Using Ordinal Variables}\\
 \vspace{0.3cm}
 \large
 \sc{Abstract}
@@ -104,7 +104,7 @@ Surveys are a central part of political science. Without surveys, we would not k
 
 \begin{center}
 \Large
-\textcolor{NavyBlue}{What the People Think: Advances in Public Opinion Measurement Using Modern Statistical Methods}\\
+\textcolor{NavyBlue}{What the People Think: Advances in Public Opinion Measurement Using Ordinal Variables}\\
 \vspace{0.3cm}
 \large
 \sc{Summary}
@@ -143,8 +143,7 @@ In this model, I regress education on meaningful explanatory variables with the 
  
  
 
-\section{A New Method to Impute Missing Survey Data from Ordinal Variables} 
-
+\section{A New Method to Impute Missing Survey Data with Ordinal Variables} 
 
 \subsection{Background}
 
@@ -187,55 +186,60 @@ Respondent B shows missing data for party ID. To impute a fill-in value, we look
 Instead, I propose a weighted distance solution with the estimated numeric thresholds from the ordered probit model approach in chapter 1 to measure the distances between the categories and calculate the affinity score. I demonstrate the benefits of this method with several Monte Carlo simulations. As in chapter 1, simulations are crucial as they allow comparison to the `true' results, which is not possible with actual data. They show that weighted distance multiple hot decking imputation outperforms current general missing data techniques for ordinal variables.
 
 
-\section{Moral Arguments as a Source of Frame Strength} 
+\section{Morality vs. Self-Interest in Public Opinion Framing} 
 
 Following the traditional structure of methods dissertations, this chapter applies the methods developed in chapters 1 and 2. I do so in an online survey experiment on political framing. 
 
-Framing is the practice of presenting an issue to affect the way people see it \citep{aaroe_investigating_2011,druckman_evaluating_2001}. We learn about political issues through articles, reports, speeches, commercials, and social media. This mediated communication possesses tremendous potential influence on our perception of political issues \citep{iyengar_framing_1996,kam_risk_2010}. A variety of frames substantively influence how people view and think about issues \citep{entman_projections_2004,slothuus_political_2010,sniderman_structure_2004}, but we do not know why these frames elicit these effects. A major challenge for framing research thus ``concerns the identification of factors that make a frame strong'' \citep[p. 116]{chong_framing_2007}. I propose an avenue of clarification by testing whether moral arguments are a part of what makes political frames strong. 
+We learn about politics through articles, speeches, commercials, and social media. Mediated communication possesses tremendous potential influence on our perception of political issues and thus public opinion \citep{iyengar_framing_1996,kam_risk_2010}. Public opinion is generally categorized into three parts: The material self-interests that we see at stake, sympathies and resentments we feel toward social groups, and commitment to principles and morals \citep{kinder_1998_opinion}. Each of these parts can be shaped by political actors. One of the tools to do so is framing: Framing is the practice of presenting an issue to affect the way people see it \citep{aaroe_investigating_2011,druckman_evaluating_2001}. A variety of frames substantively influence how people view and think about issues \citep{entman_projections_2004,slothuus_political_2010,sniderman_structure_2004,chong_framing_2007-1}. Among these are frames focusing on self-interest and frames focusing on morals.
 
-Moralization theory claims that moral arguments and moral conviction possess enormous power to influence and guide development of public opinion \citep{haidt_moral_2003,haidt_2012_righteous,converse_nature_1964,zaller_nature_1992}. Moral arguments are defined as near-universal standards of truth and almost objective facts about the world \citep{skitka_psychology_2010}. They are essential to how people perceive and make sense of the world around them \citep{frank_whats_2005,mooney_public_2001}. Moral arguments can also achieve a high emotional connection with people because they invoke feelings \citep{skitka_moral_2005,tatalovich_moral_2011}. These conceptual definitions are encompassed in Moral Foundations Theory (MFT) presented in Table \ref{framing-foundations} below. MFT has not been applied to frame strength in experimental research. I propose to do so in an online survey experiment.
+Morals embody what we feel is `good' and `right'; what everybody should do. They are essential to how we make sense of the world around us and inform our perception of how other people should behave \citep{frank_whats_2005,mooney_public_2001,zaller_nature_1992,haidt_moral_2003}. Self-interest in the narrow sense, on the other hand, concerns aspects that only advance our own personal interests but do not extend to other people. Their sole focus is what is good for us, and just us \citep{brewer_value_2001,skitka_psychology_2010,caprara_2006_personality,converse_nature_1964}. 
 
 
-\begin{table}[H]
-\singlespacing
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{>{\itshape}l ll >{\itshape}l l}
-\bottomrule 
-\midrule
-\multicolumn{2}{c}{\textbf{Positive}} & & \multicolumn{2}{c}{\textbf{Negative}}\\
-\cmidrule{1-2}
-\cmidrule{4-5}
-Care & Cherishing, protecting others & & Harm & Hurting others\\
-Fairness & Rendering justice by shared rules & & Cheating & Flouting justice, shared rules\\
-Loyalty & Standing with your group & & Betrayal & Opposing your group\\
-Respect & Submitting to tradition, authority & & Subversion & Resisting tradition, authority\\
-Sanctity & Repulsion at disgust & & Degradation & Enjoyment of disgust \\
-\bottomrule
-\multicolumn{5}{l}{\footnotesize{Based on Haidt (2012). Positive and negative foundations are conceptual opposites.}} \\
-\end{tabular}}
-\caption{Foundations of Moral Arguments}
-\label{framing-foundations}
-\end{table} 
+While the influence of moral and self-interest frames on public opinion formation has been documented, to my knowledge, these central categories of public opinion formation have not been tested in juxtaposition in experimental research. I propose to do so in an online survey experiment where I will randomly assign moral and self-interest frames to respondents. This will provide valuable insights into the criteria respondents weigh more strongly when they consider political issues and form their opinions. Based on previous research that finds people leaning heavily on values when making political decisions \citep{brader_2008_what,white_2003_values,valentino_2008_worried,transue_2007_identity,stoker_2001_political}, I hypothesize that moral frames elicit larger effects.
+
+
+%\begin{table}[H]
+%\singlespacing
+%\centering
+%\resizebox{\textwidth}{!}{
+%\begin{tabular}{>{\itshape}l ll >{\itshape}l l}
+%\bottomrule 
+%\midrule
+%\multicolumn{2}{c}{\textbf{Positive}} & & \multicolumn{2}{c}{\textbf{Negative}}\\
+%\cmidrule{1-2}
+%\cmidrule{4-5}
+%Care & Cherishing, protecting others & & Harm & Hurting others\\
+%Fairness & Rendering justice by shared rules & & Cheating & Flouting justice, shared rules\\
+%Loyalty & Standing with your group & & Betrayal & Opposing your group\\
+%Respect & Submitting to tradition, authority & & Subversion & Resisting tradition, authority\\
+%Sanctity & Repulsion at disgust & & Degradation & Enjoyment of disgust \\
+%\bottomrule
+%\multicolumn{5}{l}{\footnotesize{Based on Haidt (2012). Positive and negative foundations are conceptual opposites.}} \\
+%\end{tabular}}
+%\caption{Foundations of Moral Arguments}
+%\label{framing-foundations}
+%\end{table} 
+
 
 
 \subsection{Objectives}
 
-\textit{Hypothesis:} Moral arguments form a part of what makes political frames strong.\par
-\noindent \textit{Goal:} Demonstrate the importance of moral arguments in frame strength.
+\textit{Hypothesis:} Moral frames achieve larger framing effects than self-interest frames.\par
+\noindent \textit{Goal:} Investigate the importance of moral and self-interest frames in influencing public opinion in direct juxtaposition.
+
 
 
 \subsection{Data}
 
-I design a questionnaire on several political issues that collects demographic information and applies several treatments. Each treatment consists of a moral frame based on MFT foundations. All frames are tested in an online poll on MTurk. This questionnaire is hosted online for a nationally representative sample of 2,331 respondents recruited through Lucid. Lucid  has been shown to perform well on a national scale in survey experiments \citep{coppock_2019_validating}. 
+I design a questionnaire on several political issues (climate change, abortion, takings, statehood of DC) that collects demographic information and applies several treatments in the form of frames. Each treatment consists of a moral frame and an opposing self-interest frame. All frames will be designed on the basis of political psychology literature and pre-tested on MTurk. The questionnaire is hosted online for a nationally representative sample of 2,331 respondents recruited through Lucid. Lucid  has been shown to perform well on a national scale in survey experiments \citep{coppock_2019_validating}. 
 
-I apply my ordered probit method from chapter 1 by blocking on education. One half of the sample is blocked with arbitrary numeric values, while the other uses my method. Subsequent ordered probit regression on an ordinal response variable on a 5-point Likert scale, ranging from ``Strongly oppose'' to ``Strongly support'', shows the differences in performance. Since there currently is no way to block online, I created an online survey environment based on statistical software code to implement blocking. Missing data in the form of ``Don't Know'' or ``Refused'' are imputed separately with general methods and my specific ordinal variable adaptation of multiple hot deck imputation from chapter 2. Visual displays of the resulting variable distributions show the differences in performance. Substantively, the regression results provide insights into the importance of moral arguments in political framing and in political messaging overall. 
+I apply my ordered probit method from chapter 1 by blocking on education. One half of the sample is blocked with arbitrary numeric values, while the other uses my method. Subsequent ordered probit regression on an ordinal response variable on a 5-point Likert scale, ranging from ``Strongly oppose'' to ``Strongly support'', shows the differences in performance. Since there currently is no way to block online, I created an online survey environment based on statistical software code to implement blocking. Missing data in the form of ``Don't Know'' or ``Refused'' are imputed separately with general methods and my specific ordinal variable adaptation of multiple hot deck imputation from chapter 2. Visual displays of the resulting variable distributions show the differences in performance. Substantively, the regression results provide insights into the importance of morals and self-interest in political framing and in political messaging overall. 
 
 \section*{Implications and Limitations}
 
 Education is the most important predictor of political behavior in political science. It is crucial that we measure and use this variable correctly to obtain results that reflect the true data structure. As an ordinal variable, education contains special characteristics: Its categories are ordered, but unevenly spaced. We need modern statistical methods to fully utilize all this information contained in this variable. So far, this aspect has been largely ignored in the literature. If we want to know what people think and how they act, we need to make sure our measurements are as good as they can possibly be. My dissertation outlines two new methods that contribute to this undertaking. They significantly improve how we handle ordinal variables in surveys and survey experiments in political science and thus increase precision when we analyze public opinion.
 
-Whether my methods are suitable in a specific survey or survey experiment depends on the situation, as no method works for all circumstances. For a survey experiment with a very large sample and few treatment groups, there is no need for my ordered probit method and blocking. Simple randomization does the job here. Similarly, if survey results do not contain important ordinal predictor variables, my method to impute missing data from ordinal variables is not applicable. Overall, my dissertation adds two important new tools to the empirical political scientist's toolbox to choose from. 
+Whether my methods are suitable in a specific survey experiment depends on the situation. For a survey experiment with a very large sample and few treatment groups, there is likely little need for a special ordered probit blocking method. Simple randomization does the job here. Similarly, if survey results do not contain important ordinal predictor variables, my method to impute missing data from ordinal variables is not applicable. Overall, my dissertation nonetheless adds two important new tools to the empirical political scientist's toolbox to choose from. 
 
 
 \section*{Timetable for Completion}
@@ -246,25 +250,25 @@ Whether my methods are suitable in a specific survey or survey experiment depend
 \singlespacing
 \renewcommand\arraystretch{1.4}\arrayrulecolor{NavyBlue}
 \captionsetup{singlelinecheck=false, labelfont=sc, labelsep=quad}
-\caption*{July 2019 -- May 2020}\vskip -1.5ex
+\caption*{July 2020 -- May 2020}\vskip -1.5ex
 \begin{tabular}{@{\,}r <{\hskip 2pt} !{\foo} >{\raggedright\arraybackslash}p{13.3cm}}
 \toprule
 \addlinespace[1.5ex]
-\textit{August} & Completed chapter 1 \\
-\textit{November} & Completed chapter 2 \\
-\textit{December} & Run framing survey experiment applying the methods in chapters 1 and 2 \hspace{4cm} Analyze experiment results and draft chapter 3 \\
-\textit{February} & Completed chapter 3\\
-\textit{March} & Advanced draft of complete dissertation  \\
-\textit{April-May} & Defend dissertation \\
+\textit{July} & Conduct and write-up final simulations \\
+\textit{September} & Design and test survey questionnaire \\
+\textit{October} & Field survey experiment \\
+\textit{November} & Analyze and write-up results \\
+\textit{January} & Advanced draft of complete dissertation  \\
+\textit{February / March} & Final draft of complete dissertation  \\
+\textit{March / April} & Defend dissertation \\
 \end{tabular}
 \end{table}
-
 
 \clearpage
 
 \singlespacing
 
-\bibliography{/Users/simonheuberger/Dropbox/work/bib-files/all-together.bib}
+\bibliography{/Users/simonheuberger/Insync/bib-files/all-together.bib}
 \bibliographystyle{chicago}
 
 
@@ -282,9 +286,9 @@ CV \\
 
 \begin{description}
 \item[{\sc Ph.D.}, Political Science]\hspace{-0.175cm}. American University,
-Washington, D.C., 2020 (expected) \par
+Washington, D.C., 2021 (expected) \par
 Fields: American Politics, Quantitative Methods, Comparative Politics \\ 
-Dissertation: ``What the People Think: Advances in Public Opinion Measurement Using Modern Statistical Methods''\\
+Dissertation: ``What the People Think: Advances in Public Opinion Measurement Using Ordinal Variables''\\
 Dissertation Chair: Jeff Gill\\
 \end{description}
 
@@ -301,22 +305,23 @@ Dissertation: ``From Candidate to President: The Use of Metaphors and Pronouns i
 
 \section*{Publications}
 \begin{enumerate}[leftmargin=!,labelindent=20pt,itemindent=-20pt]
-\item[] 2019. ``Insufficiencies in Data Material: A Replication Analysis of Muchlinski, Siroky, He and Kocher (2016)''. \textit{Political Analysis} 27 (1), 114-118 (\href{https://www.simonheuberger.com/files/research/2019_pa_insufficiencies_in_data_material.pdf}{Paper}).
+\item[] 2020. ``Bayesian Modeling and Inference: A Postmodern Perspective" with Jeff Gill. In Luigi Curini and Robert J. Franzese, Jr. (editors), \textit{The SAGE Handbook of Research Methods in Political Science and International Relations}, p. 961-984.  SAGE (\href{https://www.simonheuberger.com/files/research/handbook_bayes.pdf}{Paper}, \href{https://uk.sagepub.com/en-gb/eur/the-sage-handbook-of-research-methods-in-political-science-and-international-relations/book262875}{SAGE}).
 \vspace{-0.27cm}
-\item[] ``Bayesian Modeling and Inference: A Postmodern Perspective'' with Jeff Gill. In Luigi Curini and Robert J. Franzese, Jr. (editors), \textit{Handbook of Research Methods in Political Science \& International Relations}. SAGE, \textit{forthcoming}.
+\item[] 2019. ``Insufficiencies in Data Material: A Replication Analysis of Muchlinski, Siroky, He and Kocher (2016)". \textit{Political Analysis} 27 (1), p. 114-118 (\href{https://www.simonheuberger.com/files/research/2019_pa_insufficiencies_in_data_material.pdf}{Paper}, \href{https://www.cambridge.org/core/journals/political-analysis/article/insufficiencies-in-data-material-a-replication-analysis-of-muchlinski-siroky-he-and-kocher-2016/DCFFD3F8F23604794ABE615F10C42FA4}{DOI}).
 \end{enumerate}
 
 
 \section*{Teaching Experience}
 
+
+
 \textbf{Adjunct Instructor}
 
 \vspace{-0.3cm}
 \begin{itemize}
-\item[] Introduction to Political Research (\texttt{R}) (\href{https://www.simonheuberger.com/files/teaching/syll_fall_2018_310.pdf}{2018 Syllabus}, \href{https://www.simonheuberger.com/files/teaching/evals_fall_2018_310.pdf}{Evaluations}) \hfill{Spring 2020, Fall 2018}\\
-Seminar for Teaching Assistants \hfill{Fall 2019}\\
-Political Action and Public Policy (Online, \href{https://www.simonheuberger.com/files/teaching/syll_summer_2019_102.pdf}{Syllabus}) \hfill{Summer 2019}\\
-Politics in the U.S. (Online, \href{https://www.simonheuberger.com/files/teaching/syll_summer_2019_110.pdf}{Syllabus}) \hfill{Summer 2019}
+\item[] Political Action and Public Policy (Online, \href{https://www.simonheuberger.com/files/teaching/syll_summer_2019_102.pdf}{Syllabus}) \hfill{Summer 2019}\\
+Politics in the U.S. (Online, \href{https://www.simonheuberger.com/files/teaching/syll_summer_2019_110.pdf}{Syllabus}) \hfill{Summer 2019}\\
+Introduction to Political Research (\texttt{R}) (\href{https://www.simonheuberger.com/files/teaching/syll_fall_2018_310.pdf}{2018 Syllabus}, \href{https://www.simonheuberger.com/files/teaching/evals_fall_2018_310.pdf}{Evaluations}) \hfill{Fall 2018}
 \end{itemize}
 
 
@@ -324,7 +329,9 @@ Politics in the U.S. (Online, \href{https://www.simonheuberger.com/files/teachin
 
 \vspace{-0.3cm}
 \begin{itemize}
-\item[] Bayesian Statistics for Social and Biomedical Sciences (\texttt{R}), Jeff Gill (\href{http://jeffgill.org/classes/american-university-statistics-618spa-696-every-fall-bayesian-statistics-social-and}{Syllabus}) \hfill{Fall 2018}\\
+\item[] Institute for Data Science (\texttt{R}, \texttt{Python}, \texttt{JS}, \texttt{SQL}), Ryan T. Moore (\href{https://www.american.edu/spa/data-science/upload/syl-2020.pdf}{Syllabus}) \hfill{Winter 2019/20}\\
+
+Bayesian Statistics for Social and Biomedical Sciences (\texttt{R}), Jeff Gill (\href{http://jeffgill.org/classes/american-university-statistics-618spa-696-every-fall-bayesian-statistics-social-and}{Syllabus}) \hfill{Fall 2018}\\
 
 Introduction to Political Research (\texttt{R}), Ryan T. Moore (\href{https://www.simonheuberger.com/files/teaching/syll_spring_2017_310.pdf}{Syllabus}, \href{https://www.simonheuberger.com/files/teaching/intro_using_r.pdf}{Guide to R}) \hfill{Spring 2017}\\
 
@@ -377,9 +384,9 @@ MCMC Dynamics Measuring State Ideology with Spatial Variance Co-Matrices
 \begin{enumerate}[leftmargin=!,labelindent=20pt,itemindent=-20pt]
 \item[] {\tt Eagledown}: {\tt R} Package to Write a PhD Thesis at AU in {\tt R Markdown} (\href{https://github.com/SimonHeuberger/eagledown}{GitHub})
 \vspace{-0.27cm}
-\item[] {\tt BlockExperiments}: {\tt R} Package to Use Ordinal Variables for Blocking (\textit{in development})
+\item[] {\tt GLMpack}: {\tt R} Package to Accompany \textit{Generalized Linear Models: A Unified Approach} (2nd ed.) by Jeff Gill and Michelle Torres (\href{https://cran.r-project.org/web/packages/GLMpack/index.html}{CRAN})
 \vspace{-0.27cm}
-\item[] {\tt GLMpack}: {\tt R} Package to Accompany \textit{Generalized Linear Models: A Unified Approach} (2nd ed.) by Jeff Gill and Michelle Torres (\textit{in development})
+\item[] {\tt BlockExperiments}: {\tt R} Package to Use Ordinal Variables for Blocking (\textit{in development})
 \vspace{-0.27cm}
 \item[] \texttt{Python}, SQL, AWS, Docker, GitHub, \LaTeX, Qualtrics, \texttt{Stata}, \texttt{SPSS} 
 \end{enumerate}
@@ -390,6 +397,8 @@ MCMC Dynamics Measuring State Ideology with Spatial Variance Co-Matrices
 \section*{Awards and Grants}
 
 \begin{enumerate}[leftmargin=!,labelindent=20pt,itemindent=-20pt]
+\item[] Gill Family Foundation Scholarship, 2019
+\vspace{-0.27cm}
 \item[] AAPOR Travel Award, 2019
 \vspace{-0.27cm}
 \item[] BITSS Scholarship for Research Transparency and Reproducibility Training (RT2), 2018 

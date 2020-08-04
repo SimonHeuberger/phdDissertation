@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: /Users/simonheuberger/dissertation/diss/money/funding/kerwin_doctoral_fellowship_2020/.texpadtmp/+++05_proposal.aux
+The style file: chicago.bst
+Database file #1: /Users/simonheuberger/Insync/bib-files/all-together.bib.bib
+Warning--no number and no volume in coppock_2019_validating
+Warning--page numbers missing in iyengar_framing_1996
+You've used 50 entries,
+            2861 wiz_defined-function locations,
+            900 strings with 12597 characters,
+and the built_in function-call counts, 31931 in all, are:
+= -- 2615
+> -- 2143
+< -- 4
++ -- 618
+- -- 770
+* -- 2639
+:= -- 5992
+add.period$ -- 155
+call.type$ -- 50
+change.case$ -- 324
+chr.to.int$ -- 50
+cite$ -- 52
+duplicate$ -- 935
+empty$ -- 2086
+format.name$ -- 854
+if$ -- 5873
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 66
+newline$ -- 253
+num.names$ -- 510
+pop$ -- 254
+preamble$ -- 1
+purify$ -- 640
+quote$ -- 0
+skip$ -- 985
+stack$ -- 0
+substring$ -- 1715
+swap$ -- 295
+text.length$ -- 4
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 840
+warning$ -- 2
+while$ -- 523
+width$ -- 0
+write$ -- 682
+(There were 2 warnings)
