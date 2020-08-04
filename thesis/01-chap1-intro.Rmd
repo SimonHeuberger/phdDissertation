@@ -4,7 +4,6 @@
 Some general text about surveys and survey experiments. Basically the abstract, but longer, more elaborate.
 -->
 
-testing stuff
 
 ## Ordinal Variables {#intro-ordinal}
 
