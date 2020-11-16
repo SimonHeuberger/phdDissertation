@@ -14,7 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r include=FALSE}
 
 library(stargazer)
-library(here)
 
 
 #### The main idea here is showing that that the binning matters in the polr() sense ####
