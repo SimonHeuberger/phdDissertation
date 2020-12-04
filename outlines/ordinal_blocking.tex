@@ -1,4 +1,6 @@
-\input{/Users/simonheuberger/Dropbox/work/latex/preamble.tex}
+\documentclass[12pt]{article}
+
+\input{\string~"/Insync/templates/preamble2"}
  
 \title{Ordinal Variables for Blocking}
 
@@ -423,20 +425,45 @@
 					\end{coi}
 				\item I need to speak more with Jeff/Ryan to figure this out. I'll pick this up again when the comprehensive framing draft is done and ordinal missing has been signed off on
 				\item I emailed Jeff and Ryan the current chapter, where we are, what the next steps should be etc. and asked Eileen to set up a doodle for a zoom call
-				\item \hl{Waiting for input from Jeff and Ryan/zoom call}
+				\item I spoke with Jeff. Ryan never responded or filled in the Doodle
+			\end{coi}
+		\item \hl{Crispify writing}
+			\begin{coi}
+				\item 2.1 I'm missing an opportunity to bring in Covid here. A paragraph that says ``what if we did this today?" would be good, about the human expectations connected with this. The Kahnemann example even talks about an Asian diseas, so make it relevant to today. Because everyone will think about Covid when they read about ``Asian disease"
+				\item Define Mahalanobis and Euclidian distance in mathematical terms (i.e. the algebraic formulas) (bottom of p. 10). I can move the MD formula up from a later page, but make it an equation (i.e. in the middle of the page, not in-line)
+				\item Figure 2.2: Make the sections where the graphs overlap black (not grey). Add to the legend that the then-black sections show where randomized and blocked overlap (that wasn't clear to Jeff)
+				\item I also need to talk more about figure 2.2 in the text. What does it mean that these distributions are different and imbalanced? I only have one sentence about this figure at the moment
+				\item Discuss the ANES when I first mention it. Pretend that I'm talking to someone who's never heard of it before. Explain what it is etc.
+				\item Not technical enough, not enough background maths in general. Put some algebra/formulas back in from Ryan (that I had originally taken out again), but put them in my own notation
+				\item Make the chapter stand on its own by repeating things from the introduction a bit. ``Recall that ...", ``As noted in chapter 1 ..." etc. 
+				\item Table 2.1: Make the vertical bars bigger or bold. Line up the bars vertically. That can be done with the {tabular} command. \begin{verbatim}
+					\begin{tabular}{@{}lr@{$\quad[$}r@{$;$ }r@{$]$ }r@{$\quad[$}\end{verbatim}
+					\begin{verbatim}r@{$;$ }r@{$]$}@{}}\end{verbatim}
+ 				\item 2.3.2 Add some stuff about what a placebo regression is, some background, some citations
+ 				\item Figure 2.4: Come up with some bolder colors. Experiment with other colors that are stronger, more forceful. Leave overlapping part as it is (i.e. don't make that one black)
+			\end{coi}
+		\item Simulations
+			\begin{coi}
+				\item Use the ANES data and block it into 5 treatment groups, once with the ordered categories, once with the ANES categories. Calculate differing group means, within-group and between-group variances
+				\item That's not a simulation at the moment, since I can only do that once. Jeff told me to do that, then we'll address the next steps
+				\item I got the analysis and a great table to the group means. I also got all the output for the variances. Now I need to process that output into a nice table as well
+				\item \hl{Set up table for group variances}
 			\end{coi}
 	\end{coi}
+	
+
+	
 	
 	
 \section*{Theory}
 	\begin{coi}
 		\item Write up the \texttt{shiny} environment in the appendix
-		\item \hl{Emphasize machine learning in the write-up}
-			\begin{coi}
-				\item Model training is what it's all about
-				\item People are being misclassified based on arbitrary numeric values
-			\end{coi}
-		\item Note down the differences between number of education categories in ANES and CCES. This is a valuable contribution and great application advice for use by social scientists
+%		\item \hl{Emphasize machine learning in the write-up}
+%			\begin{coi}
+%				\item Model training is what it's all about
+%				\item People are being misclassified based on arbitrary numeric values
+%			\end{coi}
+%		\item Note down the differences between number of education categories in ANES and CCES. This is a valuable contribution and great application advice for use by social scientists
 	\end{coi}
 
 	

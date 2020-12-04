@@ -2,6 +2,28 @@
 
 ## Introduction {#ordblock-intro}
 
+```{r include=FALSE}
+drop.zero <- function (df, digits = 4, p, s, pad.char = NA, ...){
+    library(dplyr)
+    ldots <- list(...)
+    if (length(ldots) > 0) {
+        if (!is.null(ldots[["prefix"]]) & missing(p)) 
+            p <- ldots[["prefix"]]
+        if (!is.null(ldots[["suffix"]]) & missing(s)) 
+            s <- ldots[["suffix"]]
+    }
+    x <- dplyr::select_if(df, is.numeric)
+    for(i in 1:ncol(x)){
+      x[,i] <- round(as.numeric(x[,i]), digits)
+      x[,i] <- sprintf(paste0("%.", digits, "f"), x[,i])
+      x[,i] <- gsub("^0(?=\\.)|(?<=-)0", "", x[,i], perl = TRUE)
+    }
+    df[, colnames(x)] <- x
+    return(df)
+}
+```
+
+
 Survey experiments collect background information and attempt to uncover treatment effects on public opinion and political behavior. In order to identify such potential effects, the treatment groups need to be comparable. All treatment groups need to look the same in every measure, i.e. they must be balanced. This can be achieved through random assignment of participants to treatment groups. Randomization, i.e. flipping a coin to decide which treatment group a participant is assigned to, probabilistically results in balance based on the Law of Large Numbers [@urdan_statistics_2010]. For small samples, however, it can lead to serious imbalance. It can easily be that the treatment groups will not look the same. This can leave experimental results in statistically murky waters [@imai_quantitative_2018;@king_designing_1994;@fox_applied_2015]. In survey experiments, the overall sample size is often split across several treatment groups, which can exacerbate the problem. @chong_framing_2007, for instance, split 869 participants in a framing experiment on urban growth over 17 treatment groups, which leads to an average of just over 50 participants per group. Randomization is unlikely to lead to balanced treatment groups of this size. Researchers need to employ statistical methods to obtain balanced groups here. Blocking, i.e. arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries. 
 
 Blocking depends on covariates. In political science, many covariates with high predictive power are categorical variables, i.e. variables where the data can be divided into groups. These include  interval (ordered and evenly spaced, e.g. income) and ordinal (ordered and unevenly spaced, e.g. education) variables. To block, these variables are often made numeric, e.g. by assigning the numbers 1-4 to the variable categories. This is acceptable for interval variables as the evenly spaced numbers correspond to the evenly spaced categories. For ordinal variables, however, this can be problematic. An arbitrary evenly spaced string of numbers does not correspond to the unevenly spaced ordinal categories and may misrepresent the data. I propose an ordered probit threshold approach to circumvent this problem: This approach estimates an assumed underlying latent continuous structure underneath ordinal variables whose data-driven categories can then be used for blocking. By training a linear model on meaningful data, it creates numerical thresholds which partition the variable into regions corresponding to the ordinal categories and bins the observations between these thresholds according to the explanatory variables. These binned cases determine which of the original categories make sense given the underlying latent continuous structure. The result is a data-based and non-arbitrary re-estimated set of variable categories. Because of their data-driven estimation, these categories can be safely used for blocking. This approach allows researchers to block on ordinal variables in survey experiments without making unwarranted assumptions in terms of arbitrary numeric values whilst fully utilizing the ordinal information provided and respecting uneven spaces.
@@ -272,6 +294,330 @@ ggplot(gt2.df, aes(x=coefficient, fill=categories)) + geom_density(alpha=0.2, ae
 ```
 
 Both distributions center around zero, as is the statistical expectation. Upon closer inspection, the ordered probit categories are closer to the true values than the original categories on both mean (`r unname(round(tapply(gt2.df$coefficient, gt2.df$categories, mean)[2], digits = 3))` v. `r unname(round(tapply(gt2.df$coefficient, gt2.df$categories, mean)[1], digits = 3))`) and median (`r unname(round(tapply(gt2.df$coefficient, gt2.df$categories, median)[2], digits = 3))` v. `r unname(round(tapply(gt2.df$coefficient, gt2.df$categories, median)[1], digits = 3))`). This indicates slightly superior performance by the ordered probit categories.
+
+
+
+```{r Block-ANES-OP-categories, include=FALSE}
+
+df.an <- readRDS("data/blocking/df_an.RDS")
+df.op <- readRDS("data/blocking/df_op.RDS")
+
+for(i in 1:(df.an$education %>% unique %>% length)){
+  df.an[df.an$education == i, "education"] <- op.model.data$education %>% levels %>% .[i]
+}
+
+df.an$education <- factor(df.an$education, levels = op.model.data$education %>% levels)
+
+for(i in 1:(df.op$education %>% unique %>% length)){
+  df.op[df.op$education == i, "education"] <- op.model.data$education.new %>% levels %>% .[i]
+}
+
+df.op$education <- factor(df.op$education, levels = op.model.data$education.new %>% levels)
+assigned.an <- readRDS("data/blocking/assigned_an.RDS")
+assigned.op <- readRDS("data/blocking/assigned_op.RDS")
+
+an.t1 <- df.an[df.an$id %in% assigned.an$assg[[1]][,1],] %>% subset(., select=-c(id, education))
+an.t2 <- df.an[df.an$id %in% assigned.an$assg[[1]][,2],] %>% subset(., select=-c(id, education))
+an.t3 <- df.an[df.an$id %in% assigned.an$assg[[1]][,3],] %>% subset(., select=-c(id, education))
+an.t4 <- df.an[df.an$id %in% assigned.an$assg[[1]][,4],] %>% subset(., select=-c(id, education))
+an.t5 <- df.an[df.an$id %in% assigned.an$assg[[1]][,5],] %>% subset(., select=-c(id, education))
+
+op.t1 <- df.op[df.op$id %in% assigned.op$assg[[1]][,1],] %>% subset(., select=-c(id, education))
+op.t2 <- df.op[df.op$id %in% assigned.op$assg[[1]][,2],] %>% subset(., select=-c(id, education))
+op.t3 <- df.op[df.op$id %in% assigned.op$assg[[1]][,3],] %>% subset(., select=-c(id, education))
+op.t4 <- df.op[df.op$id %in% assigned.op$assg[[1]][,4],] %>% subset(., select=-c(id, education))
+op.t5 <- df.op[df.op$id %in% assigned.op$assg[[1]][,5],] %>% subset(., select=-c(id, education))
+
+
+### props of factor columns, except education ###
+
+list.props <- list()
+list.dfs <- list(an.t1, an.t2, an.t3, an.t4, an.t5,
+                 op.t1, op.t2, op.t3, op.t4, op.t5)
+n.tr <- 5
+an <- c()
+op <- c()
+
+for(w in 1:n.tr){
+  an[w] <- paste0("AN", w)
+  op[w] <- paste0("OP", w)
+}
+
+names(list.dfs) <- c(an, op)
+is.not.num <- function(x) !is.numeric(x)
+tmp <- dplyr::select_if(an.t1, is.not.num)
+
+for(x in 1:ncol(tmp)){
+  list.props[[x]] <- data.frame(matrix(NA, levels(tmp[, x]) %>% length, length(list.dfs)))
+  rownames(list.props[[x]]) <- levels(tmp[,x])
+  colnames(list.props[[x]]) <- names(list.dfs)
+}
+
+names(list.props) <- colnames(tmp)
+
+for(i in 1:ncol(tmp)){
+  for(y in 1:length(list.dfs)){
+    tmp.fac <- dplyr::select_if(list.dfs[[y]], is.not.num)
+    list.props[[i]][,y] <- prop.table(table(tmp.fac[,i]))
+  }
+}
+
+df.props <- plyr::ldply(list.props, data.frame, .id = NULL) 
+lev.names <- sapply(tmp, levels) %>% unlist
+lev.names["pid4"] <- "Something else"
+rownames(df.props) <- lev.names
+df.props <- drop.zero(df.props, digits = 3) %>%
+  .[c("AN1", "OP1", "AN2", "OP2", "AN3", "OP3", "AN4", "OP4", "AN5", "OP5")]
+
+
+### means of numeric columns ###
+
+list.means <- list()
+tmp2 <- dplyr::select_if(op.t1, is.numeric)
+
+for(x in 1:ncol(tmp2)){
+  list.means[[x]] <- data.frame(matrix(NA, 1, length(list.dfs)))
+  colnames(list.means[[x]]) <- names(list.dfs)
+}
+
+names(list.means) <- colnames(tmp2)
+
+for(i in 1:ncol(tmp2)){
+  for(y in 1:length(list.dfs)){
+    tmp.means <- dplyr::select_if(list.dfs[[y]], is.numeric)
+    list.means[[i]][,y] <- mean(tmp.means[,i]) %>% round(., digits = 3)
+  }
+}
+
+df.means <- plyr::ldply(list.means, data.frame, .id = NULL) %>%
+  .[c("AN1", "OP1", "AN2", "OP2", "AN3", "OP3", "AN4", "OP4", "AN5", "OP5")]
+rownames(df.means) <- colnames(tmp2) %>%
+  gsub("\\.", " ", .) %>%
+  tools::toTitleCase(.)
+
+
+### now education ###
+
+an.ed.t1 <- df.an[df.an$id %in% assigned.an$assg[[1]][,1],] %>% subset(., select=c(education))
+an.ed.t2 <- df.an[df.an$id %in% assigned.an$assg[[1]][,2],] %>% subset(., select=c(education))
+an.ed.t3 <- df.an[df.an$id %in% assigned.an$assg[[1]][,3],] %>% subset(., select=c(education))
+an.ed.t4 <- df.an[df.an$id %in% assigned.an$assg[[1]][,4],] %>% subset(., select=c(education))
+an.ed.t5 <- df.an[df.an$id %in% assigned.an$assg[[1]][,5],] %>% subset(., select=c(education))
+
+list.eds.an <- list(an.ed.t1, an.ed.t2, an.ed.t3, an.ed.t4, an.ed.t5)
+
+df.ed.an <- data.frame(matrix(NA, levels(an.ed.t1[,1]) %>% length, length(list.eds.an)))
+rownames(df.ed.an) <- levels(an.ed.t1[,1])
+colnames(df.ed.an) <- an
+
+for(i in 1:ncol(an.ed.t1)){
+  for(y in 1:length(list.eds.an)){
+    df.ed.an[,y] <- prop.table(table(list.eds.an[[y]][,i]))
+  }
+}
+
+df.ed.an <- drop.zero(df.ed.an, digits = 3)
+
+op.ed.t1 <- df.op[df.op$id %in% assigned.op$assg[[1]][,1],] %>% subset(., select=c(education))
+op.ed.t2 <- df.op[df.op$id %in% assigned.op$assg[[1]][,2],] %>% subset(., select=c(education))
+op.ed.t3 <- df.op[df.op$id %in% assigned.op$assg[[1]][,3],] %>% subset(., select=c(education))
+op.ed.t4 <- df.op[df.op$id %in% assigned.op$assg[[1]][,4],] %>% subset(., select=c(education))
+op.ed.t5 <- df.op[df.op$id %in% assigned.op$assg[[1]][,5],] %>% subset(., select=c(education))
+
+list.eds.op <- list(op.ed.t1, op.ed.t2, op.ed.t3, op.ed.t4, op.ed.t5)
+df.ed.op <- data.frame(matrix(NA, levels(op.ed.t1[,1]) %>% length, length(list.eds.op)))
+rownames(df.ed.op) <- levels(op.ed.t1[,1])
+colnames(df.ed.op) <- op
+
+for(i in 1:ncol(op.ed.t1)){
+  for(y in 1:length(list.eds.op)){
+    df.ed.op[,y] <- prop.table(table(list.eds.op[[y]][,i]))
+  }
+}
+
+df.ed.op <- drop.zero(df.ed.op, digits = 3)
+top <- data.frame(matrix(NA, 8, length(list.eds.op)))
+colnames(top) <- colnames(df.ed.op)
+rownames(top) <- rownames(df.ed.an)[1:8]
+bottom <- data.frame(matrix(NA, 2, length(list.eds.op)))
+colnames(bottom) <- colnames(top)
+rownames(bottom) <- rownames(df.ed.an)[14:15]
+df.ed.all <-rbind(top, df.ed.op, bottom) %>% cbind(df.ed.an, .) %>%
+  .[c("AN1", "OP1", "AN2", "OP2", "AN3", "OP3", "AN4", "OP4", "AN5", "OP5")]
+
+### combine and print (and manually adjust) factors, numerics, education ###
+
+df.all <- rbind(df.props, df.means, df.ed.all)
+tab <- stargazer(df.all, 
+                 summary = FALSE,
+                 header=FALSE,
+                 align = TRUE,
+                 title = "Blocking on ANES and Ordered Probit Education Categories",
+                 label = "education-blocked")
+st <- gsub("{c}", "{l}", tab, fixed = TRUE)
+cat(st)
+
+```
+
+
+\begin{table}[!htbp] \centering    
+\caption{Blocking on ANES and Ordered Probit Education Categories}    
+\label{education-blocked} 
+\resizebox{13cm}{!}{%
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{Group 1} & \multicolumn{2}{c}{Group 2} & \multicolumn{2}{c}{Group 3} & \multicolumn{2}{c}{Group 4} & \multicolumn{2}{c}{Group 5}\\ 
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} \\  
+\cline{2-3}
+\cline{4-5}
+\cline{6-7}
+\cline{8-9}
+\cline{10-11} \\[-1.8ex]
+\multicolumn{1}{l}{\textbf{Gender}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Male} & \multicolumn{1}{l}{.467} & \multicolumn{1}{l}{.468} & \multicolumn{1}{l}{.473} & \multicolumn{1}{l}{.481} & \multicolumn{1}{l}{.475} & \multicolumn{1}{l}{.463} & \multicolumn{1}{l}{.463} & \multicolumn{1}{l}{.468} & \multicolumn{1}{l}{.476} & \multicolumn{1}{l}{.473} \\  
+\multicolumn{1}{l}{Female} & \multicolumn{1}{l}{.533} & \multicolumn{1}{l}{.529} & \multicolumn{1}{l}{.524} & \multicolumn{1}{l}{.514} & \multicolumn{1}{l}{.522} & \multicolumn{1}{l}{.535} & \multicolumn{1}{l}{.533} & \multicolumn{1}{l}{.532} & \multicolumn{1}{l}{.521} & \multicolumn{1}{l}{.524} \\  
+\multicolumn{1}{l}{Other} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.005} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.002} & 
+\multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.003} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Race}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{White} & \multicolumn{1}{l}{.763} & \multicolumn{1}{l}{.751} & \multicolumn{1}{l}{.770} & \multicolumn{1}{l}{.778} & \multicolumn{1}{l}{.752} & \multicolumn{1}{l}{.743} & \multicolumn{1}{l}{.749} & \multicolumn{1}{l}{.746} & \multicolumn{1}{l}{.752} & \multicolumn{1}{l}{.770} \\  
+\multicolumn{1}{l}{African American} & \multicolumn{1}{l}{.095} & \multicolumn{1}{l}{.089} & \multicolumn{1}{l}{.090} & \multicolumn{1}{l}{.089} & \multicolumn{1}{l}{.106} & \multicolumn{1}{l}{.100} & \multicolumn{1}{l}{.094} & \multicolumn{1}{l}{.117} & \multicolumn{1}{l}{.110} & \multicolumn{1}{l}{.100} \\  
+\multicolumn{1}{l}{Asian} & \multicolumn{1}{l}{.032} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.041} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.032} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.029} \\  
+\multicolumn{1}{l}{Native American} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.005} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.006} & \multicolumn{1}{l}{.006} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{.006} & \multicolumn{1}{l}{.008} \\  
+\multicolumn{1}{l}{Hispanic} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.125} & \multicolumn{1}{l}{.095} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.111} & \multicolumn{1}{l}{.116} & \multicolumn{1}{l}{.124} & \multicolumn{1}{l}{.097} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.094} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Income}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Under 25,000} & \multicolumn{1}{l}{.206} & \multicolumn{1}{l}{.203} & \multicolumn{1}{l}{.198} & \multicolumn{1}{l}{.219} & \multicolumn{1}{l}{.224} & \multicolumn{1}{l}{.206} & \multicolumn{1}{l}{.216} & \multicolumn{1}{l}{.211} & \multicolumn{1}{l}{.211} & \multicolumn{1}{l}{.216} \\  
+\multicolumn{1}{l}{25,000-49,999} & \multicolumn{1}{l}{.246} & \multicolumn{1}{l}{.237} & \multicolumn{1}{l}{.246} & \multicolumn{1}{l}{.205} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.225} & \multicolumn{1}{l}{.211} & \multicolumn{1}{l}{.206} & \multicolumn{1}{l}{.217} & \multicolumn{1}{l}{.238} \\ 
+\multicolumn{1}{l}{50,000-749,999} & \multicolumn{1}{l}{.167} & \multicolumn{1}{l}{.175} & \multicolumn{1}{l}{.187} & \multicolumn{1}{l}{.178} & \multicolumn{1}{l}{.210} & \multicolumn{1}{l}{.173} & \multicolumn{1}{l}{.189} & \multicolumn{1}{l}{.208} & \multicolumn{1}{l}{.162} & \multicolumn{1}{l}{.181} \\  
+\multicolumn{1}{l}{75,000-99,999} & \multicolumn{1}{l}{.119} & \multicolumn{1}{l}{.135} & \multicolumn{1}{l}{.148} & \multicolumn{1}{l}{.133} & \multicolumn{1}{l}{.130} & \multicolumn{1}{l}{.151} & \multicolumn{1}{l}{.133} & \multicolumn{1}{l}{.127} & \multicolumn{1}{l}{.135} & \multicolumn{1}{l}{.119} \\  
+\multicolumn{1}{l}{100,000-124,999} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.090} & \multicolumn{1}{l}{.094} & \multicolumn{1}{l}{.095} & \multicolumn{1}{l}{.094} & \multicolumn{1}{l}{.092} & \multicolumn{1}{l}{.079} & \multicolumn{1}{l}{.087} & \multicolumn{1}{l}{.089} & \multicolumn{1}{l}{.092} \\  
+\multicolumn{1}{l}{125,000-149,999} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.049} & \multicolumn{1}{l}{.041} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.044} \\  
+\multicolumn{1}{l}{150,000-174,999} & \multicolumn{1}{l}{.046} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.041} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.043} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.044} & \multicolumn{1}{l}{.054} \\  
+\multicolumn{1}{l}{175,000 or more} & \multicolumn{1}{l}{.076} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{.063} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{.071} & \multicolumn{1}{l}{.079} & \multicolumn{1}{l}{.079} & \multicolumn{1}{l}{.079} & \multicolumn{1}{l}{.089} & \multicolumn{1}{l}{.056} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Employment}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Working} & \multicolumn{1}{l}{.646} & \multicolumn{1}{l}{.646} & \multicolumn{1}{l}{.649} & \multicolumn{1}{l}{.608} & \multicolumn{1}{l}{.600} & \multicolumn{1}{l}{.652} & \multicolumn{1}{l}{.624} & \multicolumn{1}{l}{.613} & \multicolumn{1}{l}{.622} & \multicolumn{1}{l}{.622} \\  
+\multicolumn{1}{l}{Unemployed} & \multicolumn{1}{l}{.056} & \multicolumn{1}{l}{.065} & \multicolumn{1}{l}{.057} & \multicolumn{1}{l}{.054} & \multicolumn{1}{l}{.063} & \multicolumn{1}{l}{.051} & \multicolumn{1}{l}{.051} & \multicolumn{1}{l}{.059} & \multicolumn{1}{l}{.075} & \multicolumn{1}{l}{.073} \\  
+\multicolumn{1}{l}{Retired} & \multicolumn{1}{l}{.183} & \multicolumn{1}{l}{.181} & \multicolumn{1}{l}{.184} & \multicolumn{1}{l}{.213} & \multicolumn{1}{l}{.203} & \multicolumn{1}{l}{.179} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.210} & \multicolumn{1}{l}{.192} & \multicolumn{1}{l}{.194} \\  
+\multicolumn{1}{l}{Disabled} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.043} & \multicolumn{1}{l}{.046} & \multicolumn{1}{l}{.051} & \multicolumn{1}{l}{.037} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.041} \\  
+\multicolumn{1}{l}{Homemaker} & \multicolumn{1}{l}{.049} & \multicolumn{1}{l}{.049} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.054} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.060} & \multicolumn{1}{l}{.063} & \multicolumn{1}{l}{.054} & \multicolumn{1}{l}{.049} \\  
+\multicolumn{1}{l}{Student} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.024} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{.025} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.029} & \multicolumn{1}{l}{.024} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{.019} & \multicolumn{1}{l}{.021} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Party ID}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Democrat} & \multicolumn{1}{l}{.314} & \multicolumn{1}{l}{.378} & \multicolumn{1}{l}{.367} & \multicolumn{1}{l}{.348} & \multicolumn{1}{l}{.338} & \multicolumn{1}{l}{.341} & \multicolumn{1}{l}{.378} & \multicolumn{1}{l}{.344} & \multicolumn{1}{l}{.378} & \multicolumn{1}{l}{.363} \\  
+\multicolumn{1}{l}{Republican} & \multicolumn{1}{l}{.279} & \multicolumn{1}{l}{.292} & \multicolumn{1}{l}{.279} & \multicolumn{1}{l}{.294} & \multicolumn{1}{l}{.317} & \multicolumn{1}{l}{.281} & \multicolumn{1}{l}{.308} & \multicolumn{1}{l}{.321} & \multicolumn{1}{l}{.295} & \multicolumn{1}{l}{.292} \\  
+\multicolumn{1}{l}{Independent} & \multicolumn{1}{l}{.362} & \multicolumn{1}{l}{.300} & \multicolumn{1}{l}{.330} & \multicolumn{1}{l}{.324} & \multicolumn{1}{l}{.311} & \multicolumn{1}{l}{.333} & \multicolumn{1}{l}{.284} & \multicolumn{1}{l}{.302} & \multicolumn{1}{l}{.292} & \multicolumn{1}{l}{.321} \\  
+\multicolumn{1}{l}{Something else} & \multicolumn{1}{l}{.044} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.024} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.044} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.024} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{President}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Approve} & \multicolumn{1}{l}{.551} & \multicolumn{1}{l}{.533} & \multicolumn{1}{l}{.514} & \multicolumn{1}{l}{.524} & \multicolumn{1}{l}{.502} & \multicolumn{1}{l}{.535} & \multicolumn{1}{l}{.522} & \multicolumn{1}{l}{.522} & \multicolumn{1}{l}{.544} & \multicolumn{1}{l}{.519} \\  
+\multicolumn{1}{l}{Disapprove} & \multicolumn{1}{l}{.449} & \multicolumn{1}{l}{.467} & \multicolumn{1}{l}{.486} & \multicolumn{1}{l}{.476} & \multicolumn{1}{l}{.498} & \multicolumn{1}{l}{.465} & \multicolumn{1}{l}{.478} & \multicolumn{1}{l}{.478} & \multicolumn{1}{l}{.456} & \multicolumn{1}{l}{.481} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Min. Wage}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Raised} & \multicolumn{1}{l}{.648} & \multicolumn{1}{l}{.635} & \multicolumn{1}{l}{.621} & \multicolumn{1}{l}{.630} & \multicolumn{1}{l}{.644} & \multicolumn{1}{l}{.662} & \multicolumn{1}{l}{.619} & \multicolumn{1}{l}{.637} & \multicolumn{1}{l}{.681} & \multicolumn{1}{l}{.649} \\  
+\multicolumn{1}{l}{Kept the same} & \multicolumn{1}{l}{.302} & \multicolumn{1}{l}{.303} & \multicolumn{1}{l}{.302} & \multicolumn{1}{l}{.289} & \multicolumn{1}{l}{.308} & \multicolumn{1}{l}{.273} & \multicolumn{1}{l}{.310} & \multicolumn{1}{l}{.308} & \multicolumn{1}{l}{.251} & \multicolumn{1}{l}{.298} \\  
+\multicolumn{1}{l}{Lowered} & \multicolumn{1}{l}{.019} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.029} & \multicolumn{1}{l}{.013} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.025} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{.025} & \multicolumn{1}{l}{.013} \\  
+\multicolumn{1}{l}{Eliminated} & \multicolumn{1}{l}{.032} & \multicolumn{1}{l}{.041} & \multicolumn{1}{l}{.051} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.046} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.043} & \multicolumn{1}{l}{.040} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Country}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Right direction} & \multicolumn{1}{l}{.290} & \multicolumn{1}{l}{.292} & \multicolumn{1}{l}{.252} & \multicolumn{1}{l}{.251} & \multicolumn{1}{l}{.249} & \multicolumn{1}{l}{.252} & \multicolumn{1}{l}{.267} & \multicolumn{1}{l}{.265} & \multicolumn{1}{l}{.268} & \multicolumn{1}{l}{.267} \\  
+\multicolumn{1}{l}{Wrong track} & \multicolumn{1}{l}{.710} & \multicolumn{1}{l}{.708} & \multicolumn{1}{l}{.748} & \multicolumn{1}{l}{.749} & \multicolumn{1}{l}{.751} & \multicolumn{1}{l}{.748} & \multicolumn{1}{l}{.733} & \multicolumn{1}{l}{.735} & \multicolumn{1}{l}{.732} & \multicolumn{1}{l}{.733} \\ 
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Age}} & \multicolumn{1}{l}{48.548} & \multicolumn{1}{l}{48.957} & \multicolumn{1}{l}{48.949} & \multicolumn{1}{l}{49.54} & \multicolumn{1}{l}{48.811} & \multicolumn{1}{l}{47.157} & \multicolumn{1}{l}{49.702} & \multicolumn{1}{l}{49.773} & \multicolumn{1}{l}{49.1} & \multicolumn{1}{l}{49.683} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Feel Trump}} & \multicolumn{1}{l}{34.695} & \multicolumn{1}{l}{34.378} & \multicolumn{1}{l}{37.278} & \multicolumn{1}{l}{36.394} & \multicolumn{1}{l}{40.579} & \multicolumn{1}{l}{36.241} & \multicolumn{1}{l}{35.767} & \multicolumn{1}{l}{38.584} & \multicolumn{1}{l}{34.59} & \multicolumn{1}{l}{37.313} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Education}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Up to 1st} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.002} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{1st-4th} & \multicolumn{1}{l}{.002} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{5th-6th} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{7th-8th} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.005} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.005} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{9th} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.010} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{10th} & \multicolumn{1}{l}{.010} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.010} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{11th} & \multicolumn{1}{l}{.013} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{12th} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{HS grad} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.068} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.067} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.068} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.068} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.067} \\  
+\multicolumn{1}{l}{Some college} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.389} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.390} & \multicolumn{1}{l}{.216} & \multicolumn{1}{l}{.389} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.390} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.392} \\  
+\multicolumn{1}{l}{Associate} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.240} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.238} & \multicolumn{1}{l}{.137} & \multicolumn{1}{l}{.240} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.238} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.238} \\  
+\multicolumn{1}{l}{Bachelor's} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.265} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.265} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.263} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.265} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.265} \\  
+\multicolumn{1}{l}{Master's} & \multicolumn{1}{l}{.121} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.121} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.122} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.121} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.122} & \multicolumn{1}{l}{.038} \\  
+\multicolumn{1}{l}{Professional} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.024} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{Doctorate} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} \\ 
+\hline \\[-1.8ex]  
+\end{tabular}}
+\end{table}
+
+
+```{r include=FALSE}
+
+# compare treatment groups in AN with treatment groups in OP
+
+list.dfs.var <- list.dfs
+
+for(x in 1:(length(list.dfs)/2)){
+  list.dfs.var[[x]]$cat <- rep(paste0("AN", x), nrow(list.dfs.var[[x]])) %>% as.factor
+  list.dfs.var[[x+5]]$cat <- rep(paste0("OP", x), nrow(list.dfs.var[[x+5]])) %>% as.factor
+}
+
+list.dfs.t <- list()
+
+for(x in 1:(length(list.dfs)/2)){
+  list.dfs.t[[x]] <- c(list.dfs.var[x], list.dfs.var[x+5]) %>%
+    ldply(., data.frame) %>% subset(., select =-c(.id))
+}
+
+num.res <- rep(list(list()), 2)
+names(num.res) <- c("aov.sum", "aov.tukey")
+list.dfs.num.aov <- rep(list(num.res), 5)
+names(list.dfs.num.aov) <- c("T1", "T2", "T3", "T4", "T5")
+
+for(t in 1:length(list.dfs.num.aov)){
+  for(w in 1:ncol(dplyr::select_if(list.dfs.t[[1]], is.numeric))){
+    aa <- dplyr::select_if(list.dfs.t[[t]], is.numeric)
+    bb <- cbind(aa, list.dfs.t[[t]]$cat)
+    colnames(bb) <- c(colnames(aa), "cat")
+    aov.out <- aov(bb[,w] ~ bb$cat)
+    list.dfs.num.aov[[t]]$aov.sum[[w]] <- summary(aov.out)
+    names(list.dfs.num.aov[[t]]$aov.sum)[[w]] <- colnames(bb)[w]
+    list.dfs.num.aov[[t]]$aov.tukey[[w]] <- TukeyHSD(aov.out)
+    names(list.dfs.num.aov[[t]]$aov.tukey)[[w]] <- colnames(bb)[w]
+    # num.aov.sum[[w]] <- summary(aov.out)
+    # names(num.aov.sum)[[w]] <- paste0(colnames(bb)[w], ".sum")
+    # num.aov.tukey[[w]] <- TukeyHSD(aov.out)
+    # names(num.aov.tukey)[[w]] <- paste0(colnames(bb)[w], ".tukey")
+  }
+}
+
+fac.res <- rep(list(list()), 2)
+names(fac.res) <- c("glm.sum", "glm.anov")
+list.dfs.fac.aov <- rep(list(fac.res), 5)
+names(list.dfs.fac.aov) <- c("T1", "T2", "T3", "T4", "T5")
+
+for(t in 1:length(list.dfs.num.aov)){
+  for(w in 1:(ncol(dplyr::select_if(list.dfs.t[[1]], is.not.num))-1)){
+    my.dat <- dplyr::select_if(list.dfs.t[[t]], is.not.num)
+    my.mod <- glm(my.dat[,w] ~ my.dat$cat, family = "binomial")
+    list.dfs.fac.aov[[t]]$glm.sum[[w]] <- summary(my.mod)
+    names(list.dfs.fac.aov[[t]]$glm.sum)[[w]] <- colnames(my.dat)[w]
+    list.dfs.fac.aov[[t]]$glm.anov[[w]] <- anova(my.mod, test = "Chisq")
+    names(list.dfs.fac.aov[[t]]$glm.anov)[[w]] <- colnames(my.dat)[w]
+  }
+}
+
+list.dfs.num.aov
+list.dfs.fac.aov
+# diff: difference between means of the two groups
+# lwr, upr: the lower and the upper end point of the confidence interval at 95% (default)
+# p adj: p-value after adjustment for the multiple comparisons.
+
+# now to make all of that into tables ... 
+# de <- anova(my.mod, test = "Chisq")
+# stargazer(de)
+
+```
 
 
 

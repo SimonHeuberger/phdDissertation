@@ -1,39 +1,44 @@
-This is BibTeX, Version 0.99d (TeX Live 2016)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+This is BibTeX, Version 0.99d (TeX Live 2020)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: /Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/framing.aux
-The style file: /usr/local/texlive/2016/texmf-dist/bibtex/bst/meins/meins.bst.bst
+I couldn't open style file /usr/local/texlive/2016/texmf-dist/bibtex/bst/meins/meins.bst.bst
+---line 19 of file /Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/framing.aux
+ : \bibstyle{/usr/local/texlive/2016/texmf-dist/bibtex/bst/meins/meins.bst
+ :                                                                        }
+I'm skipping whatever remains of this command
 I found no \citation commands---while reading file /Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/framing.aux
 I found no \bibdata command---while reading file /Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/framing.aux
+I found no style file---while reading file /Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/framing.aux
 You've used 0 entries,
-            2859 wiz_defined-function locations,
-            611 strings with 5025 characters,
-and the built_in function-call counts, 17 in all, are:
+            0 wiz_defined-function locations,
+            84 strings with 669 characters,
+and the built_in function-call counts, 0 in all, are:
 = -- 0
 > -- 0
 < -- 0
 + -- 0
 - -- 0
 * -- 0
-:= -- 7
+:= -- 0
 add.period$ -- 0
 call.type$ -- 0
 change.case$ -- 0
 chr.to.int$ -- 0
 cite$ -- 0
 duplicate$ -- 0
-empty$ -- 1
+empty$ -- 0
 format.name$ -- 0
-if$ -- 1
-int.to.chr$ -- 1
+if$ -- 0
+int.to.chr$ -- 0
 int.to.str$ -- 0
 missing$ -- 0
-newline$ -- 3
+newline$ -- 0
 num.names$ -- 0
 pop$ -- 0
-preamble$ -- 1
+preamble$ -- 0
 purify$ -- 0
 quote$ -- 0
-skip$ -- 1
+skip$ -- 0
 stack$ -- 0
 substring$ -- 0
 swap$ -- 0
@@ -44,5 +49,5 @@ type$ -- 0
 warning$ -- 0
 while$ -- 0
 width$ -- 0
-write$ -- 2
-(There were 2 error messages)
+write$ -- 0
+(There were 4 error messages)

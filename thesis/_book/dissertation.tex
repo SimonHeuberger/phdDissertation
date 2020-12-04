@@ -371,7 +371,95 @@ To test this, each blocking/regression process for each set of categories is rep
 \caption{\label{fig:Density-Plot-Placebo-Treatment}Distribution of placebo treatment coefficients by education model\label{DensPlacTreat}}
 \end{figure}
 Both distributions center around zero, as is the statistical expectation. Upon closer inspection, the ordered probit categories are closer to the true values than the original categories on both mean (-0.05 v. 0.019) and median (-0.07 v. -0.01). This indicates slightly superior performance by the ordered probit categories.
-
+\begin{table}[!htbp] \centering    
+\caption{Blocking on ANES and Ordered Probit Education Categories}    
+\label{education-blocked} 
+\resizebox{13cm}{!}{%
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{Group 1} & \multicolumn{2}{c}{Group 2} & \multicolumn{2}{c}{Group 3} & \multicolumn{2}{c}{Group 4} & \multicolumn{2}{c}{Group 5}\\ 
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} & \multicolumn{1}{l}{AN} & \multicolumn{1}{l}{OP} \\  
+\cline{2-3}
+\cline{4-5}
+\cline{6-7}
+\cline{8-9}
+\cline{10-11} \\[-1.8ex]
+\multicolumn{1}{l}{\textbf{Gender}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Male} & \multicolumn{1}{l}{.467} & \multicolumn{1}{l}{.468} & \multicolumn{1}{l}{.473} & \multicolumn{1}{l}{.481} & \multicolumn{1}{l}{.475} & \multicolumn{1}{l}{.463} & \multicolumn{1}{l}{.463} & \multicolumn{1}{l}{.468} & \multicolumn{1}{l}{.476} & \multicolumn{1}{l}{.473} \\  
+\multicolumn{1}{l}{Female} & \multicolumn{1}{l}{.533} & \multicolumn{1}{l}{.529} & \multicolumn{1}{l}{.524} & \multicolumn{1}{l}{.514} & \multicolumn{1}{l}{.522} & \multicolumn{1}{l}{.535} & \multicolumn{1}{l}{.533} & \multicolumn{1}{l}{.532} & \multicolumn{1}{l}{.521} & \multicolumn{1}{l}{.524} \\  
+\multicolumn{1}{l}{Other} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.005} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.002} & 
+\multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.003} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Race}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{White} & \multicolumn{1}{l}{.763} & \multicolumn{1}{l}{.751} & \multicolumn{1}{l}{.770} & \multicolumn{1}{l}{.778} & \multicolumn{1}{l}{.752} & \multicolumn{1}{l}{.743} & \multicolumn{1}{l}{.749} & \multicolumn{1}{l}{.746} & \multicolumn{1}{l}{.752} & \multicolumn{1}{l}{.770} \\  
+\multicolumn{1}{l}{African American} & \multicolumn{1}{l}{.095} & \multicolumn{1}{l}{.089} & \multicolumn{1}{l}{.090} & \multicolumn{1}{l}{.089} & \multicolumn{1}{l}{.106} & \multicolumn{1}{l}{.100} & \multicolumn{1}{l}{.094} & \multicolumn{1}{l}{.117} & \multicolumn{1}{l}{.110} & \multicolumn{1}{l}{.100} \\  
+\multicolumn{1}{l}{Asian} & \multicolumn{1}{l}{.032} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.041} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.032} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.029} \\  
+\multicolumn{1}{l}{Native American} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.005} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{.006} & \multicolumn{1}{l}{.006} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{.006} & \multicolumn{1}{l}{.008} \\  
+\multicolumn{1}{l}{Hispanic} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.125} & \multicolumn{1}{l}{.095} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.111} & \multicolumn{1}{l}{.116} & \multicolumn{1}{l}{.124} & \multicolumn{1}{l}{.097} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.094} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Income}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Under 25,000} & \multicolumn{1}{l}{.206} & \multicolumn{1}{l}{.203} & \multicolumn{1}{l}{.198} & \multicolumn{1}{l}{.219} & \multicolumn{1}{l}{.224} & \multicolumn{1}{l}{.206} & \multicolumn{1}{l}{.216} & \multicolumn{1}{l}{.211} & \multicolumn{1}{l}{.211} & \multicolumn{1}{l}{.216} \\  
+\multicolumn{1}{l}{25,000-49,999} & \multicolumn{1}{l}{.246} & \multicolumn{1}{l}{.237} & \multicolumn{1}{l}{.246} & \multicolumn{1}{l}{.205} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.225} & \multicolumn{1}{l}{.211} & \multicolumn{1}{l}{.206} & \multicolumn{1}{l}{.217} & \multicolumn{1}{l}{.238} \\ 
+\multicolumn{1}{l}{50,000-749,999} & \multicolumn{1}{l}{.167} & \multicolumn{1}{l}{.175} & \multicolumn{1}{l}{.187} & \multicolumn{1}{l}{.178} & \multicolumn{1}{l}{.210} & \multicolumn{1}{l}{.173} & \multicolumn{1}{l}{.189} & \multicolumn{1}{l}{.208} & \multicolumn{1}{l}{.162} & \multicolumn{1}{l}{.181} \\  
+\multicolumn{1}{l}{75,000-99,999} & \multicolumn{1}{l}{.119} & \multicolumn{1}{l}{.135} & \multicolumn{1}{l}{.148} & \multicolumn{1}{l}{.133} & \multicolumn{1}{l}{.130} & \multicolumn{1}{l}{.151} & \multicolumn{1}{l}{.133} & \multicolumn{1}{l}{.127} & \multicolumn{1}{l}{.135} & \multicolumn{1}{l}{.119} \\  
+\multicolumn{1}{l}{100,000-124,999} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.090} & \multicolumn{1}{l}{.094} & \multicolumn{1}{l}{.095} & \multicolumn{1}{l}{.094} & \multicolumn{1}{l}{.092} & \multicolumn{1}{l}{.079} & \multicolumn{1}{l}{.087} & \multicolumn{1}{l}{.089} & \multicolumn{1}{l}{.092} \\  
+\multicolumn{1}{l}{125,000-149,999} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.049} & \multicolumn{1}{l}{.041} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.044} \\  
+\multicolumn{1}{l}{150,000-174,999} & \multicolumn{1}{l}{.046} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.041} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.043} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.044} & \multicolumn{1}{l}{.054} \\  
+\multicolumn{1}{l}{175,000 or more} & \multicolumn{1}{l}{.076} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{.063} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{.071} & \multicolumn{1}{l}{.079} & \multicolumn{1}{l}{.079} & \multicolumn{1}{l}{.079} & \multicolumn{1}{l}{.089} & \multicolumn{1}{l}{.056} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Employment}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Working} & \multicolumn{1}{l}{.646} & \multicolumn{1}{l}{.646} & \multicolumn{1}{l}{.649} & \multicolumn{1}{l}{.608} & \multicolumn{1}{l}{.600} & \multicolumn{1}{l}{.652} & \multicolumn{1}{l}{.624} & \multicolumn{1}{l}{.613} & \multicolumn{1}{l}{.622} & \multicolumn{1}{l}{.622} \\  
+\multicolumn{1}{l}{Unemployed} & \multicolumn{1}{l}{.056} & \multicolumn{1}{l}{.065} & \multicolumn{1}{l}{.057} & \multicolumn{1}{l}{.054} & \multicolumn{1}{l}{.063} & \multicolumn{1}{l}{.051} & \multicolumn{1}{l}{.051} & \multicolumn{1}{l}{.059} & \multicolumn{1}{l}{.075} & \multicolumn{1}{l}{.073} \\  
+\multicolumn{1}{l}{Retired} & \multicolumn{1}{l}{.183} & \multicolumn{1}{l}{.181} & \multicolumn{1}{l}{.184} & \multicolumn{1}{l}{.213} & \multicolumn{1}{l}{.203} & \multicolumn{1}{l}{.179} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.210} & \multicolumn{1}{l}{.192} & \multicolumn{1}{l}{.194} \\  
+\multicolumn{1}{l}{Disabled} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.043} & \multicolumn{1}{l}{.046} & \multicolumn{1}{l}{.051} & \multicolumn{1}{l}{.037} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.041} \\  
+\multicolumn{1}{l}{Homemaker} & \multicolumn{1}{l}{.049} & \multicolumn{1}{l}{.049} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.054} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.060} & \multicolumn{1}{l}{.063} & \multicolumn{1}{l}{.054} & \multicolumn{1}{l}{.049} \\  
+\multicolumn{1}{l}{Student} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.024} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{.025} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.029} & \multicolumn{1}{l}{.024} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{.019} & \multicolumn{1}{l}{.021} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Party ID}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Democrat} & \multicolumn{1}{l}{.314} & \multicolumn{1}{l}{.378} & \multicolumn{1}{l}{.367} & \multicolumn{1}{l}{.348} & \multicolumn{1}{l}{.338} & \multicolumn{1}{l}{.341} & \multicolumn{1}{l}{.378} & \multicolumn{1}{l}{.344} & \multicolumn{1}{l}{.378} & \multicolumn{1}{l}{.363} \\  
+\multicolumn{1}{l}{Republican} & \multicolumn{1}{l}{.279} & \multicolumn{1}{l}{.292} & \multicolumn{1}{l}{.279} & \multicolumn{1}{l}{.294} & \multicolumn{1}{l}{.317} & \multicolumn{1}{l}{.281} & \multicolumn{1}{l}{.308} & \multicolumn{1}{l}{.321} & \multicolumn{1}{l}{.295} & \multicolumn{1}{l}{.292} \\  
+\multicolumn{1}{l}{Independent} & \multicolumn{1}{l}{.362} & \multicolumn{1}{l}{.300} & \multicolumn{1}{l}{.330} & \multicolumn{1}{l}{.324} & \multicolumn{1}{l}{.311} & \multicolumn{1}{l}{.333} & \multicolumn{1}{l}{.284} & \multicolumn{1}{l}{.302} & \multicolumn{1}{l}{.292} & \multicolumn{1}{l}{.321} \\  
+\multicolumn{1}{l}{Something else} & \multicolumn{1}{l}{.044} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.024} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.044} & \multicolumn{1}{l}{.030} & \multicolumn{1}{l}{.033} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.024} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{President}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Approve} & \multicolumn{1}{l}{.551} & \multicolumn{1}{l}{.533} & \multicolumn{1}{l}{.514} & \multicolumn{1}{l}{.524} & \multicolumn{1}{l}{.502} & \multicolumn{1}{l}{.535} & \multicolumn{1}{l}{.522} & \multicolumn{1}{l}{.522} & \multicolumn{1}{l}{.544} & \multicolumn{1}{l}{.519} \\  
+\multicolumn{1}{l}{Disapprove} & \multicolumn{1}{l}{.449} & \multicolumn{1}{l}{.467} & \multicolumn{1}{l}{.486} & \multicolumn{1}{l}{.476} & \multicolumn{1}{l}{.498} & \multicolumn{1}{l}{.465} & \multicolumn{1}{l}{.478} & \multicolumn{1}{l}{.478} & \multicolumn{1}{l}{.456} & \multicolumn{1}{l}{.481} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Min. Wage}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Raised} & \multicolumn{1}{l}{.648} & \multicolumn{1}{l}{.635} & \multicolumn{1}{l}{.621} & \multicolumn{1}{l}{.630} & \multicolumn{1}{l}{.644} & \multicolumn{1}{l}{.662} & \multicolumn{1}{l}{.619} & \multicolumn{1}{l}{.637} & \multicolumn{1}{l}{.681} & \multicolumn{1}{l}{.649} \\  
+\multicolumn{1}{l}{Kept the same} & \multicolumn{1}{l}{.302} & \multicolumn{1}{l}{.303} & \multicolumn{1}{l}{.302} & \multicolumn{1}{l}{.289} & \multicolumn{1}{l}{.308} & \multicolumn{1}{l}{.273} & \multicolumn{1}{l}{.310} & \multicolumn{1}{l}{.308} & \multicolumn{1}{l}{.251} & \multicolumn{1}{l}{.298} \\  
+\multicolumn{1}{l}{Lowered} & \multicolumn{1}{l}{.019} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.029} & \multicolumn{1}{l}{.013} & \multicolumn{1}{l}{.027} & \multicolumn{1}{l}{.025} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{.025} & \multicolumn{1}{l}{.013} \\  
+\multicolumn{1}{l}{Eliminated} & \multicolumn{1}{l}{.032} & \multicolumn{1}{l}{.041} & \multicolumn{1}{l}{.051} & \multicolumn{1}{l}{.052} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.046} & \multicolumn{1}{l}{.035} & \multicolumn{1}{l}{.043} & \multicolumn{1}{l}{.040} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Country}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Right direction} & \multicolumn{1}{l}{.290} & \multicolumn{1}{l}{.292} & \multicolumn{1}{l}{.252} & \multicolumn{1}{l}{.251} & \multicolumn{1}{l}{.249} & \multicolumn{1}{l}{.252} & \multicolumn{1}{l}{.267} & \multicolumn{1}{l}{.265} & \multicolumn{1}{l}{.268} & \multicolumn{1}{l}{.267} \\  
+\multicolumn{1}{l}{Wrong track} & \multicolumn{1}{l}{.710} & \multicolumn{1}{l}{.708} & \multicolumn{1}{l}{.748} & \multicolumn{1}{l}{.749} & \multicolumn{1}{l}{.751} & \multicolumn{1}{l}{.748} & \multicolumn{1}{l}{.733} & \multicolumn{1}{l}{.735} & \multicolumn{1}{l}{.732} & \multicolumn{1}{l}{.733} \\ 
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Age}} & \multicolumn{1}{l}{48.548} & \multicolumn{1}{l}{48.957} & \multicolumn{1}{l}{48.949} & \multicolumn{1}{l}{49.54} & \multicolumn{1}{l}{48.811} & \multicolumn{1}{l}{47.157} & \multicolumn{1}{l}{49.702} & \multicolumn{1}{l}{49.773} & \multicolumn{1}{l}{49.1} & \multicolumn{1}{l}{49.683} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Feel Trump}} & \multicolumn{1}{l}{34.695} & \multicolumn{1}{l}{34.378} & \multicolumn{1}{l}{37.278} & \multicolumn{1}{l}{36.394} & \multicolumn{1}{l}{40.579} & \multicolumn{1}{l}{36.241} & \multicolumn{1}{l}{35.767} & \multicolumn{1}{l}{38.584} & \multicolumn{1}{l}{34.59} & \multicolumn{1}{l}{37.313} \\  
+ & & & & & & & & & & \\
+\multicolumn{1}{l}{\textbf{Education}} & & & & & & & & & & \\  
+\multicolumn{1}{l}{Up to 1st} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.002} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{1st-4th} & \multicolumn{1}{l}{.002} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{5th-6th} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{7th-8th} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.005} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.005} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.003} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{9th} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.010} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{10th} & \multicolumn{1}{l}{.010} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.010} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{11th} & \multicolumn{1}{l}{.013} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.014} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{12th} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{HS grad} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.068} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.067} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.068} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.068} & \multicolumn{1}{l}{.190} & \multicolumn{1}{l}{.067} \\  
+\multicolumn{1}{l}{Some college} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.389} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.390} & \multicolumn{1}{l}{.216} & \multicolumn{1}{l}{.389} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.390} & \multicolumn{1}{l}{.214} & \multicolumn{1}{l}{.392} \\  
+\multicolumn{1}{l}{Associate} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.240} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.238} & \multicolumn{1}{l}{.137} & \multicolumn{1}{l}{.240} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.238} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.238} \\  
+\multicolumn{1}{l}{Bachelor's} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.265} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.265} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.263} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.265} & \multicolumn{1}{l}{.233} & \multicolumn{1}{l}{.265} \\  
+\multicolumn{1}{l}{Master's} & \multicolumn{1}{l}{.121} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.121} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.122} & \multicolumn{1}{l}{.040} & \multicolumn{1}{l}{.121} & \multicolumn{1}{l}{.038} & \multicolumn{1}{l}{.122} & \multicolumn{1}{l}{.038} \\  
+\multicolumn{1}{l}{Professional} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.024} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} \\  
+\multicolumn{1}{l}{Doctorate} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.021} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{.022} & \multicolumn{1}{l}{} \\ 
+\hline \\[-1.8ex]  
+\end{tabular}}
+\end{table}
 \hypertarget{ordblock-conclusion}{%
 \section{Conclusion}\label{ordblock-conclusion}}
 
@@ -1528,11 +1616,11 @@ Liberty & Acting without constraint & & Oppression & Dominate/Constrain others\\
 \end{tabular}}
 \label{framing-foundations}
 \end{table}
-Moral intuitions are a powerful psychological mechanism that underlies issue positions (Koleva et al., 2012). Care/Harm developed as the response to the adaptive challenge of protecting and caring for children. It makes us sensitive to signs of suffering and activates us to care for those who are being harmed. Fairness/Cheating developed as the response to acts of cooperation or selfishness that people show towards us. It makes us trust fair actors and punish cheaters. Loyalty/Betrayal developed to meet the adaptive challenge of forming and maintaining cohesive coalitions. It makes us reward loyalty and ostracize those who betray us. Authority/Subversion developed as the response to forging beneficial relationships within social hierarchies. It makes us sensitive to signs that people do not behave in accordance with their social position. Sanctity/Degradation developed as a response to the challenge of living in world full of pathogens and parasites. It binds us into moral communities by shared notions of sacredness. Liberty/Oppression developed as a response to the challenge of living in small groups whose members can dominate and constrain us. It makes us value freedom and reject repression.
+Moral intuitions are a powerful psychological mechanism that underlies issue positions (Koleva et al., 2012). Haidt and his colleagues argue that they intuitions are rooted in evolved mechanisms. They propose that Care/Harm developed as the response to the adaptive challenge of protecting and caring for children. It makes us sensitive to signs of suffering and activates us to care for those who are being harmed. Fairness/Cheating developed as the response to acts of cooperation or selfishness that people show towards us. It makes us trust fair actors and punish cheaters. Loyalty/Betrayal developed to meet the adaptive challenge of forming and maintaining cohesive coalitions. It makes us reward loyalty and ostracize those who betray us. Authority/Subversion developed as the response to forging beneficial relationships within social hierarchies. It makes us sensitive to signs that people do not behave in accordance with their social position. Sanctity/Degradation developed as a response to the challenge of living in world full of pathogens and parasites. It binds us into moral communities by shared notions of sacredness. Liberty/Oppression developed as a response to the challenge of living in small groups whose members can dominate and constrain us. It makes us value freedom and reject repression.
 
-Because of the deep connection between morals and emotions, people have a tendency to internalize and defend their values. This ``makes it very difficult for people to consider the possibility that there might really be more than one form of moral truth, or more than one valid framework for judging people or running a society'' (Haidt, 2012, p. 111). Haidt distinguishes the use of these foundations by ideology. Liberals are said to utilize a three-foundation morality, whereas conservatives allegedly use all six foundations. Additionally, both sides focus on different aspects in the three foundations they share (Care/Harm, Fairness/Cheating, Liberty/Oppression). Conservatives emphasize society's protection and security and aim to prevent losses and generally negative outcomes, while liberals emphasize the provision of welfare for others and aim to advance gains and generally positive outcomes. Both seek normatively `good' outcomes for society, but with different orientations (Janoff-Bulman, 2009; Janoff-Bulman \& Carnes, 2013; Janoff-Bulman et al., 2009).
+Because of the deep connection between morals and emotions, people have a tendency to internalize and defend their values. This ``makes it very difficult for people to consider the possibility that there might really be more than one form of moral truth, or more than one valid framework for judging people or running a society'' (Haidt, 2012, p. 111). Haidt distinguishes the use of these foundations by ideology. According to him, liberals tend to utilize a three-foundation morality, whereas conservatives allegedly lean towards using all six foundations. Additionally, both sides are said to focus on different aspects in the three foundations they share (Care/Harm, Fairness/Cheating, Liberty/Oppression): Conservatives are more likely to emphasize society's protection and security and aim to prevent losses and generally negative outcomes, while liberals tend to emphasize the provision of welfare for others and aim to advance gains and generally positive outcomes. Both seek normatively `good' outcomes for society, but with different orientations (Janoff-Bulman, 2009; Janoff-Bulman \& Carnes, 2013; Janoff-Bulman et al., 2009).
 
-While the liberal/conservative divide of course plays a role in opinion formation, it is not central to moral analyses. Liberals and conservatives differ on average with respect to the foundations, but the foundations themselves are what matter most. My focus lies on the juxtaposition of morality and self-interest.
+While the liberal/conservative divide of course plays a role in opinion formation, it is not central to moral analyses. While liberals and conservatives are said to display differing tendencies towards each individual foundation, the majority of people value all foundations. The foundations themselves, not party ID, are what matter most. I use the foundations as the building block of moral arguments in my juxtaposition of morality and self-interest.
 
 \hypertarget{framing-theory-self_interest}{%
 \subsection{Self-Interest}\label{framing-theory-self_interest}}
@@ -1569,14 +1657,19 @@ To measure self-interest, respondents answer a series of demographic questions r
 \hypertarget{framing-design-expectations}{%
 \subsection{Expectations}\label{framing-design-expectations}}
 
-Persuasion literature asserts that people with strongly held attitudes are not easily persuaded with arguments to the contrary. This indicates that it is difficult to move the attitudes of respondents who show high scores on moralization or self-interest, no matter what frame they are presented with. This in turn suggests that we can only move the attitudes of people who don't hold their attitudes strongly, i.e.~those who score in the lower range on moralization and self-interest. For the respondents with strongly held attitudes on the issue, their support/opposition for/to the issue should be statistically the same across all frames, since their attitudes are set and can't easily be moved. For the respondents without strongly held attitudes on the issue, the frames should move responses towards support or opposition, depending on the direction of the frame. For these people, we can explore whether the moral or the self-interest frames cause bigger shifts. Moral arguments are said to relate more strongly than non-moral ones since they are deeply connected to emotions. Non-moral arguments, on the other hand, are said to be more loosely connection to emotions and thus deemed less powerful (Haugtvedt \& Wegener, 1994; Johnson \& Eagly, 1989). This would suggest that moral frames exert a stronger influence on respondents' issue positioning than self-interest frames. I thus pose the following hypotheses:
+Moral arguments are said to relate more strongly than non-moral ones since they are deeply connected to emotions. Non-moral arguments, on the other hand, are said to be more loosely connection to emotions and thus deemed less powerful (Haugtvedt \& Wegener, 1994; Johnson \& Eagly, 1989). This would suggest that moral frames exert a stronger influence on respondents' issue positioning than self-interest frames. I thus pose the following hypothesis:
 
 \vspace{0.3cm}
 \begin{adjustwidth*}{+1cm}{+1cm}
-\noindent \textbf{H1.} Respondents with strongly held moral or self-interested attitudes are not moved by any frames.\\
+\noindent \textbf{H1.} Moral frames move people more than self-interest frames.\\
+
+<!--
+Respondents with strongly held moral or self-interested attitudes are not moved by any frames.\\
 \textbf{H2.} Respondents without strongly held attitudes are moved by self-interest and moral frames.\\
 \textbf{H3.} Respondents without strongly held attitudes are moved further by moral frames than self-interest frames.
 \end{adjustwidth*}
+--\textgreater{}
+
 \hypertarget{framing-data}{%
 \section{Data}\label{framing-data}}
 

@@ -1,4 +1,6 @@
-\input{/Users/simonheuberger/Dropbox/work/latex/preamble}
+\documentclass[12pt]{article}
+
+\input{\string~"/Insync/templates/preamble2"}
 
 \title{Framing}
 
@@ -135,52 +137,106 @@
 				\item My frames are not actually frames, since I'm describing different policies. To build stimuli appropriate for testing my theory, I need to keep the content (scene) the same across the various treatment groups but change what implications are emphasized, e.g. a low cost health care plan might save tax payer money or harm poor people. Set up a policy with some meat on it, something more substantial that is the same across treatment groups $\rightarrow$ DONE
 				\item Make frames a bit longer in terms of sentences. Have them read articles, bigger things, longer, more, not just one sentence $\rightarrow$ DONE
 			\end{coi}
-		\item Send chapter to Liz
-		\item \hl{Waiting for feedback from Liz}
-		\item \hl{Miscellaneous}
+		\item Miscellaneous
 			\begin{coi}
 				\item Palin example needs to go -- that's providing new (mis)information, not a frame $\rightarrow$ DONE
 				\item Cite literature to back up content in the introduction $\rightarrow$ DONE
 				\item I say in the introduction that morals have supplanted self-interest over time and recently. It sounds like I'm asserting that, when I'm actually just referring to what scholars are saying. Be more explicit and back it up, e.g.: Scholars suggest that morals have supplanted self-interest over time. Frank (2004), Haidt (2012) and several others argue that morals are more important now $\rightarrow$ DONE
+			\end{coi}
+		\item Send chapter to Liz
+		\item Questionnaire
+			\begin{coi}
+				\item Healthcare $\rightarrow$ DONE
+					\begin{coi}
+						\item Single-payer, tax-based, universal, pay healthcare by taxes, government hired the companies -- too direct, too detailed, take that out. ``Improving healthcare in the US", ``paid through a mix of individual and employer fees", keep everything much more vague, not many details so as not to put anyone off
+						\item Moral supporting: ``Affordable healthcare for everyone" -- that's self-interest. Find some form of ``this doesn't help/hurt you, but it will help poor/elderly people"
+						\item Moral opposing: Vulnerable/Elderly people will get substandard care, long lines, no appointments etc.
+						\item Self-interest supporting is good
+						\item Self-interest opposing: The typical person needs to pay more (move away from the autonomy of decisions here)
+					\end{coi}
+				\item Environment $\rightarrow$ DONE
+					\begin{coi}
+						\item Don't use climate change, stay with some kind of environmental restrictions/regulations, e.g. preventing companies from dumping chemicals into the water, something like that. But phrase it as generally as possible so as not to trigger anyone
+						\item Moral supporting restrictions: Poor people are harmed by companies without regulations
+						\item Moral opposing restrictions: Difficult for people to comply with regulations, poor people might lose their job when companies need to pay more. The people who deforest need money from logging, with restrictions they don't have any income any more. Same for fisheries
+						\item Self-interest supporting restrictions: Otherwise we might get cancer and die
+						\item Self-interest opposing restrictions: Restrictions costs money, you will pay more for products
+					\end{coi}
+				\item ``How much does Care/Harm and how much does self-interest matter to you?" -- I do that very well with the MFQ questions. Now I need to get a self-interest scale comparable to the MFQs that estimates, overall, how selfish (i.e. self-interested) a person is (WITHOUT asking about each issue, just asking in general) $\rightarrow$ DONE
+				\item shiny
+					\begin{coi}
+						\item Remove the last question about the code as it may deter people from completing since Lucid gives everyone an RID value when they complete $\rightarrow$ DONE
+						\item Do multiple attention checks in different formats (apparently important for Lucid). From Ryan: \href{https://www.qualtrics.com/blog/using-attention-checks-in-your-surveys-may-harm-data-quality/}{Qualtrics}, \href{https://onlinelibrary.wiley.com/doi/10.1111/ajps.12396}{Wiley} $\rightarrow$ DONE
+						\item Set up that each respondent randomly sees (and gets blocked on) either ordered probit or ANES $\rightarrow$ DONE
+						\item After speaking with Jeff and Ryan, here is the final setup: I split the sample into ANES and probit categories. Each respondent randomly gets one or the other. I save the assigned data for each set in separate folders. Probit respondents are in /seqblock.op, ANES respondents are in /seqblock.an. So I get two datasets per issue. I assign treatment for the issues independently, i.e. respondents are not assigned to the same treatment group for both issues. I speed things up a bit by incorporating observeEvent() into eventReactive() when treatment is assigned. That eliminates the additional download I had before. I block only on education (so I took pid out)
+					\end{coi}
+				\item \hl{Safe-guarding against file-write traffic jam}
+					\begin{coi}
+						\item I have tested it simultaneously on two laptops. When one laptop is accessing Dropox, the other simply waits, then accesses Dropbox itself. There is no error or other conflict. That means if 50 people click it at the same time, the 50th person would have a 1-minute lag. It's not ideal but not a big problem
+						\item Add one sentence in brackets to the assignment pages that it might take a bit for the code too load, that they please not quite the browser etc.
+					\end{coi}				
+			\end{coi}
+		\item \hl{Power analysis}
+			\begin{coi}
 				\item Do a power analysis to be sure that I have a chance to detect typical framing effects. There is an R function for that, use that (\texttt{declareDesign}?). Also 	email Jeff a reminder that he sends me slides for the sample size calculation
-				\item Do multiple attention checks in different formats (apparently important for Lucid). From Ryan: \href{https://www.qualtrics.com/blog/using-attention-checks-in-your-surveys-may-harm-data-quality/}{Qualtrics}, \href{https://onlinelibrary.wiley.com/doi/10.1111/ajps.12396}{Wiley}
+			\end{coi}
+		\item \hl{Crispify writing}
+			\begin{coi}
 				\item Top of p. 80:  See Jim Gibson, and others, add stuff on procedures vs outcomes
 				\item 4.2, middle of p. 82: See Brooks and Manza here on public opinion and welfare state support (since I'll use healthcare, especially)
 				\item Expand discussion of the limitations and problems with using MTurk for social research a bit, use \begin{verbatim} @huff_who_2015; @clifford_2015_samples; @stritch_2017_opportunities; @burnham_2018_mturk \end{verbatim} (all already downloaded)
 				\item Expand discussion of limitations and problems with using Lucid for social research a bit as well, use \begin{verbatim} @coppock_2019_validating \end{verbatim}
+				\item Add a few lines that I added a factual manipulation check (treatment-independent), \begin{verbatim} @kane_2019_harm \end{verbatim}
+				\item First paragraph p. 74: Use Rokeach (his book from the 1960s) for a more intuitive description of what it means to be moral, i.e. values as ``oughts" and ``shoulds". Either switch Skitka's (1), (2), (3) for Rokeach or say that Skitka says that people FEEL it's an objective truth (not that she's actually stating that morals are objective truths)
+				\item Second paragraph p. 74: This part meanders around, goes back and forth between issues and arguments/frames. Restructure it, make my point more clearly, it's a bit muddied and hard to follow now
+				\item There is a short article by Haidt that provides numerical means for liberals and conservatives. Include those numbers where I talk about the foundations. Don't use numbers for each foundation, use averages for all the conservative ones and the liberal ones. We want to have some idea of the effect sizes for the ideological differences for the foundations, something we can measure. Also add some more language that the distinctions Haidt makes are all tendencies, not more
+				\item Weeden and Kurzban: Dial it back a little, be less of a fan boy. I went too much to the other side. Present the other side more, the one I had too much of before (the one where self-interest is financial). Present both sides, then say which side I fall on. Also avoid first person when I talk about the side I fall on
+				\item Include argument why I choose environment as my second issue
+				\item Include the origins of the self-interest measurement questions (and some general citations for this)
 			\end{coi}
 	\end{coi}
 	
 
+\section*{Apply for new IRB approval $\rightarrow$ DONE}
+
+\vspace{0.4cm}
+
+\section*{Set up pre-registration on OSF (from RT2 training)}
+	\begin{coi}
+		\item Created account
+		\item \hl{Slowly fill in the details as I go along}
+		\item If I want to mention that in the paper, I can quote articles in the BITSS /readings folder
+		\item Note: Just because you have a pre-analysis plan doesn't mean that's all you can do with your data (and it doesn't mean exploratory analysis is now forbidden). If there is a good theoretical motivation that you can defend, then you can do that
+	\end{coi}
+
 \section*{Pre-test}
 	\begin{coi}
 		\item To test designed frames
-		\item 600 respondents, \$0.20 each
-	\end{coi}
-
-\section*{New IRB approval}
-	\begin{coi}
-		\item After pre-test, with final questionnaire
-	\end{coi}
-
-\section*{Pre-analysis plan and pre-registration (from RT2 training)}
-	\begin{coi}
-		\item After IRB approval is done
-		\item Articles about invisible null fundings in research community: Franco et al. 2014, Rosenthal 1979
-		\item Read Miguel et al. 2014 ``Promoting transparency in social science research" (in the BITSS /readings folder)
-		\item Just because you have a pre-analysis plan doesn't mean that's all you can do with your data (and it doesn't mean exploratory analysis is now forbidden). Just be careful why you're doing it. If it's to improve the p-value, obviously don't do it. If there is a good theoretical motivation that you can defend, then it might be a different story
-		\item Pre-registration can help with publication bias and improve meta-analysis
+		\item \hl{Set pre-test up according to Liz' emails}
+		\item 600 respondents, \$0.20 each (or 400 at \$0.40 each)
 	\end{coi}
 
 \section*{Field experiment}
 	\begin{coi}
-		\item After pre-analysis and pre-registration are done
-		\item Block on education as planned
-		\item Before I launch anything:
+		\item \hl{Lucid attention checks}
 			\begin{coi}
-				\item What variables am I blocking on?
-				\item Be INCREDIBLY careful with any randomization of response options. Many things in the code use the corresponding number for respondents' response selections, not the actual words, so messing with the order is a very delicate thing
-				\item Anything I might have missed somewhere?
+				\item Can Lucid weed out people who fail my attention checks so I don't have to pay for people who fail it? $\rightarrow$ asked them
+			\end{coi}
+		\item \hl{Code checks}
+			\begin{coi}
+				\item (Be INCREDIBLY careful with any randomization of response options. Many things in the code use the corresponding number for respondents' response selections, not the actual words, so messing with the order is a very delicate thing)
+				\item Are the education categories blocked like I want?
+				\item Are all the responses being saved to Dropbox like I want?
+				\item Do all the treatment group .txt files contain the correct corresponding frames?
+				\item Are the correct .txt files shown in the survey depending on the group I'm being blocked into?
+				\item Are the apostrophes working?
+				\item Are the words ``environment" and ``healthcare" in each frame setup (for the checks)?
+			\end{coi}
+		\item Final tasks
+			\begin{coi}
+				\item Do 200 trials, then see that everything was blocked properly for both sets of education categories (i.e. check that in R and on Dropbox)
+				\item Delete everything in all /alldata and /seqblock folders
+				\item Re-deploy app
 			\end{coi}
 	\end{coi}
 	
