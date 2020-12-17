@@ -169,83 +169,162 @@
 						\item Do multiple attention checks in different formats (apparently important for Lucid). From Ryan: \href{https://www.qualtrics.com/blog/using-attention-checks-in-your-surveys-may-harm-data-quality/}{Qualtrics}, \href{https://onlinelibrary.wiley.com/doi/10.1111/ajps.12396}{Wiley} $\rightarrow$ DONE
 						\item Set up that each respondent randomly sees (and gets blocked on) either ordered probit or ANES $\rightarrow$ DONE
 						\item After speaking with Jeff and Ryan, here is the final setup: I split the sample into ANES and probit categories. Each respondent randomly gets one or the other. I save the assigned data for each set in separate folders. Probit respondents are in /seqblock.op, ANES respondents are in /seqblock.an. So I get two datasets per issue. I assign treatment for the issues independently, i.e. respondents are not assigned to the same treatment group for both issues. I speed things up a bit by incorporating observeEvent() into eventReactive() when treatment is assigned. That eliminates the additional download I had before. I block only on education (so I took pid out)
-					\end{coi}
-				\item \hl{Safe-guarding against file-write traffic jam}
+					\end{coi}					
+				\item Safe-guarding against file-write traffic jam
 					\begin{coi}
 						\item I have tested it simultaneously on two laptops. When one laptop is accessing Dropox, the other simply waits, then accesses Dropbox itself. There is no error or other conflict. That means if 50 people click it at the same time, the 50th person would have a 1-minute lag. It's not ideal but not a big problem
-						\item Add one sentence in brackets to the assignment pages that it might take a bit for the code too load, that they please not quite the browser etc.
-					\end{coi}				
-			\end{coi}
-		\item \hl{Power analysis}
-			\begin{coi}
-				\item Do a power analysis to be sure that I have a chance to detect typical framing effects. There is an R function for that, use that (\texttt{declareDesign}?). Also 	email Jeff a reminder that he sends me slides for the sample size calculation
-			\end{coi}
-		\item \hl{Crispify writing}
-			\begin{coi}
-				\item Top of p. 80:  See Jim Gibson, and others, add stuff on procedures vs outcomes
-				\item 4.2, middle of p. 82: See Brooks and Manza here on public opinion and welfare state support (since I'll use healthcare, especially)
-				\item Expand discussion of the limitations and problems with using MTurk for social research a bit, use \begin{verbatim} @huff_who_2015; @clifford_2015_samples; @stritch_2017_opportunities; @burnham_2018_mturk \end{verbatim} (all already downloaded)
-				\item Expand discussion of limitations and problems with using Lucid for social research a bit as well, use \begin{verbatim} @coppock_2019_validating \end{verbatim}
-				\item Add a few lines that I added a factual manipulation check (treatment-independent), \begin{verbatim} @kane_2019_harm \end{verbatim}
-				\item First paragraph p. 74: Use Rokeach (his book from the 1960s) for a more intuitive description of what it means to be moral, i.e. values as ``oughts" and ``shoulds". Either switch Skitka's (1), (2), (3) for Rokeach or say that Skitka says that people FEEL it's an objective truth (not that she's actually stating that morals are objective truths)
-				\item Second paragraph p. 74: This part meanders around, goes back and forth between issues and arguments/frames. Restructure it, make my point more clearly, it's a bit muddied and hard to follow now
-				\item There is a short article by Haidt that provides numerical means for liberals and conservatives. Include those numbers where I talk about the foundations. Don't use numbers for each foundation, use averages for all the conservative ones and the liberal ones. We want to have some idea of the effect sizes for the ideological differences for the foundations, something we can measure. Also add some more language that the distinctions Haidt makes are all tendencies, not more
-				\item Weeden and Kurzban: Dial it back a little, be less of a fan boy. I went too much to the other side. Present the other side more, the one I had too much of before (the one where self-interest is financial). Present both sides, then say which side I fall on. Also avoid first person when I talk about the side I fall on
-				\item Include argument why I choose environment as my second issue
-				\item Include the origins of the self-interest measurement questions (and some general citations for this)
+						\item I added one sentence in brackets to the assignment pages that it might take a bit for the code to load and that they please not quite the browser
+					\end{coi}
+				\item Final adjustments
+					\begin{coi}
+						\item Go through Liz' .pdf with comments
+						\item Include the words ``environment" and ``healthcare" in each of the issue's information section
+						\item Read through each frame carefully and try to make sure they are similar in terms of (a) length, and (b) oomph (i.e.``strength")
+					\end{coi}
+				\item Work in committee feedback
+					\begin{coi}
+						\item Ryan: Take out ``Permanently disabled" as an employment group
+						\item Liz (and Jeff): Insert some throw-away questions at the start of the survey (so that things don't start off with the heavy psych stuff), e.g.``For how long have you been using the Mechanical Turk service?", ``For how long have you been answering surveys with Lucid?", ``How interested are you typically in the studies you take part in?"
+						\item Liz: Create a separate page introduction to the psych batteries to prepare people for what is to come, e.g. ``Next, we'd like to ask you some questions about your social views and how you see yourself"  -- I also added separate introduction pages before the demographics and before the issues
+						\item Liz: Create a bold title (like a newspaper headline) for the treatment pages so that people know what this is and what I'm asking of them, i.e. ``Potential new healthcare plan introduced". Above that, in italics, write something like ``Please read the following text carefully and answer the questions that follow"
+						\item Ryan: Overall, if possible, try out font sizes, bolding to make things more visually pleasing -- I discovered that you can adjust a few things by setting the type to HTML. I added a nice logo, spaced everything out a bit more nicely, put any comments to respondents in italics, and made the bullet points nicer
+					\end{coi}
 			\end{coi}
 	\end{coi}
 	
 
-\section*{Apply for new IRB approval $\rightarrow$ DONE}
+\section*{Get new IRB approval}
 
 \vspace{0.4cm}
+
+\section*{Pre-test}
+	\begin{coi}
+		\item Set pre-test up according to Liz' emails
+		\item Liz:
+			\begin{coi}
+				\item She said to basically just test the experiment survey before the experiment. A sort of mini-experiment, to see if the patterns emerge as they should (i.e. we don't see effects that reverse my hypotheses), just with fewer people
+				\item If something is off, I can then adjust things. Ideally, I would then test them again, but nothing is perfect. One pre-test is still better than none
+				\item She recommends \$0.50 per respondent, so that's 240 overall
+			\end{coi}
+		\item I don't want to have two separate surveys. If I make changes in one, I have to manually adjust the other, and that will just lead to differences in the end. Instead, I set up the survey to run for MTurk and Lucid with if()-statements. I made the following tweaks:
+			\begin{coi}
+				\item For Lucid, education samples probit or ANES. For MTurk, education only samples the probit categories. Otherwise the small sample would get split up even further. And the blocking comparison between the two sets is useless for this amount of respondents anyway
+				\item For Lucid, the code reads in the RID, saves it, and uses it for the redirect at the end. For MTurk, the RID and the redirect don't matter
+				\item For Lucid, respondents get code.txt without a unique code at the end. They also get a Continue button, since they need to be redirected in Lucid's sytem. For MTurk, respondents get code.mturk.txt with a unique survey code without a Continue button
+				\item Following Liz' suggestion, I added a comment box page before the code page so people can tell me if they thought something was problematic (``If you have any comments for the researcher, please share them here")
+				\item Originally, the code saved all data when people hit Continue on the last page. That doesn't work now since MTurk people don't have a Continue. I thus moved the data saving to the comments page for both platforms
+				\item MTurk people need to see the unique code on the last page, but the survey needs to save that code beforehand (since they can't hit Continue on that page). Originally, the unique code was created inside code.mturk.txt in reactive() code, so it was created on the page that people saw. That doesn't work any more. To work around that, I now create and save the unique code with normal R before the shiny code starts. Then I simply save that object together with all the survey input on the comments page and insert it inside createPage() for the code page. That way I can save the unique code and MTurk people can see it on the last code page to then copy-paste into the MTurk browser window
+			\end{coi}
+		\item Code checks
+			\begin{coi}
+				\item (Be INCREDIBLY careful with any randomization of response options. Many things in the code use the corresponding number for respondents' response selections, not the actual words, so messing with the order is a very delicate thing)
+				\item Set platform to MTurk
+				\item Do 200 trials, then see that everything was blocked properly for both sets of education categories (i.e. check that in R and on Dropbox)
+				\item Are the education categories blocked like I want?
+				\item Are all the responses being saved to Dropbox like I want?
+				\item Are the correct .txt files shown in the survey depending on the group I'm being blocked into?
+				\item Do all the treatment group .txt files contain the correct corresponding frames?
+				\item Are the apostrophes working?
+				\item Are the words ``environment" and ``healthcare" in each frame setup (for the checks)?
+				\item Any typos anywhere?
+			\end{coi}
+		\item Final tasks before launch
+			\begin{coi}
+				\item Delete everything in all /alldata and /seqblock folders online 
+				\item Delete everything in all /alldata folders and all seqblock files on my machine
+				\item Re-deploy app
+			\end{coi}			
+	\end{coi}
+
+\section*{Analyze pre-test results}
+	\begin{coi}
+		\item How do the groups look?
+		\item Which frames got more support than which others?
+		\item Do any results look weird?
+		\item Any helpful comments?
+		\item I rejected everyone who failed any of the three attention checks (one pre-treatment on numbers/letters, two post-treatment factual ones) and reassigned those tasks. It took 7 batches, but I now have 240 responses who passed all tests
+		\item However: After I had done this, Liz told me that I should not exclude people who failed the two post-treatment checks. Something about treatment affecting passage rates and the failed checks potentially showing something other than lacking attentiveness, e.g. that my treatments were difficult for people to understand. I get the first, sort of, but I don't believe the second
+		\item Regardless I now have one analysis for all the people who passed (the 7 batches) and one analysis for all the people who passed the first check (only from batch 1), both in \texttt{pre.test.analysis.R}
+	\end{coi}
 
 \section*{Set up pre-registration on OSF (from RT2 training)}
 	\begin{coi}
 		\item Created account
-		\item \hl{Slowly fill in the details as I go along}
-		\item If I want to mention that in the paper, I can quote articles in the BITSS /readings folder
+		\item Filled in all the details
 		\item Note: Just because you have a pre-analysis plan doesn't mean that's all you can do with your data (and it doesn't mean exploratory analysis is now forbidden). If there is a good theoretical motivation that you can defend, then you can do that
 	\end{coi}
 
-\section*{Pre-test}
+\section*{Experiment}
 	\begin{coi}
-		\item To test designed frames
-		\item \hl{Set pre-test up according to Liz' emails}
-		\item 600 respondents, \$0.20 each (or 400 at \$0.40 each)
-	\end{coi}
-
-\section*{Field experiment}
-	\begin{coi}
-		\item \hl{Lucid attention checks}
+		\item Power analysis
 			\begin{coi}
-				\item Can Lucid weed out people who fail my attention checks so I don't have to pay for people who fail it? $\rightarrow$ asked them
+				\item Do a power analysis to be see that I have a chance to detect typical framing effects. There is an R function for that, use that (\texttt{DeclareDesign})
+				\item DeclareDesign is super complex, so I asked Jeff and Ryan for help. Ryan couldn't help me too much, but I can try to experiment with the stuff \href{https://declaredesign.org/r/fabricatr/articles/variable_generation.html}{here} and see whether that gets me anywhere (though I doubt it)
+				\item I'm leaving this be. It's super complex and requires tons of assumptions to begin with anyway. Besides, I will run the experiment no matter the any power analysis results, and I have plenty of respondents
 			\end{coi}
-		\item \hl{Code checks}
+		\item Lucid attention checks
 			\begin{coi}
-				\item (Be INCREDIBLY careful with any randomization of response options. Many things in the code use the corresponding number for respondents' response selections, not the actual words, so messing with the order is a very delicate thing)
-				\item Are the education categories blocked like I want?
-				\item Are all the responses being saved to Dropbox like I want?
-				\item Do all the treatment group .txt files contain the correct corresponding frames?
-				\item Are the correct .txt files shown in the survey depending on the group I'm being blocked into?
-				\item Are the apostrophes working?
-				\item Are the words ``environment" and ``healthcare" in each frame setup (for the checks)?
+				\item Lucid can redirect people who fail the check, then the survey will stop, the people will be removed, and I don't have to pay for them
+				\item Something that has come up in the pre-test: Since I throw out people who fail the attention checks post-test, those people are all part of the blocking data. I block on 300 people but only analyze 200, in general terms. Nothing I can do here with MTurk, but since Lucid can terminate people during the survey, this comes into play
+				\item Following what Liz said about not excluding people based on the post-treatment checks (see above), I added a terminating redirect for anyone who doesn't select option 2 for the first (numbers/letters) check. Those guys won't see the rest of the survey, won't be blocked, and won't be part of the saved data
 			\end{coi}
-		\item Final tasks
+		\item Pre-registration
 			\begin{coi}
-				\item Do 200 trials, then see that everything was blocked properly for both sets of education categories (i.e. check that in R and on Dropbox)
-				\item Delete everything in all /alldata and /seqblock folders
+				\item Update questionnaire .pdf to reflect final shiny version
+				\item Upload questionnaire to pre-registration and look through my entries again
+				\item Publish pre-registration
+			\end{coi}
+		\item Code checks (less extensive than before and set to Lucid)
+			\begin{coi}
 				\item Re-deploy app
+				\item Are the redirects working on my end?
 			\end{coi}
+		\item Final tasks before launch
+			\begin{coi}
+				\item Set platform to Lucid
+				\item Re-deploy app if needed
+				\item Delete everything in all /alldata and /seqblock folders online 
+				\item Delete everything in all /alldata folders and all seqblock files on my machine
+			\end{coi}
+		\item We did a soft launch with 50 people. The code worked as it should, and we only got people who passed the attention check, meaning the redirect worked as well. I authorized the full launch			
 	\end{coi}
 	
-\section*{Analysis of the results}
+\section*{\hl{Analyze substantive results}}
 	\begin{coi}
 		\item Most straightforward is to use the method I use to block
 		\item But I also have lots of good resources how to analyze ordinal variables as EVs, instead of turning them into intervals for a normal regression, including a Bayesian way
-		\item Apply blocking and missing data to the data, i.e. do a blocking and missing data analysis on the framing data (since the framing data is no longer part of the blocking and missing data chapters)
+		\item Brad Jones feedback from a while ago: ``A key part of the argument that I was trying to make in my dissertation was that the effect of different frames would be differentially felt conditional on respondents' own moral priorities (measured with the moral foundations questionnaire). So, a sanctity framing only would affect someone's opinion if they were scored particularly highly on the sanctity dimension of the MFQ. For someone who doesn't get worked up by sanctity, they wouldn't be expected to react to the frame (or even consider it a moral/ethical framing)
 	\end{coi}
+	
+\section*{Compare blocking results}
+
+\vspace{0.4cm}
+
+\section*{Add missing data with all my tested methods and compare results}
+
+\vspace{0.4cm}
+
+\section*{Crispify writing}
+	\begin{coi}
+		\item If I want to mention my pre-registration in the paper, I can quote articles in the BITSS /readings folder. My pre-registration link is \href{https://osf.io/tvpwq/}{https://osf.io/tvpwq/}
+		\item Add screenshots of each survey page to the appendix
+		\item Add questionnaire to the appendix
+		\item Talk about the pre-/post-treatment attention checks and whether post-treatment checks should be used to throw out/disregard people. This came up after the pre-test and before the experiment. Liz said there is the possibility that the treatment might somehow influence passage rates and that variation in how people respond to the check could have substantive meaning beyond just attention (e.g. maybe one of the treatments was difficult for people to understand). Ryan and Liz recommended Montgomery, Nyhan, Torres (2018) (I have the pdf in /non-probability\_surveys)
+		\item Top of p. 80:  See Jim Gibson, and others, add stuff on procedures vs outcomes
+		\item 4.2, middle of p. 82: See Brooks and Manza here on public opinion and welfare state support (since I'll use healthcare, especially)
+		\item Expand discussion of the limitations and problems with using MTurk for social research a bit, use \begin{verbatim} @huff_who_2015; @clifford_2015_samples; @stritch_2017_opportunities; 
+			@burnham_2018_mturk \end{verbatim} (all already downloaded)
+		\item Expand discussion of limitations and problems with using Lucid for social research a bit as well, use \begin{verbatim} @coppock_2019_validating \end{verbatim}
+		\item Add a few lines that I added a factual manipulation check (treatment-independent), \begin{verbatim} @kane_2019_harm \end{verbatim}
+		\item First paragraph p. 74: Use Rokeach (his book from the 1960s) for a more intuitive description of what it means to be moral, i.e. values as ``oughts" and ``shoulds". Either switch Skitka's (1), (2), (3) for Rokeach or say that Skitka says that people FEEL it's an objective truth (not that she's actually stating that morals are objective truths)
+		\item Second paragraph p. 74: This part meanders around, goes back and forth between issues and arguments/frames. Restructure it, make my point more clearly, it's a bit muddied and hard to follow now
+		\item There is a short article by Haidt that provides numerical means for liberals and conservatives. Include those numbers where I talk about the foundations. Don't use numbers for each foundation, use averages for all the conservative ones and the liberal ones. We want to have some idea of the effect sizes for the ideological differences for the foundations, something we can measure. Also add some more language that the distinctions Haidt makes are all tendencies, not more
+		\item Weeden and Kurzban: Dial it back a little, be less of a fan boy. I went too much to the other side. Present the other side more, the one I had too much of before (the one where self-interest is financial). Present both sides, then say which side I fall on. Also avoid first person when I talk about the side I fall on
+		\item Include argument why I choose environment as my second issue
+		\item Include the origins of the self-interest measurement questions (and some general citations for this)
+	\end{coi}
+
+
 
 
 

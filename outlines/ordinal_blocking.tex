@@ -427,21 +427,6 @@
 				\item I emailed Jeff and Ryan the current chapter, where we are, what the next steps should be etc. and asked Eileen to set up a doodle for a zoom call
 				\item I spoke with Jeff. Ryan never responded or filled in the Doodle
 			\end{coi}
-		\item \hl{Crispify writing}
-			\begin{coi}
-				\item 2.1 I'm missing an opportunity to bring in Covid here. A paragraph that says ``what if we did this today?" would be good, about the human expectations connected with this. The Kahnemann example even talks about an Asian diseas, so make it relevant to today. Because everyone will think about Covid when they read about ``Asian disease"
-				\item Define Mahalanobis and Euclidian distance in mathematical terms (i.e. the algebraic formulas) (bottom of p. 10). I can move the MD formula up from a later page, but make it an equation (i.e. in the middle of the page, not in-line)
-				\item Figure 2.2: Make the sections where the graphs overlap black (not grey). Add to the legend that the then-black sections show where randomized and blocked overlap (that wasn't clear to Jeff)
-				\item I also need to talk more about figure 2.2 in the text. What does it mean that these distributions are different and imbalanced? I only have one sentence about this figure at the moment
-				\item Discuss the ANES when I first mention it. Pretend that I'm talking to someone who's never heard of it before. Explain what it is etc.
-				\item Not technical enough, not enough background maths in general. Put some algebra/formulas back in from Ryan (that I had originally taken out again), but put them in my own notation
-				\item Make the chapter stand on its own by repeating things from the introduction a bit. ``Recall that ...", ``As noted in chapter 1 ..." etc. 
-				\item Table 2.1: Make the vertical bars bigger or bold. Line up the bars vertically. That can be done with the {tabular} command. \begin{verbatim}
-					\begin{tabular}{@{}lr@{$\quad[$}r@{$;$ }r@{$]$ }r@{$\quad[$}\end{verbatim}
-					\begin{verbatim}r@{$;$ }r@{$]$}@{}}\end{verbatim}
- 				\item 2.3.2 Add some stuff about what a placebo regression is, some background, some citations
- 				\item Figure 2.4: Come up with some bolder colors. Experiment with other colors that are stronger, more forceful. Leave overlapping part as it is (i.e. don't make that one black)
-			\end{coi}
 		\item Simulations
 			\begin{coi}
 				\item Use the ANES data and block it into 5 treatment groups, once with the ordered categories, once with the ANES categories. Calculate differing group means, within-group and between-group variances
@@ -451,35 +436,37 @@
 			\end{coi}
 	\end{coi}
 	
-
 	
-	
-	
-\section*{Theory}
+\section*{Crispify writing}
 	\begin{coi}
-		\item Write up the \texttt{shiny} environment in the appendix
-%		\item \hl{Emphasize machine learning in the write-up}
-%			\begin{coi}
-%				\item Model training is what it's all about
-%				\item People are being misclassified based on arbitrary numeric values
-%			\end{coi}
-%		\item Note down the differences between number of education categories in ANES and CCES. This is a valuable contribution and great application advice for use by social scientists
+		\item 2.1 I'm missing an opportunity to bring in Covid here. A paragraph that says ``what if we did this today?" would be good, about the human expectations connected with this. The Kahnemann example even talks about an Asian diseas, so make it relevant to today. Because everyone will think about Covid when they read about ``Asian disease"
+		\item Define Mahalanobis and Euclidian distance in mathematical terms (i.e. the algebraic formulas) (bottom of p. 10). I can move the MD formula up from a later page, but make it an equation (i.e. in the middle of the page, not in-line)
+		\item Figure 2.2: Make the sections where the graphs overlap black (not grey). Add to the legend that the then-black sections show where randomized and blocked overlap (that wasn't clear to Jeff)
+		\item I also need to talk more about figure 2.2 in the text. What does it mean that these distributions are different and imbalanced? I only have one sentence about this figure at the moment
+		\item Discuss the ANES when I first mention it. Pretend that I'm talking to someone who's never heard of it before. Explain what it is etc.
+		\item Not technical enough, not enough background maths in general. Put some algebra/formulas back in from Ryan (that I had originally taken out again), but put them in my own notation
+		\item Make the chapter stand on its own by repeating things from the introduction a bit. ``Recall that ...", ``As noted in chapter 1 ..." etc. 
+		\item Table 2.1: Make the vertical bars bigger or bold. Line up the bars vertically. That can be done with the {tabular} command. \begin{verbatim}
+			\begin{tabular}{@{}lr@{$\quad[$}r@{$;$ }r@{$]$ }r@{$\quad[$}\end{verbatim}
+			\begin{verbatim}r@{$;$ }r@{$]$}@{}}\end{verbatim}
+ 		\item 2.3.2 Add some stuff about what a placebo regression is, some background, some citations
+ 		\item Figure 2.4: Come up with some bolder colors. Experiment with other colors that are stronger, more forceful. Leave overlapping part as it is (i.e. don't make that one black)
 	\end{coi}
 
+		
 	
-	
-\section*{Eventual package setup}
-	\begin{coi}
-		\item Leave this until the very end. It's interesting, but I don't need it for the diss
-		\item For my framing experiment, I use education and ANES to train the OPM, then I block on education and other covariates with \texttt{blockTools}. The package will be applicable much more generally: Set the package up so that the user specifies/loads the data, the DV, and the EVs to use for training. My functions then apply polr(), attach binned cases, create a new DV with re-estimated categories, and attach this variable to the originally supplied data. Then the user can block on the resulting variable with \texttt{blockTools}
-			\begin{coi}
-				\item \texttt{OPMord} comes before any blocking
-				\item \texttt{OPMord} output can be used to \texttt{block} normally in interactive R
-				\item \texttt{OPMord} output can be used to \texttt{seqblock} sequentially in \texttt{shiny} environment
-			\end{coi}
-		\item I currently don't have any `package' folder because it doesn't make sense to set that up before the functions are developed
-		\item \href{https://deanattali.com/2015/04/21/r-package-shiny-app/}{Blog post to include {\tt shiny} in R package and launch app from within package}
-	\end{coi}	
+%\section*{Eventual package setup}
+%	\begin{coi}
+%		\item Leave this until the very end. It's interesting, but I don't need it for the diss
+%		\item For my framing experiment, I use education and ANES to train the OPM, then I block on education and other covariates with \texttt{blockTools}. The package will be applicable much more generally: Set the package up so that the user specifies/loads the data, the DV, and the EVs to use for training. My functions then apply polr(), attach binned cases, create a new DV with re-estimated categories, and attach this variable to the originally supplied data. Then the user can block on the resulting variable with \texttt{blockTools}
+%			\begin{coi}
+%				\item \texttt{OPMord} comes before any blocking
+%				\item \texttt{OPMord} output can be used to \texttt{block} normally in interactive R
+%				\item \texttt{OPMord} output can be used to \texttt{seqblock} sequentially in \texttt{shiny} environment
+%			\end{coi}
+%		\item I currently don't have any `package' folder because it doesn't make sense to set that up before the functions are developed
+%		\item \href{https://deanattali.com/2015/04/21/r-package-shiny-app/}{Blog post to include {\tt shiny} in R package and launch app from within package}
+%	\end{coi}	
 	
 	
 	

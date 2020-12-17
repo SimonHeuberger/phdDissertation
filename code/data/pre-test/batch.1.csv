@@ -1,0 +1,255 @@
+"birthyear","race","gender","att","empl","inc","pid","pid.follow","ideol","ideol.follow","ed.both","mor.suffer","mor.care","mor.cruel","mor.comp","mor.anim","mor.kill","si.white","si.care","si.kids","si.kill","si.good","si.help","hc.group","hc.likert","hc.slider","hc.check","ev.group","ev.likert","ev.slider","ev.check",".online.length",".study.choice","unique.id","online.why","com"
+9,1,2,2,2,3,1,1,1,1,4,6,6,6,5,6,6,2,6,6,1,1,2,"m.opp",5,7.2,3,"control",5,9,5,5,1,"survey-269-334-783","2018","This was an interesting survey to take. "
+22,1,1,2,2,5,1,1,1,2,4,5,5,5,5,6,6,4,4,5,5,5,4,"control",4,7,3,"m.supp",4,7.5,5,5,1,"survey-113-724-667","earn some play money",NA
+8,1,1,NA,NA,NA,2,1,1,2,4,3,3,4,NA,NA,NA,3,5,3,3,3,4,"si.opp",2,5.1,4,"control",4,4.8,2,3,4,"survey-431-753-100","For work","None"
+8,1,1,NA,NA,NA,2,1,1,2,4,3,3,4,NA,NA,NA,3,5,3,3,3,4,"si.opp",2,5.1,4,"control",4,4.8,2,3,4,"survey-431-753-100","For work","None"
+10,1,1,2,2,4,1,2,1,2,4,4,4,4,2,3,4,2,4,4,2,3,4,"control",3,5.9,3,"m.opp",4,4.6,5,5,2,"survey-329-392-567","to earn more",NA
+33,1,2,2,2,6,2,1,2,2,3,6,6,6,6,6,3,1,4,4,6,1,1,"si.opp",4,8.9,3,"si.supp",5,10,5,5,1,"survey-260-179-747","EXTRA MONEY",NA
+34,1,1,2,2,7,2,2,2,2,5,5,5,5,5,6,5,3,4,4,6,2,4,"si.opp",4,7,3,"control",4,7.4,5,3,1,"survey-296-863-467","June 2020",NA
+8,1,1,2,3,5,1,2,1,2,3,4,3,5,6,5,6,4,5,3,6,4,3,"si.opp",4,8,3,"si.opp",5,9,5,4,1,"survey-694-829-629","for extra money",NA
+10,1,1,2,2,3,2,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,"m.supp",2,5.5,2,"m.opp",4,3.9,4,3,4,"survey-878-758-690","i like it","nice"
+10,1,1,2,2,3,2,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,"m.supp",2,5.5,2,"m.opp",4,3.9,4,3,4,"survey-878-758-690","i like it","nice"
+13,1,1,2,2,4,1,1,2,1,4,3,4,4,5,6,4,5,4,3,6,5,5,"si.supp",2,7.8,1,"control",2,7.5,6,3,4,"survey-977-152-443","Need money","Interested"
+8,1,2,2,2,3,1,1,1,1,4,5,4,4,4,3,4,3,3,4,3,4,4,"control",2,3.1,3,"si.opp",4,6,5,2,1,"survey-187-589-266","august","nice"
+26,1,1,2,2,7,1,1,1,2,5,5,5,5,5,6,6,1,5,1,1,1,1,"m.opp",5,10,3,"si.supp",5,10,5,2,4,"survey-768-474-821","Earn some extra cash and to have fun and participate in making my opinion heard.",NA
+18,2,1,1,2,3,2,1,1,1,5,6,6,5,6,5,5,5,6,5,6,5,5,"si.opp",5,9.8,3,"m.supp",5,9.8,4,4,3,"survey-725-711-398","A1KWGO222QQ31O","Good survey"
+10,1,2,2,2,2,1,1,1,1,1,4,4,4,4,4,4,5,5,5,5,5,5,"si.supp",4,5.8,3,"m.supp",4,8.4,2,5,4,"survey-950-970-870","i like these work","nice"
+28,1,1,2,2,5,2,2,2,2,4,4,4,4,3,2,2,4,5,4,5,4,4,"si.opp",3,5.6,3,"control",4,6.7,5,5,1,"survey-484-106-337","to make extra money in my free time",NA
+8,1,2,2,2,2,1,1,1,1,4,4,4,4,4,5,6,4,4,5,5,3,4,"m.supp",4,7.1,3,"si.opp",4,8.4,5,4,4,"survey-544-107-413","Earning extra money","none"
+24,1,1,2,6,2,1,2,1,2,4,5,4,5,4,6,1,4,4,5,4,4,2,"m.opp",4,7,3,"m.opp",4,7.5,5,5,1,"survey-702-206-643","I was unemployed and seeking some income. Working at home is also appealing to me.",NA
+8,1,1,2,2,2,3,1,2,1,4,2,2,1,1,3,5,2,3,1,1,2,3,"si.supp",2,4.4,3,"si.supp",2,9.8,3,4,4,"survey-144-445-545","GOOD","GOOD"
+8,1,1,NA,NA,4,1,2,2,2,4,4,3,4,3,5,3,5,4,5,6,5,4,"control",3,5.7,3,"m.supp",3,5.9,5,4,4,"survey-379-366-729","To get part time","Nice"
+8,1,1,NA,NA,4,1,2,2,2,4,4,3,4,3,5,3,5,4,5,6,5,4,"control",3,5.7,3,"m.supp",3,5.9,5,4,4,"survey-379-366-729","To get part time","Nice"
+8,1,1,NA,NA,4,1,2,2,2,4,4,3,4,3,5,3,5,4,5,6,5,4,"control",3,5.7,3,"m.supp",3,5.9,5,4,4,"survey-379-366-729","To get part time","Nice"
+16,3,1,2,3,1,1,1,1,1,4,6,5,6,6,6,6,2,6,2,3,3,3,"m.supp",5,9.6,3,"m.supp",5,9.8,5,4,1,"survey-202-354-108","To make extra money",NA
+31,1,2,2,2,1,1,1,1,1,1,6,5,6,6,6,5,1,4,4,5,1,4,"si.opp",5,7.3,3,"control",5,10,5,5,1,"survey-791-834-956","I needed to make more money.","Thank you"
+28,1,1,2,6,1,1,1,1,1,1,5,5,4,5,6,3,2,3,3,5,4,3,"control",5,9.5,3,"control",5,9,5,5,1,"survey-928-291-475","unable to find a job",NA
+8,1,2,2,2,3,1,1,2,2,4,3,2,4,4,3,2,2,4,5,2,1,4,"control",3,7.1,4,"si.supp",3,6.9,1,1,4,"survey-945-112-928","For income","None"
+16,1,2,2,2,3,2,1,2,1,4,4,2,2,6,6,6,1,5,1,6,1,1,"si.supp",1,1,1,"m.opp",1,1,5,4,1,"survey-927-467-121","I needed to make extra money for food and other things for my home.","hello i thought the first question asked about healthcare for all and in that question the option for healthcare was not there and I chose immigration. please dont reject my hit thank you for your time"
+51,4,2,2,2,5,1,1,2,1,4,4,4,3,5,3,2,4,5,4,2,5,4,"si.opp",3,8,3,"m.opp",2,7.8,2,5,3,"survey-376-107-193","for monthly income","nice"
+56,1,2,2,4,2,1,2,1,2,2,6,5,6,6,6,6,2,1,1,5,1,1,"m.opp",5,10,3,"m.opp",5,8.6,5,5,1,"survey-412-390-682","To make etra money.",NA
+56,1,2,2,4,2,1,2,1,2,2,6,5,6,6,6,6,2,1,1,5,1,1,"m.opp",5,10,3,"m.opp",5,8.6,5,5,1,"survey-412-390-682","To make etra money.",NA
+56,1,2,2,4,2,1,2,1,2,2,6,5,6,6,6,6,2,1,1,5,1,1,"m.opp",5,10,3,"m.opp",5,8.6,5,5,1,"survey-412-390-682","To make etra money.",NA
+56,1,2,2,4,2,1,2,1,2,2,6,5,6,6,6,6,2,1,1,5,1,1,"m.opp",5,10,3,"m.opp",5,8.6,5,5,1,"survey-412-390-682","To make etra money.","None"
+10,2,2,2,1,4,1,2,1,2,4,5,4,5,4,5,6,2,4,4,6,5,5,"si.opp",4,7.2,3,"m.opp",5,8.1,5,4,1,"survey-758-984-444","february 2020",NA
+18,1,1,2,1,2,2,2,2,2,2,5,5,5,5,3,4,4,6,4,4,4,4,"si.opp",2,3.5,3,"m.opp",3,5,5,2,4,"survey-643-845-236","October 11 2020",NA
+13,1,1,2,2,3,1,1,2,1,4,3,5,3,4,6,3,4,6,3,4,6,2,"m.supp",4,8.4,2,"control",4,8.6,5,5,2,"survey-573-502-444","To earn some extra income","It is interesting"
+24,2,1,2,2,2,2,1,1,1,4,5,4,3,4,4,4,4,4,3,5,4,2,"si.opp",2,8.4,3,"control",4,8.3,5,5,3,"survey-521-237-906","AO9ZMKCJD7XV","nice survey"
+14,1,1,2,1,1,3,1,3,2,5,4,4,5,4,4,6,2,4,4,3,3,3,"m.opp",4,8,3,"si.opp",2,3.7,5,4,1,"survey-164-123-748","Needed more money to make ends meet.",NA
+28,1,1,3,1,3,2,1,1,1,4,3,3,3,5,5,4,5,5,5,6,5,5,"m.supp",1,8.7,4,"m.supp",1,9.4,1,3,2,"survey-486-749-812","A2AR3THJJ83IG0","NICE"
+28,1,1,3,1,3,2,1,1,1,4,3,3,3,5,5,4,5,5,5,6,5,5,"m.supp",1,8.7,4,"m.supp",1,9.4,1,3,2,"survey-486-749-812","A2AR3THJJ83IG0","NICE"
+10,1,1,2,2,4,1,2,1,2,4,5,5,5,5,6,5,4,5,4,5,6,4,"si.opp",4,7.2,5,"si.supp",4,7.6,4,2,1,"survey-416-419-393","Need money","Like it"
+24,1,2,2,2,3,1,1,1,1,2,3,4,3,NA,NA,NA,4,4,3,NA,NA,NA,"si.opp",5,9.1,3,"m.supp",4,7.7,5,3,4,"survey-555-633-217","earn money","its good not bad, i like this survey"
+24,1,2,2,2,3,1,1,1,1,2,3,4,3,NA,NA,NA,4,4,3,NA,NA,NA,"si.opp",5,9.1,3,"m.supp",4,7.7,5,3,4,"survey-555-633-217","earn money","its good not bad, i like this survey"
+9,4,1,2,6,2,3,2,3,3,4,6,5,6,6,6,5,3,6,6,4,4,5,"m.opp",4,7.5,3,"si.opp",5,9.5,5,5,1,"survey-196-514-823","to earn income","took forever to wait for the next page, not worth 50 cents"
+30,4,1,2,6,3,3,3,3,3,5,4,5,5,6,6,6,2,5,2,2,2,4,"si.supp",4,7.6,3,"control",5,9.7,5,5,3,"survey-414-359-476","to supplement my income",NA
+18,1,2,2,5,4,2,1,2,2,1,6,5,6,6,5,3,2,6,4,4,1,5,"m.opp",2,3.8,3,"control",3,5,5,5,1,"survey-879-748-248","I wanted to make extra money while I can work at home. I also like to be involved in study and surveys .","I think everything worked well I enjoy the design . I would maybe add a progress bar thank you."
+28,1,2,2,2,3,2,2,2,2,4,4,3,4,5,6,3,4,4,5,4,5,5,"m.opp",4,7.6,3,"si.opp",4,8.1,5,3,4,"survey-619-166-683","AXP1PCWGOXUOS","good"
+13,1,1,2,2,3,1,1,1,1,4,3,3,3,2,3,1,2,2,2,2,2,5,"si.supp",2,6.9,3,"si.supp",2,5.9,5,3,4,"survey-624-676-588","earning and research ","no"
+17,1,2,2,2,3,1,1,1,2,2,4,4,2,5,4,2,4,3,4,5,3,4,"m.opp",4,7.5,3,"m.supp",4,7,5,3,4,"survey-578-194-155","earn money","nice"
+1,2,2,NA,NA,5,2,1,2,1,4,5,6,4,NA,NA,NA,5,6,4,6,5,6,"si.opp",5,8.8,3,"si.supp",4,8.6,7,3,4,"survey-950-250-799","A1AU719A07TOQS","good"
+1,2,2,NA,NA,5,2,1,2,1,4,5,6,4,NA,NA,NA,5,6,4,6,5,6,"si.opp",5,8.8,3,"si.supp",4,8.6,7,3,4,"survey-950-250-799","A1AU719A07TOQS","good"
+15,2,2,2,2,3,1,1,1,2,5,3,4,3,4,5,5,6,5,6,5,6,4,"control",4,6.1,3,"m.opp",5,7,5,2,1,"survey-275-569-855","A3GOX4QQRUO57C","This survey is very good"
+1,2,2,2,2,3,1,1,1,1,5,5,5,4,5,4,6,4,5,3,4,3,4,"m.opp",5,8.1,7,"control",4,5.3,5,4,1,"survey-414-525-473","To have extra earnings",NA
+36,1,1,2,2,4,2,1,2,1,4,4,3,5,6,5,6,5,5,4,1,6,4,"si.opp",4,8.5,3,"m.supp",3,6.2,5,3,3,"survey-527-971-803","because of earning money during the covid-19 pandemic.","no comments"
+5,4,1,NA,NA,NA,2,1,2,1,4,3,4,3,5,4,5,6,5,5,4,5,5,"m.opp",4,5.9,4,"control",3,5.6,4,2,3,"survey-321-941-174","A2JET844BDM5YN","nice"
+9,1,2,2,2,2,1,2,1,2,2,6,6,6,5,6,4,4,6,4,6,3,4,"control",3,3.1,3,"si.supp",5,8.2,5,5,1,"survey-722-693-811","Need more income","This survey took forever to complete because of timers that seemed to be built into each page that prevented us from pressing Continue, even when the page only had one question on it. If you're going to force a survey to take almost 10 minutes instead of 4, you need to pay more. "
+59,1,1,2,4,2,1,1,1,2,4,5,6,6,6,6,5,2,4,3,6,2,1,"si.opp",2,5,3,"si.supp",5,9,5,5,1,"survey-110-895-424","To supplement income",NA
+8,1,1,2,2,2,1,1,1,1,4,3,4,5,6,4,4,4,4,5,5,4,6,"si.opp",4,6.6,3,"m.supp",4,7.9,5,4,4,"survey-693-704-398","Earning extra money","none"
+8,1,2,1,2,3,1,1,2,1,4,4,4,4,4,5,4,5,4,4,4,4,5,"si.supp",4,4.4,3,"m.supp",3,3.8,4,3,1,"survey-797-464-862","i want to earn mo","none"
+12,1,2,2,2,5,2,2,2,2,1,6,5,6,6,6,6,4,6,6,6,4,4,"control",3,3.6,3,"control",5,10,5,5,1,"survey-653-741-810","Extra money",NA
+41,1,2,2,2,4,2,2,2,2,1,6,6,5,6,5,3,3,6,4,6,3,2,"si.supp",4,7.2,3,"si.supp",5,8.3,5,2,4,"survey-192-772-923","supplemental income","no"
+1,2,2,1,2,3,1,1,2,1,4,3,5,4,5,6,5,6,5,6,6,5,5,"si.opp",4,8,3,"si.supp",4,8.4,6,2,5,"survey-961-703-911","A31BIJVDYW40U2","This is good"
+16,1,1,2,2,3,2,1,2,1,4,4,6,4,NA,NA,NA,2,2,5,4,6,4,"control",2,5.6,5,"control",1,4.1,3,5,2,"survey-791-154-534","ARWN6TT8EWCFJ",NA
+13,8,2,2,2,2,3,3,3,3,4,4,4,5,NA,NA,NA,6,6,4,NA,NA,NA,"m.opp",4,6.5,3,"m.opp",4,8,5,5,1,"survey-794-516-544","Needed money","I think this survey skipped over 2 pages of questions. I saw them flash by. The continue button wasn't working properly even after it lit up after the designated time. I'd have to double click it to work from page to page, and only in those 2 instances did the page skip ad I was unable to answer those questions. "
+19,2,1,2,2,2,1,2,1,2,2,2,5,1,6,6,1,1,4,3,6,2,1,"control",5,9,3,"control",2,1.9,5,5,1,"survey-177-977-304","Needed extra income","good luck"
+15,2,2,2,1,1,3,2,3,3,3,1,1,6,6,1,3,6,6,6,6,6,6,"si.supp",5,10,3,"m.supp",5,10,5,5,1,"survey-168-351-784","FOR EXTRA MONEY",NA
+9,3,2,2,2,3,1,2,1,2,2,4,6,6,6,6,5,5,6,4,1,2,2,"m.opp",4,6.4,3,"m.opp",4,8.1,5,5,3,"survey-181-224-972","College Student needing money",NA
+10,1,2,2,2,2,1,1,1,1,4,5,5,5,6,6,6,3,2,3,1,4,4,"si.supp",4,6.2,3,"si.supp",5,8.2,5,5,1,"survey-104-784-758","To earn some extra money while I was in college",NA
+33,6,1,2,2,6,1,2,2,2,4,1,4,4,4,4,6,4,3,3,4,5,3,"m.opp",4,6.3,3,"si.supp",5,8.3,5,4,4,"survey-654-519-964","additional income","A very innovative survey"
+33,2,1,1,1,2,2,1,1,1,4,5,4,4,4,5,5,4,4,4,NA,NA,NA,"control",3,6.9,3,"m.supp",2,8.1,2,4,1,"survey-114-275-570","A3E2IPVNKNQL1H","nice survey"
+17,1,1,2,2,3,2,2,2,2,5,4,5,4,5,4,4,5,5,6,5,5,4,"m.supp",4,7.4,3,"m.opp",4,5.3,4,4,3,"survey-815-461-359","Primary Income","Nice"
+22,2,1,2,1,3,2,1,2,1,5,5,5,6,6,5,6,5,6,5,5,4,5,"si.opp",5,8.2,2,"m.opp",4,8.2,5,3,1,"survey-775-926-204","Money saving","Good survey.."
+12,1,1,2,2,4,1,2,2,2,4,3,3,2,3,4,5,4,5,4,1,5,4,"m.supp",4,7.2,5,"control",5,8.6,5,4,1,"survey-474-242-978","extra wages and part time work to compensate our balanced life ","Good "
+19,1,2,2,1,1,1,1,1,1,4,5,4,4,4,2,1,4,5,5,6,5,4,"si.supp",5,9.5,3,"si.supp",3,4.7,5,5,1,"survey-672-859-571","Needed a job where I could work from home",NA
+8,1,1,2,2,2,1,1,1,1,4,5,4,3,5,5,4,4,3,5,4,5,5,"si.supp",4,7.4,3,"si.supp",4,7.1,5,5,3,"survey-293-842-382","earn money","none"
+50,1,2,2,1,2,2,1,2,1,2,4,3,4,4,4,3,2,4,3,2,1,2,"m.supp",2,2.9,3,"si.opp",5,9.1,5,5,1,"survey-739-836-729","generate additional income",NA
+11,1,1,2,2,2,1,1,1,1,4,4,6,4,4,3,3,4,5,4,2,4,5,"control",4,7.9,3,"m.opp",3,7,1,4,1,"survey-401-256-509","A1FARD8D8S6WOA","no"
+9,1,1,2,2,2,1,1,1,1,4,5,5,4,NA,NA,NA,2,4,1,2,2,2,"m.opp",4,7.5,3,"control",2,3.6,5,3,1,"survey-207-663-936","To earn some extra dollar",NA
+29,1,2,1,2,3,1,1,2,1,4,3,4,3,4,5,4,5,4,4,5,6,5,"control",3,6.3,4,"m.opp",4,7.3,2,5,1,"survey-996-373-883","A2L5PLZGHIVGIF","good"
+17,1,2,2,2,3,2,1,2,1,4,5,4,5,5,6,4,4,6,5,5,6,5,"si.supp",4,8.9,4,"si.supp",4,8.3,3,3,1,"survey-540-940-374","AIY8KHG5LEXNY","nice"
+23,2,2,2,2,3,1,1,1,1,4,4,4,4,5,6,6,4,6,2,5,6,6,"control",4,6.4,3,"si.supp",4,7.1,5,5,1,"survey-593-759-810","I started Mechanical Turk for side hustle.",NA
+17,1,1,2,2,2,1,2,2,1,4,3,2,3,3,4,4,3,2,2,2,2,3,"si.opp",2,5.9,3,"control",2,5.8,5,2,3,"survey-518-107-145","earning ","no"
+21,1,1,2,2,3,2,2,2,2,4,4,5,3,3,6,2,5,6,4,6,4,4,"control",4,7.2,3,"m.opp",2,5.4,5,4,5,"survey-522-216-866","Becuase i lost my day job",NA
+22,5,1,2,6,7,1,2,1,1,5,5,5,6,5,6,6,4,3,3,4,4,1,"si.supp",5,9,3,"si.supp",5,8.7,5,5,4,"survey-326-179-718","To make some spare money when I had free time",NA
+23,2,1,2,2,4,2,1,1,1,5,5,4,4,6,5,4,5,4,6,4,6,4,"si.supp",4,9.4,6,"m.supp",5,8.9,3,3,1,"survey-876-450-444","A3QJKATIZJ9NV2","goods"
+31,1,1,2,1,3,1,1,1,2,1,5,5,5,6,6,3,4,5,3,5,4,4,"control",5,8.2,3,"si.supp",4,7.9,5,5,1,"survey-971-558-133","2005",NA
+55,1,2,2,4,1,3,2,1,1,2,5,5,5,5,5,5,1,2,1,2,2,2,"control",5,7.3,3,"si.supp",5,10,5,5,4,"survey-979-601-771","to earn additional income - note most universities pay $15 per hour or more.  Some days one settles for less!",NA
+28,1,2,2,2,4,1,2,2,2,5,3,4,5,5,5,3,4,6,4,NA,NA,NA,"si.opp",4,4.9,6,"m.opp",2,5.3,5,5,1,"survey-705-791-485","Entertainment ","Nice"
+28,1,2,2,2,4,1,2,2,2,5,3,4,5,5,5,3,4,6,4,NA,NA,NA,"si.opp",4,4.9,6,"m.opp",2,5.3,5,5,1,"survey-705-791-485","Entertainment ","Nice"
+28,1,2,2,2,4,1,2,2,2,5,3,4,5,5,5,3,4,6,4,NA,NA,NA,"si.opp",4,4.9,6,"m.opp",2,5.3,5,5,1,"survey-705-791-485","Entertainment ","Nice"
+28,1,2,2,2,4,1,2,2,2,5,3,4,5,5,5,3,4,6,4,NA,NA,NA,"si.opp",4,4.9,6,"m.opp",2,5.3,5,5,1,"survey-705-791-485","Entertainment ","Nice"
+16,1,1,2,2,4,2,2,2,2,1,6,5,5,4,6,1,1,6,5,6,2,4,"si.opp",4,7.4,3,"m.opp",5,9.5,5,5,1,"survey-964-702-315","2011","I liked it. The delay in pressing continue was strange though."
+17,1,1,2,6,3,1,2,1,1,1,3,3,4,4,6,2,4,6,5,6,4,6,"si.opp",5,9.1,3,"m.supp",5,10,5,5,1,"survey-879-111-770","To earn extra money",NA
+8,1,2,2,1,5,2,2,2,2,4,4,2,3,3,2,4,3,4,2,4,4,3,"control",2,3.5,3,"si.supp",3,3.6,5,2,3,"survey-942-403-619","earn","none"
+27,1,2,2,2,4,2,1,2,1,4,5,5,4,5,4,3,6,6,5,1,5,5,"si.supp",5,9.7,1,"m.opp",5,9.1,5,4,1,"survey-682-245-120","Income",NA
+10,1,2,2,5,2,1,2,1,2,1,5,4,5,5,6,6,4,5,4,4,4,4,"si.opp",4,7.3,3,"si.opp",5,10,5,5,1,"survey-924-568-297","2018",NA
+42,1,1,2,5,3,1,1,1,1,2,5,6,6,6,6,5,1,4,1,4,1,1,"si.opp",5,8.2,3,"si.supp",5,9.5,5,5,1,"survey-732-759-264","I wanted some extra money.",NA
+34,1,2,2,1,3,2,1,2,2,2,3,2,4,4,5,2,4,4,4,6,4,2,"si.supp",1,1,3,"m.supp",2,2.9,5,5,1,"survey-958-359-854","Supplemental income and boredom.",NA
+29,1,1,2,2,1,2,1,2,1,4,4,3,3,5,6,5,6,4,6,6,4,5,"si.opp",4,6.5,1,"si.supp",3,8.4,4,1,1,"survey-664-818-643","money","nice"
+39,1,1,1,2,4,1,1,1,1,4,6,5,6,5,6,6,4,4,5,6,6,6,"si.opp",5,9,1,"si.supp",5,8.5,5,3,1,"survey-368-605-871","A3BKUY3SFZKK6T","GOOD"
+28,1,1,3,2,3,2,1,1,1,4,5,3,4,5,5,4,4,5,4,5,4,4,"si.opp",4,8.5,3,"m.opp",4,8.9,5,2,2,"survey-532-551-618","A5BVUW06ZQ6D3","NICE"
+12,6,1,2,1,2,1,1,2,1,4,2,3,2,4,5,5,4,5,3,1,5,4,"si.supp",4,8.1,3,"control",5,7.3,5,5,4,"survey-552-958-269","primary income","good"
+14,1,1,2,2,2,1,2,2,2,4,4,3,5,4,6,5,3,4,4,1,4,3,"si.opp",4,8.2,3,"m.opp",3,8.2,6,4,3,"survey-952-864-738","suplimentary ","good survey"
+19,2,2,2,2,1,2,1,1,1,5,2,6,2,6,1,6,1,6,1,1,1,6,"si.opp",5,9.8,3,"si.supp",5,9.8,5,2,1,"survey-545-531-767","A18CLWYNU7IYVM","like this survey"
+19,2,2,2,2,1,2,1,1,1,5,2,6,2,6,1,6,1,6,1,1,1,6,"si.opp",5,9.8,3,"si.supp",5,9.8,5,2,1,"survey-545-531-767","A18CLWYNU7IYVM","like this survey"
+23,1,2,2,2,2,1,1,1,1,2,6,5,5,6,6,6,4,5,3,3,4,4,"si.opp",4,9,3,"m.supp",5,10,5,5,1,"survey-775-688-974","I needed extra income.",NA
+9,1,1,2,2,3,3,3,3,3,4,5,6,3,6,5,1,6,5,4,6,3,3,"control",3,5.2,3,"m.supp",1,2.7,5,5,1,"survey-837-852-409","To make some fun money",NA
+19,1,1,2,6,1,1,1,1,2,4,4,5,5,6,4,6,4,5,4,6,5,4,"si.supp",5,9,3,"m.opp",4,4.5,5,5,1,"survey-477-519-502","2018",NA
+21,1,1,2,2,7,2,1,1,1,5,3,1,1,1,4,5,3,3,4,1,4,4,"control",4,7.4,3,"control",3,5.5,5,3,4,"survey-472-643-333","TO GAIN KNOWLEDGE AND FINANCIAL CRISIS",NA
+37,2,1,2,2,2,2,1,2,1,4,5,6,4,6,5,5,6,5,6,6,5,6,"control",4,8.1,3,"si.opp",4,9.2,6,5,1,"survey-739-698-530","A18W8LTQMKREBP","good"
+16,1,2,2,1,3,1,2,1,2,4,3,4,5,4,5,3,4,5,3,1,4,5,"si.opp",4,6.3,5,"si.supp",3,7.2,2,2,4,"survey-371-571-708","i my free time i feel boring so i start work OK mechanical Turk ","good "
+47,1,1,2,1,6,3,3,3,3,4,5,5,5,5,5,4,2,5,4,5,2,2,"control",4,7.7,3,"si.supp",4,8,5,5,1,"survey-191-423-833","additional income",NA
+24,2,1,2,2,1,2,1,2,1,4,5,5,6,6,6,5,5,6,5,6,5,5,"m.opp",5,9.3,1,"si.opp",1,9.1,4,5,5,"survey-227-952-856","income in myself","good one"
+12,1,1,2,6,1,1,2,1,2,1,5,5,6,4,6,6,4,5,5,3,4,4,"control",5,8.5,3,"si.supp",5,10,5,5,1,"survey-503-295-305","To earn extra money.","everything was fine and easy to understand. "
+16,2,1,2,2,3,3,2,1,2,1,5,5,6,6,6,3,4,5,5,5,6,2,"m.opp",4,7.3,3,"si.opp",4,8.1,5,5,1,"survey-884-197-780","I needed some extra money. All the other survey sites paid poorly.","The demographic questions should be at the end because that's how most surveys do it."
+16,1,1,2,2,4,2,1,1,2,2,3,3,4,2,3,4,1,3,4,2,5,3,"si.opp",4,3.7,3,"control",4,5.9,5,2,4,"survey-277-823-483","for fun",NA
+11,1,2,2,1,1,3,2,1,1,4,5,6,6,6,6,4,3,3,2,3,4,3,"si.opp",4,6.5,3,"si.supp",5,9,5,5,1,"survey-981-588-907","I wanted extra money during college","the wait time to hit continue is unnecessary"
+13,1,1,2,2,1,1,1,2,1,4,4,4,5,5,5,4,4,3,5,3,4,4,"m.supp",2,9.1,3,"si.supp",4,9,5,4,1,"survey-952-356-959","earn money","good study"
+14,1,1,2,2,5,1,1,1,1,5,4,5,4,6,6,3,2,5,4,6,2,5,"m.opp",2,4,3,"m.supp",5,9.2,5,5,1,"survey-224-548-328","To earn extra money",NA
+28,1,1,3,1,3,2,1,1,1,4,5,4,4,4,4,5,4,4,5,5,4,4,"si.opp",4,9.1,2,"m.opp",4,9.2,5,2,2,"survey-278-655-240","A31TZL82Q6JNSF","NICE SURVEY "
+11,4,1,1,2,6,1,1,1,1,4,3,5,3,4,4,3,2,2,2,5,2,4,"m.opp",3,5.3,3,"m.opp",2,2.7,1,2,1,"survey-748-726-328","good","no"
+13,1,1,2,2,1,1,1,2,1,4,4,4,5,3,3,5,4,4,5,4,5,4,"si.opp",2,9.1,3,"control",4,8.2,5,4,1,"survey-380-758-173","Earn money","good"
+17,1,1,2,2,4,1,2,1,1,4,3,4,5,5,6,4,2,3,3,4,3,3,"m.opp",5,9.3,3,"control",5,9.2,5,5,1,"survey-353-774-152","income, interesting tasks","a little underpaid"
+36,1,1,2,2,7,2,2,2,2,5,4,5,5,NA,NA,NA,4,6,4,6,5,4,"si.supp",4,7.3,3,"control",2,2.8,5,5,1,"survey-795-338-716","To make a little side money",NA
+19,3,1,2,2,4,1,1,1,1,4,3,5,6,6,5,1,5,6,6,6,5,4,"si.supp",5,8.8,3,"m.supp",4,7.5,5,5,2,"survey-297-365-903","A1YZ0ETOCJO1B2",NA
+41,1,2,2,2,3,1,1,1,1,4,5,5,5,5,6,1,1,6,5,5,1,3,"m.supp",5,9.4,3,"control",5,9.7,5,5,1,"survey-367-803-322","Extra money for bill paying and leisure activities",NA
+11,1,1,2,2,3,1,2,1,2,4,5,6,6,5,6,6,1,2,1,5,2,3,"m.supp",4,7.6,3,"m.opp",5,7,5,4,4,"survey-569-939-796","February",NA
+26,1,2,2,2,2,1,1,1,1,4,4,4,5,5,4,5,4,5,4,5,4,5,"control",4,7.3,3,"m.supp",4,8.1,5,4,1,"survey-223-853-317","07-04-2020","None"
+13,2,2,2,1,5,2,1,1,2,5,5,4,4,4,5,4,4,4,5,2,6,6,"si.opp",4,8.6,3,"si.opp",4,8,6,4,4,"survey-352-417-782","AERTGDDEFO9L5","the survey is very nice"
+1,2,1,2,2,3,3,2,2,2,3,5,4,5,4,4,5,3,4,4,4,3,4,"m.opp",2,8.6,4,"control",4,1,3,3,2,"survey-442-607-564","for money",NA
+37,1,2,4,1,2,2,2,2,2,5,5,5,5,4,6,6,1,4,1,1,2,3,"m.opp",5,7,3,"control",5,8.2,5,3,4,"survey-231-874-635"," I start this job to supplement my additional income, in addition to spending my free time doing other paid jobs.","Very Good..Thanks"
+15,2,2,2,2,3,3,1,2,1,4,5,4,4,3,4,6,4,4,5,4,6,4,"control",4,6,3,"m.supp",3,5.7,3,3,1,"survey-312-483-880","earnig ","good survey"
+38,1,2,2,2,1,2,1,2,1,4,5,5,4,5,5,6,5,4,4,3,5,4,"si.opp",4,6.7,3,"control",3,5.8,5,5,5,"survey-525-639-557","2years","nice"
+20,4,2,2,5,7,3,3,3,3,4,1,2,3,4,5,3,4,6,4,5,5,4,"control",2,3,3,"m.opp",3,4.6,5,5,1,"survey-773-235-777","Money","No comment."
+1,1,1,1,2,5,1,1,2,1,4,5,4,5,5,4,5,5,5,6,4,4,4,"si.opp",2,8.1,1,"m.supp",4,7.4,5,4,2,"survey-313-492-566","aware and small income","no"
+16,2,1,1,2,3,1,1,1,1,4,4,4,5,4,4,4,4,4,4,4,4,4,"si.supp",4,8.4,3,"m.opp",4,9,6,3,5,"survey-506-115-913","A59E3FJSGRUKE","good"
+16,1,2,2,2,5,2,1,2,2,4,5,5,6,5,4,6,5,5,4,6,5,5,"si.opp",4,7.4,3,"m.supp",4,8.3,5,3,4,"survey-618-920-114","For the supplemental usage of the money and gain knowledge","Nothing"
+13,2,1,2,2,4,1,1,2,1,4,4,3,2,6,6,6,5,6,5,5,4,5,"m.supp",5,9.4,2,"control",5,9.6,7,3,3,"survey-528-879-707","A35PNRGFU8Q8IT","na"
+9,2,2,2,2,4,1,1,1,2,3,4,6,4,6,6,6,4,4,2,4,6,4,"m.opp",5,4.9,3,"m.opp",3,4.9,1,4,3,"survey-664-811-116","Extra income","i enjoyed my participation"
+27,3,2,2,2,3,2,1,1,1,4,5,3,5,5,6,4,5,4,4,NA,NA,NA,"si.opp",4,8.4,4,"si.supp",4,8.6,5,4,3,"survey-918-461-362","A2N92BZDCKQO2J","good and intereasting"
+31,1,1,2,1,4,1,1,1,1,4,5,5,6,5,6,6,5,6,4,5,5,6,"m.opp",5,7.2,7,"si.supp",5,9.8,6,3,1,"survey-846-662-151","A211KGJ94WNFLN","good"
+15,1,1,2,2,5,2,1,2,1,5,3,4,2,3,4,3,4,3,5,3,3,5,"control",1,1,3,"m.opp",1,1,5,5,1,"survey-273-625-498","To buy bourbon","TRUMP 2020"
+14,1,1,2,1,2,2,2,2,2,1,4,4,5,5,6,3,3,6,6,6,4,4,"control",3,5.7,3,"m.supp",3,5.3,1,5,1,"survey-722-769-539","to make some extra cash while online with downtime",NA
+14,1,1,2,2,1,1,1,2,1,4,4,6,3,5,4,6,5,6,4,5,4,6,"control",4,9.2,3,"m.supp",5,9.3,5,1,3,"survey-312-421-671","primary income","nothing"
+24,1,1,2,2,3,1,1,1,1,5,1,2,2,1,2,6,3,2,2,1,3,1,"control",3,8.2,3,"si.supp",4,7.4,5,5,3,"survey-711-116-527","parttime job","us is developed nation "
+11,1,1,2,2,4,3,3,2,2,3,2,4,3,2,4,2,5,3,4,5,4,4,"control",2,6,3,"si.opp",1,6.1,2,3,3,"survey-702-286-614","4 months ago","n/a thank you!"
+15,1,2,2,2,2,2,1,2,1,2,5,4,5,1,2,4,2,3,5,6,2,4,"si.supp",3,5.6,3,"si.supp",1,1,5,5,1,"survey-241-927-358","fun",NA
+8,1,1,2,1,3,1,1,1,1,4,2,4,3,4,4,2,3,2,3,5,5,2,"control",1,5.6,3,"m.supp",3,5.2,1,1,1,"survey-651-663-389","Income growth","No comments"
+8,1,1,2,1,3,1,1,1,1,4,2,4,3,4,4,2,3,2,3,5,5,2,"control",1,5.6,3,"m.supp",3,5.2,1,1,1,"survey-651-663-389","Income growth","No comments"
+1,2,1,2,2,3,2,2,2,1,3,3,2,1,6,5,2,4,1,6,4,5,6,"control",2,7.1,3,"m.opp",1,6.1,3,3,1,"survey-181-271-995","2020","good"
+13,1,1,2,2,5,2,1,1,1,4,4,4,3,3,3,3,3,3,3,3,4,3,"m.supp",3,2.5,4,"si.opp",3,1.9,4,3,3,"survey-587-564-683","For money","Good"
+38,1,1,1,2,1,1,1,2,1,4,4,3,4,5,5,4,5,5,4,6,5,5,"m.opp",4,7.2,3,"si.supp",4,4.7,5,5,1,"survey-949-660-418","2 years ago","good survey and very nice"
+15,1,1,2,2,1,2,1,2,1,3,2,3,5,1,2,1,3,4,6,1,6,1,"si.opp",3,5.3,3,"m.supp",1,1.5,5,5,1,"survey-435-540-872","$",NA
+25,1,1,2,2,5,2,1,2,2,5,4,4,4,4,5,4,4,5,5,3,5,4,"m.supp",4,7.2,5,"control",4,7.4,3,2,4,"survey-528-733-949","A1LV3G2RYAHC21","the survey is very nice"
+18,1,2,2,2,5,2,1,2,1,4,5,4,5,5,5,6,5,6,6,6,5,5,"si.supp",5,6.7,3,"si.supp",5,7.7,5,3,3,"survey-538-514-104","To participate in research paper conducted by Universities","Nothing"
+14,2,2,2,5,3,1,1,1,2,2,5,5,3,5,6,6,6,6,6,6,5,6,"si.supp",5,10,3,"m.supp",5,10,5,5,4,"survey-447-447-877","to supplement my income",NA
+28,1,2,2,2,4,1,2,1,2,4,5,5,5,5,4,6,2,3,2,3,2,2,"m.supp",4,7.7,3,"m.supp",4,4.4,5,5,4,"survey-863-405-162","to make extra money",NA
+15,1,1,2,2,3,3,2,1,2,4,5,4,4,5,6,4,4,5,4,6,4,4,"si.supp",5,9,3,"m.opp",3,5,5,5,1,"survey-571-274-564","To supplement my income.",NA
+27,1,1,2,2,2,1,2,1,2,3,6,6,6,6,5,6,2,5,2,5,5,4,"m.opp",4,8.2,3,"si.opp",5,9.5,5,5,1,"survey-629-752-704","To suplement my income and help researchers.",NA
+15,2,1,2,2,2,2,1,2,1,4,5,5,4,5,5,6,4,6,6,6,4,5,"control",4,9.2,1,"si.supp",2,8.4,4,5,5,"survey-890-724-688","monthly income","good survey"
+12,1,1,2,1,1,3,3,3,3,2,5,5,5,5,6,3,1,5,6,5,1,3,"control",4,7.4,3,"m.opp",4,6.4,5,5,2,"survey-345-190-201","Something  to do in my pass time.","Thank you!"
+5,1,1,2,2,3,2,1,2,1,4,1,1,1,1,1,1,6,6,6,6,6,4,"m.opp",1,2.9,3,"m.supp",1,1.6,5,5,1,"survey-815-479-639","2016",NA
+19,1,1,2,6,2,1,2,3,1,2,4,4,6,4,4,5,5,6,5,5,4,4,"si.supp",2,4.6,3,"si.supp",4,7.3,5,5,1,"survey-252-111-661","To earn money because I had a back injury and couldn't do regular work",NA
+24,1,2,2,2,3,2,1,1,1,4,6,5,5,6,5,6,5,3,5,5,4,5,"si.opp",5,7.2,6,"m.supp",5,6.1,5,4,4,"survey-699-928-812","AHI7YD57642HS",NA
+29,1,2,1,2,3,1,1,2,1,4,4,3,4,5,4,5,4,4,5,4,5,5,"m.supp",4,6.8,1,"m.supp",4,7.1,2,5,1,"survey-399-284-842","2 years","good"
+13,1,1,2,2,1,1,1,2,1,4,5,5,6,5,6,5,2,5,4,4,5,4,"control",4,7.9,3,"control",4,5.8,5,4,1,"survey-454-367-669","Supplement income","It was nice"
+44,1,1,2,2,3,3,2,1,2,2,5,5,5,5,4,6,1,5,2,5,1,3,"m.supp",4,9.1,3,"m.opp",5,9.6,5,5,3,"survey-801-860-738","Advice from a friend.",NA
+8,1,1,2,2,3,1,1,1,1,4,2,5,2,3,3,3,3,5,2,6,4,3,"si.opp",5,5.6,6,"si.supp",4,5.2,5,1,3,"survey-893-700-920","Income growth","None "
+16,1,2,2,1,3,2,1,2,1,4,5,5,6,6,5,6,5,5,6,NA,NA,NA,"m.opp",5,8.8,3,"control",5,8.7,1,3,1,"survey-567-773-438","Earning purpose","No comments"
+1,1,2,2,2,1,1,1,2,1,4,3,3,4,5,5,4,4,2,1,4,2,2,"si.supp",1,8.4,4,"m.supp",1,9,5,4,4,"survey-768-243-165","I LIKE TASKS AND ALSO GETTING REWARDS","GOOD"
+10,1,1,1,2,4,1,1,2,1,4,4,5,4,4,4,5,5,4,5,5,4,5,"si.supp",4,7.3,3,"m.supp",4,6.3,4,2,3,"survey-210-620-688","Spent time","Interested"
+14,3,1,2,2,3,1,1,1,1,1,3,3,6,5,4,6,1,3,3,6,3,2,"si.opp",4,4.5,3,"m.opp",5,8.2,5,5,1,"survey-253-867-424","2013",NA
+38,1,1,2,1,3,1,1,2,1,4,4,6,6,5,5,5,5,6,6,5,4,6,"m.supp",5,7.8,6,"control",5,9.3,4,3,1,"survey-587-993-578","A1PGY59BR6C5BX","good"
+26,2,2,2,2,5,1,1,2,1,4,4,6,5,6,4,5,4,5,6,4,6,5,"si.supp",2,5,4,"m.supp",4,4.7,2,3,1,"survey-441-681-789","earning","good"
+15,1,2,2,2,3,2,1,2,2,3,4,5,6,5,6,6,2,3,4,1,1,2,"si.opp",4,6.9,3,"si.supp",4,6.4,5,5,4,"survey-233-315-537","supplemental income","it was interesting thanks so much"
+1,2,2,2,2,4,2,1,2,1,4,2,2,2,2,3,3,3,5,5,5,3,4,"control",4,8.3,4,"control",4,7.8,5,4,4,"survey-567-502-381","learn","well"
+16,1,1,2,2,2,2,2,2,2,3,1,1,1,1,1,1,1,1,6,6,1,1,"si.opp",1,5.1,3,"m.opp",4,7.2,5,5,1,"survey-283-962-471","I needed income",NA
+14,1,1,1,2,4,2,1,2,1,4,3,3,3,4,4,4,4,4,4,4,4,4,"si.opp",2,7.2,3,"si.opp",4,6,5,5,2,"survey-846-589-734","BECAUSE OF MY INTERSET ","NONE"
+20,1,2,2,2,4,1,1,1,1,5,6,5,6,6,6,3,2,2,1,4,3,1,"control",4,8.5,3,"m.opp",5,9.5,5,5,4,"survey-411-273-632","To make extra money to pay off student loans.",NA
+1,1,2,2,1,3,1,1,2,2,4,3,4,3,3,3,3,4,5,5,5,4,4,"si.opp",2,7,4,"si.supp",2,6.3,3,3,3,"survey-518-740-352","i like this Mechanical Turk","this survey very nice moments"
+13,1,1,2,2,2,1,1,1,1,4,4,5,4,5,4,5,4,5,6,5,6,4,"control",4,9.3,3,"control",4,9.1,5,2,1,"survey-980-360-582","Supplement income","Such a nice study."
+17,1,1,2,2,7,3,3,3,3,5,4,4,4,4,5,5,5,5,5,1,1,2,"si.opp",5,8.2,3,"m.supp",4,7.1,5,5,1,"survey-340-174-940","fun","none"
+17,1,1,2,2,7,3,3,3,3,5,4,4,4,4,5,5,5,5,5,1,1,2,"si.opp",5,8.2,3,"m.supp",4,7.1,5,5,1,"survey-340-174-940","fun","none"
+20,1,1,2,2,3,2,1,2,1,4,5,4,6,5,6,2,1,5,6,6,1,2,"si.opp",2,2.8,3,"control",4,7.4,5,5,1,"survey-612-647-397","To make some extra money",NA
+10,1,2,2,2,1,3,2,1,1,4,5,5,5,6,6,2,4,4,3,4,4,3,"si.opp",2,2.8,3,"si.opp",4,7.8,5,5,1,"survey-885-357-488","to make money",NA
+8,1,1,2,1,3,1,1,1,1,4,2,2,3,3,3,2,4,4,2,3,3,2,"si.supp",3,4.4,2,"m.opp",3,3.3,5,2,3,"survey-720-524-546","Make money","None"
+22,1,1,2,2,4,2,1,2,1,4,5,6,5,6,6,5,1,6,6,6,1,3,"si.opp",1,1.5,3,"m.opp",4,6.4,5,5,1,"survey-786-109-430","2016",NA
+38,1,1,2,2,1,2,1,2,1,4,6,5,3,5,4,3,4,4,5,4,5,3,"si.supp",4,5.7,4,"control",3,5.8,3,1,1,"survey-188-640-238","Some Income comes me","Nothing"
+41,1,2,1,2,6,1,1,1,1,4,3,4,3,4,4,5,5,4,4,4,4,5,"m.supp",4,6.5,4,"m.supp",4,5.1,5,3,1,"survey-862-811-731","2010","GOOD"
+7,2,1,2,6,7,1,1,1,2,4,5,3,6,5,6,3,5,6,4,4,4,5,"m.supp",2,4.7,3,"si.opp",4,7.1,5,5,1,"survey-974-214-510","For some extra money",NA
+13,2,1,2,2,4,1,1,2,1,4,5,4,5,4,4,6,4,4,5,4,5,5,"m.supp",4,9.1,2,"m.supp",4,9.5,7,3,3,"survey-151-687-473","A25N8DM670K4MA","na"
+9,1,1,2,1,2,3,1,1,2,1,5,4,5,4,3,2,4,4,3,5,4,4,"control",5,9.1,3,"control",4,7.4,5,5,1,"survey-539-445-683","extra income",NA
+27,1,1,2,2,4,4,1,3,2,3,5,4,4,4,5,3,4,4,6,5,5,6,"control",2,3.9,3,"m.supp",2,1.3,5,5,1,"survey-228-629-717","To make extra money on the side",NA
+26,1,2,2,2,4,1,1,1,1,2,3,3,3,3,1,1,1,1,1,1,1,1,"m.supp",2,5.3,4,"m.opp",1,6.4,3,3,2,"survey-390-798-463","A18PHFD6BWTP15","good"
+17,1,1,2,2,6,1,2,1,2,1,6,5,6,4,6,1,2,5,6,6,2,4,"m.supp",2,3.7,3,"control",1,1.8,5,5,1,"survey-281-403-285","To make some extra money for skin care stuff and what not.",NA
+29,1,2,2,2,4,2,2,2,2,4,5,4,6,5,6,4,3,6,4,6,4,4,"si.opp",1,1.3,3,"m.opp",4,5.6,5,5,1,"survey-369-975-845","To earn extra money","no comments"
+11,1,2,2,1,2,1,2,1,1,2,5,4,4,5,4,2,4,4,4,5,3,4,"si.supp",4,7.1,3,"m.supp",4,6.4,5,5,1,"survey-883-694-952","I had no other source of income and I needed money",NA
+13,1,1,2,2,3,1,1,1,1,4,5,5,5,5,4,2,5,5,5,5,5,5,"m.opp",4,7.4,3,"control",4,6.4,5,5,1,"survey-892-408-745","To make more money",NA
+21,1,1,2,2,5,1,2,1,1,3,5,5,6,5,5,3,6,6,6,6,6,6,"si.supp",4,7.3,3,"control",5,5.5,5,5,1,"survey-707-111-976","Income",NA
+14,1,1,2,2,2,1,1,1,1,4,4,3,4,5,4,5,4,4,4,NA,NA,NA,"si.opp",3,5.6,6,"m.supp",2,6,1,5,1,"survey-679-525-466","to earn",NA
+13,3,1,2,2,4,3,1,3,2,4,4,5,5,5,5,2,2,4,1,6,2,2,"control",4,7,3,"si.supp",5,8.3,5,5,4,"survey-621-240-225","Supplemental income and to learn about CrowdSourcing","Very clear and well designed survey. Good flow."
+31,1,1,2,2,1,1,1,1,1,2,5,5,6,6,5,5,2,3,4,6,3,4,"m.opp",4,8.2,3,"control",5,8.8,5,5,1,"survey-883-610-852","I wanted to earn some extra money while working on growing my home based business",NA
+19,3,1,2,2,5,1,1,1,1,4,2,3,3,3,5,3,4,5,3,6,4,3,"control",5,9.5,3,"control",4,6.9,5,5,1,"survey-264-939-466","To make a little extra money in my spare time.","No comments.  Everything was clear and simple."
+22,1,1,2,2,1,3,1,2,2,3,2,3,3,2,2,1,3,5,5,6,4,4,"control",3,5.3,3,"control",4,7.1,5,5,1,"survey-913-112-136","Because I was desperate for money and the barrier to entry was quite low.","Pay is a bit low."
+51,2,1,2,2,2,1,1,2,1,5,5,4,3,6,5,4,5,5,6,4,6,5,"m.opp",5,10,3,"si.supp",5,9.9,5,2,1,"survey-924-758-145","Earning money and lots to know","The survey was very interesting."
+29,8,2,2,2,3,1,1,1,2,4,6,6,6,6,6,5,1,1,1,4,1,1,"m.opp",5,9.8,3,"control",5,9.6,5,5,1,"survey-246-405-453","I wanted to earn some supplemental income.",NA
+45,1,2,2,2,2,1,2,1,2,4,5,5,6,4,6,2,5,5,4,5,4,4,"m.opp",4,6.8,3,"m.supp",4,7.3,5,5,1,"survey-393-281-606","extra income","I really support the environmental measure, except I imagine it will lead to a rise in food prices, which would be tough for lower-income individuals."
+8,2,1,2,1,4,3,2,1,2,4,6,6,6,6,3,3,4,3,2,5,3,4,"control",3,5.5,3,"control",5,9,5,5,2,"survey-107-426-560","For a little bit of extra financial freedom",NA
+17,1,1,2,2,2,1,2,1,2,4,5,4,5,6,5,4,4,6,6,5,4,5,"si.supp",5,8,3,"si.opp",4,6.6,5,5,1,"survey-666-257-927","I needed to do freelance work from home.",NA
+19,1,1,2,2,2,1,1,1,1,2,4,4,5,5,5,1,5,5,4,6,4,4,"m.opp",4,8.1,3,"control",5,9.7,5,5,1,"survey-300-204-268","Make more productive use of idle time",NA
+17,2,1,2,2,1,3,2,2,1,1,6,6,6,6,6,6,2,3,3,NA,NA,NA,"si.opp",5,9.1,3,"m.opp",4,7.7,5,5,1,"survey-191-248-853","11 years ago",NA
+11,2,1,2,2,5,2,2,2,2,5,5,5,5,5,4,2,5,5,6,1,5,5,"si.supp",3,5.4,3,"si.opp",4,6.4,5,5,2,"survey-317-982-857","2019",NA
+33,1,2,2,2,2,1,1,1,2,4,5,5,5,4,4,3,3,3,3,3,4,2,"si.supp",4,8.3,5,"si.supp",4,6.2,5,2,1,"survey-215-759-220","Leisure time earning",NA
+22,1,2,2,2,5,1,2,3,1,4,4,4,5,5,5,5,2,4,3,4,1,4,"si.supp",4,7.6,3,"control",4,8.2,5,5,1,"survey-167-902-233","extra income",NA
+16,1,1,NA,NA,NA,2,1,2,1,2,4,4,4,4,5,6,4,5,4,4,4,5,"si.opp",4,5.5,3,"m.opp",3,4.3,5,4,3,"survey-467-769-469","to know and get something","nothing"
+23,1,1,1,2,3,1,1,2,1,5,5,6,5,6,6,4,5,6,4,5,5,6,"control",5,9.1,1,"m.supp",2,8.8,5,5,4,"survey-738-184-588","earn to money","good"
+35,1,1,2,2,3,2,1,1,1,4,4,4,4,5,5,5,5,6,6,5,5,5,"si.opp",3,4.6,3,"control",5,6.6,5,3,3,"survey-423-796-795","It is help to normal people.","no commends"
+29,1,1,1,2,3,2,1,2,1,4,5,6,5,6,5,5,6,6,5,NA,NA,NA,"control",5,7.4,1,"m.opp",1,9.3,4,1,5,"survey-912-376-813","A24TVS9MMCGD7L","nice"
+29,4,2,2,1,6,2,2,2,2,4,4,4,4,4,4,6,3,5,4,2,2,2,"m.supp",2,3,3,"control",4,7.4,5,4,1,"survey-884-148-164","to supplement my income",NA
+32,1,1,2,1,4,1,1,1,1,4,6,6,6,6,6,6,4,6,6,5,6,5,"si.supp",3,7.8,4,"m.opp",1,7.6,1,3,1,"survey-645-909-562","A2RPWADMIRY42T","good"
+18,2,1,2,2,3,1,2,1,2,5,4,3,5,NA,NA,NA,4,3,4,4,5,2,"m.supp",4,6.8,5,"si.supp",3,8,5,5,1,"survey-168-336-964","for earning","very nice"
+21,1,1,2,1,1,3,2,1,2,3,4,6,6,6,6,3,1,4,6,6,4,2,"m.supp",5,8.1,3,"si.opp",3,5.2,5,5,1,"survey-218-111-275","For the money","This took much less than 15 minutes.  I expected it to be longer.  "
+8,1,2,2,2,3,2,1,2,1,4,5,4,5,5,4,4,5,6,5,5,5,6,"si.supp",4,9.2,5,"m.opp",4,6.3,5,3,4,"survey-692-914-734","for my personal reason.","great"
+1,1,1,2,1,2,2,1,2,1,4,4,5,5,5,6,5,6,4,4,4,5,4,"si.opp",3,7.4,1,"m.supp",3,8.1,4,5,1,"survey-875-792-221","learning and entertainment","nice"
+16,1,1,2,2,1,3,2,3,1,2,3,4,4,6,5,1,4,4,3,4,4,5,"m.supp",2,3.5,3,"si.supp",4,6.2,5,5,1,"survey-654-201-599","August 2016",NA
+13,2,2,2,2,4,1,1,2,1,5,5,5,4,4,4,6,6,4,5,4,6,4,"m.opp",4,7.5,4,"m.opp",4,6.8,5,5,3,"survey-853-183-538","to earn ","this is very good study."
+8,1,1,4,2,3,1,1,2,1,4,4,4,4,4,4,4,4,4,3,4,4,4,"control",4,5.4,1,"m.opp",3,4.3,4,3,4,"survey-778-937-582","TO KNOW KNOWLEDGE","NOTHING"
+30,1,1,2,2,4,2,1,2,1,4,3,3,2,5,4,4,4,4,5,6,5,6,"si.supp",1,7.1,6,"si.supp",1,7.7,5,4,4,"survey-724-541-993","have more rewards",NA
+13,1,1,2,2,5,1,1,2,1,4,4,3,4,3,4,2,4,3,5,3,3,4,"si.opp",5,8.2,3,"m.opp",3,8,6,3,2,"survey-385-647-502","A2HTUVZ5XQAC2D","good"
+13,1,2,2,2,4,1,1,2,1,4,6,6,6,6,6,6,6,6,6,5,5,5,"si.opp",4,10,3,"m.opp",5,10,5,1,4,"survey-439-892-799","EXTRA  INCOME ","GOOD,ENVIRONMENTAL AND HEALTHCARE IS VERY IMPROVEMENT OF THE SURVEY ,"
+23,1,1,1,2,3,2,1,2,1,4,5,5,5,4,5,5,4,5,6,5,5,5,"control",4,8.9,1,"control",4,9.5,2,3,2,"survey-296-187-965","A2NS28ESX9EMJV","good"
+12,6,3,2,2,3,1,2,1,1,3,5,5,5,3,3,5,4,4,2,5,4,3,"si.supp",3,4.6,3,"control",5,8,5,5,1,"survey-900-870-658","I needed a source of income that wasn't tied to a traditional job.","Thank you for allowing me to participate. the lag really wasn't that bad between pages."
+30,1,1,1,2,3,2,1,2,1,4,5,4,5,5,5,5,4,4,5,6,5,5,"m.opp",4,9,3,"control",4,8.8,2,3,1,"survey-309-987-379","A16MXC30ZQ2W82","GOOD"
+6,1,1,2,2,2,1,1,1,1,2,1,3,6,1,4,4,1,2,1,1,4,6,"m.supp",4,6.2,1,"si.opp",2,4.7,5,5,1,"survey-364-213-505","A3MCGKRH5KEZR8",NA
+10,2,1,2,2,6,3,3,1,2,4,6,6,6,1,1,1,5,6,6,6,6,6,"m.supp",2,8,3,"si.supp",2,3.5,3,5,1,"survey-134-472-870","money",NA
+37,1,2,2,2,3,1,1,1,1,4,5,4,5,5,4,5,4,5,5,4,4,5,"control",4,7.2,3,"m.opp",4,6.1,5,3,2,"survey-917-130-592","FOR INCOME","NICE"
+13,1,1,2,2,5,1,1,2,2,4,4,3,4,3,4,4,3,5,4,3,3,5,"control",4,4.7,4,"control",3,4.4,5,2,2,"survey-710-894-878","To earning and to enjoy and seriously doing the surveys on m Turk","nice experience"
+42,1,2,2,2,1,1,1,2,2,4,3,4,2,3,4,2,5,3,3,3,4,2,"si.supp",3,5.2,4,"control",3,6.3,7,4,3,"survey-845-585-942","I GET EXTRA EARNING MONEY","GOOD"
+1,1,1,2,2,2,1,1,1,1,4,4,4,5,6,5,2,3,5,1,6,5,4,"si.supp",5,8.8,3,"si.opp",4,5.2,5,5,1,"survey-555-894-643","i could not believe I could get money online","the continue button is always on the right"
+10,1,1,2,2,6,3,2,3,1,4,4,4,4,4,1,4,3,4,4,4,4,4,"si.supp",3,5,3,"control",3,4.8,5,5,1,"survey-127-585-686","Extra money",NA
+17,1,2,1,2,5,1,1,1,2,4,4,4,4,4,4,4,3,4,3,4,4,4,"si.opp",3,6.2,7,"m.opp",3,8.3,5,5,1,"survey-510-833-202","ength of the task",NA
+15,1,2,2,2,4,1,2,1,1,4,5,4,5,6,5,4,3,4,3,5,2,4,"si.opp",4,8.6,3,"si.supp",5,9.1,5,5,1,"survey-455-885-238","It seemed interesting; some extra spending money is nice.",NA
+15,1,1,2,1,3,2,1,2,2,4,6,6,6,6,5,6,5,5,5,6,5,6,"m.supp",4,7.9,3,"si.supp",4,5.8,5,2,1,"survey-644-952-508","to get extra profits","no comments"
+18,1,1,2,2,3,2,1,2,1,5,3,3,4,3,4,5,4,5,3,1,3,4,"si.opp",4,6.9,1,"si.supp",3,4.9,4,4,2,"survey-518-595-791",NA,"no"
+22,1,2,2,2,2,1,1,2,1,5,5,6,4,6,4,5,5,4,5,5,4,6,"si.opp",2,7.8,4,"m.opp",2,6.1,3,5,1,"survey-662-829-890","earn money","good"
+18,1,1,2,2,5,2,1,1,1,4,3,4,4,5,4,5,4,4,5,4,5,4,"control",3,6.9,3,"control",4,6.7,5,5,1,"survey-782-414-159","Earn",NA
+12,1,1,2,6,3,1,2,1,2,5,3,4,4,4,5,4,2,4,4,4,2,3,"si.opp",5,9.2,3,"si.opp",4,6.7,5,2,1,"survey-723-856-311","November",NA
+20,1,1,2,1,3,3,3,3,3,2,5,3,4,4,4,5,2,4,4,6,3,4,"si.supp",1,1,3,"m.opp",1,1,5,5,1,"survey-334-778-887","October 2019",NA
+45,1,2,1,2,5,1,1,2,1,5,6,5,6,6,6,6,6,6,6,6,6,6,"si.supp",5,9.3,7,"si.opp",5,9.3,6,5,2,"survey-846-211-339","AK0TY4LXV98I8","GOOD"
+18,1,1,2,1,5,2,1,1,1,4,3,5,4,6,5,4,5,4,4,6,5,5,"si.opp",4,7.2,3,"m.supp",4,6,5,3,1,"survey-859-295-583","earn",NA
+25,1,1,2,2,6,2,1,2,2,4,4,4,5,3,2,1,2,5,4,6,2,4,"m.opp",1,1,3,"m.opp",1,2,5,5,1,"survey-794-138-324","to earn extra money",NA
+14,1,1,2,2,5,2,1,2,1,5,3,3,4,4,1,2,4,5,4,6,4,5,"m.supp",2,3.8,3,"control",3,5.7,5,5,1,"survey-214-730-711","2010","No comments"
+19,2,1,4,2,3,2,1,2,1,5,5,4,4,5,4,6,4,5,6,6,5,4,"control",4,7.5,3,"m.opp",4,6.3,5,2,3,"survey-587-806-332","A1DT05ARSY09R","GOOD"
+45,1,2,2,2,3,1,1,1,1,4,5,5,6,5,6,4,4,6,5,6,4,5,"control",5,6.5,3,"si.opp",5,5.1,5,3,3,"survey-781-479-428","FOR INCOME","NICE"
+45,1,1,2,1,1,2,1,2,1,4,4,4,5,6,6,5,5,5,6,5,6,5,"m.supp",2,8.2,1,"si.supp",3,8.2,4,5,4,"survey-710-585-864","learning and entertainment","nice"

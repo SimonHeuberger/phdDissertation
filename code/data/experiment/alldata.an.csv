@@ -1,0 +1,27 @@
+"birthyear","race","gender","att","empl","inc","pid","pid.follow","ideol","ideol.follow","educ","mor.suffer","mor.care","mor.cruel","mor.comp","mor.anim","mor.kill","si.white","si.care","si.kids","si.kill","si.good","si.help","hc.group","hc.likert","hc.slider","hc.check","ev.group","ev.likert","ev.slider","ev.check","online.length","study.choice","RID","online.why","com"
+1,1,1,2,1,5,1,1,1,1,9,3,3,1,4,3,4,2,3,3,4,2,1,"m.supp",3,7.6,5,"m.supp",1,7.4,5,3,2,"5fd92c8d-68a5-e5b5-71a2-6e94f1f742c4",NA,"What this survey for??"
+1,3,1,2,2,7,2,2,2,2,14,4,5,3,4,6,1,6,5,6,6,5,6,"si.supp",3,4.4,3,"m.opp",3,4.5,5,1,2,"5fd92c2d-169f-cddb-741f-7f2bf12482b4","Cock",NA
+1,3,1,2,2,7,2,2,2,2,14,4,5,3,4,6,1,6,5,6,6,5,6,"si.supp",3,4.4,3,"m.opp",3,4.5,5,1,2,"5fd92c2d-169f-cddb-741f-7f2bf12482b4","Cock",NA
+20,4,2,2,5,4,2,2,2,2,10,5,5,4,6,4,6,4,4,2,2,4,4,"si.opp",4,6.4,3,"control",4,7.4,5,4,2,"5fd92c25-6c36-29b8-e9c8-ab53637dd90d","to earn extra money",NA
+20,4,2,2,5,4,2,2,2,2,10,5,5,4,6,4,6,4,4,2,2,4,4,"si.opp",4,6.4,3,"control",4,7.4,5,4,2,"5fd92c25-6c36-29b8-e9c8-ab53637dd90d","to earn extra money",NA
+8,1,1,2,2,3,1,2,1,2,12,4,4,4,4,5,4,4,4,2,3,4,6,"m.supp",4,8.4,3,"control",3,6.7,5,2,2,"5fd92c5f-22d0-6371-5866-269bf896393d","I like to participate",NA
+10,1,2,2,1,5,1,1,3,3,13,4,4,5,6,5,2,1,3,2,6,3,2,"m.opp",3,3.2,4,"si.opp",4,2.3,4,1,5,"5fd92cbe-0ac6-f927-395d-24f948e4223e","hbkj","hblkjbh"
+23,1,1,2,6,1,3,3,2,1,10,6,4,3,1,4,5,4,5,5,6,3,6,"m.supp",1,1.5,3,"m.opp",3,5.1,5,4,6,"5fd92c46-6fdf-0a40-51a2-12472e54080c","Something fun to do",NA
+44,4,2,2,2,5,3,1,1,1,10,4,3,3,4,2,3,4,4,4,4,4,3,"si.opp",4,7,3,"si.supp",5,7.4,5,2,2,"5fd92cc5-c83a-c619-649d-f9591fa7f681","2010","Love it"
+47,4,2,2,2,4,1,2,1,2,11,4,4,5,4,2,5,1,5,2,3,4,4,"m.supp",3,5.5,3,"si.opp",4,8.2,5,5,1,"5fd92c76-8106-17cf-7f1f-ee41ed1f007b","since 1998","Nice simple survey with simple questions and good options of answers."
+53,1,2,2,4,4,2,2,2,2,12,6,6,6,6,6,6,2,2,2,6,2,2,"m.supp",3,6.4,3,"si.opp",3,6.4,4,4,2,"5fd92cfe-e492-3481-ea42-aa0512013353","this year",NA
+53,1,2,2,4,4,2,2,2,2,12,6,6,6,6,6,6,2,2,2,6,2,2,"m.supp",3,6.4,3,"si.opp",3,6.4,4,4,2,"5fd92cfe-e492-3481-ea42-aa0512013353","this year",NA
+56,1,2,2,4,2,1,2,3,3,9,4,4,5,6,6,6,3,4,3,6,1,1,"control",4,9.1,3,"m.opp",3,5.2,5,5,1,"5fd92d26-64b5-bb88-21b4-1499a0719c7e","for rewards","none"
+33,3,2,2,1,4,2,2,2,2,13,4,3,3,5,4,3,2,4,2,5,4,3,"m.supp",3,6.4,2,"m.opp",3,6.5,7,1,3,"5fd92cff-15ef-b117-fad9-19879f0aea24","Just to learn about what's out there in the market","This seems to be a serious marketing researches firm"
+52,1,2,2,2,2,2,2,2,2,10,5,3,5,5,6,6,1,2,2,3,1,3,"si.supp",4,9,3,"m.opp",2,5.6,5,5,1,"5fd92cf3-04ca-42bc-670a-36ffb4fc7ade","fun and earn points to redeem for gift cards ",NA
+45,1,2,2,2,7,1,2,1,2,13,3,5,4,5,6,6,5,5,3,4,1,3,"si.supp",5,9.1,3,"si.supp",5,9.6,5,5,2,"5fd92ce1-4ef3-4e3c-64e9-4435ba2b2c1f","easy",NA
+54,1,2,2,4,6,2,1,3,2,13,5,4,4,5,5,5,2,5,2,4,4,1,"control",1,1.4,3,"si.supp",1,1.9,4,5,3,"5fd92cf6-e792-6bdf-afed-713fb251e065","TO EARN REWARDS AND SHARE OPINION",NA
+54,1,2,2,4,6,2,1,3,2,13,5,4,4,5,5,5,2,5,2,4,4,1,"control",1,1.4,3,"si.supp",1,1.9,4,5,3,"5fd92cf6-e792-6bdf-afed-713fb251e065","TO EARN REWARDS AND SHARE OPINION",NA
+1,2,2,2,5,1,1,1,1,1,9,6,6,6,6,1,6,1,1,6,6,1,1,"control",5,10,3,"si.supp",5,7.6,4,1,6,"5fd92db5-2172-3c4c-8ef5-4facea273427","Haven’t ","None "
+42,1,2,2,5,4,3,3,3,3,11,3,3,5,5,5,6,2,2,1,2,4,1,"m.supp",4,7.8,3,"m.opp",4,5.9,5,5,3,"5fd92d29-5cf7-c692-3d09-aa7bc0e94bc4","It was fun and was a way to earn some extra funds.","none, thank you."
+1,1,1,2,2,6,1,1,1,1,4,6,6,6,6,6,6,6,6,6,6,6,6,"si.opp",1,9.6,2,"si.opp",1,8.3,3,2,1,"5fd92d33-cecb-8cac-e74b-a7dce0f3a225","2019","no comment"
+1,1,2,2,2,6,3,1,3,2,13,6,4,6,5,6,5,2,2,3,4,3,1,"si.opp",2,3.7,3,"m.opp",4,8.2,5,5,3,"5fd92e00-a6a0-f883-7bf2-9d3abaf6dfb9","it seemed like  something fun to do",NA
+18,1,1,2,2,4,1,1,1,1,12,2,2,4,NA,NA,NA,4,1,5,5,2,2,"si.opp",2,4.6,4,"si.supp",3,3.6,5,5,3,"5fd92ea1-a281-de44-0794-ed6dcc9b8a37","SDFHDFHJF","IUGKUJHGUJHKHB KJKJ"
+14,1,2,2,5,2,2,1,2,2,11,4,3,4,5,6,6,1,2,6,1,2,1,"si.opp",4,8.8,3,"si.supp",3,7.6,5,4,1,"5fd92fbe-775f-497c-5956-83f70a6aa75b","To have extra money for holidays and birthdays. ",NA
+52,1,2,2,4,3,3,2,1,1,11,6,4,6,6,6,5,1,4,2,5,2,1,"m.supp",5,10,3,"m.opp",5,10,5,4,4,"5fd92c98-c3d7-81c1-56b2-8da951f8720c","retired and home alone most of the time ",NA
+19,1,1,2,2,5,1,1,2,1,13,1,1,1,1,1,1,1,2,2,2,2,2,"m.supp",2,4.7,1,"control",1,4.1,1,1,1,"5fd92cf2-8b88-3942-8689-1472035d92cf","its amazing","its amazing"

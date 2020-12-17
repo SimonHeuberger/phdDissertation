@@ -1,0 +1,5 @@
+"birthyear","race","gender","att","empl","inc","pid","pid.follow","ideol","ideol.follow","ed.both","mor.suffer","mor.care","mor.cruel","mor.comp","mor.anim","mor.kill","si.white","si.care","si.kids","si.kill","si.good","si.help","hc.group","hc.likert","hc.slider","hc.check","ev.group","ev.likert","ev.slider","ev.check",".online.length",".study.choice","unique.id","online.why","com"
+18,2,1,1,2,2,1,2,1,1,4,4,4,3,5,4,5,4,5,6,4,5,4,"si.supp",2,8.2,4,"control",3,9.3,5,3,4,"survey-582-280-294","earn money and learning study","good political views"
+14,1,2,2,2,2,1,2,1,2,4,4,4,3,6,5,5,4,5,5,3,4,5,"control",4,8.2,3,"m.opp",2,2.8,5,3,1,"survey-109-547-985","financial ","nice "
+16,2,1,2,6,2,1,1,1,2,4,4,5,6,4,4,2,3,3,3,6,4,3,"m.supp",4,8.1,3,"control",1,2.3,5,5,2,"survey-464-318-754","2016",NA
+18,1,1,2,2,6,1,1,1,1,4,4,5,5,6,6,6,1,5,1,1,1,2,"si.supp",5,8.4,3,"m.supp",5,9.1,5,4,1,"survey-211-786-534","A1HVSOJC13XEK1","NONE"
