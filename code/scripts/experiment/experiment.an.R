@@ -9,12 +9,11 @@ library(xtable)
 df.all <- read.csv(here("data", "experiment", "alldata.an.csv"), na.strings = "NA")
 
 summary(is.na(df.all))
+nrow(df.all)
 
 df.all.fail <- df.all[!is.na(df.all$att),] %>% # where there are no att == NA
   filter(., att != 2)
 nrow(df.all.fail)
-
-nrow(df.all)
 
 throw.away <- select(df.all, online.length, study.choice, online.why) # save throw away columns separately
 comments <- na.omit(df.all$com) # save comments separately
