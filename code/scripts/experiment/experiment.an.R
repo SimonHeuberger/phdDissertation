@@ -6,31 +6,49 @@ library(RItools)
 library(stargazer)
 library(xtable)
 
-df.all <- read.csv(here("data", "experiment", "alldata.an.csv"), na.strings = "NA")
 
-summary(is.na(df.all))
-nrow(df.all)
+### check for attention check fail/pass ### 
 
-df.all.fail <- df.all[!is.na(df.all$att),] %>% # where there are no att == NA
+df <- read.csv(here("data", "experiment", "an.all.csv"), na.strings = "NA")
+summary(is.na(df))
+nrow(df)
+
+df.fail <- df[!is.na(df$att),] %>% # where there are no att == NA
   filter(., att != 2)
-nrow(df.all.fail)
+nrow(df.fail) # no one failed the check, as it should be
 
-throw.away <- select(df.all, online.length, study.choice, online.why) # save throw away columns separately
-comments <- na.omit(df.all$com) # save comments separately
 
-discard.cols <- c("online.length", "study.choice", "online.why", "com", "att", "RID")
-df.all <- select(df.all, -one_of(discard.cols)) # remove unneeded columns
 
-df.all[rowSums(is.na(df.all)) > 0,] %>% nrow # 3 people with NAs
-summary(is.na(df.all))
+### check for unique RIDs ###
 
-df.all.omit <- na.omit(df.all)
-nrow(df.all.omit) # 25/26 people overall for me to work with
+df[!duplicated(df$RID), ] %>% nrow # 1,162 unique entries
+df[duplicated(df$RID), ] %>% nrow # 166 duplicate entries
 
-df.all.omit$inc.num <- df.all.omit$inc
+df <- df[!duplicated(df$RID), ]
+nrow(df) # 1,162 people with unique RIDs
+
+write.csv(df$RID, here("data", "experiment", "RIDs.an.csv"), row.names = FALSE)
+
+
+
+### Manipulate variables ###
+
+throw.away <- select(df, online.length, study.choice, online.why) # save throw away columns separately
+comments <- na.omit(df$com) # save comments separately
+
+discard.cols <- c("online.length", "study.choice", "online.why", "com", "att")
+df <- select(df, -one_of(discard.cols)) # remove unneeded columns
+
+summary(is.na(df))
+df[rowSums(is.na(df)) > 0,] %>% nrow # 100 people with NAs (si and mor columns)
+
+df.omit <- na.omit(df)
+nrow(df.omit) # 1,062 people overall for me to work with
+
+df.omit$inc.num <- df.omit$inc
 cols.fac <- c("educ", "race", "gender", "empl", "inc", "pid", "ideol")
 for (i in 1:length(cols.fac)){
-    df.all.omit[,cols.fac[i]] <- factor(df.all.omit[,cols.fac[i]])
+    df.omit[,cols.fac[i]] <- factor(df.omit[,cols.fac[i]])
 }
 
 questions.path <- "/Users/simonheuberger/dissertation/shiny/questions"
@@ -64,95 +82,54 @@ refactor <- function(df, var, varn){
 var <- "educ"  
 q1 <- read.csv(paste0(questions.path, "/", questions.files[1])) # education.an for educ
 varn <- varNames(q1, var)
-df.all.omit[, var] <- refactor(df.all.omit, var, varn)  
-varLev <- levels(df.all.omit[, var])
-varLev
-varn
-df.all.omit[, var] <- fct_recode(df.all.omit[, var],
-                                   "7th-8th grade" = "4",
-                                   "High school graduate" = "9",
-                                   "Some college" = "10",
-                                 "Associate degree" = "11",
-                                 "Bachelor" = "12",
-                                 "Master" = "13",
-                                 "Professional degree" = "14")
+df.omit[, var] <- refactor(df.omit, var, varn)  
 
 var <- "race"
 q2 <- read.csv(paste0(questions.path, "/", questions.files[2])) # dems1 for race, gender
 varn <- varNames(q2, var)
-df.all.omit[, var] <- refactor(df.all.omit, var, varn)  
-varLev <- levels(df.all.omit[, var])
-varLev
-varn
-df.all.omit[, var] <- fct_recode(df.all.omit[, var],
-                                   "White" = "1",
-                                   "Black" = "2",
-                                   "Hispanic" = "3",
-                                 "Asian" = "4")
+df.omit[, var] <- refactor(df.omit, var, varn)  
 
 var <- "gender"
 varn <- varNames(q2, var)
-df.all.omit[, var] <- refactor(df.all.omit, var, varn)
-varLev <- levels(df.all.omit[, var])
-varLev
-varn
-df.all.omit[, var] <- fct_recode(df.all.omit[, var],
-                                   "Male" = "1",
-                                   "Female" = "2")
+df.omit[, var] <- refactor(df.omit, var, varn)
 
 q3 <- read.csv(paste0(questions.path, "/", questions.files[3])) # dems2 for empl, inc
 var <- "empl"
 varn <- varNames(q3, var)
-df.all.omit[, var] <- refactor(df.all.omit, var, varn)
-varLev <- levels(df.all.omit[, var])
-varLev
-varn
-df.all.omit[, var] <- fct_recode(df.all.omit[, var],
-                                   "Employed part time" = "1",
-                                   "Employed full time" = "2",
-                                 "Retired" = "4",
-                                 "Homemaker" = "5",
-                                 "Unemployed" = "6")
+df.omit[, var] <- refactor(df.omit, var, varn)
 
 var <- "inc"
 varn <- varNames(q3, var)
-df.all.omit[, var] <- refactor(df.all.omit, var, varn)
+df.omit[, var] <- refactor(df.omit, var, varn)
 
 q4 <- read.csv(paste0(questions.path, "/", questions.files[4])) # pid for pid
 var <- "pid"
 varn <- varNames(q4, var)
-df.all.omit[, var] <- refactor(df.all.omit, var, varn)
-varLev <- levels(df.all.omit[, var])
-varLev
-varn
-df.all.omit[, var] <- fct_recode(df.all.omit[, var],
-                                   "Democrat" = "1",
-                                   "Republican" = "2",
-                                 "Independent" = "3")
+df.omit[, var] <- refactor(df.omit, var, varn)
 
 q5 <- read.csv(paste0(questions.path, "/", questions.files[5])) # ideol for ideol
 var <- "ideol"
 varn <- varNames(q5, var)
-df.all.omit[, var] <- refactor(df.all.omit, var, varn)
+df.omit[, var] <- refactor(df.omit, var, varn)
 
-df.all.omit$pid.follow <- df.all.omit$pid.follow %>% as.character # pid.follow needs to be separate, it's more complicated
+df.omit$pid.follow <- df.omit$pid.follow %>% as.character # pid.follow needs to be separate, it's more complicated
 qdem <- read.csv(paste0(questions.path, "/pid.foll.dem.csv"))
 qind <- read.csv(paste0(questions.path, "/pid.foll.ind.else.csv"))
 var <- "pid.follow"
 varndem <- varNames(qdem, var)
 varnind <- varNames(qind, var)
 
-for(i in 1:nrow(df.all.omit)){
-  if(df.all.omit[i, "pid"] == "Democrat" | df.all.omit[i, "pid"] == "Republican"){
-    df.all.omit[i, "pid.follow"] <- ifelse(df.all.omit[i, "pid.follow"] == 1, varndem[1], varndem[2])
+for(i in 1:nrow(df.omit)){
+  if(df.omit[i, "pid"] == "Democrat" | df.omit[i, "pid"] == "Republican"){
+    df.omit[i, "pid.follow"] <- ifelse(df.omit[i, "pid.follow"] == 1, varndem[1], varndem[2])
   } else {
-    df.all.omit[i, "pid.follow"] <- ifelse(df.all.omit[i, "pid.follow"] == 1, varnind[1], 
-                                  ifelse(df.all.omit[i, "pid.follow"] == 2, varnind[2], varnind[3]))
+    df.omit[i, "pid.follow"] <- ifelse(df.omit[i, "pid.follow"] == 1, varnind[1], 
+                                  ifelse(df.omit[i, "pid.follow"] == 2, varnind[2], varnind[3]))
   }
 }
 
-df.all.omit$pid.follow <- df.all.omit$pid.follow %>% as.factor
-df.all.omit$ideol.follow <- df.all.omit$ideol.follow %>% as.character # ideol.follow needs to be separate, also more complicated
+df.omit$pid.follow <- df.omit$pid.follow %>% as.factor
+df.omit$ideol.follow <- df.omit$ideol.follow %>% as.character # ideol.follow needs to be separate, also more complicated
 qlib <- read.csv(paste0(questions.path, "/ideol.foll.lib.csv"))
 qcons <- read.csv(paste0(questions.path, "/ideol.foll.cons.csv"))
 qnei <- read.csv(paste0(questions.path, "/ideol.foll.nei.csv"))
@@ -161,18 +138,18 @@ varnlib <- varNames(qlib, var)
 varncons <- varNames(qcons, var)
 varnnei <- varNames(qnei, var)
 
-for(i in 1:nrow(df.all.omit)){
-  if(df.all.omit[i, "ideol"] == "Liberal"){
-    df.all.omit[i, "ideol.follow"] <- ifelse(df.all.omit[i, "ideol.follow"] == 1, varnlib[1], varnlib[2])
-  } else if(df.all.omit[i, "ideol"] == "Conservative"){
-    df.all.omit[i, "ideol.follow"] <- ifelse(df.all.omit[i, "ideol.follow"] == 1, varncons[1], varncons[2])
+for(i in 1:nrow(df.omit)){
+  if(df.omit[i, "ideol"] == "Liberal"){
+    df.omit[i, "ideol.follow"] <- ifelse(df.omit[i, "ideol.follow"] == 1, varnlib[1], varnlib[2])
+  } else if(df.omit[i, "ideol"] == "Conservative"){
+    df.omit[i, "ideol.follow"] <- ifelse(df.omit[i, "ideol.follow"] == 1, varncons[1], varncons[2])
   } else {
-    df.all.omit[i, "ideol.follow"] <- ifelse(df.all.omit[i, "ideol.follow"] == 1, varnnei[1], 
-                                    ifelse(df.all.omit[i, "ideol.follow"] == 2, varnnei[2], varnnei[3]))
+    df.omit[i, "ideol.follow"] <- ifelse(df.omit[i, "ideol.follow"] == 1, varnnei[1], 
+                                    ifelse(df.omit[i, "ideol.follow"] == 2, varnnei[2], varnnei[3]))
   }
 }
 
-df.all.omit$ideol.follow <- df.all.omit$ideol.follow %>% as.factor
+df.omit$ideol.follow <- df.omit$ideol.follow %>% as.factor
 
 # birthyear input is 1:83. The corresponding birthyears are 2002:1920
 # I want to replace the input with the corresponding birthyears
@@ -188,52 +165,59 @@ year.dist <- max(year.inp)-min(year.inp) # the distance between the highest and 
 year.seq.end <- year.seq.start - (year.dist * 2) # the last number to add (1837) to the highest birthyear input (83)
 year.seq <- seq(from = year.seq.end, to = year.seq.start, by = 2) %>% rev # all the numbers to add to each increasing number in birthyear input
 
-for(i in 1:nrow(df.all.omit)){
+for(i in 1:nrow(df.omit)){
   for(x in 1:length(year.inp)){
-    if(df.all.omit[i, "birthyear"] == year.inp[x]){
-      df.all.omit[i, "age"] <- 2020 - (year.inp[x] + year.seq[x])
+    if(df.omit[i, "birthyear"] == year.inp[x]){
+      df.omit[i, "age"] <- 2020 - (year.inp[x] + year.seq[x])
     }
   }
 }
 
-df.all.omit <- select(df.all.omit, -one_of("birthyear")) # I tried simply overwriting column birthyear in the loop, but that kept giving really weird numbers. No idea why
-df.all.omit$dem <- ifelse(df.all.omit$pid == "Democrat", 1, 0)
-df.all.omit$male <- ifelse(df.all.omit$gender == "Male", 1, 0)
-df.all.omit$mor.all <- (df.all.omit$mor.suffer + df.all.omit$mor.care + df.all.omit$mor.cruel +
-                 df.all.omit$mor.comp + df.all.omit$mor.anim + df.all.omit$mor.kill) / 6
-df.all.omit$si.all <- (df.all.omit$si.white + df.all.omit$si.care + df.all.omit$si.kids + 
-                df.all.omit$si.kill + df.all.omit$si.good + df.all.omit$si.help) / 6
+df.omit <- select(df.omit, -one_of("birthyear")) # I tried simply overwriting column birthyear in the loop, but that kept giving really weird numbers. No idea why
+df.omit$dem <- ifelse(df.omit$pid == "Democrat", 1, 0)
+df.omit$male <- ifelse(df.omit$gender == "Male", 1, 0)
+df.omit$mor.all <- (df.omit$mor.suffer + df.omit$mor.care + df.omit$mor.cruel +
+                 df.omit$mor.comp + df.omit$mor.anim + df.omit$mor.kill) / 6
+df.omit$si.all <- (df.omit$si.white + df.omit$si.care + df.omit$si.kids + 
+                df.omit$si.kill + df.omit$si.good + df.omit$si.help) / 6
 
-# write.csv(df.all.omit, file = here("data", "pre-test", "batch.1.only.att.passed.csv"), row.names = FALSE)
+write.csv(df.omit, here("data", "experiment", "an.clean.csv"), row.names = FALSE)
 
-hc.lm.out <- lm(hc.likert ~ hc.group + mor.all + si.all + dem + empl + inc, data = df.all.omit)
-ev.lm.out <- lm(ev.likert ~ ev.group + mor.all + si.all + dem + empl + inc, data = df.all.omit)
 
-df.all.omit$hc.group.num <- df.all.omit$hc.group %>% as.factor %>% as.numeric
-balance <- xBalance(hc.group.num ~ race + gender + empl + inc + pid + educ + age, 
-                    data = df.all.omit, 
-                    report = c("std.diffs", "z.scores", "adj.means", "adj.mean.diffs", 
-                               "adj.mean.diffs.null.sd", "chisquare.test", "p.values"))
-listed <- lapply(seq(dim(balance$results)[3]), function(x) balance$results[ , , x])
-balance.df <- plyr::ldply(listed, data.frame, .id = NULL)
-balance.df$vars <- c(paste0("race", levels(df.all.omit$race)), paste0("gender", levels(df.all.omit$gender)), 
-                     paste0("empl", levels(df.all.omit$empl)), paste0("inc", levels(df.all.omit$inc)), 
-                     paste0("pid", levels(df.all.omit$pid)), paste0("educ", levels(df.all.omit$educ)), 
-                     "age")
-balance.df <- balance.df[, c(8,1:7)]
 
-group_by(df.all.omit, hc.group) %>% summarize(count = n())
-group_by(df.all.omit, ev.group) %>% summarize(count = n())
-stargazer(hc.lm.out, header = FALSE,
-          title = "Healthcare Regression Results",
-          label = "hc.reg",
-          single.row = TRUE)
 
-stargazer(ev.lm.out, header = FALSE,
-          title = "Environment Regression Results",
-          label = "ev.reg",
-          single.row = TRUE)
-xtable(balance.df, caption = "Balance Across Covariates") %>% print(., comment=FALSE, include.rownames=FALSE)
-xtable(balance$overall, caption = "Chi-squared test") %>% print(., comment = FALSE, include.rownames=FALSE)
-plot(balance)
+### Check against census (Lucid benchmark), should be within a couple of percentage points ###
+
+df.omit$gender %>% table %>% prop.table
+# census is 49% male, 51% female -- that checks out
+
+df.omit$inc <- as.factor(df.omit$inc)
+df.omit$inc %>% table %>% prop.table
+# census has different categories, but it roughly evens out
+
+df.omit$race <- as.factor(df.omit$race)
+df.omit$race %>% table %>% prop.table
+# census: 72% white, 13% Black, 5% Asian, 1% Native American, 9% Other == that checks out
+
+df.omit$age.cats <- ifelse(df.omit$age <= 24, "18-24", 
+                      ifelse(df.omit$age > 24 & df.omit$age <= 34, "25-34",
+                             ifelse(df.omit$age >34 & df.omit$age <= 44, "35-44",
+                                    ifelse(df.omit$age > 44 & df.omit$age <= 54, "45-54",
+                                           ifelse(df.omit$age > 54 & df.omit$age <= 64, "55-64",
+                                                  "65+")))))
+df.omit$age.cats <- as.factor(df.omit$age.cats)
+df.omit$age.cats %>% table %>% prop.table     
+# census: 13% 18-24, 18% 25-34, 18% 35-44, 19% 45-54, 16% 55-64, 17% 65+
+# that all checks out except 18-24
+
+RID.18 <- subset(df.omit, subset = (age == 18), select = c(RID))
+RID.18$RID %>% length # 220 people in the sample are 18
+RID.18$RID %>% length / nrow(df.omit) # that's a whopping 21%
+
+write.csv(RID.18, file = here("data", "experiment", "RIDs.resp.with.age.18.an.csv"), row.names = FALSE)
+
+
+
+
+
 
