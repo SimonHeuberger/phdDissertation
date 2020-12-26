@@ -24,10 +24,17 @@ nrow(df.fail)
 df[!duplicated(df$RID), ] %>% nrow # 1,211 unique entries
 df[duplicated(df$RID), ] %>% nrow # 160 duplicate entries
 
-df <- df[!duplicated(df$RID), ]
+df <- df[!duplicated(df$RID), ] # remove the duplicate RIDs
 nrow(df) # 1,211 people with unique RIDs
 
-write.csv(df$RID, here("data", "experiment", "RIDs.op.csv"), row.names = FALSE)
+# save unique RIDs to send to Lucid
+# write.csv(df$RID, here("data", "experiment", "RIDs.op.csv"), row.names = FALSE)
+
+# After I checked the number of duplicate RIDs for an and op, I had fewer uniques RIDs than the 2,331 I paid for.
+# Lucid opened the survey up again so I could collect more. In these (op) data, I have 1,211 unique RIDs.
+# In the an data, I have 1,162. That's 2,373 unique RIDs overall.
+
+
 
 
 
@@ -183,7 +190,6 @@ df.omit$si.all <- (df.omit$si.white + df.omit$si.care + df.omit$si.kids +
                 df.omit$si.kill + df.omit$si.good + df.omit$si.help) / 6
 
 
-write.csv(df.omit, here("data", "experiment", "op.clean.csv"), row.names = FALSE)
 
 
 
@@ -212,10 +218,46 @@ df.omit$age.cats %>% table %>% prop.table
 # census: 13% 18-24, 18% 25-34, 18% 35-44, 19% 45-54, 16% 55-64, 17% 65+
 # that all checks out except 18-24
 
-RID.18 <- subset(df.omit, subset = (age == 18), select = c(RID))
+RID.18 <- subset(df.omit, subset = (age == 18))
 RID.18$RID %>% length # 266 people in the sample are 18
 RID.18$RID %>% length / nrow(df.omit) # that's a whopping 24%
 
-write.csv(RID.18, file = here("data", "experiment", "RIDs.resp.with.age.18.op.csv"), row.names = FALSE)
+# write.csv(RID.18, file = here("data", "experiment", "RIDs.resp.with.age.18.op.csv"), row.names = FALSE)
+# I saved the RIDs for everyone with age 18 and sent it to Lucid. They
+# have the real ages of the respondents on file, so I can use those
+
+# read in correct ages and RIDs for everyone in my data (an and op) who is 18
+correct.age.RID.18 <- read.csv(here("data", "experiment", "RIDs.resp.with.age.18.all.correct.csv"), na.strings = "NA")
+df.omit <- merge(df.omit, correct.age.RID.18[, c("RID", "age")], by = "RID", all.x = TRUE) #merge it with df
+# replace NAs in new column with values from original column
+df.omit$age.y[is.na(df.omit$age.y)] <- df.omit$age.x[is.na(df.omit$age.y)]
+df.omit <- select(df.omit, -one_of("age.x")) # remove unneeded columns
+df.omit <- dplyr::rename(df.omit, age = age.y) # rename column
+# convert to census categories again
+df.omit$age.cats <- ifelse(df.omit$age <= 24, "18-24", 
+                      ifelse(df.omit$age > 24 & df.omit$age <= 34, "25-34",
+                             ifelse(df.omit$age >34 & df.omit$age <= 44, "35-44",
+                                    ifelse(df.omit$age > 44 & df.omit$age <= 54, "45-54",
+                                           ifelse(df.omit$age > 54 & df.omit$age <= 64, "55-64",
+                                                  "65+")))))
+df.omit$age.cats <- as.factor(df.omit$age.cats)
+df.omit$age.cats %>% table %>% prop.table     
+# census: 13% 18-24, 18% 25-34, 18% 35-44, 19% 45-54, 16% 55-64, 17% 65+
+# now it all checks out
+
+
+
+
+
+### Save final data ###
+
+df.omit <- select(df.omit, -one_of(c("RID", "age.cats"))) # remove unneeded columns
+df.omit <- df.omit[, c(35, 1:34)] # move age upfront
+
+write.csv(df.omit, here("data", "experiment", "op.clean.csv"), row.names = FALSE) # 1,103 observations
+
+# that gives me 2,165 respondents without NAs overall (1,103 op; 1,062 an)
+
+
 
 

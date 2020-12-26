@@ -1,4 +1,7 @@
 
+# combine all respondents with age 18 and send the respective RIDs to Lucid. They can send me the real ages
+# won't run without the saved 18.op and 18.an .csv files (creation code commented out in experiment.an.R and experiment.op.R)
+
 library(here)
 
 op.18 <- read.csv(here("data", "experiment", "RIDs.resp.with.age.18.op.csv"), as.is = TRUE)

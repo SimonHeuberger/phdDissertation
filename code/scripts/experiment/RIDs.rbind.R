@@ -1,4 +1,7 @@
 
+# combine all unique RIDs and send to Lucid for final invoicing
+# won't run without the saved RIDs.op and RIDs.an .csv files (creation code commented out in experiment.an.R and experiment.op.R)
+
 library(here)
 
 op.RIDs <- read.csv(here("data", "experiment", "RIDs.op.csv"), as.is = TRUE)
