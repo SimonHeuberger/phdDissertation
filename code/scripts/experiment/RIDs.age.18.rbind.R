@@ -1,6 +1,6 @@
 
 # combine all respondents with age 18 and send the respective RIDs to Lucid. They can send me the real ages
-# won't run without the saved 18.op and 18.an .csv files (creation code commented out in experiment.an.R and experiment.op.R)
+# won't run without the saved 18.op and 18.an .csv files (creation code commented out in clean.an.R and clean.op.R)
 
 library(here)
 
