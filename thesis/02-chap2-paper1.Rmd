@@ -452,7 +452,7 @@ tab <- stargazer(df.all,
                  summary = FALSE,
                  header=FALSE,
                  align = TRUE,
-                 title = "Blocking on ANES and Ordered Probit Education Categories",
+                 title = "Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Differentiated by Treatment Group",
                  label = "education-blocked")
 st <- gsub("{c}", "{l}", tab, fixed = TRUE)
 cat(st)
@@ -461,9 +461,9 @@ cat(st)
 
 
 \begin{table}[!htbp] \centering    
-\caption{Blocking on ANES and Ordered Probit Education Categories}    
+\caption{Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Differentiated by Treatment Group}
 \label{education-blocked} 
-\resizebox{13cm}{!}{%
+\resizebox{11.5cm}{!}{%
 \begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
 \\[-1.8ex]\hline  
 \hline \\[-1.8ex] 
@@ -550,12 +550,14 @@ cat(st)
 \end{tabular}}
 \end{table}
 
+\clearpage
 
-```{r include=FALSE}
 
-# compare treatment groups in AN with treatment groups in OP
+```{r Variance-In-Treatment-Groups, include=FALSE}
 
-list.dfs.var <- list.dfs
+##### compare treatment groups in AN with treatment groups in OP #####
+
+list.dfs.var <- list.dfs # so I don't mess with the output from above
 
 for(x in 1:(length(list.dfs)/2)){
   list.dfs.var[[x]]$cat <- rep(paste0("AN", x), nrow(list.dfs.var[[x]])) %>% as.factor
@@ -594,7 +596,8 @@ for(t in 1:length(list.dfs.num.aov)){
 fac.res <- rep(list(list()), 2)
 names(fac.res) <- c("glm.sum", "glm.anov")
 list.dfs.fac.aov <- rep(list(fac.res), 5)
-names(list.dfs.fac.aov) <- c("T1", "T2", "T3", "T4", "T5")
+treats <- c("T1", "T2", "T3", "T4", "T5")
+names(list.dfs.fac.aov) <- treats
 
 for(t in 1:length(list.dfs.num.aov)){
   for(w in 1:(ncol(dplyr::select_if(list.dfs.t[[1]], is.not.num))-1)){
@@ -607,17 +610,398 @@ for(t in 1:length(list.dfs.num.aov)){
   }
 }
 
-list.dfs.num.aov
-list.dfs.fac.aov
-# diff: difference between means of the two groups
-# lwr, upr: the lower and the upper end point of the confidence interval at 95% (default)
-# p adj: p-value after adjustment for the multiple comparisons.
+# These commented out lines are just for me as an overview how all the lists are structured and how to get the numbers as a df
+# Lists of length 5, named T1 to T5
+# list.dfs.num.aov %>% length
+# list.dfs.num.aov %>% names
+# list.dfs.fac.aov %>% length
+# list.dfs.fac.aov %>% names
+# 
+# Lists of length 2, named aov.sum, aov.tukey and glm.sum, glm.anov
+# list.dfs.num.aov[["T1"]] %>% length
+# list.dfs.num.aov[["T1"]] %>% names
+# list.dfs.fac.aov[["T1"]] %>% length
+# list.dfs.fac.aov[["T1"]] %>% names
+# 
+# Lists of lengths 2 and 8, named after variables (age, feel.trump and gender, race, income, occupation, pid, pres.approv, min.wage, country.track)
+# list.dfs.num.aov[["T1"]][["aov.sum"]] %>% length
+# list.dfs.num.aov[["T1"]][["aov.sum"]] %>% names
+# list.dfs.fac.aov[["T1"]][["glm.sum"]] %>% length
+# list.dfs.fac.aov[["T1"]][["glm.sum"]] %>% names
+# 
+# Classes and names of each output
+# list.dfs.num.aov[["T1"]][["aov.sum"]][["age"]] %>% class # summary.aov, listof
+# list.dfs.num.aov[["T1"]][["aov.sum"]][["age"]] %>% names # NULL
+# list.dfs.fac.aov[["T1"]][["glm.sum"]][["gender"]] %>% class # summary.glm
+# list.dfs.fac.aov[["T1"]][["glm.sum"]][["gender"]] %>% names # lots of useful names
+# list.dfs.num.aov[["T1"]][["aov.tukey"]][["age"]] %>% class # TukeyHSD, multicomp
+# list.dfs.num.aov[["T1"]][["aov.tukey"]][["age"]] %>% names # bb$cat
+# list.dfs.fac.aov[["T1"]][["glm.anov"]][["gender"]] %>% class # anova, data.frame
+# list.dfs.fac.aov[["T1"]][["glm.anov"]][["gender"]] %>% names # lots of names
+#
+# How to transform each output into a data frame
+# list.dfs.num.aov[["T1"]][["aov.sum"]][["age"]][[1]] %>% data.frame
+# list.dfs.fac.aov[["T1"]][["glm.sum"]][["gender"]]$coefficients %>% data.frame
+# list.dfs.num.aov[["T1"]][["aov.tukey"]][["age"]]$`bb$cat` %>% data.frame
+# list.dfs.fac.aov[["T1"]][["glm.anov"]][["gender"]][2,] %>% data.frame
 
-# now to make all of that into tables ... 
-# de <- anova(my.mod, test = "Chisq")
-# stargazer(de)
+
+# Store the output of each method for all treatment groups, so 4 data frames where each df contains all groups
+aov.names <- list.dfs.num.aov[["T1"]][["aov.sum"]] %>% names # could have also used aov.tukey here
+aov.length <- list.dfs.num.aov[["T1"]][["aov.sum"]] %>% length
+glm.names <- list.dfs.fac.aov[["T1"]][["glm.sum"]] %>% names # could have also used glm.anov here
+glm.length <- list.dfs.fac.aov[["T1"]][["glm.sum"]] %>% length # could have also used glm.anov here
+
+list.aov.sum <- list.aov.tukey <- rep(list(list()), length(aov.names))
+list.glm.sum <- list.glm.anov <- rep(list(list()), length(glm.names))
+
+for(i in 1:length(treats)){
+  tmp.aov.sum <- list.dfs.num.aov[[i]][["aov.sum"]]
+  tmp.aov.tukey <- list.dfs.num.aov[[i]][["aov.tukey"]]
+  for(x in 1:aov.length){ # this loop does tmp.aov.sum and tmp.aov.tukey
+    tmp.sum <- tmp.aov.sum[[names(tmp.aov.sum)[[x]]]][[1]] %>% data.frame
+    rownames(tmp.sum) <- c(paste0(names(tmp.aov.sum)[[x]], treats[i]),
+                           paste0(names(tmp.aov.sum)[[x]], treats[i], "Resid"))
+    list.aov.sum[[x]][[i]] <- tmp.sum
+    tmp.tukey <- tmp.aov.tukey[[names(tmp.aov.tukey)[[x]]]]$`bb$cat` %>% data.frame
+    rownames(tmp.tukey) <- paste0(names(tmp.aov.tukey)[[x]], treats[i], rownames(tmp.tukey))
+    list.aov.tukey[[x]][[i]] <- tmp.tukey
+  }
+  tmp.glm.sum <- list.dfs.fac.aov[[i]][["glm.sum"]]
+  tmp.glm.anov <- list.dfs.fac.aov[[i]][["glm.anov"]]
+  for(y in 1:glm.length){ # this loop does tmp.glm.sum and tmp.glm.anov
+    tmp.sum <- tmp.glm.sum[[names(tmp.glm.sum)[[y]]]]$coefficients %>% data.frame
+    rownames(tmp.sum) <- c(paste0(names(tmp.glm.sum)[[y]], treats[i], "Int"),
+                           paste0(names(tmp.glm.sum)[[y]], treats[i]))
+    list.glm.sum[[y]][[i]] <- tmp.sum
+    tmp.anov <- tmp.glm.anov[[names(tmp.glm.anov)[[y]]]][2,] %>% data.frame
+    rownames(tmp.anov) <- paste0(names(tmp.glm.anov)[[y]], treats[i])
+    list.glm.anov[[y]][[i]] <- tmp.anov
+  }
+}
+
+df.aov.sum <- unlist(list.aov.sum, recursive = FALSE) %>% do.call("rbind", .) %>% round(., digits = 3)
+df.aov.sum <- cbind(df.aov.sum[, 1:3] , drop.zero(df.aov.sum[, 4:5], digits = 3))
+df.aov.tukey <- unlist(list.aov.tukey, recursive = FALSE) %>% do.call("rbind", .) %>% drop.zero(., digits = 3)
+df.glm.sum <- unlist(list.glm.sum, recursive = FALSE) %>% do.call("rbind", .) %>% drop.zero(., digits = 3)
+df.glm.anov <- unlist(list.glm.anov, recursive = FALSE) %>% do.call("rbind", .) %>% round(., digits = 3)
+df.glm.anov <- cbind(df.glm.anov[, c(1,3,4)], drop.zero(df.glm.anov[, c(2, 5)], digits = 3)) %>% .[,c(1,4,2,3,5)]
+
+colnames(df.aov.sum) <- c("Df", "Sum.Sq", "Mean.Sq", "F-value", "p-value")
+colnames(df.aov.tukey) <- c("Diff.Means", "CI Lower", "CI Upper", "Adj. p-value")
+colnames(df.glm.sum) <- c("Estimate", "Std.Error", "z-value", "p-value")
+colnames(df.glm.anov) <- c("Df", "Deviance", "Resid.Df", "Residual Deviance", "Pr.Chi")
+
+tab.aov.sum <- stargazer(df.aov.sum, 
+                 summary = FALSE,
+                 header=FALSE,
+                 align = TRUE,
+                 title = "Summary of ANOVA Regression of Variable on ANES/OP Indicator, Differentiated by Treatment Group",
+                 label = "aov-sum")
+at <- gsub("{c}", "{l}", tab.aov.sum, fixed = TRUE) %>%
+  gsub("age", "", ., fixed = TRUE) %>%
+  gsub("feel.trump", "", ., fixed = TRUE) %>%
+  gsub("Resid", " Residuals", ., fixed = TRUE)
+cat(at)
+
+tab.aov.tukey <- stargazer(df.aov.tukey, 
+                 summary = FALSE,
+                 header=FALSE,
+                 align = TRUE,
+                 title = "Tukey's 'Honest Significant Difference' Test of ANOVA Regression of Variable on ANES/OP Indicator, Differentiated by Treatment Group",
+                 label = "aov-tukey")
+bt <- gsub("{c}", "{l}", tab.aov.tukey, fixed = TRUE) %>%
+  gsub("age", "", ., fixed = TRUE) %>%
+  gsub("feel.trump", "", ., fixed = TRUE) %>%
+  gsub("OP", " OP", ., fixed = TRUE)
+cat(bt)
+
+tab.glm.sum <- stargazer(df.glm.sum, 
+                 summary = FALSE,
+                 header=FALSE,
+                 align = TRUE,
+                 title = "Summary of GLM Regression of Variable on ANES/OP Indicator, Differentiated by Treatment Group",
+                 label = "glm-sum")
+ct <- gsub("{c}", "{l}", tab.glm.sum, fixed = TRUE) %>%
+  gsub("gender", "", ., fixed = TRUE) %>%
+  gsub("race", "", ., fixed = TRUE) %>%
+  gsub("income", "", ., fixed = TRUE) %>%
+  gsub("occupation", "", ., fixed = TRUE) %>%
+  gsub("pid", "", ., fixed = TRUE) %>%
+  gsub("pres.approv", "", ., fixed = TRUE) %>%
+  gsub("min.wage", "", ., fixed = TRUE) %>%
+  gsub("country.track", "", ., fixed = TRUE) %>%
+  gsub("Int", " Intercept", ., fixed = TRUE)
+cat(ct)
+
+tab.glm.anov <- stargazer(df.glm.anov, 
+                 summary = FALSE,
+                 header=FALSE,
+                 align = TRUE,
+                 title = "ANOVA Chisq Test of GLM Regression of Variable on ANES/OP Indicator, Differentiated by Treatment Group",
+                 label = "glm-anov")
+dt <- gsub("{c}", "{l}", tab.glm.anov, fixed = TRUE) %>%
+  gsub("gender", "", ., fixed = TRUE) %>%
+  gsub("race", "", ., fixed = TRUE) %>%
+  gsub("income", "", ., fixed = TRUE) %>%
+  gsub("occupation", "", ., fixed = TRUE) %>%
+  gsub("pid", "", ., fixed = TRUE) %>%
+  gsub("pres.approv", "", ., fixed = TRUE) %>%
+  gsub("min.wage", "", ., fixed = TRUE) %>%
+  gsub("country.track", "", ., fixed = TRUE)
+cat(dt)
+
 
 ```
+
+
+\begin{table}[!htbp] \centering    
+\caption{Summary of ANOVA Regression of Variable on ANES/OP Indicator, Differentiated by Treatment Group}    
+\label{aov-sum}  
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
+\\[-1.8ex]\hline
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Sum.Sq} & \multicolumn{1}{l}{Mean.Sq} & \multicolumn{1}{l}{F-value} & \multicolumn{1}{l}{p-value} \\  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{\textbf{Age}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & 52.830 & 52.830 & .170 & .680 \\  
+\multicolumn{1}{l}{T1 Residuals} & 1,258 & 384,359.900 & 305.530 &  &  \\  
+\multicolumn{1}{l}{T2} & 1 & 109.830 & 109.830 & .360 & .550 \\  
+\multicolumn{1}{l}{T2 Residuals} & 1,258 & 388,724.900 & 309 &  &  \\  
+\multicolumn{1}{l}{T3} & 1 & 861.720 & 861.720 & 2.810 & .090 \\  
+\multicolumn{1}{l}{T3 Residuals} & 1,258 & 386,400.000 & 307.150 &  &  \\  
+\multicolumn{1}{l}{T4} & 1 & 1.610 & 1.610 & .010 & .940 \\  
+\multicolumn{1}{l}{T4 Residuals} & 1,258 & 387,498.400 & 308.030 &  &  \\  
+\multicolumn{1}{l}{T5} & 1 & 106.900 & 106.900 & .350 & .550 \\  
+\multicolumn{1}{l}{T5 Residuals} & 1,258 & 382,695.200 & 304.210 &  &  \\
+ & & & & & \\
+\multicolumn{1}{l}{\textbf{Feel Trump}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & 31.750 & 31.750 & .030 & .870 \\  
+\multicolumn{1}{l}{T1 Residuals} & 1,258 & 1,465,958.000 & 1,165.310 &  &  \\  
+\multicolumn{1}{l}{T2} & 1 & 246.230 & 246.230 & .200 & .660 \\  
+\multicolumn{1}{l}{T2 Residuals} & 1,258 & 1,576,959.000 & 1,253.540 &  &  \\  
+\multicolumn{1}{l}{T3} & 1 & 5,928.010 & 5,928.010 & 4.870 & .030 \\  
+\multicolumn{1}{l}{T3 Residuals} & 1,258 & 1,530,847.000 & 1,216.890 &  &  \\  
+\multicolumn{1}{l}{T4} & 1 & 2,500.500 & 2,500.500 & 2.040 & .150 \\  
+\multicolumn{1}{l}{T4 Residuals} & 1,258 & 1,539,114.000 & 1,223.460 &  &  \\  
+\multicolumn{1}{l}{T5} & 1 & 2,334.310 & 2,334.310 & 1.890 & .170 \\  
+\multicolumn{1}{l}{T5 Residuals} & 1,258 & 1,550,046.000 & 1,232.150 &  &  \\  
+\hline \\[-1.8ex]  
+\end{tabular}  
+\end{table} 
+
+
+
+\begin{table}[!htbp] \centering    
+\caption{Tukey's `Honest Significant Difference' Test of ANOVA Regression of Variable on ANES/OP Indicator, Differentiated by Treatment Group}    
+\label{aov-tukey}  
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{Diff.Means} & \multicolumn{1}{l}{CI Lower} & \multicolumn{1}{l}{CI Upper} & \multicolumn{1}{l}{Adj. p-value} \\  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{\textbf{Age}} & & & & \\  
+\multicolumn{1}{l}{T1 OP1-AN1} & \multicolumn{1}{l}{.410} & \multicolumn{1}{l}{-1.523} & \multicolumn{1}{l}{2.342} & \multicolumn{1}{l}{.678} \\  
+\multicolumn{1}{l}{T2 OP2-AN2} & \multicolumn{1}{l}{.590} & \multicolumn{1}{l}{-1.353} & \multicolumn{1}{l}{2.534} & \multicolumn{1}{l}{.551} \\  
+\multicolumn{1}{l}{T3 OP3-AN3} & \multicolumn{1}{l}{-1.654} & \multicolumn{1}{l}{-3.591} & \multicolumn{1}{l}{.283} & \multicolumn{1}{l}{.094} \\  
+\multicolumn{1}{l}{T4 OP4-AN4} & \multicolumn{1}{l}{.071} & \multicolumn{1}{l}{-1.869} & \multicolumn{1}{l}{2.011} & \multicolumn{1}{l}{.942} \\  
+\multicolumn{1}{l}{T5 OP5-AN5} & \multicolumn{1}{l}{.583} & \multicolumn{1}{l}{-1.345} & \multicolumn{1}{l}{2.510} & \multicolumn{1}{l}{.553} \\  
+ & & & & \\
+\multicolumn{1}{l}{\textbf{Feel Trump}} & & & & \\  
+\multicolumn{1}{l}{T1 OP1-AN1} & \multicolumn{1}{l}{-.317} & \multicolumn{1}{l}{-4.091} & \multicolumn{1}{l}{3.456} & \multicolumn{1}{l}{.869} \\  
+\multicolumn{1}{l}{T2 OP2-AN2} & \multicolumn{1}{l}{-.884} & \multicolumn{1}{l}{-4.798} & \multicolumn{1}{l}{3.030} & \multicolumn{1}{l}{.658} \\  
+\multicolumn{1}{l}{T3 OP3-AN3} & \multicolumn{1}{l}{-4.338} & \multicolumn{1}{l}{-8.194} & \multicolumn{1}{l}{-.482} & \multicolumn{1}{l}{.027} \\  
+\multicolumn{1}{l}{T4 OP4-AN4} & \multicolumn{1}{l}{2.817} & \multicolumn{1}{l}{-1.049} & \multicolumn{1}{l}{6.684} & \multicolumn{1}{l}{.153} \\  
+\multicolumn{1}{l}{T5 OP5-AN5} & \multicolumn{1}{l}{2.722} & \multicolumn{1}{l}{-1.158} & \multicolumn{1}{l}{6.602} & \multicolumn{1}{l}{.169} \\  
+\hline \\[-1.8ex]  
+\end{tabular}  
+\end{table} 
+
+\clearpage
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
+\caption{Summary of GLM Regression of Variable on ANES/OP Indicator, Differentiated by Treatment Group}    
+\label{glm-sum}  
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{Estimate} & \multicolumn{1}{l}{Std.Error} & \multicolumn{1}{l}{z-value} & \multicolumn{1}{l}{p-value} \\  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{\textbf{Gender}} & & & & \\  
+\multicolumn{1}{l}{T1 Intercept} & \multicolumn{1}{l}{.134} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{1.672} & \multicolumn{1}{l}{.095} \\  
+\multicolumn{1}{l}{T1} & \multicolumn{1}{l}{-.006} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{-.056} & \multicolumn{1}{l}{.955} \\  
+\multicolumn{1}{l}{T2 Intercept} & \multicolumn{1}{l}{.108} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{1.354} & \multicolumn{1}{l}{.176} \\  
+\multicolumn{1}{l}{T2} & \multicolumn{1}{l}{-.032} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{-.282} & \multicolumn{1}{l}{.778} \\  
+\multicolumn{1}{l}{T3 Intercept} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{1.274} & \multicolumn{1}{l}{.203} \\  
+\multicolumn{1}{l}{T3} & \multicolumn{1}{l}{.045} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{.395} & \multicolumn{1}{l}{.693} \\  
+\multicolumn{1}{l}{T4 Intercept} & \multicolumn{1}{l}{.146} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{1.831} & \multicolumn{1}{l}{.067} \\  
+\multicolumn{1}{l}{T4} & \multicolumn{1}{l}{-.019} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{-.169} & \multicolumn{1}{l}{.865} \\  
+\multicolumn{1}{l}{T5 Intercept} & \multicolumn{1}{l}{.095} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{1.195} & \multicolumn{1}{l}{.232} \\  
+\multicolumn{1}{l}{T5} & \multicolumn{1}{l}{.013} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{.910} \\  
+ & & & & \\  
+\multicolumn{1}{l}{\textbf{Race}} & & & & \\  
+\multicolumn{1}{l}{T1 Intercept} & \multicolumn{1}{l}{-1.172} & \multicolumn{1}{l}{.094} & \multicolumn{1}{l}{-12.500} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T1} & \multicolumn{1}{l}{.069} & \multicolumn{1}{l}{.131} & \multicolumn{1}{l}{.526} & \multicolumn{1}{l}{.599} \\  
+\multicolumn{1}{l}{T2 Intercept} & \multicolumn{1}{l}{-1.207} & \multicolumn{1}{l}{.095} & \multicolumn{1}{l}{-12.757} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T2} & \multicolumn{1}{l}{-.045} & \multicolumn{1}{l}{.135} & \multicolumn{1}{l}{-.337} & \multicolumn{1}{l}{.736} \\  
+\multicolumn{1}{l}{T3 Intercept} & \multicolumn{1}{l}{-1.111} & \multicolumn{1}{l}{.092} & \multicolumn{1}{l}{-12.040} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T3} & \multicolumn{1}{l}{.050} & \multicolumn{1}{l}{.130} & \multicolumn{1}{l}{.389} & \multicolumn{1}{l}{.697} \\  
+\multicolumn{1}{l}{T4 Intercept} & \multicolumn{1}{l}{-1.094} & \multicolumn{1}{l}{.092} & \multicolumn{1}{l}{-11.907} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T4} & \multicolumn{1}{l}{.017} & \multicolumn{1}{l}{.130} & \multicolumn{1}{l}{.130} & \multicolumn{1}{l}{.897} \\  
+\multicolumn{1}{l}{T5 Intercept} & \multicolumn{1}{l}{-1.111} & \multicolumn{1}{l}{.092} & \multicolumn{1}{l}{-12.040} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T5} & \multicolumn{1}{l}{-.096} & \multicolumn{1}{l}{.132} & \multicolumn{1}{l}{-.727} & \multicolumn{1}{l}{.467} \\  
+ & & & & \\  
+\multicolumn{1}{l}{\textbf{Income}} & & & & \\  
+\multicolumn{1}{l}{T1 Intercept} & \multicolumn{1}{l}{1.347} & \multicolumn{1}{l}{.098} & \multicolumn{1}{l}{13.683} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T1} & \multicolumn{1}{l}{.019} & \multicolumn{1}{l}{.140} & \multicolumn{1}{l}{.140} & \multicolumn{1}{l}{.889} \\  
+\multicolumn{1}{l}{T2 Intercept} & \multicolumn{1}{l}{1.396} & \multicolumn{1}{l}{.100} & \multicolumn{1}{l}{13.976} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T2} & \multicolumn{1}{l}{-.125} & \multicolumn{1}{l}{.139} & \multicolumn{1}{l}{-.901} & \multicolumn{1}{l}{.368} \\  
+\multicolumn{1}{l}{T3 Intercept} & \multicolumn{1}{l}{1.244} & \multicolumn{1}{l}{.096} & \multicolumn{1}{l}{13.010} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T3} & \multicolumn{1}{l}{.103} & \multicolumn{1}{l}{.137} & \multicolumn{1}{l}{.754} & \multicolumn{1}{l}{.451} \\  
+\multicolumn{1}{l}{T4 Intercept} & \multicolumn{1}{l}{1.290} & \multicolumn{1}{l}{.097} & \multicolumn{1}{l}{13.320} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T4} & \multicolumn{1}{l}{.028} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{.206} & \multicolumn{1}{l}{.837} \\  
+\multicolumn{1}{l}{T5 Intercept} & \multicolumn{1}{l}{1.318} & \multicolumn{1}{l}{.098} & \multicolumn{1}{l}{13.503} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T5} & \multicolumn{1}{l}{-.028} & \multicolumn{1}{l}{.138} & \multicolumn{1}{l}{-.206} & \multicolumn{1}{l}{.837} \\  
+ & & & & \\  
+\multicolumn{1}{l}{\textbf{Occupation}} & & & & \\  
+\multicolumn{1}{l}{T1 Intercept} & \multicolumn{1}{l}{-.602} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{-7.221} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T1} & \multicolumn{1}{l}{-.000} & \multicolumn{1}{l}{.118} & \multicolumn{1}{l}{-.000} & \multicolumn{1}{l}{1.000} \\  
+\multicolumn{1}{l}{T2 Intercept} & \multicolumn{1}{l}{-.616} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{-7.373} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T2} & \multicolumn{1}{l}{.177} & \multicolumn{1}{l}{.117} & \multicolumn{1}{l}{1.515} & \multicolumn{1}{l}{.130} \\  
+\multicolumn{1}{l}{T3 Intercept} & \multicolumn{1}{l}{-.405} & \multicolumn{1}{l}{.081} & \multicolumn{1}{l}{-4.986} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T3} & \multicolumn{1}{l}{-.224} & \multicolumn{1}{l}{.117} & \multicolumn{1}{l}{-1.920} & \multicolumn{1}{l}{.055} \\  
+\multicolumn{1}{l}{T4 Intercept} & \multicolumn{1}{l}{-.506} & \multicolumn{1}{l}{.082} & \multicolumn{1}{l}{-6.149} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T4} & \multicolumn{1}{l}{.047} & \multicolumn{1}{l}{.116} & \multicolumn{1}{l}{.406} & \multicolumn{1}{l}{.685} \\  
+\multicolumn{1}{l}{T5 Intercept} & \multicolumn{1}{l}{-.499} & \multicolumn{1}{l}{.082} & \multicolumn{1}{l}{-6.072} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T5} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{.116} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{1.000} \\  
+ & & & & \\  
+\multicolumn{1}{l}{\textbf{Party ID}} & & & & \\  
+\multicolumn{1}{l}{T1 Intercept} & \multicolumn{1}{l}{.780} & \multicolumn{1}{l}{.086} & \multicolumn{1}{l}{9.090} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T1} & \multicolumn{1}{l}{-.281} & \multicolumn{1}{l}{.119} & \multicolumn{1}{l}{-2.366} & \multicolumn{1}{l}{.018} \\  
+\multicolumn{1}{l}{T2 Intercept} & \multicolumn{1}{l}{.547} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{6.611} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T2} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{.118} & \multicolumn{1}{l}{.705} & \multicolumn{1}{l}{.481} \\  
+\multicolumn{1}{l}{T3 Intercept} & \multicolumn{1}{l}{.672} & \multicolumn{1}{l}{.084} & \multicolumn{1}{l}{7.977} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T3} & \multicolumn{1}{l}{-.014} & \multicolumn{1}{l}{.119} & \multicolumn{1}{l}{-.119} & \multicolumn{1}{l}{.905} \\  
+\multicolumn{1}{l}{T4 Intercept} & \multicolumn{1}{l}{.499} & \multicolumn{1}{l}{.082} & \multicolumn{1}{l}{6.072} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T4} & \multicolumn{1}{l}{.145} & \multicolumn{1}{l}{.117} & \multicolumn{1}{l}{1.231} & \multicolumn{1}{l}{.218} \\  
+\multicolumn{1}{l}{T5 Intercept} & \multicolumn{1}{l}{.499} & \multicolumn{1}{l}{.082} & \multicolumn{1}{l}{6.072} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T5} & \multicolumn{1}{l}{.061} & \multicolumn{1}{l}{.117} & \multicolumn{1}{l}{.525} & \multicolumn{1}{l}{.600} \\  
+ & & & & \\  
+\multicolumn{1}{l}{\textbf{Pres. Approval}} & & & & \\  
+\multicolumn{1}{l}{T1 Intercept} & \multicolumn{1}{l}{-.204} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{-2.545} & \multicolumn{1}{l}{.011} \\  
+\multicolumn{1}{l}{T1} & \multicolumn{1}{l}{.070} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{.622} & \multicolumn{1}{l}{.534} \\  
+\multicolumn{1}{l}{T2 Intercept} & \multicolumn{1}{l}{-.057} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{-.717} & \multicolumn{1}{l}{.473} \\  
+\multicolumn{1}{l}{T2} & \multicolumn{1}{l}{-.038} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{-.338} & \multicolumn{1}{l}{.735} \\  
+\multicolumn{1}{l}{T3 Intercept} & \multicolumn{1}{l}{-.006} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{-.080} & \multicolumn{1}{l}{.936} \\  
+\multicolumn{1}{l}{T3} & \multicolumn{1}{l}{-.134} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{-1.184} & \multicolumn{1}{l}{.236} \\  
+\multicolumn{1}{l}{T4 Intercept} & \multicolumn{1}{l}{-.089} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{-1.115} & \multicolumn{1}{l}{.265} \\  
+\multicolumn{1}{l}{T4} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{.000} & \multicolumn{1}{l}{1.000} \\  
+\multicolumn{1}{l}{T5 Intercept} & \multicolumn{1}{l}{-.178} & \multicolumn{1}{l}{.080} & \multicolumn{1}{l}{-2.228} & \multicolumn{1}{l}{.026} \\  
+\multicolumn{1}{l}{T5} & \multicolumn{1}{l}{.102} & \multicolumn{1}{l}{.113} & \multicolumn{1}{l}{.903} & \multicolumn{1}{l}{.366} \\  
+ & & & & \\  
+\multicolumn{1}{l}{\textbf{Min. Wage}} & & & & \\  
+\multicolumn{1}{l}{T1 Intercept} & \multicolumn{1}{l}{-.609} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{-7.297} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T1} & \multicolumn{1}{l}{.055} & \multicolumn{1}{l}{.117} & \multicolumn{1}{l}{.470} & \multicolumn{1}{l}{.638} \\  
+\multicolumn{1}{l}{T2 Intercept} & \multicolumn{1}{l}{-.492} & \multicolumn{1}{l}{.082} & \multicolumn{1}{l}{-5.995} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T2} & \multicolumn{1}{l}{-.041} & \multicolumn{1}{l}{.116} & \multicolumn{1}{l}{-.349} & \multicolumn{1}{l}{.727} \\  
+\multicolumn{1}{l}{T3 Intercept} & \multicolumn{1}{l}{-.595} & \multicolumn{1}{l}{.083} & \multicolumn{1}{l}{-7.145} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T3} & \multicolumn{1}{l}{-.077} & \multicolumn{1}{l}{.118} & \multicolumn{1}{l}{-.651} & \multicolumn{1}{l}{.515} \\  
+\multicolumn{1}{l}{T4 Intercept} & \multicolumn{1}{l}{-.486} & \multicolumn{1}{l}{.082} & \multicolumn{1}{l}{-5.918} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T4} & \multicolumn{1}{l}{-.075} & \multicolumn{1}{l}{.117} & \multicolumn{1}{l}{-.641} & \multicolumn{1}{l}{.522} \\  
+\multicolumn{1}{l}{T5 Intercept} & \multicolumn{1}{l}{-.758} & \multicolumn{1}{l}{.085} & \multicolumn{1}{l}{-8.870} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T5} & \multicolumn{1}{l}{.143} & \multicolumn{1}{l}{.119} & \multicolumn{1}{l}{1.193} & \multicolumn{1}{l}{.233} \\  
+ & & & & \\  
+\multicolumn{1}{l}{\textbf{Country Track}} & & & & \\  
+\multicolumn{1}{l}{T1 Intercept} & \multicolumn{1}{l}{.893} & \multicolumn{1}{l}{.088} & \multicolumn{1}{l}{10.176} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T1} & \multicolumn{1}{l}{-.008} & \multicolumn{1}{l}{.124} & \multicolumn{1}{l}{-.062} & \multicolumn{1}{l}{.951} \\  
+\multicolumn{1}{l}{T2 Intercept} & \multicolumn{1}{l}{1.086} & \multicolumn{1}{l}{.092} & \multicolumn{1}{l}{11.840} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T2} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{.130} & \multicolumn{1}{l}{.065} & \multicolumn{1}{l}{.948} \\  
+\multicolumn{1}{l}{T3 Intercept} & \multicolumn{1}{l}{1.103} & \multicolumn{1}{l}{.092} & \multicolumn{1}{l}{11.974} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T3} & \multicolumn{1}{l}{-.017} & \multicolumn{1}{l}{.130} & \multicolumn{1}{l}{-.130} & \multicolumn{1}{l}{.897} \\  
+\multicolumn{1}{l}{T4 Intercept} & \multicolumn{1}{l}{1.012} & \multicolumn{1}{l}{.090} & \multicolumn{1}{l}{11.228} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T4} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{.128} & \multicolumn{1}{l}{.064} & \multicolumn{1}{l}{.949} \\  
+\multicolumn{1}{l}{T5 Intercept} & \multicolumn{1}{l}{1.003} & \multicolumn{1}{l}{.090} & \multicolumn{1}{l}{11.159} & \multicolumn{1}{l}{.000} \\  
+\multicolumn{1}{l}{T5} & \multicolumn{1}{l}{.008} & \multicolumn{1}{l}{.127} & \multicolumn{1}{l}{.064} & \multicolumn{1}{l}{.949} \\  
+\hline \\[-1.8ex] 
+\end{longtable} 
+
+\dsp
+
+\normalsize
+
+
+\begin{table}[!htbp] \centering    
+\caption{ANOVA Chisq Test of GLM Regression of Variable on ANES/OP Indicator, Differentiated by Treatment Group}    
+\label{glm-anov}  
+\resizebox{10.5cm}{!}{%
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Deviance} & \multicolumn{1}{l}{Resid.Df} & \multicolumn{1}{l}{Residual Deviance} & \multicolumn{1}{l}{Pr.Chi} \\  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{\textbf{Gender}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.003} & 1,258 & 1,741.387 & \multicolumn{1}{l}{.955} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.080} & 1,258 & 1,743.981 & \multicolumn{1}{l}{.778} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.156} & 1,258 & 1,741.743 & \multicolumn{1}{l}{.693} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.029} & 1,258 & 1,740.828 & \multicolumn{1}{l}{.865} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.013} & 1,258 & 1,743.466 & \multicolumn{1}{l}{.910} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Race}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.276} & 1,258 & 1,396.688 & \multicolumn{1}{l}{.599} \\ 
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.113} & 1,258 & 1,347.160 & \multicolumn{1}{l}{.736} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.151} & 1,258 & 1,423.487 & \multicolumn{1}{l}{.697} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.017} & 1,258 & 1,423.621 & \multicolumn{1}{l}{.897} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.528} & 1,258 & 1,384.957 & \multicolumn{1}{l}{.467} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Income}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.019} & 1,258 & 1,277.453 & \multicolumn{1}{l}{.889} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.812} & 1,258 & 1,290.106 & \multicolumn{1}{l}{.367} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.569} & 1,258 & 1,311.366 & \multicolumn{1}{l}{.451} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.043} & 1,258 & 1,306.695 & \multicolumn{1}{l}{.837} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.043} & 1,258 & 1,306.695 & \multicolumn{1}{l}{.837} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Occupation}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,637.669 & \multicolumn{1}{l}{1.000} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{2.299} & 1,258 & 1,660.174 & \multicolumn{1}{l}{.129} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{3.695} & 1,258 & 1,661.905 & \multicolumn{1}{l}{.055} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.165} & 1,258 & 1,675.415 & \multicolumn{1}{l}{.685} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,670.674 & \multicolumn{1}{l}{1.000} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Party ID}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{5.617} & 1,258 & 1,619.670 & \multicolumn{1}{l}{.018} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.498} & 1,258 & 1,641.929 & \multicolumn{1}{l}{.480} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.014} & 1,258 & 1,614.864 & \multicolumn{1}{l}{.905} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{1.517} & 1,258 & 1,646.701 & \multicolumn{1}{l}{.218} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.276} & 1,258 & 1,661.142 & \multicolumn{1}{l}{.600} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Pres. Approval}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.387} & 1,258 & 1,737.416 & \multicolumn{1}{l}{.534} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.114} & 1,258 & 1,744.787 & \multicolumn{1}{l}{.735} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{1.402} & 1,258 & 1,743.649 & \multicolumn{1}{l}{.236} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,744.241 & \multicolumn{1}{l}{1.000} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.816} & 1,258 & 1,740.832 & \multicolumn{1}{l}{.366} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Min. Wage}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.221} & 1,258 & 1,644.543 & \multicolumn{1}{l}{.638} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.122} & 1,258 & 1,666.506 & \multicolumn{1}{l}{.727} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.424} & 1,258 & 1,626.133 & \multicolumn{1}{l}{.515} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.411} & 1,258 & 1,663.111 & \multicolumn{1}{l}{.521} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{1.426} & 1,258 & 1,605.348 & \multicolumn{1}{l}{.232} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Country Track}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,520.274 & \multicolumn{1}{l}{.951} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,421.458 & \multicolumn{1}{l}{.948} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.017} & 1,258 & 1,419.261 & \multicolumn{1}{l}{.897} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,459.355 & \multicolumn{1}{l}{.949} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,463.401 & \multicolumn{1}{l}{.949} \\  
+\hline \\[-1.8ex]  
+\end{tabular}}  
+\end{table}
+
+\clearpage
 
 
 
