@@ -5,11 +5,12 @@ library(tidyverse)
 library(RItools)
 library(stargazer)
 library(xtable)
+library(plyr)
 
 
 ### check for attention check fail/pass ### 
 
-df <- read.csv(here("data", "experiment", "op.all.csv"), na.strings = "NA")
+df <- read.csv(here::here("data", "experiment", "op.all.csv"), na.strings = "NA")
 summary(is.na(df))
 nrow(df)
 
@@ -182,8 +183,8 @@ for(i in 1:nrow(df.omit)){
 }
 
 df.omit <- select(df.omit, -one_of("birthyear")) # I tried simply overwriting column birthyear in the loop, but that kept giving really weird numbers. No idea why
-df.omit$dem <- ifelse(df.omit$pid == "Democrat", 1, 0)
-df.omit$male <- ifelse(df.omit$gender == "Male", 1, 0)
+df.omit$Democrat <- ifelse(df.omit$pid == "Democrat", 1, 0)
+df.omit$Male <- ifelse(df.omit$gender == "Male", 1, 0)
 df.omit$mor.all <- (df.omit$mor.suffer + df.omit$mor.care + df.omit$mor.cruel +
                  df.omit$mor.comp + df.omit$mor.anim + df.omit$mor.kill) / 6
 df.omit$si.all <- (df.omit$si.white + df.omit$si.care + df.omit$si.kids + 
@@ -227,7 +228,7 @@ RID.18$RID %>% length / nrow(df.omit) # that's a whopping 24%
 # have the real ages of the respondents on file, so I can use those
 
 # read in correct ages and RIDs for everyone in my data (an and op) who is 18
-correct.age.RID.18 <- read.csv(here("data", "experiment", "RIDs.resp.with.age.18.all.correct.csv"), na.strings = "NA")
+correct.age.RID.18 <- read.csv(here::here("data", "experiment", "RIDs.resp.with.age.18.all.correct.csv"), na.strings = "NA")
 df.omit <- merge(df.omit, correct.age.RID.18[, c("RID", "age")], by = "RID", all.x = TRUE) #merge it with df
 # replace NAs in new column with values from original column
 df.omit$age.y[is.na(df.omit$age.y)] <- df.omit$age.x[is.na(df.omit$age.y)]
@@ -246,15 +247,33 @@ df.omit$age.cats %>% table %>% prop.table
 # now it all checks out
 
 
+### Create binary columns for regressions ###
 
+df.omit$Employed <- ifelse(df.omit$empl == "Employed part time" | df.omit$empl == "Employed full time", 1, 0)
+df.omit$Unemployed <- ifelse(df.omit$empl == "Unemployed", 1, 0)
+df.omit$Retired <- ifelse(df.omit$empl == "Retired", 1, 0)
+df.omit$Student <- ifelse(df.omit$empl == "Student", 1, 0)
+df.omit$Homemaker <- ifelse(df.omit$empl == "Homemaker", 1, 0)
+df.omit$`High school or lower` <- ifelse(df.omit$educ == "High school or lower", 1, 0)
+df.omit$`Some college` <- ifelse(df.omit$educ == "Some college", 1, 0)
+df.omit$`Associate degree` <- ifelse(df.omit$educ == "Associate degree", 1, 0)
+df.omit$Bachelor <- ifelse(df.omit$educ == "Bachelor", 1, 0)
+df.omit$`Master or higher` <- ifelse(df.omit$educ == "Master or higher", 1, 0)
+
+df.omit <- plyr::rename(df.omit, replace = c("inc.num" = "Income",
+                                             "mor.all" = "Moral conviction",
+                                             "si.all" = "Self-interest",
+                                             "empl" = "emply")) # this last one is for a later string removal
 
 
 ### Save final data ###
 
 df.omit <- select(df.omit, -one_of(c("RID", "age.cats"))) # remove unneeded columns
-df.omit <- df.omit[, c(35, 1:34)] # move age upfront
+df.omit <- df.omit[, c(35, 1:34, 36:ncol(df.omit))] # move age upfront
 
-write.csv(df.omit, here("data", "experiment", "op.clean.csv"), row.names = FALSE) # 1,103 observations
+write.csv(df.omit, here::here("data", "experiment", "op.clean.csv"), row.names = FALSE) # 1,103 observations
+
+file.copy(here::here("data", "experiment", "op.clean.csv"), "/Users/simonheuberger/dissertation/diss/thesis/data/framing/experiment", overwrite = TRUE)
 
 # that gives me 2,165 respondents without NAs overall (1,103 op; 1,062 an)
 
