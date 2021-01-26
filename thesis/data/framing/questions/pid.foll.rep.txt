@@ -1,0 +1,4 @@
+id	text	page	type	choices	choiceNames	reverse	placeholder	min	max	disabled	checkType	width	height	inline	randomize
+NA	<p style="text-align:center;"><img src="logo.png" alt="Logo"></p>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+pid.follow	Would you call yourself a strong Republican or a not very strong Republican?	1	radioButtons	1,2	Strong,Not very strong	NA	NA	NA	NA	1	is.null	800px	NA	0	0

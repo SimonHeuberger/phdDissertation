@@ -1,0 +1,10 @@
+id	text	page	type	choices	choiceNames	reverse	placeholder	min	max	disabled	checkType	width	height	inline	randomize
+NA	<p style="text-align:center;"><img src="logo.png" alt="Logo"></p>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	Research Study	1	h1	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	You are being asked to participate in a research study conducted by Jeff Gill and Simon Heuberger. We are researchers in political science at American University. The purpose of this study is to collect opinions on several issues. No prior knowledge is required. All issues will be briefly explained before we ask for your opinion.	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	Completing the survey will take around 15 minutes and is anonymous. Amazon does not share any identifiable information with us. Your identity is never known to us and will not be attached in any way to the final form of this study. Aggregate, non-identifiable data will be presented representing averages or generalizations about the responses as a whole. All the data will be stored in a secure location accessible only to us, the researchers.	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	Your participation is entirely voluntary. You are free to choose not to participate. You can also withdraw from the survey by closing your browser any time. Incomplete answers will not be recorded.	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	If you have any questions, please reach out to us at sh6943a@american.edu. If you feel as though your rights as a research subject have been violated in any way, please contact the American University IRB Coordinator Matt Zembrzuski at irb@american.edu.	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	If you want to proceed with the survey, please indicate your consent by clicking the checkbox below.	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+checkConsent	I consent to participate.	1	checkboxInput	NA	NA	NA	NA	NA	NA	1	isTRUE	700px	NA	NA	0

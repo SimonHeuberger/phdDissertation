@@ -1,0 +1,7 @@
+id	text	page	type	choices	choiceNames	reverse	placeholder	min	max	disabled	checkType	width	height	inline	randomize
+NA	<p style="text-align:center;"><img src="logo.png" alt="Logo"></p>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<em>Next, we would like to ask you about your opinion on two political issues. When you are ready, please hit “Continue” below.</em><br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<em>(Please note: After you hit “Continue”, it might take a moment for the next page to load due to processing speeds. If this happens, please do not exit your browser. Your answer will be processed and recorded. This is part of the survey design.)</em>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0

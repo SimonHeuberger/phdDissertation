@@ -1,0 +1,6 @@
+id	text	page	type	choices	choiceNames	reverse	placeholder	min	max	disabled	checkType	width	height	inline	randomize
+NA	<p style="text-align:center;"><img src="logo.png" alt="Logo"></p>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<em>Finally, do you have any comments for us regarding the design or the questions? If so, please share them here. This section can be left blank, but we are very grateful for any type of feedback you can give us.</em><br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+com	Please enter any comments you have for us.	1	textInput	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0

@@ -1,0 +1,8 @@
+id,text,page,type,choices,choiceNames,reverse,placeholder,min,max,disabled,checkType,width,height,inline,randomize
+NA,"<p style=""text-align:center;""><img src=""logo.png"" alt=""Logo""></p>",1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+att,Please select the correct statement.,1,radioButtons,"1,2,3,4","The letter K comes before the letter B in the alphabet,The letter B comes before the letter K in the alphabet,There are 100 letters in the alphabet,There are 10 letters in the alphabet",NA,NA,NA,NA,1,is.null,700px,NA,0,0
+NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+empl,What is your current employment status?,1,radioButtons,"1,2,3,4,5,6","Employed part time,Employed full time,Student,Retired,Homemaker,Unemployed",NA,NA,NA,NA,1,is.null,700px,NA,0,0
+NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+inc,What is your combined annual household income before taxes?,1,radioButtons,"1,2,3,4,5,6,7","Less than $20 000,$20 000 to $39 999,$40 000 to $59 999,$60 000 to $79 999,$80 000 to $99 999,$100 000 to $149 999,$150 000 or more",NA,NA,NA,NA,1,is.null,700px,NA,0,0

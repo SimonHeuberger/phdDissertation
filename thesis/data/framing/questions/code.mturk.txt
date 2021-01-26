@@ -1,0 +1,9 @@
+id	text	page	type	choices	choiceNames	reverse	placeholder	min	max	disabled	checkType	width	height	inline	randomize
+NA	<p style="text-align:center;"><img src="logo.png" alt="Logo"></p>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	You have answered all the questions in this survey. Thank you!	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	Here is your study completion code:	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	completion.code	1	h2	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
+NA	To receive payment for participating, enter this code in the Mechanical Turk window, then click “Submit”.	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0
+NA	You can now close this window.	1	p	NA	NA	NA	NA	NA	NA	0	NA	700px	NA	NA	0

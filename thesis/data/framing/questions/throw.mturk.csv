@@ -1,0 +1,10 @@
+id,text,page,type,choices,choiceNames,reverse,placeholder,min,max,disabled,checkType,width,height,inline,randomize
+NA,"<p style=""text-align:center;""><img src=""logo.png"" alt=""Logo""></p>",1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+NA,"<em>To begin, we would like to ask you some questions about your work on Mechanical Turk.</em><br>",1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+online.length,How long have you been performing tasks on Mechanical Turk?,1,radioButtons,"1,2,3,4,5","Less than a month,1-3 months,3-6 months,Between 6 months and 1 year,More than 1 year",NA,NA,NA,NA,1,is.null,700px,NA,0,0
+NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+online.why,Why did you start working on Mechanical Turk?,1,textInput,NA,NA,NA,NA,NA,NA,0,NA,700px,NA,NA,0
+NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
+study.choice,What is most important to you when you choose the tasks you perform?,1,radioButtons,"1,2,3,4,5","Financial compensation,Length of the task,Topic,Task description,Something else",NA,NA,NA,NA,1,is.null,700px,NA,0,0
