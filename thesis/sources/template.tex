@@ -8,7 +8,14 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows}
 \usepackage{tikz}
-\usepackage{lscape}
+\usepackage{pdflscape}
+\newcommand{\blandscape}{\begin{landscape}} % for the framing landscape tables
+\newcommand{\elandscape}{\end{landscape}}
+% the next three lines put the page number non-rotated and to the top right of the page
+\def\fillandplacepagenumber{%
+ \par\pagestyle{empty}%
+     \vspace{-15.5cm}\hspace{15.8cm}\normalsize{\thepage}}
+\usepackage{caption}
 \usepackage[hidelinks]{hyperref}
 \usepackage{float} % to float tables
 \usepackage{longtable} % for tables that are longer than one page

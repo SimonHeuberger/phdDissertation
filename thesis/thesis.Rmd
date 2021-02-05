@@ -2,7 +2,7 @@
 # AU dissertation fields
 title: "WHAT THE PEOPLE THINK: ADVANCES IN PUBLIC OPINION MEASUREMENT USING ORDINAL VARIABLES"
 author: "Simon Heuberger"
-degreeyear: "2020"
+degreeyear: "2021"
 degree: "Doctor of Philosophy"
 chair: "Professor Jeff Gill"
 secondreader: "Professor Ryan T. Moore"
