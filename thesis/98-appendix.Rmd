@@ -1,10 +1,10 @@
 \appendix
 
-# ORDINAL BLOCKING {#app-ordblock}
+# BLOCKING {#app-ordblock}
 
-In order to conduct this experiment, I created an online survey environment based on `R` with `shiny` [@boas_fielding_2013], as there currently is no available tool to block sequentially online. Popular online survey platforms, such as Qualtrics, do not have offer this functionality, and none of the attempts to combine `R` code work with Qualtrics concern the 'injection' of `R` code into the Qualtrics randomization engine, which blocking would require [@hainmueller_2014_causal;@barari_2017_package;@testa_2017_qualtricstools;@ginn_2018_package]. The following is a basic outline of the mechanisms behind this survey environment.
+In order to conduct this experiment, I created an online survey environment based on `R` with `shiny` [@boas_fielding_2013], as there currently is no available tool to block sequentially online. Popular online survey platforms, such as Qualtrics, do not offer this functionality, and none of the attempts to combine `R` code work with Qualtrics concern the 'injection' of `R` code into the Qualtrics randomization engine, which blocking would require [@hainmueller_2014_causal;@barari_2017_package;@testa_2017_qualtricstools;@ginn_2018_package]. The following is a basic outline of the mechanisms behind this survey environment.
 
-The survey questions, i.e. questions that collect demographic information and questions that apply treatment, need to be designed as `.txt` files and incorporated into a local `shiny` environment. This local environment is then hosted in the cloud and publicly accessible. The hosted website sequentially blocks each incoming participant based on her covariate information and covariate information from all previous participants through constant interaction with the `R` code. The workflow for any incoming participant is illustrated in Figure \ref{online-workflow} below.
+The survey questions, i.e. questions that collect demographic information and questions that apply treatment, need to be designed as `.txt` files and incorporated into a local `shiny` environment. This local environment is then hosted in the cloud and publicly accessible. The hosted website sequentially blocks each incoming respondent based on her covariate information and covariate information from all previous respondents through constant interaction with the `R` code. The workflow for any incoming respondent is illustrated in Figure \ref{online-workflow} below.
 
 \vspace{0.8cm}
 
@@ -25,27 +25,125 @@ The survey questions, i.e. questions that collect demographic information and qu
 	\path [line] (assignment) -- (treatment);
 	\path [line] (treatment) -- (results);
 \end{tikzpicture}
-\caption{Online survey experiment workflow} \label{online-workflow}
+\caption{Online Survey Experiment Workflow} \label{online-workflow}
 \end{figure}
 
-A participant clicks on the survey link and answers the demographic question. After she selects her level of education, `R` code in the background pulls previous participants' covariate information from a Dropbox server. Based on this information and her chosen education level, the `R` code sequentially blocks and assigns her to a treatment group. The participant then sees and answers the respective treatment question(s). Her responses are then saved on the same Dropbox server. This process is repeated for all incoming participants. If the participant is the first person to take the survey, i.e. if there is no covariate information from previous participants yet, the code randomly assigns her to one of the treatment groups. All subsequent participants are then blocked and assigned as just described. To recruit participants, the cloud-based website can easily be linked to online market platforms, such as MTurk or Lucid. 
+A respondent clicks on the survey link and answers the demographic question. After she selects her level of education, `R` code in the background pulls previous respondents' covariate information from a Dropbox server. Based on this information and her chosen education level, the `R` code sequentially blocks and assigns her to a treatment group. The respondent then sees and answers the respective treatment question(s). Her responses are then saved on the same Dropbox server. This process is repeated for all incoming respondents. If the respondent is the first person to take the survey, i.e. if there is no covariate information from previous respondents yet, the code randomly assigns her to one of the treatment groups. All subsequent respondents are then blocked and assigned as just described. To recruit respondents, the website was fed into Lucid's marketplace. 
+
+
+<!--
+## Blocking Differences {#app-ordblock-diff}
+
+```{r Variance Table, include=FALSE}
+
+tab.glm.anov <- stargazer(df.glm.anov, 
+                 summary = FALSE,
+                 header=FALSE,
+                 align = TRUE,
+                 title = "ANOVA Chisq Test of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group",
+                 label = "glm-anov")
+dt <- gsub("{c}", "{l}", tab.glm.anov, fixed = TRUE) %>%
+  gsub("gender", "", ., fixed = TRUE) %>%
+  gsub("race", "", ., fixed = TRUE) %>%
+  gsub("income", "", ., fixed = TRUE) %>%
+  gsub("occupation", "", ., fixed = TRUE) %>%
+  gsub("pid", "", ., fixed = TRUE) %>%
+  gsub("pres.approv", "", ., fixed = TRUE) %>%
+  gsub("min.wage", "", ., fixed = TRUE) %>%
+  gsub("country.track", "", ., fixed = TRUE)
+cat(dt)
+
+```
+
+
+\begin{table}[!htbp] \centering    
+\caption{ANOVA Chisq Test of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}    
+\label{glm-anov}  
+\resizebox{10.5cm}{!}{%
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Deviance} & \multicolumn{1}{l}{Resid.Df} & \multicolumn{1}{l}{Residual Deviance} & \multicolumn{1}{l}{Pr.Chi} \\  
+\hline \\[-1.8ex]  
+\multicolumn{1}{l}{\textbf{Gender}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.003} & 1,258 & 1,741.387 & \multicolumn{1}{l}{.955} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.080} & 1,258 & 1,743.981 & \multicolumn{1}{l}{.778} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.156} & 1,258 & 1,741.743 & \multicolumn{1}{l}{.693} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.029} & 1,258 & 1,740.828 & \multicolumn{1}{l}{.865} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.013} & 1,258 & 1,743.466 & \multicolumn{1}{l}{.910} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Race}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.276} & 1,258 & 1,396.688 & \multicolumn{1}{l}{.599} \\ 
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.113} & 1,258 & 1,347.160 & \multicolumn{1}{l}{.736} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.151} & 1,258 & 1,423.487 & \multicolumn{1}{l}{.697} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.017} & 1,258 & 1,423.621 & \multicolumn{1}{l}{.897} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.528} & 1,258 & 1,384.957 & \multicolumn{1}{l}{.467} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Income}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.019} & 1,258 & 1,277.453 & \multicolumn{1}{l}{.889} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.812} & 1,258 & 1,290.106 & \multicolumn{1}{l}{.367} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.569} & 1,258 & 1,311.366 & \multicolumn{1}{l}{.451} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.043} & 1,258 & 1,306.695 & \multicolumn{1}{l}{.837} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.043} & 1,258 & 1,306.695 & \multicolumn{1}{l}{.837} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Occupation}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,637.669 & \multicolumn{1}{l}{1.000} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{2.299} & 1,258 & 1,660.174 & \multicolumn{1}{l}{.129} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{3.695} & 1,258 & 1,661.905 & \multicolumn{1}{l}{.055} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.165} & 1,258 & 1,675.415 & \multicolumn{1}{l}{.685} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,670.674 & \multicolumn{1}{l}{1.000} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Party ID}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{5.617} & 1,258 & 1,619.670 & \multicolumn{1}{l}{.018} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.498} & 1,258 & 1,641.929 & \multicolumn{1}{l}{.480} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.014} & 1,258 & 1,614.864 & \multicolumn{1}{l}{.905} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{1.517} & 1,258 & 1,646.701 & \multicolumn{1}{l}{.218} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.276} & 1,258 & 1,661.142 & \multicolumn{1}{l}{.600} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Pres. Approval}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.387} & 1,258 & 1,737.416 & \multicolumn{1}{l}{.534} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.114} & 1,258 & 1,744.787 & \multicolumn{1}{l}{.735} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{1.402} & 1,258 & 1,743.649 & \multicolumn{1}{l}{.236} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,744.241 & \multicolumn{1}{l}{1.000} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.816} & 1,258 & 1,740.832 & \multicolumn{1}{l}{.366} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Min. Wage}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.221} & 1,258 & 1,644.543 & \multicolumn{1}{l}{.638} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.122} & 1,258 & 1,666.506 & \multicolumn{1}{l}{.727} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.424} & 1,258 & 1,626.133 & \multicolumn{1}{l}{.515} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.411} & 1,258 & 1,663.111 & \multicolumn{1}{l}{.521} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{1.426} & 1,258 & 1,605.348 & \multicolumn{1}{l}{.232} \\  
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Country Track}} & & & & & \\  
+\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,520.274 & \multicolumn{1}{l}{.951} \\  
+\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,421.458 & \multicolumn{1}{l}{.948} \\  
+\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.017} & 1,258 & 1,419.261 & \multicolumn{1}{l}{.897} \\  
+\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,459.355 & \multicolumn{1}{l}{.949} \\  
+\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,463.401 & \multicolumn{1}{l}{.949} \\  
+\hline \\[-1.8ex]  
+\end{tabular}}  
+\end{table}
+
+\clearpage
+-->
 
 
 
-# ORDINAL MISSING {#app-ordmiss}
+# MISSING DATA {#app-ordmiss}
 
 
-## All Observations {#app-ordmiss-allObs}
+## Imputing Missing Data for All ANES and CCES Observations {#app-ordmiss-allObs}
 
-ANES all obs. 1000 iterations, CCES all obs. 10 iterations (maxed out RAM)
-5 variables: Dem, Male, Interest, Inc, Age
-MAR (Table \ref{mar.5var.all}) and MNAR (\ref{mnar.5var.all})
+While using the full number of observations in the ANES data is possible, doing so for the CCES data provides great computational challenges. All 2,395 ANES observations can be used for 1,000 multiple imputation iterations. With over 42,000 observations, however, the number of iterations that are computationally feasible for the CCES data is reduced to 10. Anything above that maxes out the 120 GB RAM on the cloud container that was at my disposal, which results in termination of the code. Keeping these restrictions in mind, Tables \ref{mar.5var.all} and \ref{mnar.5var.all} show the results for MAR and MNAR for 5 variables with inserted missing data.
 
 
 ```{r MAR 5 Variables All Observations, include=FALSE}
 
 mar.5var.anes.all <- read.csv("data/anes/appendix/anes.mar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
 mar.5var.cces.all <- read.csv("data/cces/appendix/cces.mar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mar.5var.anes.all[1:6, 2] <- mar.5var.cces.all[1:6, 2] <- rep("Democrat", 6)
+mar.5var.anes.all[19:24, 2] <- mar.5var.cces.all[19:24, 2] <- rep("Income", 6)
 
 mar.5var.anes.all$diff[mar.5var.anes.all$method == "true"] <- mar.5var.anes.all$value[mar.5var.anes.all$method == "true"]
 mar.5var.cces.all$diff[mar.5var.cces.all$method == "true"] <- mar.5var.cces.all$value[mar.5var.cces.all$method == "true"]
@@ -62,66 +160,65 @@ for(i in 1:ncol(mar.5var.all)){
 mar.5var.all <- rbind(mar.5var.all, c("Observations", "", 2395, 42205), c("Iterations", "", 1000, 10))
 colnames(mar.5var.all) <- col.names[-5]
 
-stargazer(mar.5var.all, 
-          summary = FALSE,
-          align = TRUE,
-          header = FALSE,
-          rownames = FALSE,
-          title = "Accuracy of Multiple Imputation Methods. MAR, 5 Variables with NA, all observations",
-          label = "mar.5var.all")
+tab.mar.5var.all <- stargazer(mar.5var.all, 
+                              summary = FALSE,
+                              align = TRUE,
+                              header = FALSE,
+                              rownames = FALSE,
+                              title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 5 Variables with NA, All Observations",
+                              label = "mar.5var.all")
+
+kt <- gsub("\\multicolumn{1}{c}{", "", tab.mar.5var.all, fixed = TRUE)
+cat(kt)
 
 ```
 
 
-\begin{table}[!htbp] \centering 
-  \caption{Accuracy of Multiple Imputation Methods. MAR, 5 Variables with NA, all observations} 
-  \label{mar.5var.all} 
-\begin{threeparttable}
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
-\\[-1.8ex]\hline 
+
+ \begin{table}[!htbp] \centering    
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 5 Variables with NA, All Observations}  
+ \label{mar.5var.all}
+\begin{tabular}{ccr@{}lr@{}l} 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex]
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex] 
+ true & Democrat & .&3370 & .&4032 \\
+ hd.ord & Democrat & --.&0001 & +.&0006 \\
+ hot.deck & Democrat & --.&0002 & +.&0006 \\ 
+ amelia & Democrat & +.&0000 & +.&0003 \\
+ mice & Democrat & +.&0000 & +.&0003 \\
+ na.omit & Democrat & --.&0302 & --.&0250 \\
+ true & Male & .&4868 & .&4521 \\
+ hd.ord & Male & --.&0004 & --.&0001 \\ 
+ hot.deck & Male & --.&0008 & --.&0002 \\
+ amelia & Male & +.&0001 & +.&0001 \\
+ mice & Male & +.&0001 & +.&0001 \\
+ na.omit & Male & --.&0365 & --.&0436 \\
+ true & Interest & 2.&8806 & 3.&3301 \\
+ hd.ord & Interest & --.&0087 & --.&0033 \\
+ hot.deck & Interest & --.&0135 & --.&0046 \\
+ amelia & Interest & +.&0001 & +.&0001 \\
+ mice & Interest & +.&0000 & +.&0000 \\ 
+ na.omit & Interest & --.&0741 & --.&0763 \\
+ true & Income & 16.&6894 & 6.&5830 \\
+ hd.ord & Income & --.&0606 & --.&0009 \\ 
+ hot.deck & Income & --.&1030 & --.&0073 \\
+ amelia & Income & +.&0009 & --.&0021 \\
+ mice & Income & --.&0007 & --.&0022 \\
+ na.omit & Income & --.&5574 & --.&2592 \\
+ true & Age & 50.&3745 & 52.&8639 \\
+ hd.ord & Age & --.&2355 & --.&0221 \\ 
+ hot.deck & Age & --.&3698 & --.&0790 \\ 
+ amelia & Age & +.&0056 & --.&0006 \\
+ mice & Age & +.&0053 & --.&0132 \\
+ na.omit & Age & --1.&2785 & --1.&2190 \\
+ \hline \\[-1.8ex] 
+\multicolumn{2}{c}{Observations} & \multicolumn{2}{c}{2395} & \multicolumn{2}{c}{42205} \\ 
+\multicolumn{2}{c}{Iterations} & \multicolumn{2}{c}{1000} & \multicolumn{2}{c}{10} \\ 
 \hline \\[-1.8ex] 
-\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} \\ 
-\hline \\[-1.8ex] 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3370} & \multicolumn{1}{c}{.4032} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0001} & \multicolumn{1}{c}{+.0006} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0002} & \multicolumn{1}{c}{+.0006} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0003} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0003} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0302} & \multicolumn{1}{c}{--.0250} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4868} & \multicolumn{1}{c}{.4521} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0004} & \multicolumn{1}{c}{--.0001} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0008} & \multicolumn{1}{c}{--.0002} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0365} & \multicolumn{1}{c}{--.0436} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{2.8806} & \multicolumn{1}{c}{3.3301} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0087} & \multicolumn{1}{c}{--.0033} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0135} & \multicolumn{1}{c}{--.0046} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{+.0001} & \multicolumn{1}{c}{+.0001} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{+.0000} & \multicolumn{1}{c}{+.0000} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0741} & \multicolumn{1}{c}{--.0763} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6894} & \multicolumn{1}{c}{6.5830} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0606} & \multicolumn{1}{c}{--.0009} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1030} & \multicolumn{1}{c}{--.0073} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{+.0009} & \multicolumn{1}{c}{--.0021} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.0007} & \multicolumn{1}{c}{--.0022} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.5574} & \multicolumn{1}{c}{--.2592} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.3745} & \multicolumn{1}{c}{52.8639} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2355} & \multicolumn{1}{c}{--.0221} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.3698} & \multicolumn{1}{c}{--.0790} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0056} & \multicolumn{1}{c}{--.0006} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{+.0053} & \multicolumn{1}{c}{--.0132} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--1.2785} & \multicolumn{1}{c}{--1.2190} \\ 
-\hline \\[-1.8ex] 
-\multicolumn{2}{c}{Observations} & \multicolumn{1}{c}{2395} & \multicolumn{1}{c}{42205} \\ 
-\multicolumn{2}{c}{Iterations} & \multicolumn{1}{c}{1000} & \multicolumn{1}{c}{10} \\ 
-\hline \\[-1.8ex] 
-\end{tabular} 
-\begin{tablenotes}[para,flushleft]
-\footnotesize{\textit{Note:} Due to the very high number of observations, the CCES data can only be run for a low number of iterations. Anything above that maxes out the 120 GB of RAM available to me. The framing data are not included since their total number of observations (1,003) is virtually identical to the sample of 1,000.}
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+ \end{tabular} 
+ \end{table} 
 
 
 
@@ -130,6 +227,9 @@ stargazer(mar.5var.all,
 
 mnar.5var.anes.all <- read.csv("data/anes/appendix/anes.mnar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
 mnar.5var.cces.all <- read.csv("data/cces/appendix/cces.mnar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mnar.5var.anes.all[1:6, 2] <- mnar.5var.cces.all[1:6, 2] <- rep("Democrat", 6)
+mnar.5var.anes.all[19:24, 2] <- mnar.5var.cces.all[19:24, 2] <- rep("Income", 6)
 
 mnar.5var.anes.all$diff[mnar.5var.anes.all$method == "true"] <- mnar.5var.anes.all$value[mnar.5var.anes.all$method == "true"]
 mnar.5var.cces.all$diff[mnar.5var.cces.all$method == "true"] <- mnar.5var.cces.all$value[mnar.5var.cces.all$method == "true"]
@@ -146,89 +246,136 @@ for(i in 1:ncol(mnar.5var.all)){
 mnar.5var.all <- rbind(mnar.5var.all, c("Observations", "", 2395, 42205), c("Iterations", "", 1000, 10))
 colnames(mnar.5var.all) <- col.names[-5]
 
-stargazer(mnar.5var.all, 
+tab.mnar.5var.all <- stargazer(mnar.5var.all, 
+                               summary = FALSE,
+                               align = TRUE,
+                               header = FALSE,
+                               rownames = FALSE,
+                               title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 5 Variables with NA, All Observations",
+                               label = "mnar.5var.all")
+
+lt <- gsub("\\multicolumn{1}{c}{", "", tab.mnar.5var.all, fixed = TRUE)
+cat(lt)
+
+```
+
+
+ \begin{table}[!htbp] \centering   
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 5 Variables with NA, All Observations}   
+ \label{mnar.5var.all}  
+\begin{tabular}{ccr@{}lr@{}l} 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex] 
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex]  
+ true & Democrat & .&3370 & .&4032 \\ 
+ hd.ord & Democrat & --.&0109 & --.&0105 \\
+ hot.deck & Democrat & --.&0113 & --.&0105 \\
+ amelia & Democrat & --.&0110 & --.&0109 \\
+ mice & Democrat & --.&0103 & --.&0106 \\
+ na.omit & Democrat & --.&0185 & --.&0145 \\  
+ true & Male & .&4868 & .&4521 \\ 
+ hd.ord & Male & --.&0138 & --.&0129 \\ 
+ hot.deck & Male & --.&0136 & --.&0131 \\ 
+ amelia & Male & --.&0134 & --.&0132 \\
+ mice & Male & --.&0134 & --.&0131 \\ 
+ na.omit & Male & --.&0196 & --.&0244 \\ 
+ true & Interest & 2.&8806 & 3.&3301 \\
+ hd.ord & Interest & --.&0257 & --.&0171 \\
+ hot.deck & Interest & --.&0299 & --.&0179 \\
+ amelia & Interest & --.&0178 & --.&0147 \\
+ mice & Interest & --.&0179 & --.&0148 \\
+ na.omit & Interest & --.&0407 & --.&0418 \\
+ true & Income & 16.&6894 & 6.&5830 \\
+ hd.ord & Income & --.&1874 & --.&0691 \\ 
+ hot.deck & Income & --.&2287 & --.&0696 \\
+ amelia & Income & --.&1292 & --.&0637 \\
+ mice & Income & --.&1297 & --.&0634 \\
+ na.omit & Income & --.&2729 & --.&1375 \\
+ true & Age & 50.&3745 & 52.&8639 \\ 
+ hd.ord & Age & --.&5240 & --.&2331 \\
+ hot.deck & Age & --.&6609 & --.&2764 \\
+ amelia & Age & --.&2533 & --.&2342 \\
+ mice & Age & --.&2474 & --.&2371 \\
+ na.omit & Age & --.&7188 & --.&6476 \\
+\hline \\[-1.8ex] 
+\multicolumn{2}{c}{Observations} & \multicolumn{2}{c}{2395} & \multicolumn{2}{c}{42205} \\ 
+\multicolumn{2}{c}{Iterations} & \multicolumn{2}{c}{1000} & \multicolumn{2}{c}{10} \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+ 
+
+
+
+<!--
+
+## Speed {#app-ordmiss-speed}
+
+`mice` shows the slowest performance across all combinations of observations and iterations. `amelia`'s relative lack of speed compared to `hd.ord` appears to be due the number of observations, not the number of iterations. `amelia` is roughly 2 times slower than `hd.ord` for 1,000 observations for 1,000 and 10,000 iterations. For 2,395 observations, however, +++ 
+
+```{r Runtimes Increase Observations Increasing Iterations ANES, include=FALSE}
+
+run.all.obs.anes.1000it <- read.csv("data/anes/appendix/anes.mar.runtime.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.all.obs.anes.2500it <- read.csv("data/anes/appendix/anes.5lev.runtime.5var.3145n.2500it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+run.1000.obs.anes.1000it <- read.csv("data/anes/appendix/anes.7lev.runtime.22var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+run.1000.obs.anes.10000it <- read.csv("data/anes/appendix/anes.7lev.runtime.5var.1000n.10000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
+
+digits.char <- function(df){
+  for(i in 1:ncol(df)){
+    if(is.numeric(df[,i])){
+      df[,i] <- round(df[,i], digits = 3)
+    }
+    df[,i] <- df[,i] %>% as.character
+  }
+  return(df)
+}
+
+run.all.obs.anes.1000it <- digits.char(run.all.obs.anes.1000it)
+run.all.obs.anes.1000it <- rbind(c(NA, "2,395 Observations"), c(NA, "1,000 Iterations"), run.all.obs.anes.1000it)
+
+run.all.obs.anes.2500it <- digits.char(run.all.obs.anes.2500it)
+run.all.obs.anes.2500it <- rbind(c(NA, NA), c(NA, "2,500 Iterations"), run.all.obs.anes.2500it)
+
+run.1000.obs.anes.1000it <- digits.char(run.1000.obs.anes.1000it)
+run.1000.obs.anes.1000it <- rbind(c(NA, "1,000 Observations"), c(NA, "1000 Iterations"), run.1000.obs.anes.1000it)
+
+run.1000.obs.anes.10000it <- digits.char(run.1000.obs.anes.10000it)
+run.1000.obs.anes.10000it <- rbind(c(NA, NA), c(NA, "10,000 Iterations"), run.1000.obs.anes.10000it)
+
+# I am stretching things a bit here. The second one is actually 3,145 observations (not 2,395). The third one actually has 22 variables with NAs (not 5). The first two have 5 levels, the second two have 7 levels. But it makes such a tiny difference here or there that it doesn't change the substantive outcome at all
+
+run.anes.all <- cbind(run.1000.obs.anes.1000it, run.1000.obs.anes.10000it[,2], run.all.obs.anes.1000it[,2], run.all.obs.anes.2500it[,2])
+
+stargazer(run.anes.all,
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
-          title = "Accuracy of Multiple Imputation Methods. MNAR, 5 Variables with NA, all observations",
-          label = "mnar.5var.all")
-
+          title = "Runtimes of Multiple Imputation Methods (in Minutes). ANES Data, MAR, 5 Variables with NA",
+          label = "run.anes.all")
 
 ```
 
 
 \begin{table}[!htbp] \centering 
-  \caption{Accuracy of Multiple Imputation Methods. MNAR, 5 Variables with NA, all observations} 
-  \label{mnar.5var.all} 
-\begin{threeparttable}
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes). ANES Data, MAR, 5 Variables with NA} 
+  \label{run.anes.all} 
+\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
-\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{CCES} \\ 
-\hline \\[-1.8ex] 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{.3370} & \multicolumn{1}{c}{.4032} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0109} & \multicolumn{1}{c}{--.0105} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0113} & \multicolumn{1}{c}{--.0105} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0110} & \multicolumn{1}{c}{--.0109} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0103} & \multicolumn{1}{c}{--.0106} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Dem} & \multicolumn{1}{c}{--.0185} & \multicolumn{1}{c}{--.0145} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{.4868} & \multicolumn{1}{c}{.4521} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0138} & \multicolumn{1}{c}{--.0129} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0136} & \multicolumn{1}{c}{--.0131} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0134} & \multicolumn{1}{c}{--.0132} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0134} & \multicolumn{1}{c}{--.0131} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Male} & \multicolumn{1}{c}{--.0196} & \multicolumn{1}{c}{--.0244} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{2.8806} & \multicolumn{1}{c}{3.3301} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0257} & \multicolumn{1}{c}{--.0171} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0299} & \multicolumn{1}{c}{--.0179} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0178} & \multicolumn{1}{c}{--.0147} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0179} & \multicolumn{1}{c}{--.0148} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Interest} & \multicolumn{1}{c}{--.0407} & \multicolumn{1}{c}{--.0418} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{16.6894} & \multicolumn{1}{c}{6.5830} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1874} & \multicolumn{1}{c}{--.0691} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2287} & \multicolumn{1}{c}{--.0696} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1292} & \multicolumn{1}{c}{--.0637} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.1297} & \multicolumn{1}{c}{--.0634} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Inc} & \multicolumn{1}{c}{--.2729} & \multicolumn{1}{c}{--.1375} \\ 
-\multicolumn{1}{c}{true} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{50.3745} & \multicolumn{1}{c}{52.8639} \\ 
-\multicolumn{1}{c}{hot.deck} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.5240} & \multicolumn{1}{c}{--.2331} \\ 
-\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.6609} & \multicolumn{1}{c}{--.2764} \\ 
-\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2533} & \multicolumn{1}{c}{--.2342} \\ 
-\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.2474} & \multicolumn{1}{c}{--.2371} \\ 
-\multicolumn{1}{c}{na.omit} & \multicolumn{1}{c}{Age} & \multicolumn{1}{c}{--.7188} & \multicolumn{1}{c}{--.6476} \\ 
-\hline \\[-1.8ex] 
-\multicolumn{2}{c}{Observations} & \multicolumn{1}{c}{2395} & \multicolumn{1}{c}{42205} \\ 
-\multicolumn{2}{c}{Iterations} & \multicolumn{1}{c}{1000} & \multicolumn{1}{c}{10} \\ 
+\multicolumn{1}{c}{} & \multicolumn{2}{c}{1,000 Observations} & \multicolumn{2}{c}{2,395 Observations} \\ 
+\cline{2-5}
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{1000 Iterations} & \multicolumn{1}{c}{10,000 Iterations} & \multicolumn{1}{c}{1,000 Iterations} & \multicolumn{1}{c}{2,500 Iterations} \\ 
+\cline{2-3}
+\cline{4-5}
+\multicolumn{1}{c}{hd.ord} & \multicolumn{1}{c}{4.103} & \multicolumn{1}{c}{24.294} & \multicolumn{1}{c}{9.406} & \multicolumn{1}{c}{32.668} \\ 
+\multicolumn{1}{c}{hd.norm.orig} & \multicolumn{1}{c}{4.3} & \multicolumn{1}{c}{24.316} & \multicolumn{1}{c}{9.374} & \multicolumn{1}{c}{32.881} \\ 
+\multicolumn{1}{c}{amelia} & \multicolumn{1}{c}{8.758} & \multicolumn{1}{c}{50.63} & \multicolumn{1}{c}{12.393} & \multicolumn{1}{c}{33.691} \\ 
+\multicolumn{1}{c}{mice} & \multicolumn{1}{c}{336.038} & \multicolumn{1}{c}{390.69} & \multicolumn{1}{c}{99.455} & \multicolumn{1}{c}{298.919} \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
-\begin{tablenotes}[para,flushleft]
-\footnotesize{\textit{Note:} Due to the very high number of observations, the CCES data can only be run for a low number of iterations. Anything above that maxes out the 120 GB of RAM available to me. The framing data are not included since their total number of observations (1,003) is virtually identical to the sample of 1,000.}
-\end{tablenotes}
-\end{threeparttable}
-\end{table} 
-
-\clearpage
-
-
-
-## Increased Missingness {#app-ordmiss-increaseNA}
-
-
-CCES 10,000 iterations +++
-5 variables: Dem, Male, Interest, Inc, Age
-MAR
-20, 50 percent
-
-
-
-## Speed {#app-ordmiss-speed}
-
-CCES 10,000 iterations +++
-5 variables: Dem, Male, Interest, Inc, Age
-MAR
-20, 50 percent
-
+\end{table}
 
 
 
@@ -249,19 +396,18 @@ for(i in 1:ncol(run.all.obs)){
 run.all.obs <- rbind(run.all.obs, c("Observations", 2395, 42205), c("Iterations", 1000, 10))
 colnames(run.all.obs) <- c("Method", "ANES", "CCES")
 
-stargazer(run.all.obs, 
+stargazer(run.all.obs,
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
-          title = "Runtimes of Multiple Imputation Methods (in Minutes) with All Available Observations",
+          title = "Runtimes of Multiple Imputation Methods (in Minutes). ANES and CCES Data, All Available Observations",
           label = "run.all.obs")
 
 ```
 
-
 \begin{table}[!htbp] \centering 
-  \caption{Runtimes of Multiple Imputation Methods (in Minutes) with All Available Observations} 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes). ANES and CCES Data, All Available Observations} 
   \label{run.all.obs} 
 \begin{threeparttable}
 \begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
@@ -283,7 +429,6 @@ stargazer(run.all.obs,
 \end{tablenotes}
 \end{threeparttable}
 \end{table} 
-
 
 
 ```{r Runtimes MI Methods From Before, include=FALSE}
@@ -310,18 +455,18 @@ runFullA5 <- runtimes$ANES2016_5lev
 runFullFQ <- runtimes$OldFramingQuadrObs
 runFullF2k <- runtimes$OldFraming_2000it
 methFull <- runtimes$Method
-stargazer(runtimes, 
+stargazer(runtimes,
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
-          title = "Runtimes of Multiple Imputation Methods (in Minutes)",
+          title = "Runtimes of Multiple Imputation Methods (in Minutes). ANES and Old Framing Data",
           label = "runtimes")
 ```
 
 
 \begin{table}[!htbp] \centering 
-  \caption{Runtimes of Multiple Imputation Methods (in Minutes)} 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes). ANES and Old Framing Data} 
   \label{runtimes} 
 \begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 \\[-1.8ex]\hline 
@@ -362,11 +507,11 @@ oldframe.runtime.1000n.1000it.more.var <- read.csv("data/framing/appendix/framin
 anes.7lev.runtime.1000n.1000it.more.var <- read.csv("data/anes/appendix/anes.7lev.runtime.22var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)] # reverse column order
 
 runtimes.1000n <- data.frame(matrix(NA, 8, 7))
-colnames(runtimes.1000n) <- c("Method", 
-                              "CCES10kIt", "OldFraming10kIt", "ANES10kIt", 
+colnames(runtimes.1000n) <- c("Method",
+                              "CCES10kIt", "OldFraming10kIt", "ANES10kIt",
                               "CCES1kIt", "OldFraming1kIt", "ANES1kIt")
-runtimes.1000n$Method <- c("hd.ord", "hd.norm", "amelia", "mice", 
-                           "Observations", "Iterations", "Ordinal Levels", 
+runtimes.1000n$Method <- c("hd.ord", "hd.norm", "amelia", "mice",
+                           "Observations", "Iterations", "Ordinal Levels",
                            "Variables with NAs")
 
 runtimes.1000n$CCES10kIt <- c(cces.runtime.1000n.10000it[,2], 1000, 10000, 6, 5)
@@ -382,24 +527,24 @@ runtimes.1000n$ANES1kIt <- c(anes.7lev.runtime.1000n.1000it.more.var[,2], 1000, 
 # run1k10kC <- runtimes.1000n$CCES10kIt
 # run1k10kF <- runtimes.1000n$OldFraming10kIt
 # run1k10kA <- runtimes.1000n$ANES10kIt
-# 
+#
 # run1k1kC <- runtimes.1000n$CCES1kIt
 # run1k1kF <- runtimes.1000n$OldFraming1kIt
 # run1k1kA <- runtimes.1000n$ANES1kIt
 
 meth <- runtimes.1000n$Method
 
-hd.am.div <- sapply(2:7, 
+hd.am.div <- sapply(2:7,
                     function(x)
-                      runtimes.1000n[meth == "amelia", x] / 
-                      runtimes.1000n[meth == "hd.ord", x]) 
+                      runtimes.1000n[meth == "amelia", x] /
+                      runtimes.1000n[meth == "hd.ord", x])
 
-stargazer(runtimes.1000n, 
+stargazer(runtimes.1000n,
           summary = FALSE,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
-          title = "Runtimes of Multiple Imputation Methods (in Minutes), 1000 Observations",
+          title = "Runtimes of Multiple Imputation Methods (in Minutes). ANES, CCES and Old Framing Data, 1000 Observations",
           label = "runtimes1000n")
 ```
 
@@ -407,7 +552,7 @@ stargazer(runtimes.1000n,
 This is indeed confirmed by Table \ref{runtimes1000n}, where the old framing, the ANES, and the CCES data have all been reduced to 1,000 observations. The left half of the table shows the results for 10,000 iterations and low numbers of variables with NAs (Note: `education` in the ANES data was reduced to 7 levels to make this number of iterations computationally feasible). The right half of the table shows the results for 1,000 iterations and high numbers of variables with NAs. `amelia` is consistently between `r hd.am.div %>% min %>% round(., digits = 1)` and `r hd.am.div %>% max %>% round(., digits = 1)` times slower than `hd.ord` for all three data sets, regardless of the number of iterations and the number of variables with NAs.
 
 \begin{table}[!htbp] \centering 
-  \caption{Runtimes of Multiple Imputation Methods (in Minutes), 1000 Observations} 
+  \caption{Runtimes of Multiple Imputation Methods (in Minutes). ANES, CCES and Old Framing Data, 1000 Observations} 
   \label{runtimes1000n} 
 \begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 \\[-1.8ex]\hline 
@@ -427,11 +572,11 @@ This is indeed confirmed by Table \ref{runtimes1000n}, where the old framing, th
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table} 
+-->
 
 
 
-
-
+<!--
 ## With Modified `ampute()` {#app-ordmiss-modified.ampute}
 
 Table \ref{amp.oldframe.bycases.acc} shows the results of using `ampute()` with the options `bycases=FALSE` and `cont=FALSE` on the old framing data (n = 1,003) and inserts NAs MAR for 5 variables at 20 percent for 9,644 iterations. `hd.ord` overall performs worse in this scenario. 
@@ -447,12 +592,16 @@ stargazer(amp.oldframe.bycases,
           header = FALSE,
           rownames = FALSE,
           digits = 4,
-          title = "Accuracy of Multiple Imputation Method. ampute() with bycases, old framing data (n = 1,003)",
+          title = "Accuracy of Multiple Imputation Methods. ampute() with bycases, Old Framing Data (n = 1,003)",
           label = "amp.oldframe.bycases.acc")
 
 ```
 
+-->
 
+
+
+<!--
 ## With My Own Amputation Methods {#app-ordmiss-own}
 
 Table \ref{own.NA.oldframe.acc} shows the results of using my own function, `own.NA()`, to insert 20 percent NAs MAR into three variables in the old framing data (n = 1,003). In general, something is MAR if you ampute values in column A based on values in column B, e.g. if you ampute the values for `age` where `income = 1` and where `income = 5`. `own.NA()` applies this procedure for any combination of columns. Here, the chosen columns to be amputed are `Dem`, `age`, and `interest`. The chosen columns the amputations depend on are `inc`, `Female`, and `Black`. The function samples 20 percent of observations for each unique value of `inc`. For those observations, the values of `Dem` are amputed. Accordingly, the function samples 20 percent of observations for each unique value of `Female`. For those observations, the values of `age` are amputed. The same occurs for `Black` and `interest`. The resulting data frame is then imputed. Note that the number of amputed and imputed variables is generally lower, as a pair of variables is needed to ampute one variable. As Table \ref{own.NA.oldframe.acc} shows, `hd.ord` does not perform particularly well. It beats `hd.norm` for all three variables but falls considerably short of `amelia` and `mice`. It is notable, however, that my method seems closer to being MCAR than MAR, as `na.omit` performs well and sometimes even outperforms other methods, for instance for `interest`. It is thus questionable how much use `own.NA()` is in its current form.
@@ -470,7 +619,7 @@ stargazer(own.NA.oldframe,
           header = FALSE,
           rownames = FALSE,
           digits = 4,
-          title = "Accuracy of Multiple Imputation Methods. own.NA(), old framing data (n = 1,003)",
+          title = "Accuracy of Multiple Imputation Methods. own.NA(), Old Framing Data (n = 1,003)",
           label = "own.NA.oldframe.acc")
 
 ```
@@ -494,7 +643,7 @@ stargazer(own.NA.rows.oldframe,
           header = FALSE,
           rownames = FALSE,
           digits = 4,
-          title = "Accuracy of Multiple Imputation Methods. own.NA.rows(), old framing data (n = 1,003)",
+          title = "Accuracy of Multiple Imputation Methods. own.NA.rows(), Old Framing Data (n = 1,003)",
           label = "own.NA.rows.oldframe.acc")
 
 ```
@@ -624,7 +773,1161 @@ Somewhat surprisingly, `mice` performs worst overall for many variables (`Ind` (
 
 It is also noteable how often the difference amounts to zero and how well `na.omit` performs overall. Overall, `own.NA` and `own.NA.rows` result in a strong performance of `na.omit`, which should not happen in a missingness mechanism that is supposed to be MAR. The functions thus likely represents a version of MCAR, which puts the usefulness of their imputation results in doubt.
 
+-->
 
 
+
+\clearpage 
+
+
+## Imputing 12 Variables with Missing Data {#app-ordmiss-12var}
+
+```{r MAR 12 Variables, include=FALSE}
+
+mar.12var.anes <- read.csv("data/anes/mar/results/anes.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.12var.cces <- read.csv("data/cces/mar/results/cces.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+# mar.12var.frame<- read.csv("data/framing/mar/results/framing.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mar.12var.anes[1:6, 2] <- mar.12var.cces[1:6, 2] <- rep("Democrat", 6)
+mar.12var.anes[19:24, 2] <- mar.12var.cces[19:24, 2] <- rep("Income", 6)
+mar.12var.anes[37:42, 2] <- mar.12var.cces[37:42, 2] <- rep("Employed", 6)
+
+mar.12var.anes$diff[mar.12var.anes$method == "true"] <- mar.12var.anes$value[mar.12var.anes$method == "true"]
+mar.12var.cces$diff[mar.12var.cces$method == "true"] <- mar.12var.cces$value[mar.12var.cces$method == "true"]
+# mar.12var.frame$diff[mar.12var.frame$method == "true"] <- mar.12var.frame$value[mar.12var.frame$method == "true"]
+
+levels(mar.12var.anes$method) <- levels(mar.12var.cces$method) <- levs
+# levels(mar.12var.frame$method) <-levs
+
+un.meth <- mar.12var.anes$method %>% unique
+un.meth.len <- un.meth %>% length
+un.vars <- c(mar.12var.anes$variable %>% as.character,
+             mar.12var.cces$variable %>% as.character) %>%
+  unique
+# un.vars <- c(mar.12var.anes$variable %>% as.character,
+#                  mar.12var.cces$variable %>% as.character, 
+#                  mar.12var.frame$variable %>% as.character) %>%
+#   unique
+un.vars.len <- un.vars %>% length
+un.anes.len <- mar.12var.anes$variable %>% unique %>% length
+un.cces.var <- mar.12var.cces$variable %>% unique %>% as.character
+un.cces.len <- un.cces.var %>% length
+# un.frame.var <- mar.12var.frame$variable %>% unique %>% as.character
+# un.frame.len <- un.frame.var %>% length
+Variable <- rep(un.vars, each = un.meth.len)
+Method <- rep(un.meth, un.vars.len) %>% as.character
+meth.len <- Method %>% length
+
+mar.12var <- cbind(Method, Variable) %>% as.data.frame
+
+mar.12var$mar.anes.col <- c(mar.12var.anes$diff, 
+                            rep("---", 
+                                un.meth.len * (un.vars.len - un.anes.len)))
+mar.12var$mar.cces.col <- rep("---", meth.len) %>% as.character
+# mar.12var$mar.frame.col <- rep("---", meth.len) %>% as.character
+
+for(i in 1:(un.cces.len)){
+  mar.12var$mar.cces.col[mar.12var$Variable == un.cces.var[i]] <- mar.12var.cces$diff[mar.12var.cces$variable == un.cces.var[i]]
+  # mar.12var$mar.frame.col[mar.12var$Variable == un.frame.var[i]] <- mar.12var.frame$diff[mar.12var.frame$variable == un.frame.var[i]]
+}
+
+colnames(mar.12var) <- col.names
+
+# to make the in-text citations shorter
+mar.12.anes <- mar.12var$ANES
+mar.12.cces <- mar.12var$CCES
+# mar.12.frame <- mar.12var$Framing
+mar.12.meth <- mar.12var$Method
+mar.12.var <- mar.12var$Variable
+
+tab.mar.12var <- stargazer(mar.12var, 
+                           summary = FALSE,
+                           align = TRUE,
+                           header = FALSE,
+                           rownames = FALSE,
+                           digits = 4,
+                           title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 12 Variables with NA",
+                           label = "mar.12var")
+
+mt <- gsub("\\multicolumn{1}{c}{", "", tab.mar.12var, fixed = TRUE)
+cat(mt)
+
+
+```
+
+<!--
+MAR 12 Var
+Explain vars: First 5 vars the same as for MAR 5 Var. Black, Empl, Religious, Married, OwnHome, Rally, Donate, Gay, StudLoans, Hisp, Official, Stud binary. Media and Participation ordinal (1-5). 
+	Binary
+		Similar picture to MAR 5 Var, though overall hd.ord arguably closer. Max difference now .0006 (Empl ANES and framing)
+		amelia and mice best again, often actually zero difference to true value
+	Ordinal
+		Same picture as before: hd.ord is worst across all ds for all vars (including Media and Participation framing)
+		mice and amelia again by far best
+		hd.ord less worse than for MAR 5 Var in terms of performance differences. hd.ord's max diff for Interest is now .0106 (framing) (compared to .0248 (framing) for 5 Var). Possibly explained by thinner spread of NAs, so fewer NAs per variable. Media and Participation framing results confirm those for Interest across all ds
+	interval
+		Same picture as before: hd.ord is worst across all ds
+		Difference to hot.deck still there but less pronounced than for MAR 5 Var
+		mice overall better than amelia for Inc, though .0007 vs. .0013 ANES for amelia
+		mice also overall better than amelia for Age, though .0015 vs. .0050 CCES for amelia
+		As for ordinal, hd.ord less worse than for MAR 5 Var in terms of performance differences but consistent
+-->
+
+Table \ref{mar.12var} shows the results of imputing both data sets MAR for 12 amputed variables. The first five listed variables are the same as for the MAR analysis for five amputed variables in Table \ref{mar.5var}. The remaining variables were chosen based on availability in each data set. As much as possible, the same variables were selected across both data sets. `Black`, `Employed`, `Religious`, `Married`, `OwnHome`, `Rally`, `Donate`, `Gay`, `StudLoans`, `Hispanic`, `Official`, and `Student` are binary variables. `Black` indicates whether a respondent is of African-American origin, `Employed` whether she is currently employed, `Religious` whether she follows a religious belief, `Married` whether she is currently married, `OwnHome` whether she owns her home, `Rally` whether she has attended a political rally, `Donate` whether she has donated to a political candidate, `Gay` whether she identifies as homosexual, `StudLoans` whether she currently has student loans, `Hispanic` whether she is of Hispanic origin, `Official` whether she has contacted her political representative, and `Student` whether she currently is a student. `Media` is an ordinal variable and indicates how much she follows public affairs in the media (scaled from 1 to 5). `Participation` is an interval variable and shows the accumulative count of political activities she has participated in (scaled from 0 to 4).
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{ccr@{}lr@{}l} 
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 12 Variables with NA}   
+ \label{mar.12var} 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex] 
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex] 
+ true & Democrat & .&3420 & .&3770 \\ 
+ hd.ord & Democrat & --.&0005 & --.&0003 \\
+ hot.deck & Democrat & --.&0005 & --.&0004 \\
+ amelia & Democrat & +.&0000 & +.&0000 \\
+ mice & Democrat & +.&0000 & +.&0001 \\
+ na.omit & Democrat & --.&0191 & --.&0172 \\
+ true & Male & .&4890 & .&4830 \\ 
+ hd.ord & Male & --.&0004 & --.&0002 \\
+ hot.deck & Male & --.&0001 & --.&0003 \\  
+ amelia & Male & +.&0001 & --.&0001 \\
+ mice & Male & +.&0000 & --.&0002 \\
+ na.omit & Male & --.&0256 & --.&0364 \\
+ true & Interest & 2.&9340 & 3.&3290 \\
+ hd.ord & Interest & --.&0053 & --.&0041 \\
+ hot.deck & Interest & --.&0077 & --.&0067 \\
+ amelia & Interest & +.&0001 & --.&0001 \\
+ mice & Interest & +.&0000 & --.&0001 \\ 
+ na.omit & Interest & --.&0620 & --.&0515 \\
+ true & Income & 16.&6140 & 6.&4810 \\ 
+ hd.ord & Income & --.&0470 & --.&0130 \\ 
+ hot.deck & Income & --.&0591 & --.&0212 \\
+ amelia & Income & --.&0007 & --.&0005 \\
+ mice & Income & --.&0013 & --.&0003 \\ 
+ na.omit & Income & --.&6303 & --.&2860 \\
+ true & Age & 50.&0410 & 52.&8230 \\
+ hd.ord & Age & --.&1391 & --.&0883 \\ 
+ hot.deck & Age & --.&1835 & --.&1435 \\
+ amelia & Age & +.&0056 & --.&0015 \\ 
+ mice & Age & +.&0048 & --.&0050 \\ 
+ na.omit & Age & --.&8638 & --.&5974 \\
+ true & Black & .&0790 & .&0950 \\ 
+ hd.ord & Black & +.&0000 & +.&0000 \\
+ hot.deck & Black & +.&0000 & +.&0000 \\ 
+ amelia & Black & +.&0000 & +.&0001 \\
+ mice & Black & +.&0000 & +.&0001 \\ 
+ na.omit & Black & --.&0092 & --.&0090 \\
+ true & Employed & .&6610 & .&4370 \\ 
+ hd.ord & Employed & +.&0006 & +.&0000 \\ 
+ hot.deck & Employed & +.&0006 & +.&0001 \\
+ amelia & Employed & +.&0000 & +.&0000 \\
+ mice & Employed & +.&0000 & --.&0001 \\
+ na.omit & Employed & --.&0087 & --.&0301 \\
+ true & Religious & .&6460 & .&6420 \\ 
+ hd.ord & Religious & --.&0006 & --.&0003 \\ 
+ hot.deck & Religious & --.&0005 & --.&0003 \\
+ amelia & Religious & --.&0001 & --.&0001 \\
+ mice & Religious & --.&0001 & --.&0002 \\ 
+ na.omit & Religious & --.&0166 & --.&0234 \\ 
+ true & Married & .&5290 & .&6310 \\
+ hd.ord & Married & +.&0002 & --.&0001 \\
+ hot.deck & Married & +.&0002 & +.&0001 \\
+ amelia & Married & --.&0001 & --.&0002 \\
+ mice & Married & --.&0001 & --.&0002 \\ 
+ na.omit & Married & --.&0384 & --.&0326 \\ 
+ true & OwnHome & .&6820 & .&7010 \\
+ hd.ord & OwnHome & --.&0001 & --.&0002 \\ 
+ hot.deck & OwnHome & +.&0000 & +.&0000 \\ 
+ amelia & OwnHome & +.&0001 & +.&0000 \\ 
+ mice & OwnHome & --.&0001 & --.&0001 \\
+ na.omit & OwnHome & --.&0334 & --.&0304 \\
+ true & Rally & .&0830 & --- \\
+ hd.ord & Rally & --.&0001 & --- \\ 
+ hot.deck & Rally & --.&0002 & --- \\ 
+ amelia & Rally & +.&0001 & --- \\ 
+ mice & Rally & +.&0001 & --- \\ 
+ na.omit & Rally & --.&0191 & --- \\ 
+ true & Donate & .&1390 & --- \\ 
+ hd.ord & Donate & --.&0002 & --- \\ 
+ hot.deck & Donate & --.&0005 & --- \\
+ amelia & Donate & +.&0000 & --- \\ 
+ mice & Donate & +.&0001 & --- \\ 
+ na.omit & Donate & --.&0320 & --- \\ 
+ true & Gay & \multicolumn{2}{l}{---} & .&0420 \\ 
+ hd.ord & Gay & \multicolumn{2}{l}{---}  & +.&0001 \\
+ hot.deck & Gay & \multicolumn{2}{l}{---} & +.&0000 \\ 
+ amelia & Gay & \multicolumn{2}{l}{---} & +.&0000 \\
+ mice & Gay & \multicolumn{2}{l}{---} & +.&0000 \\
+ na.omit & Gay & \multicolumn{2}{l}{---} &  --.&0112 \\
+ true & StudLoans & \multicolumn{2}{l}{---} & .&1910 \\
+ hd.ord & StudLoans & \multicolumn{2}{l}{---} & +.&0003 \\
+ hot.deck & StudLoans & \multicolumn{2}{l}{---} & +.&0002 \\
+ amelia & StudLoans & \multicolumn{2}{l}{---} & +.&0000 \\
+ mice & StudLoans & \multicolumn{2}{l}{---} & --.&0001 \\
+ na.omit & StudLoans & \multicolumn{2}{l}{---} & --.&0117 \\ 
+ \hline \\[-1.8ex]
+ \end{longtable}
+
+\dsp
+
+\normalsize
+
+The results are consistent with those presented in Table \ref{mar.5var}. For the binary variables, `amelia` and `mice` again perform best with results actually matching the true variable values, though `hd.ord` arguably shows closer results than in Table \ref{mar.5var} with a maximum difference to a true value of `r mar.12.anes[mar.12.meth == "hd.ord" & mar.12.var == "Employed"]` (ANES `Employed`). For the ordinal variable, `hd.ord` continues to perform worst across both data sets. `mice` and `amelia` again show the best results. Note, however, that `hd.ord` is less worse in terms of performance differences when compared to the MAR analysis of five imputed variables. The maximum difference to the true `Interest` value is `r mar.12.anes[mar.12.meth == "hd.ord" & mar.12.var == "Interest"]` (ANES) for 12 variables but `r mar.5.anes[mar.12.meth == "hd.ord" & mar.12.var == "Interest"]` (ANES) for five variables. This is possibly explained by a thinner spread of missing values across a higher number of variables, resulting in a lower number of NAs in each amputed variable. 
+
+The results for the interval variables follow the same pattern: `hd.ord` displays the worst results for both data sets. The difference to `hot.deck` is still present though less pronounced than in the MAR analysis of five imputed variables. `mice` overall performs better than `amelia` for `Income` and `Age`, with the exceptions of ANES `Income` (`r mar.12.anes[mar.12.meth == "amelia" & mar.12.var == "Income"]` vs. `r mar.12.anes[mar.12.meth == "mice" & mar.12.var == "Income"]`) and CCES `Age` (`r mar.12.cces[mar.12.meth == "amelia" & mar.12.var == "Age"]` vs. `r mar.12.cces[mar.12.meth == "mice" & mar.12.var == "Age"]`).
+
+
+```{r MNAR 12 Variables, include=FALSE}
+
+mnar.12var.anes <- read.csv("data/anes/mnar/results/anes.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.12var.cces <- read.csv("data/cces/mnar/results/cces.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+# mnar.12var.frame <- read.csv("data/framing/mnar/results/framing.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mnar.12var.anes[1:6, 2] <- mnar.12var.cces[1:6, 2] <- rep("Democrat", 6)
+mnar.12var.anes[19:24, 2] <- mnar.12var.cces[19:24, 2] <- rep("Income", 6)
+mnar.12var.anes[37:42, 2] <- mnar.12var.cces[37:42, 2] <- rep("Employed", 6)
+
+mnar.12var.anes$diff[mnar.12var.anes$method == "true"] <- mnar.12var.anes$value[mnar.12var.anes$method == "true"]
+mnar.12var.cces$diff[mnar.12var.cces$method == "true"] <- mnar.12var.cces$value[mnar.12var.cces$method == "true"]
+# mnar.12var.frame$diff[mnar.12var.frame$method == "true"] <- mnar.12var.frame$value[mnar.12var.frame$method == "true"]
+
+levels(mnar.12var.anes$method) <- levels(mnar.12var.cces$method) <- levs
+# levels(mnar.12var.frame$method) <- levs
+
+# there are several in-between code steps that are identical to MAR 12 Variables
+# above, so I didn't include them here
+
+mnar.12var <- cbind(Method, Variable) %>% as.data.frame
+
+mnar.12var$mnar.anes.col <- c(mnar.12var.anes$diff,
+                              rep("---",
+                                  un.meth.len * (un.vars.len - un.anes.len)))
+mnar.12var$mnar.cces.col <- rep("---", meth.len) %>% as.character
+# mnar.12var$mnar.frame.col <- rep("---", meth.len) %>% as.character
+
+for(i in 1:(un.cces.len)){
+  mnar.12var$mnar.cces.col[mnar.12var$Variable == un.cces.var[i]] <- mnar.12var.cces$diff[mnar.12var.cces$variable == un.cces.var[i]]
+  # mnar.12var$mnar.frame.col[mnar.12var$Variable == un.frame.var[i]] <- mnar.12var.frame$diff[mnar.12var.frame$variable == un.frame.var[i]]
+}
+
+colnames(mnar.12var) <- col.names
+
+# to make the in-text citations shorter
+mnar.12.anes <- mnar.12var$ANES
+mnar.12.cces <- mnar.12var$CCES
+# mnar.12.frame <- mnar.12var$Framing
+mnar.12.meth <- mnar.12var$Method
+mnar.12.var <- mnar.12var$Variable
+
+tab.mnar.12var <- stargazer(mnar.12var,
+                            summary = FALSE,
+                            align = TRUE,
+                            header = FALSE,
+                            rownames = FALSE,
+                            digits = 4,
+                            title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 12 Variables with NA",
+                            label = "mnar.12var")
+
+nt <- gsub("\\multicolumn{1}{c}{", "", tab.mnar.12var, fixed = TRUE)
+cat(nt)
+
+
+```
+
+<!--
+MNAR 12 VAR
+Vars the same as for MNAR 5 Var
+	Binary
+		Similar picture to MNAR 5 Var. amelia and mice perform better, but often not by much. Occasionally, hd.ord eclipses them (.0013 hd.ord vs. .0014 mice Dem framing; 0.0053 hd.ord vs. .0055 mice and amelia Male ANES).
+		na.omit again often performs close to the other methods 
+	Ordinal
+		Exactly the same as for MNAR 5 Var. hd.ord worst across all ds. mice and amelia far better and virtually identical (including Media and Participation framing).
+		na.omit further off than for MNAR 5 Var
+	interval
+		Same method performance as for MNAR 5 Var.
+		na.omit better than hot.deck and hd.ord for Age framing (.2239 vs. .2811 and .2989) and Age CCES (.1367 vs. .1732 and .2251)
+-->
+
+Table \ref{mnar.12var} shows the results of imputing both data sets MNAR for 12 amputed variables. The results are consistent with those obtained for five amputed variables MNAR. `amelia` and `mice` perform better than `hd.ord` for the binary variables overall, but often not by much. Occasionally, `hd.ord` eclipses them (`r mnar.12.anes[mnar.12.meth == "hd.ord" & mnar.12.var == "Male"]` vs. `r mnar.12.anes[mnar.12.meth == "mice" & mnar.12.var == "Male"]` `mice` and `amelia` ANES `Male`). `na.omit` once more performs close to the other methods.
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{ccr@{}lr@{}l} 
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 12 Variables with NA}  
+ \label{mnar.12var} 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex]
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex] 
+ true & Democrat & .&3420 & .&3770 \\
+ hd.ord & Democrat & --.&0049 & --.&0046 \\
+ hot.deck & Democrat & --.&0049 & --.&0049 \\
+ amelia & Democrat & --.&0043 & --.&0045 \\
+ mice & Democrat & --.&0040 & --.&0044 \\ 
+ na.omit & Democrat & --.&0092 & --.&0081 \\
+ true & Male & .&4890 & .&4830 \\ 
+ hd.ord & Male & --.&0055 & --.&0049 \\ 
+ hot.deck & Male & --.&0053 & --.&0051 \\ 
+ amelia & Male & --.&0055 & --.&0050 \\
+ mice & Male & --.&0055 & --.&0049 \\
+ na.omit & Male & --.&0093 & --.&0119 \\ 
+ true & Interest & 2.&9340 & 3.&3290 \\
+ hd.ord & Interest & --.&0113 & --.&0090 \\ 
+ hot.deck & Interest & --.&0134 & --.&0113 \\
+ amelia & Interest & --.&0068 & --.&0061 \\
+ mice & Interest & --.&0068 & --.&0061 \\
+ na.omit & Interest & --.&0236 & --.&0161 \\ 
+ true & Income & 16.&6140 & 6.&4810 \\ 
+ hd.ord & Income & --.&0899 & --.&0350 \\ 
+ hot.deck & Income & --.&1046 & --.&0421 \\
+ amelia & Income & --.&0495 & --.&0223 \\
+ mice & Income & --.&0503 & --.&0218 \\ 
+ na.omit & Income & --.&2088 & --.&0970 \\
+ true & Age & 50.&0410 & 52.&8230 \\ 
+ hd.ord & Age & --.&2571 & --.&1732 \\ 
+ hot.deck & Age & --.&3081 & --.&2251 \\
+ amelia & Age & --.&1100 & --.&1014 \\ 
+ mice & Age & --.&1047 & --.&0986 \\ 
+ na.omit & Age & --.&3397 & --.&1367 \\
+ true & Black & .&0790 & .&0950 \\
+ hd.ord & Black & --.&0035 & --.&0038 \\
+ hot.deck & Black & --.&0037 & --.&0038 \\ 
+ amelia & Black & --.&0037 & --.&0040 \\ 
+ mice & Black & --.&0034 & --.&0038 \\
+ na.omit & Black & --.&0045 & --.&0052 \\
+ true & Employed & .&6610 & .&4370 \\
+ hd.ord & Employed & --.&0034 & --.&0053 \\
+ hot.deck & Employed & --.&0033 & --.&0053 \\
+ amelia & Employed & --.&0031 & --.&0040 \\
+ mice & Employed & --.&0031 & --.&0040 \\ 
+ na.omit & Employed & --.&0014 & --.&0111 \\ 
+ true & Religious & .&6460 & .&6420 \\ 
+ hd.ord & Religious & --.&0045 & --.&0039 \\
+ hot.deck & Religious & --.&0043 & --.&0038 \\
+ amelia & Religious & --.&0040 & --.&0040 \\
+ mice & Religious & --.&0040 & --.&0040 \\ 
+ na.omit & Religious & --.&0049 & --.&0073 \\ 
+ true & Married & .&5290 & .&6310 \\ 
+ hd.ord & Married & --.&0041 & --.&0038 \\
+ hot.deck & Married & --.&0040 & --.&0037 \\ 
+ amelia & Married & --.&0042 & --.&0037 \\ 
+ mice & Married & --.&0042 & --.&0037 \\ 
+ na.omit & Married & --.&0122 & --.&0096 \\ 
+ true & OwnHome & .&6820 & .&7010 \\ 
+ hd.ord & OwnHome & --.&0030 & --.&0030 \\ 
+ hot.deck & OwnHome & --.&0028 & --.&0027 \\
+ amelia & OwnHome & --.&0027 & --.&0030 \\ 
+ mice & OwnHome & --.&0027 & --.&0030 \\ 
+ na.omit & OwnHome & --.&0111 & --.&0090 \\
+ true & Rally & .&0830 & --- \\ 
+ hd.ord & Rally & --.&0043 & --- \\ 
+ hot.deck & Rally & --.&0042 & --- \\ 
+ amelia & Rally & --.&0040 & --- \\ 
+ mice & Rally & --.&0039 & --- \\ 
+ na.omit & Rally & --.&0077 & --- \\  
+ true & Donate & .&1390 & --- \\ 
+ hd.ord & Donate & --.&0051 & --- \\ 
+ hot.deck & Donate & --.&0054 & --- \\ 
+ amelia & Donate & --.&0049 & --- \\ 
+ mice & Donate & --.&0048 & --- \\ 
+ na.omit & Donate & --.&0122 & --- \\ 
+ true & Gay & \multicolumn{2}{l}{---} & .&0420 \\ 
+ hd.ord & Gay & \multicolumn{2}{l}{---} & --.&0024 \\ 
+ hot.deck & Gay & \multicolumn{2}{l}{---} & --.&0025 \\ 
+ amelia & Gay & \multicolumn{2}{l}{---} & --.&0026 \\
+ mice & Gay & \multicolumn{2}{l}{---} & --.&0024 \\ 
+ na.omit & Gay & \multicolumn{2}{l}{---} & --.&0035 \\ 
+ true & StudLoans & \multicolumn{2}{l}{---} & .&1910 \\
+ hd.ord & StudLoans & \multicolumn{2}{l}{---} & --.&0058 \\
+ hot.deck & StudLoans & \multicolumn{2}{l}{---} & --.&0058 \\ 
+ amelia & StudLoans & \multicolumn{2}{l}{---} & --.&0051 \\ 
+ mice & StudLoans & \multicolumn{2}{l}{---} & --.&0050 \\ 
+ na.omit & StudLoans & \multicolumn{2}{l}{---} & --.&0070 \\ 
+ \hline \\[-1.8ex]
+ \end{longtable} 
+ 
+ \dsp
+
+\normalsize
+
+For the ordinal variable, `hd.ord` shows the worst performance across both data sets. `mice` and `amelia` perform far better and display virtually identical results. `na.omit` does not perform as well as in the corresponding MAR analysis. `mice` and `amelia`'s superior performance is also visible in the results for the ordinal variables. `na.omit` performs better than `hot.deck` and `hd.ord` for CCES `Age` (`r mnar.12.cces[mnar.12.meth == "na.omit" & mnar.12.var == "Age"]` vs. `r mnar.12.cces[mnar.12.meth == "hot.deck" & mnar.12.var == "Age"]` and `r mnar.12.cces[mnar.12.meth == "hd.ord" & mnar.12.var == "Age"]`). 
+
+
+
+## Imputing 11 Variables with Missing Data for Two Ordinal Variables {#app-ordmiss-mult-11var}
+
+```{r MULT MAR 11 Variables, include=FALSE}
+
+mult.mar.11var.anes <- read.csv("data/anes/mar/results/anes.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mar.11var.cces <- read.csv("data/cces/mar/results/cces.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+# mult.mar.11var.frame <- read.csv("data/framing/mar/results/framing.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mult.mar.11var.anes[1:6, 2] <- mult.mar.11var.cces[1:6, 2] <- rep("Democrat", 6)
+mult.mar.11var.anes[13:18, 2] <- mult.mar.11var.cces[13:18, 2] <- rep("Income", 6)
+mult.mar.11var.anes[31:36, 2] <- mult.mar.11var.cces[31:36, 2] <- rep("Employed", 6)
+
+mult.mar.11var.anes$diff[mult.mar.11var.anes$method == "true"] <- mult.mar.11var.anes$value[mult.mar.11var.anes$method == "true"]
+mult.mar.11var.cces$diff[mult.mar.11var.cces$method == "true"] <- mult.mar.11var.cces$value[mult.mar.11var.cces$method == "true"]
+# mult.mar.11var.frame$diff[mult.mar.11var.frame$method == "true"] <- mult.mar.11var.frame$value[mult.mar.11var.frame$method == "true"]
+
+levels(mult.mar.11var.anes$method) <- levels(mult.mar.11var.cces$method) <- levs
+# levels(mult.mar.11var.frame$method) <- levs
+
+
+mult.un.meth <- mult.mar.11var.anes$method %>% unique
+mult.un.meth.len <- mult.un.meth %>% length
+mult.un.vars <- c(mult.mar.11var.anes$variable %>% as.character,
+                  mult.mar.11var.cces$variable %>% as.character) %>%
+  unique
+# mult.un.vars <- c(mult.mar.11var.anes$variable %>% as.character,
+#                   mult.mar.11var.cces$variable %>% as.character,
+#                   mult.mar.11var.frame$variable %>% as.character) %>%
+#   unique
+mult.un.vars.len <- mult.un.vars %>% length
+mult.un.anes.len <- mult.mar.11var.anes$variable %>% unique %>% length
+mult.un.cces.var <- mult.mar.11var.cces$variable %>% unique %>% as.character
+mult.un.cces.len <- mult.un.cces.var %>% length
+# mult.un.frame.var <- mult.mar.11var.frame$variable %>% unique %>% as.character
+# mult.un.frame.len <- mult.un.frame.var %>% length
+
+mult.variable <- rep(mult.un.vars, each = mult.un.meth.len)
+mult.method <- rep(mult.un.meth, mult.un.vars.len) %>% as.character
+mult.meth.len <- mult.method %>% length
+
+mult.mar.11var <- cbind(mult.method, mult.variable) %>% as.data.frame
+
+mult.mar.11var$mult.anes.col <- c(mult.mar.11var.anes$diff,
+                                  rep("---",
+                                      mult.un.meth.len * (mult.un.vars.len - mult.un.anes.len)))
+mult.mar.11var$mult.cces.col <- rep("---", mult.meth.len) %>% as.character
+# mult.mar.11var$mult.frame.col <- rep("---", mult.meth.len) %>% as.character
+
+for(i in 1:(mult.un.cces.len)){
+  mult.mar.11var$mult.cces.col[mult.mar.11var$mult.variable == mult.un.cces.var[i]] <- mult.mar.11var.cces$diff[mult.mar.11var.cces$variable == mult.un.cces.var[i]]
+  # mult.mar.11var$mult.frame.col[mult.mar.11var$mult.variable == mult.un.frame.var[i]] <- mult.mar.11var.frame$diff[mult.mar.11var.frame$variable == mult.un.frame.var[i]]
+}
+
+colnames(mult.mar.11var) <- col.names
+
+# to make the in-text citations shorter
+mult.mar.11.anes <- mult.mar.11var$ANES
+mult.mar.11.cces <- mult.mar.11var$CCES
+# mult.mar.11.frame <- mult.mar.11var$Framing
+mult.mar.11.meth <- mult.mar.11var$Method
+mult.mar.11.var <- mult.mar.11var$Variable
+
+tab.mult.mar.11var <- stargazer(mult.mar.11var, 
+                                summary = FALSE,
+                                align = TRUE,
+                                header = FALSE,
+                                rownames = FALSE,
+                                digits = 4,
+                                title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, 2 Ordinal Variables (Education, Interest), MAR, 11 Variables with NA",
+                                label = "mult.mar.11var")
+
+ot <- gsub("\\multicolumn{1}{c}{", "", tab.mult.mar.11var, fixed = TRUE)
+cat(ot)
+
+```
+
+<!--
+MAR 11 Var
+Vars the same as for MAR and MNAR 12 Var, just without Interest (so no ordinal vars here)
+	Binary
+		Similar picture to MAR 4 Var, though overall hd.ord arguably closer now
+		amelia and mice best again, often actually zero difference to true value
+		Consistent with MAR 4 Var/5 Var development, hd.ord performs slightly worse with two ordinal variables when compared to MAR 12 Var:
+		MAR 12 Var hd.ord: Dem .0005, .0004, .0004. Male .0001, .0003, .0000
+		MAR 11 Var hd.ord: Dem .0005, .0005, .0005. Male .0001, .0004, .0002
+	Ordinal framing
+		hd.ord worst for Media and Participation, confirming previous results
+		mice and amelia again by far best
+		hd.ord gets slightly better when compared to MAR 12 Var:
+		MAR 12 Var hd.ord: Media .0060. Participation .0027
+		MAR 11 Var hd.ord: Media .0059, Participation .0026
+	interval
+		Same picture as before: hd.ord is worst across all ds
+		Difference to hot.deck still there but less pronounced than for MAR 4 Var
+		amelia is better for age, mice is better for Inc (except Inc ANES, .0027 vs. .0018)
+		hd.ord consistently gets slightly worse when compared to MAR 12 Var:		
+		MAR 12 Var hd.ord: Inc .0591, .0212, .0089. Age .1835, .1435, .1592 
+		MAR 11 Var hd.ord: Inc .0657, .0241, .0095. Age .1951, .1532, .1640
+-->
+
+Table \ref{mult.mar.11var} shows the results of imputing both data sets with two `polr`-treated variables MAR for 11 amputed variables. A similar picture for Table \ref{mult.mar.4var} emerges for the binary variables, with `amelia` and `mice` once more displaying the best results, though `hd.ord` appears to perform somewhat closer here. Consistent with the deterioration of `hd.ord` results from Table \ref{mar.5var} to Table \ref{mult.mar.4var}, `hd.ord` again consistently performs slightly worse when compared to the MAR analysis with 12 amputed variables and only `Education` treated by `polr`: `r mult.mar.11.anes[mult.mar.11.meth == "hd.ord" & mult.mar.11.var == "Democrat"]`, `r mult.mar.11.cces[mult.mar.11.meth == "hd.ord" & mult.mar.11.var == "Democrat"]` vs. `r mar.12.anes[mar.12.meth == "hd.ord" & mar.12.var == "Democrat"]`, `r mar.12.cces[mar.12.meth == "hd.ord" & mar.12.var == "Democrat"]` for `Democrat` and `r mult.mar.11.anes[mult.mar.11.meth == "hd.ord" & mult.mar.11.var == "Male"]`, `r mult.mar.11.cces[mult.mar.11.meth == "hd.ord" & mult.mar.11.var == "Male"]` vs. `r mar.12.anes[mar.12.meth == "hd.ord" & mar.12.var == "Male"]`, `r mar.12.cces[mar.12.meth == "hd.ord" & mar.12.var == "Male"]` for `Male`.
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{ccr@{}lr@{}l} 
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, 2 Ordinal Variables (Education, Interest), MAR, 11 Variables with NA} 
+ \label{mult.mar.11var}  
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex]
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex]
+ true & Democrat & .&3420 & .&3770 \\ 
+ hd.ord & Democrat & --.&0002 & --.&0004 \\ 
+ hot.deck & Democrat & --.&0005 & --.&0005 \\ 
+ amelia & Democrat & +.&0000 & --.&0001 \\ 
+ mice & Democrat & +.&0000 & +.&0000 \\ 
+ na.omit & Democrat & --.&0200 & --.&0213 \\
+ true & Male & .&4890 & .&4830 \\ 
+ hd.ord & Male & --.&0002 & --.&0005 \\
+ hot.deck & Male & --.&0001 & --.&0004 \\
+ amelia & Male & +.&0000 & --.&0001 \\
+ mice & Male & +.&0000 & --.&0001 \\ 
+ na.omit & Male & --.&0254 & --.&0350 \\ 
+ true & Income & 16.&6140 & 6.&4810 \\ 
+ hd.ord & Income & --.&0346 & --.&0114 \\
+ hot.deck & Income & --.&0657 & --.&0241 \\ 
+ amelia & Income & --.&0018 & --.&0007 \\
+ mice & Income & --.&0027 & --.&0005 \\
+ na.omit & Income & --.&6432 & --.&2888 \\
+ true & Age & 50.&0410 & 52.&8230 \\ 
+ hd.ord & Age & --.&0887 & --.&0704 \\
+ hot.deck & Age & --.&1951 & --.&1532 \\
+ amelia & Age & +.&0010 & --.&0021 \\
+ mice & Age & --.&0016 & --.&0055 \\ 
+ na.omit & Age & --.&8025 & --.&4330 \\
+ true & Black & .&0790 & .&0950 \\
+ hd.ord & Black & +.&0001 & --.&0001 \\
+ hot.deck & Black & +.&0000 & --.&0001 \\
+ amelia & Black & +.&0000 & +.&0001 \\ 
+ mice & Black & +.&0001 & +.&0001 \\ 
+ na.omit & Black & --.&0103 & --.&0122 \\ 
+ true & Employed & .&6610 & .&4370 \\
+ hd.ord & Employed & +.&0007 & +.&0003 \\
+ hot.deck & Employed & +.&0008 & +.&0001 \\ 
+ amelia & Employed & +.&0001 & +.&0000 \\
+ mice & Employed & +.&0001 & --.&0001 \\
+ na.omit & Employed & --.&0109 & --.&0328 \\
+ true & Religious & .&6460 & .&6420 \\ 
+ hd.ord & Religious & --.&0001 & --.&0002 \\ 
+ hot.deck & Religious & --.&0005 & --.&0003 \\ 
+ amelia & Religious & +.&0000 & --.&0001 \\
+ mice & Religious & +.&0000 & --.&0002 \\
+ na.omit & Religious & --.&0174 & --.&0241 \\ 
+ true & Married & .&5290 & .&6310 \\ 
+ hd.ord & Married & --.&0001 & --.&0002 \\ 
+ hot.deck & Married & +.&0003 & +.&0001 \\ 
+ amelia & Married & --.&0001 & --.&0002 \\ 
+ mice & Married & --.&0001 & --.&0002 \\ 
+ na.omit & Married & --.&0390 & --.&0324 \\ 
+ true & OwnHome & .&6820 & .&7010 \\ 
+ hd.ord & OwnHome & --.&0005 & --.&0001 \\
+ hot.deck & OwnHome & --.&0001 & +.&0002 \\ 
+ amelia & OwnHome & +.&0000 & +.&0001 \\
+ mice & OwnHome & --.&0001 & +.&0000 \\
+ na.omit & OwnHome & --.&0341 & --.&0295 \\
+ true & Rally & .&0830 & --- \\ 
+ hd.ord & Rally & +.&0000 & --- \\ 
+ hot.deck & Rally & --.&0002 & --- \\
+ amelia & Rally & +.&0001 & --- \\ 
+ mice & Rally & +.&0002 & --- \\
+ na.omit & Rally & --.&0186 & --- \\ 
+ true & Donate & .&1390 & --- \\ 
+ hd.ord & Donate & --.&0003 & --- \\ 
+ hot.deck & Donate & --.&0007 & --- \\
+ amelia & Donate & --.&0001 & --- \\
+ mice & Donate & +.&0000 & --- \\ 
+ na.omit & Donate & --.&0310 & --- \\ 
+ true & Gay & \multicolumn{2}{l}{---} & .&0420 \\ 
+ hd.ord & Gay & \multicolumn{2}{l}{---} & +.&0001 \\ 
+ hot.deck & Gay & \multicolumn{2}{l}{---} & +.&0000 \\ 
+ amelia & Gay & \multicolumn{2}{l}{---} & +.&0000 \\ 
+ mice & Gay & \multicolumn{2}{l}{---} & +.&0001 \\
+ na.omit & Gay & \multicolumn{2}{l}{---} & --.&0113 \\ 
+ true & StudLoans & \multicolumn{2}{l}{---} & .&1910 \\
+ hd.ord & StudLoans & \multicolumn{2}{l}{---} & +.&0001 \\ 
+ hot.deck & StudLoans & \multicolumn{2}{l}{---} & +.&0001 \\
+ amelia & StudLoans & \multicolumn{2}{l}{---} & --.&0001 \\ 
+ mice & StudLoans & \multicolumn{2}{l}{---} & --.&0001 \\ 
+ na.omit & StudLoans & \multicolumn{2}{l}{---} & --.&0146 \\
+ \hline \\[-1.8ex] 
+ \end{longtable}
+
+\dsp
+
+\normalsize
+
+The same can be observed for the interval variables, with `hd.ord` again claiming last place across both data sets. The difference to `hot.deck` is still there but less pronounced than in Table \ref{mult.mar.4var}. `amelia` does best for `Age` while `mice` performs better for `Income`, with the exception of the ANES (`r mult.mar.11.anes[mult.mar.11.meth == "mice" & mult.mar.11.var == "Income"]` `mice` vs. `r mult.mar.11.anes[mult.mar.11.meth == "amelia" & mult.mar.11.var == "Income"]` `amelia`). As for the binary variables, `hd.ord` also consistently performs slightly worse when compared to the MAR analysis with 12 amputed variables and only `Education` treated by `polr`: `r mult.mar.11.anes[mult.mar.11.meth == "hd.ord" & mult.mar.11.var == "Income"]`, `r mult.mar.11.cces[mult.mar.11.meth == "hd.ord" & mult.mar.11.var == "Income"]` vs. `r mar.12.anes[mar.12.meth == "hd.ord" & mar.12.var == "Income"]`, `r mar.12.cces[mar.12.meth == "hd.ord" & mar.12.var == "Income"]` for `Income` and `r mult.mar.11.anes[mult.mar.11.meth == "hd.ord" & mult.mar.11.var == "Age"]`, `r mult.mar.11.cces[mult.mar.11.meth == "hd.ord" & mult.mar.11.var == "Age"]` vs. `r mar.12.anes[mar.12.meth == "hd.ord" & mar.12.var == "Age"]`, `r mar.12.cces[mar.12.meth == "hd.ord" & mar.12.var == "Age"]` for `Age`.
+
+
+
+```{r MULT MNAR 11 Variables, include=FALSE}
+
+mult.mnar.11var.anes <- read.csv("data/anes/mnar/results/anes.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mnar.11var.cces <- read.csv("data/cces/mnar/results/cces.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+# mult.mnar.11var.frame <- read.csv("data/framing/mnar/results/framing.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+
+mult.mnar.11var.anes[1:6, 2] <- mult.mnar.11var.cces[1:6, 2] <- rep("Democrat", 6)
+mult.mnar.11var.anes[13:18, 2] <- mult.mnar.11var.cces[13:18, 2] <- rep("Income", 6)
+mult.mnar.11var.anes[31:36, 2] <- mult.mnar.11var.cces[31:36, 2] <- rep("Employed", 6)
+
+mult.mnar.11var.anes$diff[mult.mnar.11var.anes$method == "true"] <- mult.mnar.11var.anes$value[mult.mnar.11var.anes$method == "true"]
+mult.mnar.11var.cces$diff[mult.mnar.11var.cces$method == "true"] <- mult.mnar.11var.cces$value[mult.mnar.11var.cces$method == "true"]
+# mult.mnar.11var.frame$diff[mult.mnar.11var.frame$method == "true"] <- mult.mnar.11var.frame$value[mult.mnar.11var.frame$method == "true"]
+
+levels(mult.mnar.11var.anes$method) <- levels(mult.mnar.11var.cces$method) <- levs
+# levels(mult.mnar.11var.frame$method) <- levs
+
+mult.un.meth <- mult.mnar.11var.anes$method %>% unique
+mult.un.meth.len <- mult.un.meth %>% length
+mult.un.vars <- c(mult.mnar.11var.anes$variable %>% as.character,
+                  mult.mnar.11var.cces$variable %>% as.character) %>%
+  unique
+# mult.un.vars <- c(mult.mnar.11var.anes$variable %>% as.character,
+#                   mult.mnar.11var.cces$variable %>% as.character,
+#                   mult.mnar.11var.frame$variable %>% as.character) %>%
+#   unique
+mult.un.vars.len <- mult.un.vars %>% length
+mult.un.anes.len <- mult.mnar.11var.anes$variable %>% unique %>% length
+mult.un.cces.var <- mult.mnar.11var.cces$variable %>% unique %>% as.character
+mult.un.cces.len <- mult.un.cces.var %>% length
+# mult.un.frame.var <- mult.mnar.11var.frame$variable %>% unique %>% as.character
+# mult.un.frame.len <- mult.un.frame.var %>% length
+
+mult.variable <- rep(mult.un.vars, each = mult.un.meth.len)
+mult.method <- rep(mult.un.meth, mult.un.vars.len) %>% as.character
+mult.meth.len <- mult.method %>% length
+
+mult.mnar.11var <- cbind(mult.method, mult.variable) %>% as.data.frame
+
+mult.mnar.11var$mult.anes.col <- c(mult.mnar.11var.anes$diff,
+                                  rep("---",
+                                      mult.un.meth.len * (mult.un.vars.len - mult.un.anes.len)))
+mult.mnar.11var$mult.cces.col <- rep("---", mult.meth.len) %>% as.character
+# mult.mnar.11var$mult.frame.col <- rep("---", mult.meth.len) %>% as.character
+
+for(i in 1:(mult.un.cces.len)){
+  mult.mnar.11var$mult.cces.col[mult.mnar.11var$mult.variable == mult.un.cces.var[i]] <- mult.mnar.11var.cces$diff[mult.mnar.11var.cces$variable == mult.un.cces.var[i]]
+  # mult.mnar.11var$mult.frame.col[mult.mnar.11var$mult.variable == mult.un.frame.var[i]] <- mult.mnar.11var.frame$diff[mult.mnar.11var.frame$variable == mult.un.frame.var[i]]
+}
+
+colnames(mult.mnar.11var) <- col.names
+
+# to make the in-text citations shorter
+mult.mnar.11.anes <- mult.mnar.11var$ANES
+mult.mnar.11.cces <- mult.mnar.11var$CCES
+# mult.mnar.11.frame <- mult.mnar.11var$Framing
+mult.mnar.11.meth <- mult.mnar.11var$Method
+mult.mnar.11.var <- mult.mnar.11var$Variable
+
+tab.mult.mnar.11var <- stargazer(mult.mnar.11var, 
+                                 summary = FALSE,
+                                 align = TRUE,
+                                 header = FALSE,
+                                 rownames = FALSE,
+                                 digits = 4,
+                                 title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, 2 Ordinal Variables (Education, Interest), MNAR, 11 Variables with NA",
+                                 label = "mult.mnar.11var")
+
+pt <- gsub("\\multicolumn{1}{c}{", "", tab.mult.mnar.11var, fixed = TRUE)
+cat(pt)
+
+
+```
+
+<!--
+MNAR 11 Var
+Vars the same as for MAR 11 Var
+	Binary
+		amelia and mice perform better, but often not by much. Occasionally, hd.ord eclipses them (.0057 hd.ord vs. .0060 mice Male ANES; .0057 hd.ord vs. .0059 amelia Male framing)
+		hd.ord consistently gets slightly worse when compared to MNAR 12 Var:		
+		MNAR 12 Var hd.ord: Dem .0049, .0049, .0013. Male .0053, .0051,. 0051
+		MNAR 11 Var hd.ord: Dem .0053, .0053, .0024. Male .0057, .0056, .0057
+	Ordinal framing
+		hd.ord worst for Media but better than hot.deck for Participation
+		mice and amelia performs best by a significant margin
+		na.omit as far off as for MNAR 12 Var
+		hd.ord consistently gets slightly worse when compared to MNAR 12 Var:		
+		MNAR 12 Var hd.ord: Media .0152, Participation .0115
+		MNAR 11 Var hd.ord: Media .0164. Participation .0130
+	interval
+		Consistent with previous analyses
+		na.omit better than hd.ord for Age for all ds. na.omit also best overall across all methods for Age CCES
+		hd.ord consistently gets slightly worse when compared to MNAR 12 Var:		
+		MNAR 12 Var hd.ord: Inc .1046, .0421, .0262. Age .3081, .2251, .2989
+		MNAR 11 Var hd.ord: Inc .1142, .0473, .0291. Age .3329, .2424, .3271
+-->
+
+Table \ref{mult.mnar.11var} shows the results of imputing both data sets with two `polr`-treated variables MNAR for 11 amputed variables. For the binary variables, `amelia` and `mice` perform better, but often not by much. Occasionally, `hd.ord` eclipses them (`r mult.mnar.11.anes[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Male"]` `hd.ord` vs. `r mult.mnar.11.anes[mult.mnar.11.meth == "mice" & mult.mnar.11.var == "Male"]` `mice` ANES `Male`). As was the case in the comparison between the MNAR analysis with four amputed variables and the MNAR analysis with five amputed variables, `hd.ord` consistently demonstrates slightly worse results in the switch from 12 (Table \ref{mnar.12var}) to 11 and one to two `polr`-treated variables: `r mult.mnar.11.anes[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Democrat"]`, `r mult.mnar.11.cces[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Democrat"]` vs. `r mnar.12.anes[mnar.12.meth == "hd.ord" & mnar.12.var == "Democrat"]`, `r mnar.12.cces[mnar.12.meth == "hd.ord" & mnar.12.var == "Democrat"]` for `Democrat` and `r mult.mnar.11.anes[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Male"]`, `r mult.mnar.11.cces[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Male"]` vs. `r mnar.12.anes[mnar.12.meth == "hd.ord" & mnar.12.var == "Male"]`, `r mnar.12.cces[mnar.12.meth == "hd.ord" & mnar.12.var == "Male"]` for `Male`.
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{ccr@{}lr@{}l} 
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, 2 Ordinal Variables (Education, Interest), MNAR, 11 Variables with NA}   
+ \label{mult.mnar.11var}
+ \\[-1.8ex]\hline  
+ \hline \\[-1.8ex] 
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex] 
+ true & Democrat & .&3420 & .&3770 \\ 
+ hd.ord & Democrat & --.&0050 & --.&0053 \\ 
+ hot.deck & Democrat & --.&0053 & --.&0053 \\
+ amelia & Democrat & --.&0047 & --.&0049 \\
+ mice & Democrat & --.&0044 & --.&0048 \\ 
+ na.omit & Democrat & --.&0097 & --.&0097 \\
+ true & Male & .&4890 & .&4830 \\ 
+ hd.ord & Male & --.&0061 & --.&0058 \\ 
+ hot.deck & Male & --.&0057 & --.&0056 \\ 
+ amelia & Male & --.&0060 & --.&0054 \\ 
+ mice & Male & --.&0060 & --.&0054 \\ 
+ na.omit & Male & --.&0088 & --.&0116 \\ 
+ true & Income & 16.&6140 & 6.&4810 \\
+ hd.ord & Income & --.&0841 & --.&0349 \\
+ hot.deck & Income & --.&1142 & --.&0473 \\
+ amelia & Income & --.&0540 & --.&0250 \\ 
+ mice & Income & --.&0549 & --.&0249 \\ 
+ na.omit & Income & --.&2112 & --.&0982 \\
+ true & Age & 50.&0410 & 52.&8230 \\ 
+ hd.ord & Age & --.&2124 & --.&1607 \\ 
+ hot.deck & Age & --.&3329 & --.&2424 \\ 
+ amelia & Age & --.&1194 & --.&1135 \\ 
+ mice & Age & --.&1141 & --.&1102 \\ 
+ na.omit & Age & --.&2978 & --.&0974 \\ 
+ true & Black & .&0790 & .&0950 \\ 
+ hd.ord & Black & --.&0036 & --.&0045 \\
+ hot.deck & Black & --.&0040 & --.&0042 \\
+ amelia & Black & --.&0041 & --.&0044 \\ 
+ mice & Black & --.&0037 & --.&0041 \\ 
+ na.omit & Black & --.&0050 & --.&0066 \\ 
+ true & Employed & .&6610 & .&4370 \\ 
+ hd.ord & Employed & --.&0042 & --.&0057 \\ 
+ hot.deck & Employed & --.&0036 & --.&0058 \\ 
+ amelia & Employed & --.&0034 & --.&0045 \\ 
+ mice & Employed & --.&0033 & --.&0044 \\ 
+ na.omit & Employed & --.&0022 & --.&0122 \\ 
+ true & Religious & .&6460 & .&6420 \\
+ hd.ord & Religious & --.&0045 & --.&0044 \\
+ hot.deck & Religious & --.&0047 & --.&0042 \\
+ amelia & Religious & --.&0043 & --.&0045 \\ 
+ mice & Religious & --.&0043 & --.&0045 \\ 
+ na.omit & Religious & --.&0055 & --.&0077 \\ 
+ true & Married & .&5290 & .&6310 \\ 
+ hd.ord & Married & --.&0047 & --.&0043 \\ 
+ hot.deck & Married & --.&0042 & --.&0040 \\
+ amelia & Married & --.&0046 & --.&0039 \\ 
+ mice & Married & --.&0045 & --.&0039 \\ 
+ na.omit & Married & --.&0120 & --.&0095 \\
+ true & OwnHome & .&6820 & .&7010 \\
+ hd.ord & OwnHome & --.&0037 & --.&0035 \\ 
+ hot.deck & OwnHome & --.&0030 & --.&0030 \\
+ amelia & OwnHome & --.&0031 & --.&0033 \\
+ mice & OwnHome & --.&0030 & --.&0033 \\ 
+ na.omit & OwnHome & --.&0112 & --.&0088 \\ 
+ true & Rally & .&0830 & --- \\ 
+ hd.ord & Rally & --.&0047 & --- \\ 
+ hot.deck & Rally & --.&0047 & --- \\ 
+ amelia & Rally & --.&0045 & --- \\
+ mice & Rally & --.&0044 & --- \\
+ na.omit & Rally & --.&0080 & --- \\
+ true & Donate & .&1390 & --- \\
+ hd.ord & Donate & --.&0057 & --- \\ 
+ hot.deck & Donate & --.&0060 & --- \\ 
+ amelia & Donate & --.&0054 & --- \\  
+ mice & Donate & --.&0053 & --- \\ 
+ na.omit & Donate & --.&0122 & --- \\ 
+ true & Gay & \multicolumn{2}{l}{---} & .&0420 \\ 
+ hd.ord & Gay & \multicolumn{2}{l}{---} & --.&0027 \\
+ hot.deck & Gay & \multicolumn{2}{l}{---} & --.&0026 \\ 
+ amelia & Gay & \multicolumn{2}{l}{---} & --.&0028 \\ 
+ mice & Gay & \multicolumn{2}{l}{---} & --.&0027 \\ 
+ na.omit & Gay & \multicolumn{2}{l}{---} & --.&0037 \\
+ true & StudLoans & \multicolumn{2}{l}{---} & .&1910 \\
+ hd.ord & StudLoans & \multicolumn{2}{l}{---} & --.&0067 \\
+ hot.deck & StudLoans & \multicolumn{2}{l}{---} & --.&0064 \\
+ amelia & StudLoans & \multicolumn{2}{l}{---} & --.&0057 \\
+ mice & StudLoans & \multicolumn{2}{l}{---} & --.&0056 \\ 
+ na.omit & StudLoans & \multicolumn{2}{l}{---} & --.&0082 \\
+ \hline \\[-1.8ex] 
+ \end{longtable}
+ 
+\dsp
+
+\normalsize
+
+Finally, the results for the interval variables confirm previous results, with `amelia` and `mice` demonstrating the best performance. In addition, note that `na.omit` delivers better results than `hd.ord` for `Age` for both data sets and represents the best method for CCES `Age`. Similar to the MNAR results for four variables, the performance of `hd.ord` in the MNAR analysis of 11 variables deteriorates in the switch from one to two ordinal variables: `r mult.mnar.11.anes[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Income"]`, `r mult.mnar.11.cces[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Income"]` vs. `r mnar.12.anes[mnar.12.meth == "hd.ord" & mnar.12.var == "Income"]`, `r mnar.12.cces[mnar.12.meth == "hd.ord" & mnar.12.var == "Income"]` for `Income` and `r mult.mnar.11.anes[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Age"]`, `r mult.mnar.11.cces[mult.mnar.11.meth == "hd.ord" & mult.mnar.11.var == "Age"]` vs. `r mnar.12.anes[mnar.12.meth == "hd.ord" & mnar.12.var == "Age"]`, `r mnar.12.cces[mnar.12.meth == "hd.ord" & mnar.12.var == "Age"]` for `Age`.
+
+
+
+
+## Speed for 12 Imputed Variables {#app-ordmiss-speed-12var}
+
+
+The difference between the methods is somewhat less pronounced for 12 variables with missing data when compared to 5 variables. This could possibly be explained by the thinner spread of missing values across a higher number of variables. The substantive conclusions nonetheless remain the same.
+
+
+```{r Runtimes 12 Variables MAR, include=FALSE}
+
+run.12var.anes <- read.csv("data/anes/mar/runtimes/anes.mar.runtime.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.12var.cces <- read.csv("data/cces/mar/runtimes/cces.mar.runtime.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+# run.12var.frame <- read.csv("data/framing/mar/runtimes/framing.mar.runtime.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+
+run.12var <- cbind(run.12var.anes, run.12var.cces[,2])
+colnames(run.12var) <- c("", "ANES", "CCES")
+```
+
+```{r Runtimes Increased Missingness MAR 12 Variables Table, results='asis', echo=FALSE}
+
+stargazer(run.12var,
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes). ANES and CCES Data, MAR, 12 Variables with NA",
+          label = "runtimes12var")
+
+```
+
+
+
+
+# FRAMING {#app-framing}
+
+## Questionnaire {#app-framing-questionnaire}
+
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire01.jpg}
+  \caption{Questionnaire}
+  \label{framing-questionnaire}
+\end{figure}
+
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire02.jpg}
+\end{figure}
+
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire03.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire04.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire05.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire06.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire07.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire08.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire09.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire10.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire11.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire12.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire13.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire14.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire15.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire16.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire17.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire18.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire19.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire20.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire21.jpg}
+\end{figure}
+\begin{figure}[hbt]
+  \centering
+\includegraphics{data/framing/appendix/questionnaire/questionnaire22.jpg}
+\end{figure}
+
+\clearpage 
+
+
+## Imputing 10 Variables with Missing Data {#app-framing-10var}
+
+```{r MAR 10 Variables Framing, include=FALSE}
+
+mar.10var.frame.an <- read.csv("data/framing/experiment/mar/results/framing.an.mar.results.10var.1062n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+mar.10var.frame.op <- read.csv("data/framing/experiment/mar/results/framing.op.mar.results.10var.1103n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+
+mar.10var.frame.an[49:54, 2] <- mar.10var.frame.op[49:54, 2] <- rep("Democrat", 6)
+
+mar.10var.frame.an$diff[mar.10var.frame.an$method == "true"] <- mar.10var.frame.an$value[mar.10var.frame.an$method == "true"]
+mar.10var.frame.op$diff[mar.10var.frame.op$method == "true"] <- mar.10var.frame.op$value[mar.10var.frame.op$method == "true"]
+
+levels(mar.10var.frame.op$method) <- levels(mar.10var.frame.an$method) <- levs
+
+mar.10var.frame <- cbind(mar.10var.frame.an[, c(1,2,4)], mar.10var.frame.op[,4])
+colnames(mar.10var.frame) <- c("Method", "Variable", "ANES", "OP")
+
+# to make the in-text citations shorter
+mar.10.frame.an <- mar.10var.frame$ANES
+mar.10.frame.op <- mar.10var.frame$OP
+mar.10.frame.meth <- mar.10var.frame$Method
+mar.10.frame.var <- mar.10var.frame$Variable
+
+tab.mar.10var.frame <- stargazer(mar.10var.frame, 
+                                 summary = FALSE,
+                                 align = TRUE,
+                                 header = FALSE,
+                                 rownames = FALSE,
+                                 digits = 4,
+                                 title = "Accuracy of Multiple Imputation Methods. Framing Data, MAR, 10 Variables with NA",
+                                 label = "mar.10var.frame")
+
+qt <- gsub("\\multicolumn{1}{c}{", "", tab.mar.10var.frame, fixed = TRUE)
+cat(qt)
+
+
+```
+
+
+Table \ref{mar.10var.frame} shows the imputation results for missing data inserted at random for 10 variables. In addition to the 5 variables in Table \ref{mar.10var.frame}, missing data is also inserted for `Student`, `Conservative`, `Black`, `Hispanic`, and `Asian`. All of these are binary variables. The results are virtually identical for all methods for `Democrat`, `Male`, `Student`, `Conservative`, `Black`, `Hispanic`, `Asian` for both data sets. The only exception among the binary variables is `Employed`, where `hd.ord` and `hot.deck` perform worse than `mice` and `amelia`. The results for `Income` and `Age` repeat the pattern from Table \ref{mar.5var.frame}: `amelia` overall beats `mice`, the hot decking methods show a much larger distance, and `hd.ord` performs worst out of all methods. Notably, `na.omit` produces better results than the hot decking methods for `Age` for both data sets.
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{ccr@{}lr@{}l} 
+ \caption{Accuracy of Multiple Imputation Methods. Framing Data, MAR, 10 Variables with NA}   
+ \label{mar.10var.frame}  
+ \\[-1.8ex]\hline
+ \hline \\[-1.8ex] 
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{OP} \\ 
+ \hline \\[-1.8ex] 
+ true & Democrat & .&3879 & .&3826 \\ 
+ hot.deck & Democrat & +.&0003 & +.&0003 \\ 
+ hd.ord & Democrat & +.&0002 & +.&0003 \\
+ amelia & Democrat & +.&0002 & +.&0000 \\
+ mice & Democrat & +.&0001 & --.&0001 \\
+ na.omit & Democrat & --.&0217 & --.&0249 \\
+ true & Male & .&4576 & .&4714 \\ 
+ hot.deck & Male & --.&0001 & +.&0003 \\
+ hd.ord & Male & +.&0000 & +.&0002 \\
+ amelia & Male & +.&0001 & +.&0000 \\ 
+ mice & Male & +.&0000 & --.&0001 \\  
+ na.omit & Male & --.&0334 & --.&0325 \\ 
+ true & Employed & .&5612 & .&5684 \\ 
+ hot.deck & Employed & +.&0013 & +.&0013 \\
+ hd.ord & Employed & +.&0013 & +.&0014 \\ 
+ amelia & Employed & +.&0002 & +.&0001 \\
+ mice & Employed & +.&0000 & +.&0000 \\ 
+ na.omit & Employed & --.&0277 & --.&0260 \\
+ true & Income & 3.&5537 & 3.&4923 \\  
+ hot.deck & Income & --.&0037 & --.&0035 \\ 
+ hd.ord & Income & --.&0081 & --.&0074 \\ 
+ amelia & Income & +.&0000 & --.&0001 \\
+ mice & Income & --.&0001 & --.&0002 \\  
+ na.omit & Income & --.&1501 & --.&1504 \\ 
+ true & Age & 46.&3475 & 44.&9574 \\ 
+ hot.deck & Age & --.&1106 & --.&1115 \\ 
+ hd.ord & Age & --.&1632 & --.&1593 \\
+ amelia & Age & --.&0019 & +.&0008 \\ 
+ mice & Age & --.&0068 & --.&0009 \\ 
+ na.omit & Age & --.&0890 & --.&0921 \\ 
+ true & Student & .&0386 & .&0481 \\ 
+ hot.deck & Student & --.&0001 & +.&0000 \\
+ hd.ord & Student & +.&0000 & +.&0001 \\
+ amelia & Student & +.&0001 & +.&0000 \\
+ mice & Student & +.&0000 & --.&0001 \\
+ na.omit & Student & --.&0069 & --.&0065 \\ 
+ true & Conservative & .&3908 & .&3744 \\ 
+ hot.deck & Conservative & +.&0001 & +.&0004 \\
+ hd.ord & Conservative & --.&0002 & +.&0003 \\ 
+ amelia & Conservative & +.&0000 & +.&0001 \\ 
+ mice & Conservative & --.&0002 & +.&0002 \\
+ na.omit & Conservative & --.&0177 & --.&0193 \\
+ true & Black & .&1158 & .&1242 \\ 
+ hot.deck & Black & +.&0004 & +.&0003 \\ 
+ hd.ord & Black & +.&0005 & +.&0004 \\ 
+ amelia & Black & +.&0000 & +.&0000 \\ 
+ mice & Black & +.&0001 & +.&0000 \\
+ na.omit & Black & --.&0094 & --.&0086 \\
+ true & Democrat & .&0895 & .&0907 \\ 
+ hot.deck & Democrat & +.&0004 & +.&0003 \\ 
+ hd.ord & Democrat & +.&0003 & +.&0001 \\ 
+ amelia & Democrat & +.&0000 & +.&0000 \\
+ mice & Democrat & --.&0001 & +.&0000 \\
+ na.omit & Democrat & --.&0126 & --.&0152 \\ 
+ true & Asian & .&0810 & .&0662 \\
+ hot.deck & Asian & +.&0001 & --.&0002 \\ 
+ hd.ord & Asian & +.&0000 & --.&0001 \\
+ amelia & Asian & +.&0001 & +.&0000 \\
+ mice & Asian & +.&0000 & +.&0000 \\ 
+ na.omit & Asian & --.&0165 & --.&0142 \\ 
+ \hline \\[-1.8ex]
+ \end{longtable}
+
+\dsp
+
+\normalsize
+
+
+```{r MNAR 10 Variables Framing, include=FALSE}
+
+mnar.10var.frame.an <- read.csv("data/framing/experiment/mnar/results/framing.an.mnar.results.10var.1062n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+mnar.10var.frame.op <- read.csv("data/framing/experiment/mnar/results/framing.op.mnar.results.10var.1103n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+
+mnar.10var.frame.an[49:54, 2] <- mnar.10var.frame.op[49:54, 2] <- rep("Democrat", 6)
+
+mnar.10var.frame.an$diff[mnar.10var.frame.an$method == "true"] <- mnar.10var.frame.an$value[mnar.10var.frame.an$method == "true"]
+mnar.10var.frame.op$diff[mnar.10var.frame.op$method == "true"] <- mnar.10var.frame.op$value[mnar.10var.frame.op$method == "true"]
+
+levels(mnar.10var.frame.op$method) <- levels(mnar.10var.frame.an$method) <- levs
+
+mnar.10var.frame <- cbind(mnar.10var.frame.an[, c(1,2,4)], mnar.10var.frame.op[,4])
+colnames(mnar.10var.frame) <- c("Method", "Variable", "ANES", "OP")
+
+# to make the in-text citations shorter
+mnar.10.frame.an <- mnar.10var.frame$ANES
+mnar.10.frame.op <- mnar.10var.frame$OP
+mnar.10.frame.meth <- mnar.10var.frame$Method
+mnar.10.frame.var <- mnar.10var.frame$Variable
+
+tab.mnar.10var.frame <- stargazer(mnar.10var.frame, 
+                                  summary = FALSE,
+                                  align = TRUE,
+                                  header = FALSE,
+                                  rownames = FALSE,
+                                  digits = 4,
+                                  title = "Accuracy of Multiple Imputation Methods. Framing Data, MNAR, 10 Variables with NA",
+                                  label = "mnar.10var.frame")
+
+rt <- gsub("\\multicolumn{1}{c}{", "", tab.mnar.10var.frame, fixed = TRUE)
+cat(rt)
+
+```
+
+
+As was the case for Tables \ref{mar.5var.frame} and \ref{mnar.5var.frame}, all imputation results for missing data inserted not at random for 10 variables (Table \ref{mnar.10var.frame}) are much further away from the true values than in Table \ref{mar.10var.frame}. There are still several binary variables where all methods produce virtually identical results (`Democrat`, `Male`, `Employed`, `Conservative`), but distances between `hd.ord` and `mice`/`amelia` are notably larger for `Student`, `Black`, `Hispanic`, and `Asian`. Similarly to before, the distances between `hd.ord` and `mice`/`amelia` decrease for `Income` and `Age` when compared to the results for 10 variables MAR. `hd.ord` once again performs worst for both interval variables for both data sets. Note that `na.omit` is now overall much closer to the imputation methods and the true values. It even produces the best results for `Age` across all methods for both data sets.
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{ccr@{}lr@{}l} 
+ \caption{Accuracy of Multiple Imputation Methods. Framing Data, MNAR, 10 Variables with NA}   
+ \label{mnar.10var.frame}
+ \\[-1.8ex]\hline
+ \hline \\[-1.8ex]
+\multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{OP} \\ 
+ \hline \\[-1.8ex]  
+ true & Democrat & .&3879 & .&3826 \\
+ hot.deck & Democrat & --.&0015 & --.&0016 \\
+ hd.ord & Democrat & --.&0019 & --.&0019 \\
+ amelia & Democrat & --.&0015 & --.&0015 \\
+ mice & Democrat & --.&0013 & --.&0014 \\ 
+ na.omit & Democrat & --.&0084 & --.&0094 \\ 
+ true & Male & .&4576 & .&4714 \\
+ hot.deck & Male & --.&0067 & --.&0063 \\ 
+ hd.ord & Male & --.&0066 & --.&0062 \\ 
+ amelia & Male & --.&0066 & --.&0065 \\
+ mice & Male & --.&0067 & --.&0066 \\
+ na.omit & Male & --.&0102 & --.&0099 \\ 
+ true & Employed & .&5612 & .&5684 \\ 
+ hot.deck & Employed & --.&0013 & --.&0015 \\ 
+ hd.ord & Employed & --.&0014 & --.&0017 \\
+ amelia & Employed & --.&0015 & --.&0015 \\ 
+ mice & Employed & --.&0015 & --.&0015 \\
+ na.omit & Employed & --.&0086 & --.&0077 \\
+ true & Income & 3.&5537 & 3.&4923 \\
+ hot.deck & Income & --.&0241 & --.&0237 \\ 
+ hd.ord & Income & --.&0262 & --.&0267 \\
+ amelia & Income & --.&0196 & --.&0212 \\
+ mice & Income & --.&0196 & --.&0214 \\ 
+ na.omit & Income & --.&0476 & --.&0490 \\
+ true & Age & 46.&3475 & 44.&9574 \\
+ hot.deck & Age & --.&2197 & --.&2388 \\
+ hd.ord & Age & --.&3100 & --.&2911 \\ 
+ amelia & Age & --.&1196 & --.&1307 \\ 
+ mice & Age & --.&1207 & --.&1341 \\ 
+ na.omit & Age & --.&0274 & --.&0193 \\ 
+ true & Student & .&0386 & .&0481 \\ 
+ hot.deck & Student & --.&0022 & --.&0024 \\
+ hd.ord & Student & --.&0023 & --.&0025 \\
+ amelia & Student & --.&0020 & --.&0024 \\
+ mice & Student & --.&0015 & --.&0018 \\
+ na.omit & Student & --.&0026 & --.&0032 \\
+ true & Conservative & .&3908 & .&3744 \\
+ hot.deck & Conservative & --.&0043 & --.&0038 \\
+ hd.ord & Conservative & --.&0045 & --.&0041 \\
+ amelia & Conservative & --.&0042 & --.&0045 \\ 
+ mice & Conservative & --.&0044 & --.&0043 \\
+ na.omit & Conservative & --.&0059 & --.&0065 \\
+ true & Black & .&1158 & .&1242 \\
+ hot.deck & Black & --.&0032 & --.&0030 \\
+ hd.ord & Black & --.&0033 & --.&0030 \\
+ amelia & Black & --.&0023 & --.&0021 \\
+ mice & Black & --.&0023 & --.&0020 \\ 
+ na.omit & Black & --.&0049 & --.&0050 \\ 
+ true & Democrat & .&0895 & .&0907 \\ 
+ hot.deck & Democrat & --.&0027 & --.&0028 \\
+ hd.ord & Democrat & --.&0034 & --.&0036 \\
+ amelia & Democrat & --.&0023 & --.&0022 \\
+ mice & Democrat & --.&0023 & --.&0021 \\ 
+ na.omit & Democrat & --.&0050 & --.&0057 \\ 
+ true & Asian & .&0810 & .&0662 \\ 
+ hot.deck & Asian & --.&0034 & --.&0031 \\ 
+ hd.ord & Asian & --.&0038 & --.&0032 \\ 
+ amelia & Asian & --.&0023 & --.&0020 \\
+ mice & Asian & --.&0025 & --.&0017 \\
+ na.omit & Asian & --.&0059 & --.&0046 \\ 
+ \hline \\[-1.8ex] 
+ \end{longtable}
+
+\dsp
+
+\normalsize
 
 
