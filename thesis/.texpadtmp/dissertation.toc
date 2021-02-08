@@ -1,0 +1,150 @@
+\contentsline {chapter}{ABSTRACT}{ii}{chapter*.1}%
+\addvspace {10\p@ }
+\contentsline {chapter}{ACKNOWLEDGEMENTS}{iii}{chapter*.2}%
+\addvspace {10\p@ }
+\contentsline {chapter}{LIST OF TABLES}{iv}{chapter*.3}%
+\addvspace {10\p@ }
+\contentsline {chapter}{LIST OF FIGURES}{vi}{chapter*.4}%
+\addvspace {10\p@ }
+\hspace {-0.25in}{ }\par 
+\hspace {-0.40in}{CHAPTER}\par 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {chap}{\numberline {1.}OUTLINE}{1}{chapter.1}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {1.1}Blocking}{1}{section.1.1}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {1.2}Missing Data}{1}{section.1.2}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {1.3}Application}{2}{section.1.3}%
+\addvspace {10\p@ }
+\contentsline {chap}{\numberline {2.}PRECISION IN SURVEY EXPERIMENTS -- A NEW METHOD TO IMPROVE BLOCKING ON ORDINAL VARIABLES}{3}{chapter.2}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {2.1}Introduction}{3}{section.2.1}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {2.2}Theory}{5}{section.2.2}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {2.2.1}Preliminary Notations on Survey Experiments}{5}{subsection.2.2.1}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {2.2.2}Randomization}{7}{subsection.2.2.2}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {2.2.3}Blocking}{8}{subsection.2.2.3}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{Blocking On The Go}{10}{section*.8}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {2.2.4}Ordinal Variables}{12}{subsection.2.2.4}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {2.2.5}Ordered Probit Approach}{14}{subsection.2.2.5}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {2.3}Data}{16}{section.2.3}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {2.4}Results}{16}{section.2.4}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {2.4.1}Blocking Differences}{19}{subsection.2.4.1}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {2.4.2}Placebo Regression}{25}{subsection.2.4.2}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {2.5}Conclusion}{26}{section.2.5}%
+\addvspace {10\p@ }
+\contentsline {chap}{\numberline {3.}QUALITY COMPARISON OF MAJOR MISSING DATA SOLUTIONS WITH A PROPOSED NEW METHOD FOR ORDINAL VARIABLES}{29}{chapter.3}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {3.1}Introduction}{29}{section.3.1}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {3.2}Theory}{32}{section.3.2}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.2.1}Missing Data Mechanisms}{32}{subsection.3.2.1}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.2.2}Listwise Deletion}{34}{subsection.3.2.2}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.2.3}Single Imputation}{35}{subsection.3.2.3}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{Mean}{35}{section*.14}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{Regression}{36}{section*.15}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{Hot Decking}{36}{section*.16}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.2.4}Multiple Imputation}{38}{subsection.3.2.4}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{\texttt {mice}: Multivariate Imputation by Chained Equations}{41}{section*.18}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{\texttt {Amelia}: A Program for Missing Data}{45}{section*.20}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{\texttt {hot.deck}: Multiple Hot Deck Imputation}{48}{section*.22}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{\texttt {hd.ord}: Multiple Hot Deck Imputation with Ordinal Variables}{51}{section*.24}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {3.3}Data}{53}{section.3.3}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {3.4}Results}{56}{section.3.4}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.4.1}MAR}{56}{subsection.3.4.1}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.4.2}MNAR}{58}{subsection.3.4.2}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.4.3}Increased Number of Ordinal Variables}{58}{subsection.3.4.3}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.4.4}Increased Percentage of Missingness}{62}{subsection.3.4.4}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {3.4.5}Speed}{64}{subsection.3.4.5}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {3.5}Brief Evaluation of Shortcomings in \texttt {hd.ord}}{65}{section.3.5}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {3.6}Conclusion}{67}{section.3.6}%
+\addvspace {10\p@ }
+\contentsline {chap}{\numberline {4.}MORALITY, SELF-INTEREST, AND FRAME STRENGTH}{70}{chapter.4}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {4.1}Introduction}{70}{section.4.1}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {4.2}Theory}{71}{section.4.2}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {4.2.1}Framing}{71}{subsection.4.2.1}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {4.2.2}Morality}{75}{subsection.4.2.2}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {4.2.3}Self-Interest}{78}{subsection.4.2.3}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {4.3}Design}{83}{section.4.3}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {4.3.1}Expectations}{87}{subsection.4.3.1}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {4.4}Data}{88}{section.4.4}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {4.5}Results}{90}{section.4.5}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {4.5.1}Survey Experiment}{90}{subsection.4.5.1}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{High Morality}{94}{section*.47}%
+\addvspace {10\p@ }
+\contentsline {subsubsection}{High Self-Interest}{98}{section*.48}%
+\addvspace {10\p@ }
+\contentsline {subsection}{\numberline {4.5.2}Imputation}{101}{subsection.4.5.2}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {4.6}Conclusion}{107}{section.4.6}%
+\addvspace {10\p@ }
+\contentsline {chap}{\numberline {5.}CONCLUSION}{110}{chapter.5}%
+\addvspace {10\p@ }
+\hspace {-0.25in}{ }\par 
+\hspace {-0.25in}{ }\par 
+\hspace {-0.40in}{APPENDIX}\par 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {chap}{\numberline {A.}BLOCKING}{111}{appendix.A}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {chap}{\numberline {B.}MISSING DATA}{113}{appendix.B}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {B.1}Imputing Missing Data for All ANES and CCES Observations}{113}{section.B.1}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {B.2}Imputing 12 Variables with Missing Data}{113}{section.B.2}%
+\addvspace {10\p@ }
+\contentsline {section}{\numberline {B.3}Imputing 11 Variables with Missing Data for Two Ordinal Variables}{120}{section.B.3}%
+\addvspace {10\p@ }
+\contentsline {chap}{\numberline {C.}FRAMING}{126}{appendix.C}%
+\addvspace {10\p@ }
+\contentsline {chapter}{REFERENCES}{149}{appendix*.78}%

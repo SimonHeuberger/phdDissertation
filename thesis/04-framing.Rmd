@@ -1,0 +1,1148 @@
+# MORALITY, SELF-INTEREST, AND FRAME STRENGTH {#framing}
+
+## Introduction {#framing-intro}
+
+<!--
+Barack Obama presented the first outline of the Affordable Care Act in the summer of 2009. The content of the reform was put online for everyone to see, but since the administration was still working on details, it refrained from actively communicating it. Published press releases simply stated that the ACA would expand coverage and lower healthcare costs for everyone. This hesitancy turned out to be a big mistake. At the end of July, support for the ACA hovered around 43 percent. Then Sarah Palin, John McCain's choice for running mate in 2008, posted the following statement on Facebook on August 7\textsuperscript{th}: "The America I know and love is not one in which my parents or my baby with Down Syndrome will have to stand in front of Obama's 'death panel' so his bureaucrats can decide, based on a subjective judgment of their 'level of productivity in society'" [@palin_statement_2009]. Palin implied that federal government workers would be able to refuse treatment to any patients and thus 'decide their fate'. Over the next two weeks, support for the ACA dropped to 35 percent while opposition rose to 52 percent. Republican lawmakers jumped at the opportunity and repeated the claim of 'death panels' whenever possible. The reform never recovered from this drop. In December 2009, four months after the statement, support and opposition were virtually identical to August. While the public was still uncertain about the exact contents of the law, Palin had asserted that it would include a Big Brother type panel that decided whether people would live or die. This drowned out any efforts by the Obama administration to show the law as a cost-reducing reform. Palin's frame of the ACA, in other words, drastically influenced public opinion of the reform.
+-->
+
+In today's world, we rarely consume information directly, for instance by attending a demonstration or listening to a talk. Instead, most of the information we consume is mediated through television, radio, blogs, social media, messenger apps, and so forth. Mediated information by definition only represents a selective fragment of reality. The messenger -- news anchors, pundits, influencers, politicians etc. -- makes conscious and unconscious choices what information to distribute and how to present this information to us. The mediated message that eventually reaches us has been manipulated. Numerous strategies to carry out such manipulations exist. One of these strategies is framing. 
+
+Framing is the practice of presenting an issue to affect the way people see it [@chong_framing_2007]. It reorganizes existing information already present in people's minds and attempts to direct people's attention towards particular considerations [@druckman_2003_framing]. Numerous experiments have shown that frames can have substantial influence on moving people's opinions [@chong_dynamic_2010;@sniderman_structure_2004]. Despite an abundance of experimental framing research, however, we don't know why some frames are successful in affecting people's opinions and others are not. In other words, we don't know what aspects make frames strong. I provide an avenue of clarification by testing the influence of morality and self-interest in political framing.
+
+For some time, scholars have postulated the 'death' of self-interest to explain issue positioning: People eschew their self-interest to defend and vote according to their morals instead, as they consider them more important [@frank_whats_2004; @haidt_2008_morality]. Others, however, cast doubt on these claims: Morality and cultural values do not outweigh self-interest concerns, which in turn represent a significant factor in determining issue positioning [@bartels_2005_homer; @bartels_2006_whats]. Which is it? Have moral concerns displaced self-interest? Does self-interest matter more than postulated by many? I intend to shed some light on these questions with an online framing survey experiment that directly juxtaposes morality and self-interest. Morality is assessed on the basis of Moral Foundations Theory [@haidt_2012_righteous]. Self-interest is defined to include any goals related to personal autonomy, health/safety, wealth, and status [@gintis_2017_individuality; @weeden_2017_self-interest]. Demographic information and conviction measurements are used to analyze the influence of each concept. To my knowledge, this setup has not been studied before. In addition to the substantive analysis, both methods developed in chapters \ref{ordblock} and \ref{ordmiss} are applied and their performance is analyzed.
+
+
+
+
+## Theory {#framing-theory}
+
+### Framing {#framing-theory-framing}
+
+People usually do not have stable, consistent, and informed opinions [@converse_nature_1964; @zaller_nature_1992]. It is possible to influence people's opinion through communication. One of the ways to do so is framing. Framing is the practice of presenting an issue to affect the way people see it [@aaroe_investigating_2011;@druckman_evaluating_2001;@gross_framing_2008]. We learn about issues such as healthcare reform through articles, reports, speeches, commercials and social media. This mediated communication possesses tremendous potential influence on our perception of political issues [@iyengar_framing_1996;@kam_risk_2010;@tversky_framing_1981]. Framing research has established that a variety of frames substantively influence how people view and think about issues [@price_switching_1997;@andsager_how_2000;@callaghan_introduction_2005;@entman_framing_1993;@entman_projections_2004;@gamson_media_1989;@lahav_ideological_2012;@pan_framing_1993;@slothuus_political_2010;@sniderman_structure_2004;@vreese_effects_2004]. When frames influence people's opinion about an issue, we speak of a framing effect. Two different types of framing effects have evolved in the literature: equivalency and emphasis framing effects.
+
+Equivalency framing involves phrasing the same logical content in different ways, i.e. "casting the same information in either a positive or negative light" [@druckman_2004_political, p. 671]. One example is @tversky_framing_1981's death and survival experiment (see chapter \ref{ordblock}): Presented with a hypothetical disease outbreak in the US that is expected to kill 600 people, respondents are asked to choose between alternating programs. The first group chooses between programs A and B. In program A, "200 people will be saved". In program B, "there is a 1/3 probability that 600 people will be saved and a 2/3 probability that no people will be saved". The second group chooses between programs C and D. In program C, "400 people will die". In program D, "there is a 1/3 probability that nobody will die, and a 2/3 probability that 600 people will die". The factual content given to both groups is of identical: In both groups, the first program results in the death of 400 people and the second program has a 66 percent chance of killing all 600 people. The difference is the light cast on this information. The frames given to group 1 focus on lives saved, whereas the frames presented to group 2 center around lives lost. Rationally, both are the same. However, this difference in equivalency framing matters: When the experiment was run, the majority in group 1 chose program A. The majority in group 2 chose program D. Framing thus greatly shifted support for the programs.
+
+Other scholarly framing work focuses on policy evaluations, rather than risk preferences. For example, respondents are found to rate a proposed economic program more favorably when it is framed as resulting in 95 percent employment, instead of its logical equivalent of 5 percent unemployment [@quattrone_1988_contrasting]. Equivalency framing effects have been likened by some to survey question wording effects [@zaller_nature_1992]. Examples here are the alternate use of "not allow" and "forbid" in reference to Communist speech in the 1970s, which can arguably be described as substantively and logically equivalent [@bartels_2003_democracy, p. 61].
+
+Emphasis framing on the other hand stresses a particular aspect, viewpoint, or consideration about an issue in the attempt to get people to look at the issue in the proposed way. Describing the invasion of Iraq as freeing the population and gifting them democracy, as done by the Bush administration, for instance, emphasizes a very different viewpoint than a possible alternative narrative that focuses on the economic benefits of gaining access to oil fields and trade opportunities. Unlike equivalency frames, emphasis frames are not logically identical ways of phrasing the same issue. Instead, they highlight qualitatively different considerations of that issue [@druckman_implications_2001; @druckman_limits_2001; @kinder_1996_divided; @levin_1998_frames; @nelson_1996_issue; @sniderman_structure_2004], forcing people to think about the importance of the considerations suggested by the frame [@nelson_media_1997].
+
+<!--
+More recently, a third (sub-)strain in framing literature has emerged that aims at the separation of framing and persuasion in experimental framing research. It rejects 'classic' definitions of emphasis frames as "reducing a usually complex issue to one or two central aspects" [@nelson_media_1997, p. 568] or identifying "the essence of the issue" [@gamson_1987_changing, p. 143] in favor of "a message that provides an interpretation of an issue or policy by emphasizing which aspect of the issue is relevant for evaluating it, without the frame itself providing any new substantive information about the issue" [@leeper_2020_news, p.4; also see @price_switching_1997]. Whereas persuasion entails the provision of new information to change people's opinions, framing reorganizes existing information already present in people's minds and attempts to direct people's attention towards these particular considerations [@druckman_2003_framing]. Emphasis framing should thus be seen as emphasis of existing information only, in contrast to persuasion that aspires to change people's opinions by "the supply of arguments and evidence" [@kinder_20003_communication, p. 367]. Opinion change in framing thus occurs when people put more or less consideration on previously known aspects about an issue, whereas opinion change in persuasion results from the processing of new information.
+
+We know that emphasis frames work because they move certain information to the top of people's minds [@zaller_nature_1992].
+-->
+
+My focus lies on emphasis frames. An abundance of experiments have shown that emphasis frames elicit significant changes in issue positioning [@chong_counterframing_2013;@chong_dynamic_2010;@druckman_2003_framing;@druckman_how_2013;@druckman_limits_2001;@druckman_source_2012;@nelson_media_1997;@slothuus_more_2008]. @brewer_values_2005, for instance, find significant effects for the frames 'School vouchers create an unfair advantage' and 'School vouchers provide help for those who need it'. @druckman_source_2012 provide similar evidence for 'The Affordable Care Act gives more people equal access to health insurance' and 'The ACA increases government costs', while @druckman_how_2013 do so for 'Oil drilling provides economic benefits' and 'Oil drilling endangers marine life'. Despite the mass of experimental framing research, however, we still have little insight into what makes an emphasis frame strong. We don't know why some emphasis frames elicit effects and others don't, i.e. we don't know why some frames are strong and other frames are weak. @chong_framing_2007 attempt a differentiation into weak and strong frames. They ask respondents in a pre-test what arguments the respondents consider strong or weak for a variety of chosen issues. Frames containing strong arguments are then deemed strong frames, while frames containing weak arguments are considered weak frames. These weak and strong frames are then used in the subsequent framing experiment. While it is no doubt laudable to explore which arguments in selected political issues are deemed more persuasive than others, this setup does not provide insights as to what actually makes a frame strong or weak. We simply know which arguments (to then be embedded in frames) are considered to be strong and weak, but not why. A major challenge for framing research thus still "concerns the identification of factors that make a frame strong" [@chong_framing_2007, p. 116]. 
+
+In the attempt to address this challenge, scholars have increasingly adopted theory-driven approaches that deduce likely strong frames and subsequently empirically evaluate their theoretical expectations. @arceneaux_cognitive_2012 for instance theorizes that "individuals are more likely to be persuaded by political arguments that evoke cognitive biases" (p. 280) and asserts that messages which highlight out-group threats resonate with respondents to a greater extent. @druckman_framing_2011 report that adding factual information to messages about carbon nanotubes does nothing to enhance their strength and actually makes the message weaker. @feinberg_2013_moral assess whether frames are stronger when they cohere with an individual's personal value system. They frame environmental issues as a matter of moral 'purity', a theme that supposedly correlates with conservative ideology, and find this approach leads to increased conservative support of environmental policies. I attempt to provide a further avenue of clarification by testing the theory that morality contributes to frame strength.
+
+
+
+
+
+### Morality {#framing-theory-morality}
+
+<!--
+What is morality? How are morals/values related to the concept of self? How are they related to political issues? What are the main morals in human interaction?
+
+Conservatives want strong government regulation in personal behaviors and lifestyles (abortion, gay marriage), but autonomy in economics and public goods
+Liberals want strong government regulation in economics and public goods (welfare, affirmative action), but autonomy in personal behaviors and lifestyles [@janoff-bulman_2013_surveying]
+
+Political conservatism is based in avoidance motivation
+Political liberalism is based in approach motivation
+
+The idea of deciding up-front whether an issue is moral, i.e. examining how people respond in situations that meet pre-set definitions of morality, follows the tradition of moral judgment. In the realm of moral judgment, researchers decide, objectively along a set of criteria, whether an issue is moral. This stands in contrast to moral conviction. In moral conviction theory, morality lies in the eye of the beholder, i.e. people decide whether they consider an issue to be moral. Moral conviction "classifies stimuli as moral or non-moral as a function of individuals' perceptions of situations rather than according to characteristics of the situation" [@bauman_2009_mind, p. 342]. Rather than presupposing the morality of an issue externally, it is argued that people recognize a moral sentiment when they experience one, as it touches their perceived connection of what is right and wrong [@bandura_1986_social; @cervone_2004_architecture; @goodwin_2008_psychology; @skitka_2008_morality]. This recognition and perception, however, varies considerably depending on the person experiencing the potentially moral situation. Defining an issue or situation as moral then becomes a subjective endeavor for each individual person and their psychological reality [@haidt_2001_emotional; @haidt_2003_emotional; @morgan_2010_moral; @skitka_2008_moral]. What I consider to be moral might not be moral to you, and vice versa. The literature shows that moral conviction represents an important force that guides citizen behavior and development of public opinion [@converse_nature_1964;@skitka_moral_2005;@skitka_moral_2011;@smith_typologies_2002;@tatalovich_moral_2011;@zaller_nature_1992]. This has consequences for survey design. Rather than deciding pre-survey which issues are moral (moral judgment), researchers "directly assess the extent that a given issue engages moral conviction and then use those responses to classify whether situations are or are not moral for a specific individual" [@bauman_2009_mind, p. 343]. 
+
+[@bandura_1986_social; ; @goodwin_2008_psychology]
+[@morgan_2010_moral; @skitka_2008_moral]
+
+Morality in the Western world focuses mostly on the ethic of autonomy (i.e. harming, cheating, or oppressing other people) [@haidt_2012_righteous].
+
+Conservatives resist change, emphasize social order, see liberty as the right to be left alone (e.g. with regards to the environment or workers' rights), and define fairness in terms of proportionality (i.e. those who work hardest should be paid the most). 
+
+Liberals embrace change, emphasize social justice, see liberty as the right of vulnerable populations (minorities, children, animals) to be defended by the government, and define fairness as equal provision for all. 
+
+The strength of attitudes meaningfully differs when they are held with moral conviction [@baron_protected_1997;@bennis_costs_2010;@ditto_motivated_2009;@tetlock_correspondence_2003]. 
+
+-->
+
+
+Two of the main ingredients of public opinion are commitment to principles (i.e. morality) and interests that citizens see at stake [@kinder_1998_opinion]. Morality plays a role in establishing one's self-concept and identity. Moral arguments are ubiquitous in political issues because they are essential to how people perceive and make sense of the world around them [@cervone_2004_architecture;@frank_whats_2004;@mooney_public_2001;@skitka_2008_morality;@tatalovich_moral_1994]. They present themselves in the form of 'oughts' and 'shoulds' [@rokeach_1968_beliefs]. People feel that moral arguments (1) represent near-universal standards of truth, (2) are almost objective facts about the world, and (3) exist independent of institutional authority [@skitka_psychology_2010]. It is widely argued that people rely to a disproportionate extent on moral arguments to form their opinions since moral arguments achieve a high emotional connection due to invoked values and feelings [@bauman_2009_mind;@haidt_moral_2003;@ryan_no_2014;@ryan_reconsidering_2014;@skitka_moral_2005;@skitka_moral_2011;@smith_typologies_2002;@tatalovich_moral_2011]. Emotions play an important role in how people conceptualize moral stimuli since people feel emotionally committed to their values [@ryan_reconsidering_2014; @suhay_2008_group; @tetlock_1996_revising]. Appeals to values/morals tend to be more successful than non-moral appeals "especially when the moral principles invoked resonate with the individuals targeted by the appeal" [@feinberg_2013_moral, p. 57]. 
+ 
+A lot of scholarly work tries to establish a distinction between moral and non-moral issues, yet agreement on the definition of a 'moral issue' remains elusive. To some, an issue is moral when at least one side sees the issue as threatening a core value/principle and/or uses moral arguments to support their position [@mooney_public_2001; @haider-markel_1996_politics]. To others, moral issues are based on values rooted deeply within people's belief systems [@biggers_2011_when; @glick_2001_physician-assisted]. Yet another strain sees morality as intrinsic to some issues, i.e. non-technical issues that are easy to understand or issues that concern fundamental aspects of life and death [@studlar_2001_what; @tavits_2007_principle]. Yet others again assert that economic issues are not to be considered moral [@abramowitz_1995_abortion; @engeli_2012_theoretical; @mooney_1995_legislative; @tatalovich_moral_2011] despite evidence to the contrary: @ryan_reconsidering_2014 finds that some people perceive distinctly economic issues such as labor relations or social security reform in moral ways. In addition, studies on abortion show that, despite widespread media depiction to the contrary, not everyone conceives of it as a moral issue [@mullen_2006_exploring; @skitka_2002_means; @skitka_moral_2005]. Assertions of moral and non-moral issues are misleading and unnecessary. Instead, we should concern ourselves with the moral and non-moral content of each respective issue. I thus eschew moral and non-moral issue definitions and focus on moral and self-interest frames within issues, rather than the moral nature of the issues themselves.
+
+In normative terms, we differentiate between prescriptive and proscriptive morality, which are based on approach-avoidance differences in self-regulation [@carnes_2012_harm]. Prescriptive morality is sensitive to positive outcomes and focused on what we should do. Proscriptive morality is sensitive to negative outcomes and focused on what we should not do [@janoff-bulman_2009_proscriptive]. Based on this categorization, Haidt and his colleagues developed Moral Foundations Theory (MFT), which encompasses cognitive foundations of moral matrices and has become widely adopted in moralization literature [@graham_2009_liberals; @haidt_2001_emotional; @haidt_2003_emotional; @haidt_2012_righteous; @haidt_moral_2003; @haidt_2004_intuitive; @haidt_2007_moral; @haidt_2007_synthesis; @haidt_2007_when; @haidt_2008_morality; @haidt_2010_morality; @hofmann_2014_morality; @schein_2017_theory; @clifford_2015_moral; @koleva_2012_tracing; @feinberg_2013_moral; @clifford_2013_words]. These foundations are shown in Table \ref{framing-foundations}.
+
+\begin{table}[ht]
+\caption{Foundations of Moral Intuitions}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{>{\itshape}l ll >{\itshape}l l}
+\bottomrule 
+\midrule
+\multicolumn{2}{c}{\textbf{Positive}} & & \multicolumn{2}{c}{\textbf{Negative}}\\
+\cmidrule{1-2}
+\cmidrule{4-5}
+Care & Cherishing, protecting others & & Harm & Hurting others\\
+Fairness & Rendering justice by shared rules & & Cheating & Flouting justice/shared rules\\
+Loyalty & Standing with your group & & Betrayal & Opposing your group\\
+Authority & Submitting to tradition/authority & & Subversion & Resisting tradition/authority\\
+Sanctity & Repulsion at disgust & & Degradation & Enjoyment of disgust \\
+Liberty & Acting without constraint & & Oppression & Dominate/Constrain others\\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize{Positive and negative foundations are conceptual opposites.}} \\
+\end{tabular}}
+\label{framing-foundations}
+\end{table} 
+
+
+Moral intuitions are a powerful psychological mechanism that underlies issue positions [@koleva_2012_tracing]. Haidt and his colleagues argue that they intuitions are rooted in evolved mechanisms. They propose that Care/Harm developed as the response to the adaptive challenge of protecting and caring for children. It makes us sensitive to signs of suffering and activates us to care for those who are being harmed. Fairness/Cheating developed as the response to acts of cooperation or selfishness that people show towards us. It makes us trust fair actors and punish cheaters. Loyalty/Betrayal developed to meet the adaptive challenge of forming and maintaining cohesive coalitions. It makes us reward loyalty and ostracize those who betray us. Authority/Subversion developed as the response to forging beneficial relationships within social hierarchies. It makes us sensitive to signs that people do not behave in accordance with their social position. Sanctity/Degradation developed as a response to the challenge of living in a world full of pathogens and parasites. It binds us into moral communities by shared notions of sacredness. Liberty/Oppression developed as a response to the challenge of living in small groups whose members can dominate and constrain us. It makes us value freedom and reject repression.
+
+Because of the deep connection between morality and emotions, people have a tendency to internalize and defend their values. This "makes it very difficult for people to consider the possibility that there might really be more than one form of moral truth, or more than one valid framework for judging people or running a society" [@haidt_2012_righteous, p. 111]. Haidt distinguishes the use of these foundations by ideology. According to him, liberals tend to utilize a three-foundation morality, whereas conservatives allegedly lean towards using all six foundations. He also estimated the means of each moral foundation on a 6-point Likert scale ("Not at all relevant" to "Extremely relevant"). Liberals score 3.62 in Harm and 3.74 in Fairness but only 2.07 in Loyalty, 2.06 in Authority, and 1.27 in Sanctity. Conservatives score 2.98 in Harm, 3.02 in Fairness, 3.08 in Loyalty, 3.28 in Authority, and 2.89 in Sanctity [@graham_2011_mapping]. Additionally, both sides tend to focus on different aspects in the three foundations they share (Care/Harm, Fairness/Cheating, Liberty/Oppression): Conservatives are more likely to emphasize society's protection and security and aim to prevent losses and generally negative outcomes, while liberals tend to emphasize the provision of welfare for others and aim to advance gains and generally positive outcomes. Both are said to seek normatively 'good' outcomes for society, but with different orientations [@janoff-bulman_2009_provide; @janoff-bulman_2009_proscriptive; @janoff-bulman_2013_surveying].
+
+While the liberal/conservative divide of course plays a role in opinion formation, it is not central to moral analyses. Liberals and conservatives are said to display differing tendencies towards each individual foundation, but the majority of people value all foundations. The foundations themselves, not party ID, are what matters most. I thus use the foundations as the building block of moral arguments in my juxtaposition of morality and self-interest.
+
+
+
+
+### Self-Interest {#framing-theory-self_interest}
+
+<!--
+[@kahneman_fairness_1986; @weatherford_economic_1983]
+
+Unenlightened self-interest [@bartels_2005_homer]: 
+A majority of Americans supported the 2001 and 2003 Bush administration tax cuts, even though they were designed to disproportionately benefit the rich. Economic self-interest can't explain this, since the majority of Americans suffered economically from the cuts. As Bartels shows, neither can people's attitudes towards the tax burden born by the rich. 
+
+It follows the idea that the individual and society both benefit most when each individual pursues his or her own interest. This assumption has been highly influential in many theories of human behavior, has pervaded models of neoclassical economics, political science, sociology, as well as philosophy, and is not restricted to particular issues. It presents self-interest as the potential cardinal human motive: "I assume that most people most of the time act in their own self-interest" [@fiorina_congress:_1977, p. 38].
+
+@sears_role_1991 indeed suggest objective (amount of income, state of personal finances) and subjective (perception of the amount of taxes paid) parameters as the most suitable statistical measurements to accurately capture any evidence for self-interest-motivated human behavior.
+
+On the other hand, others find that the unemployed actually do not favor policies to increase employment more than those with jobs [@schlozman_1979_injury], people with health concerns do not show stronger support for government health insurance than others [@sears_self-interest_1980], working women do not differ from homemakers in their attitudes towards benefits for women in the workplace [@sears_1990_origins], and pocketbook voting does not determine congressional votes [@kiewet_macroeconomics_1983].
+
+The unemployed line up behind policies that help the unemployed, uninsured Americans favor a government role in health insurance, and African-Americans are the biggest supporters of race-based affirmative action [@weeden_2014_hidden]. 
+
+"Thus, we think that it’s generally appropriate in studying self-interested political views to piece together a more objective view of respondents’ personal interests (through demographic and related measures) rather than asking them to directly characterize their motives or their views on who benefits from particular policies" [@weeden_2017_self-interest, p. 87].
+-->
+
+
+Self-interest refers to actions or behaviors that elicit personal benefit. When acting in self-interest, individuals look out for themselves and act on the grounds of personal gains [@arrow_1967_values; @downs_economic_1957; @ferejohn_paradox_1974; @fiorina_congress:_1977; @olson_logic_1965; @coleman_1986_individual; @riker_theory_1968; @sears_role_1991]. In neoclassical economics, this claim is extended to the overall postulation of human beings as \textit{homines economici} [@coleman_1986_individual]; creatures who act strictly rationally with the intent to maximize utility at all times. In political psychology, scholars instead focus on the importance of self-interest as a motivation for opinions on political issues.
+
+In the 1960s, self-interest was considered a major determinant of opinions on political issues. @campbell_american_1960 for instance report that people with less income and education are more likely to support a strong government role in the provision of social welfare, stating that "people presented with certain policy alternatives can do a reasonable job of selecting responses that appear to further their self-interest" (p. 208). Empirical research from the 1970s and 1980s appears to confirm this [@batson_altruism_1991; @etzioni_moral_1988; @feldman_economic_1982; @feldman_economic_1984; @friedland_beyond_1989; @hirschman_against_1985; @kohn_brighter_1990; @lau_cognitive_1981; @lerner_belief_1980; @mansbridge_preface_1990; @miller_power_1996; @schwartz_battle_1986; @sears_tax_1985; @weatherford_economic_1983]. @hawthorne_individual_1987 find that income level and tax bracket significantly predict support for the tax cuts in the 1978 federal Tax Revenue Act. @lau_proposition_1983 identify a similar relationship for high taxpayers in their Massachusetts income tax study. @coughlin_economic_1990 discover that higher income citizens oppose redistribution slightly more than those with lower income. @sears_self-interest_1980 and @sears_inducing_1983 find evidence for pocketbook voting in their studies on government-guaranteed full employment. @courant_why_1980 discover modest but consistent effects for the perceived property tax burden in Michigan. @lau_fact_1990 find a significant relationship between perceived financial situation and anti-incumbent voting. The analysis by @sears_inducing_1983 reveals that perceived personal federal tax burden predicts support for the tax cuts specified in the 1979 Kemp-Roth bill. @bartels_2005_homer identifies a high subjective tax burden as the source of support for the 2001 and 2003 Bush tax cuts. @sears_tax_1985 similarly find that citizens with a high subjective tax burden acted out of self-interest in the so-called California Tax Revolt at the end of the 1970s.
+
+Despite this evidence, an abundance of criticism has claimed the inadequacy of self-interest as a major predictor of human behavior. @miller_power_1996 call "homo economicus (...) a social construction, not a biological entity" (p. 45). Human behavior is argued to be too complex and much more than self-interest is claimed to come into play when people think about what they want in life [@batson_altruism_1991; @friedland_beyond_1989; @kohn_brighter_1990; @lerner_belief_1980; @mansbridge_preface_1990; @mansbridge_1990_relation; @schwartz_battle_1986; @sen_rational_1977; @tyler_1990_people]. The study of social movements, for instance, provides clear evidence that motivations other than self-interest also majorly account for human behavior [@mansbridge_rise_1990]. The overall most important reasons for humans' choices are affective and normative [@etzioni_moral_1988] and we need to shift our focus away from the obsession with self-interest and towards moral values [@hirschman_against_1985]. The dominant theories of motivation are fundamentally based on personal gains and miss the influence that values and ideologies have on people's attitudes towards policies [@sears_self-interest_1990]. People are more interested in the fairness of procedures and policies than the self-beneficial outcomes of these processes [@brockner_2002_making; @hollander-blumoff_2008_procedural; @tyler_justice_1990]. When procedural fairness is high or perceived as being high, outcome favorability is likely to decline as participants consider themselves heard and listened to [@gibson_2002_truth; @tyler_1981_influence; @vidmar_1990_origins].
+
+Others critique that it is possible and plausible for self-interest to play a role in opinion formation, but even then it does not play the only role [@chong_when_2001; @citrin_1990_self-interest; @miller_norm_1999; @sears_self-interest_1990]. It is argued that self-interest is limited in explanatory scope [@chong_when_2001; @huddy_2013_from; @lewis-beck_2008_american; @kinder_1998_opinion; @lau_2030_self-interest; @sears_self-interest_1990] and only applies to short-term material gains [@sears_self-interest_1980]. As a result, self-interest is seen as negligible: "Many political scientists used to assume that people vote selfishly, choosing the candidate or policy that will benefit them the most. But decades of research on public opinion have led to the conclusion that self-interest is a weak predictor of policy preferences" [@haidt_2012_righteous, p. 85]. Furthermore, standard demographic measures such as education, income, race, and gender are not deemed adequate indicators of self-interest, thus discounting findings from the 1960s [@kinder_1998_opinion; @sears_self-interest_1990]. 
+
+Countering such criticism, a different group of scholars assert that self-interest does indeed form a major predictor of human behavior. They argue that the self-interest criticism defines away any chance of self-interest being a major determinant of political opinion by restricting it to financial benefits and declaring ordinary demographic effects uninterpretable: Instead of a restricted categorization as purely economic gains, self-interest can be defined as "advancing any of a range of people's typical goals, whether directly involving material gain or not, whether involving immediate gain or something more subtle that advances someone's progress over the longer term" [@weeden_2014_hidden, p. 38]. Following evolutionary psychology, self-interest thus applies not only to economic aspects and material gains but also to various social and cultural domains [@buss_2015_handbook; @kurzban_2010_sex; @nteta_2013_united; @petersen_2016_evolutionary]. Self-serving preferences range from having more money to gaining prestige, having sex, or wishing success for one's children, among many others [@becker_1996_accounting; @owens_2014_material; @weeden_2015_losing; @weeden_2016_people]. Self-interest is here defined as related to personal autonomy, health/safety, wealth, and status [@gintis_2017_individuality]. 
+
+<!--
+Demographics are argued to provide clues to particular outcomes that help or harm people's self-interests, which enables us to predict which opinion they have. By linking demographic measures with answers from the General Social Survey, @weeden_2014_hidden find strong links between self-interest and meritocracy, discrimination, sexual lifestyles, religiosity, abortion, and marijuana legalization. Crucially, not all demographics provide clues about all kinds of issues. Religion can provide insights into people's views on abortion, but is unlikely to do so for immigration. Household income can predict views on taxes but probably not on legalizing marijuana [@weeden_2017_self-interest]. From this perspective, self-interest arguably matters most for issues that greatly affect people's everyday interests [@descioli_2020_selfish; @kurzban_2010_everyone; @sznycer_2017_support]. Rather than focusing on material gains -- such as people's perceived tax burden [@bobo_whites_1983] -- @weeden_2014_hidden identify issues related to sex/reproduction (pre-marital sex, pornography, abortion, birth control access) and government spending on healthcare as prime candidates for a major influence of self-interest. Sexually conservative, married people with high regular church attendance can be predicted to be pro-life and against pre-marital sex because it aligns with their chosen lifestyle. Wealthy, white, heterosexual, Christian men can be predicted to oppose government redistribution of wealth as such a policy would endanger their own position. In both cases, it is in these individuals' self-interest to take these issue positionings because these issues directly relate to their lives.
+-->
+
+Defining self-interest in exclusively material terms seems needlessly restrictive, as is concluding that self-interest is not a valid predictor of human behavior. For one, empirical evidence indicates that self-interest at least plays some role for economic aspects. For another, arguing that self-interest does not matter because of its exclusive focus on material gains after having defined self-interest in precisely this way has the feel of a snake biting its own tail. Self-interest is unlikely to matter for many policy preferences when it is restricted to purely economic matters, but such a narrow definition appears unwarranted. Material gains are not all that humans desire. It is much more plausible that self-interest covers a range of people's self-advancing goals instead. As a result, I follow the definition of self-interest as one of personal autonomy, health/safety, wealth, and status.
+
+
+
+
+
+## Design {#framing-design}
+
+<!--
+Framing on morals/values so far:
+@slothuus_political_2010: how framing political messages in terms of values consistent with partisan motivations shapes acceptance of these messages
+@wolsko_2016_white: conservatives who receive a message framed on the moral foundations that their in-group strongly endorses (loyalty, authority, sanctity) are likely to believe more in climate change 
+@feinberg_2013_moral: reframing environmental messages in line with partisan moral values decreases polarization gap between liberals and conservatives
+
+Applying Moral Foundation Theory, both frames in @brewer_values_2005 could be categorized as containing moral arguments, even though the authors do not explicitly do so. 'School vouchers create an unfair advantage' can be argued to contain the negative moral foundation of \textit{Cheating}, while 'School vouchers provide help for those who need it' contains the positive moral foundations of \textit{Care} and \textit{Fairness}. 'The ACA gives more people equal access to health insurance' [@druckman_source_2012] also could be said to contain the positive moral foundations of \textit{Care} and \textit{Fairness}, while 'Oil drilling endangers marine life' [@druckman_how_2013] contains the negative moral foundation of \textit{Harm}. 
+In the case of @druckman_source_2012, 'The Affordable Care Act gives more people equal access to health insurance' contains a positive, i.e. support-inducing, moral argument, while 'The ACA increases government costs' contains a negative, i.e. opposition-inducing, non-moral argument. They act in opposite directions. A comparison of these frames alone does not yield sufficient results as we would not be able to identify the exact cause of the framing effect. Is 'The Affordable Care Act gives more people equal access to health insurance' strong because it supports the issue or because it contains a moral argument? Similarly, is 'The ACA increases government costs' strong because it opposes the issue or because it contains a non-moral argument? This set-up cannot answer these questions. 
+
+\noindent "Self-interest is commonly defined as a short to medium-term impact on the material well-being of an individual's own personal life (or that of his or her immediate family)" [based on @sears_role_1991, p. 16].
+
+\noindent "Morals concern what people should or should not do" -- 'Moral' description from Ryan or Skitka?. An action of yours is moral if it treats others the way you would like others to treat you (Dal Bo and Dal Bo 2014)
+
+Following moral conviction theory, each respective respondent decides for themselves whether they consider each issue moral by answering moral conviction measures such as "To what extent is your opinion on [issue] a reflection of your core moral beliefs and convictions?" [based on @ryan_no_2014; @skitka_moral_2005; @skitka_psychology_2010]. Note that respondents 'rate' each issue in terms of morality but without actually stating their position on the issue. This is to avoid anchoring.
+
+I design frames to correspond with the partisan messages identified by Haidt and assign them according to respondents' self-identification on party ID. This means a self-identified Democrat receives a fairness/cheating frame built on aspects of fairness/cheating that most apply to liberals. Conversely, a self-identified Republican receives a fairness/cheating frame designed to reflect fairness/cheating aspects most dear to conservatives. Independent respondents randomly receive the liberal or the conservative version.
+
+Taxes, abortion, climate change, school choice, takings, same-sex marriage, collective bargaining rights, capital punishment, school vouchers, Black Lives Matter, social welfare/redistribution, gun control, animal testing, healthcare, urban growth/conservation, federal assistance to the poor, immigration, Patriot Act, gambling, Corona, social spending/reducing the deficit, minimum wage
+
+Everyone pays taxes and can state how they feel about their tax burden. Respondents' self-identified income indicates which tax bracket they fall into and gives insights into their self-interest when presented with a fictitious tax policy (see the frames below). We can also assess perceived self-interest by asking "Do you feel you are asked to pay more than you should in federal income taxes, about the right amount, or less than you should?" (question wording from the ANES).
+
+Like corporations and administrations, people need to maintain positive public images that are typically most effective when stories are spun to disguise these principal objectives [@weeden_2014_hidden]. People often take credit for having brought about good outcomes, and blame others, chance, fate, or the gods for bad outcomes [@kurzban_2010_everyone]. The result, when it comes to political opinions, is a messy combination of preferences for policies that advance people's own inclusive interests coupled with a stubborn set of talking points used to insist that, in fact, these policy preferences really just come from a well-reasoned concern for the welfare of everyone. I have the positions I have because I am a smart person and my favored policies are smart policies. I have the positions I have because I am a good person and my favored policies are good for society.
+-->
+
+Each of the previous areas has been studied, but they have not been applied together. An abundance of framing research exists and we know that emphasis frames can be successful in directing people's attention towards particular considerations of an issue, but we still don't know why some emphasis frames succeed while others fail. We know that morality plays a large role in people's issue positioning and that self-interest accounts for some human behavior, but we don't know how much self-interest and morality matter in direct comparison when people choose issue positions. I conduct a framing experiment that explores what we don't know by investigating how morality and self-interest contribute to persuasive strength in emphasis framing.
+
+Juxtaposing morality and self-interest in frames follows the recognition that people don't just want to satisfy their interests, but neither do they completely set aside their self-regarding preferences in favor of altruistic motives [@stoker_1992_interest]. Both concepts are in constant movement, depending on the situation. People deal with the 'central problem of ethics': "how the lives, interests, and welfare of others make claims on us, and how these claims, of various forms, are to be reconciled with the aim of living our own lives" [@nagel_1970_possibility, p. 142]. Support for issues, for instance the welfare state, is based on "generalized and reciprocal self-interest" [@baldwin_1990_politics, p. 299], i.e. it depends on both value-based attitudes and immediate self-interest [for macro factors influencing welfare support, such as a country's social structure and major institutions, see @brooks_2007_welfare]. 
+
+Opinions can be influenced by self-interest or alterations in empathy towards others [@hacker_insecure_2013; @rehm_2012_insecure]. It is often difficult to tell which is which: @frank_whats_2004 claims Republicans have duped rural and working-class Americans into voting against their self-interest by supporting Republican tax cuts that negatively affect them financially. @bartels_2005_homer however argues that they instead vote in unenlightened self-interest because they perceive their personal tax burden to be too high and (falsely) believe tax cuts can lower them. @haidt_2012_righteous, finally, states that they vote for their moral interest, as they don't want the country to devote itself primarily to the pursuit of social justice. It is difficult to assess which is correct.
+
+Previous studies and experiments on moral framing that utilize MFT focus on partisan division [@clifford_2013_words; @feinberg_2013_moral; @koleva_2012_tracing; @slothuus_political_2010; @wolsko_2016_white]. While party ID of course matters in any political analysis, partisanship is not central to analyses of moral concerns. Instead, I thus utilize MFT to focus on the morality vs. self-interest juxtaposition within framing. I combine emphasis framing with aspects of MFT and the literature on self-interest.
+
+Issues are selected from previous research and based on suitability to assess self-interest. In order to assess self-interest, all issues need to apply directly to respondents' daily lives [@descioli_2020_selfish; @kurzban_2010_everyone; @sznycer_2017_support]. I design frames that propose new policies in the areas of healthcare and the environment. Everyone is affected by healthcare in their lives, so everyone has a vested self-interest in this issue. At the same time, how much the government should be involved in the provision of healthcare coverage is the subject of great debate. Similarly, everyone is affected by the environment, resulting in viable cause for self-interest, while the topic is also highly controversial in moral terms.
+
+Each respondent is presented with one of five randomly assigned frames for each issue: an issue-supporting moral frame, an issue-opposing moral frame, an issue-supporting self-interest frame, an issue-opposing self-interest frame, or the control frame. The design consists of issue-supporting and issue-opposing frames in order to control for both signs in determining frame strength. The self-interest frames aim to activate each respondent's self-interest as identified by @weeden_2014_hidden. The moral frames are designed on the basis of MFT. For simplicity and to avoid cluttering, I only use the foundation that most applies to each issue and to the majority of people. For both issues, that is Care/Harm. Support/Opposition for/to the frame's content is assessed on a 5-point Likert scale (Q27 (healthcare) and Q30 (environment) in the questionnaire).^[The complete questionnaire in chronological order with all frames can be found in appendix section \ref{framing-questionnaire}.] The self-interest frames are based on prior research [@gerbasi_2013_self].
+
+Each issue frame consists of an identical paragraph of information and a paragraph containing the morality/self-interest content. The frames for healthcare introduce a potential new healthcare plan that covers everyone in the US, is paid for with a mix of fees paid by individuals and employers as well as tax dollars, and provides free healthcare for all services and drugs to those over 65 and those with low income. The frames for the environment introduce potential new environmental regulations which restrict the use of toxic pesticides that might contaminate crops, soil, and ground water and that are particularly harmful to the elderly and those with various medical conditions. The environmental information paragraph also states that farmers receive state subsidies to cover parts of their increased costs as a result of these restrictions. 
+Prior to frame treatment, respondents answer a series of questions to measure their morality and self-interest levels. To measure morality, respondents are asked to identify the personal relevance of six questions on emotional suffering, caring for the vulnerable, cruelty, compassion, hurting animals, and killing human beings (Q4-Q9). These questions are taken from the Moral Foundations Questionnaire [@haidt_2012_righteous]. To measure self-interest, respondents similarly state the personal relevance of six statements about telling white lies, caring for friends and family over others, giving your own children advantages over others, choosing to kill over being killed, lying for your own good, and helping those who help you (Q10-Q15). These questions are taken from @raine_2019_selfishness. The questionnaire also collects standard demographic information (Q16-Q18, Q20-Q26) and gives respondents the chance to enter comments (Q33). The question inquiring after respondents' education (Q26) is split into two sets (ANES, ordered probit) of education categories to allow for a comparison of results. The survey starts with questions about respondents' online work as a means to ease entry into the survey (Q1-Q3). 
+
+The questionnaire contains an attention check (Q19) which is used to filter out inattentive respondents as they answer the survey. The check asks respondents to identify the correct statement ("The letter B comes before the letter K in the alphabet") amongst a list of three false statements. If respondents fail to give the correct response, the website terminates the survey and their data is not processed. Respondents are not allowed to continue the survey and drop out of the sample. This happens after the morality and self-interest questions as part of the demographics and is treatment-independent. Respondents who fail the check drop out of the survey before they are assigned to treatment groups. Attention checks, or instructional manipulation checks, are commonly used to avoid respondent satisficing, i.e. selecting responses without paying attention to the instructions [@anduiza_2016_answering; @clifford_2014_there; @curran_2016_methods; @krosnick_1996_satisficing; @oppenheimer_2009_instructional]. The idea is to filter out inattentive respondents who provide low-quality data. 
+
+The questionnaire also contains factual manipulation checks after each frame (Q29 and Q32). These checks inquire after the nature of the political topic just discussed. Respondents are asked to identify the correct issue (healthcare, environment) out of a list of seven political topics. Unlike the attention check, the factual manipulation checks do not determine whether respondents can continue the survey. All respondents who are presented with treatment frames remain part of the sample, regardless of their answers to the factual manipulation checks. The checks are not used to filter out respondents. Doing so could introduce post-treatment bias of causal effects [@montgomery_1962_conditioning]. In any randomized experiment, the ability to establish causality rests on the comparison of similar pre-treatment groups that act as each other's counterfactuals [@berinsky_2014_separating; @horiuchi_2007_designing]. Conditioning on a post-treatment manipulation check invalidates this comparison because we are then comparing two dissimilar groups. Conditioning on these variables can lead to sample imbalance regarding observed and unobserved confounders. Respondents who fail the check in one treatment group might not look like respondents who fail the check in a different group [@acharya_2016_explaining; @aronow_2019_note; @healy_2014_substituting]. Instead, these checks are solely used in post-experiment analysis to estimate any potential differences between attentive and less attentive respondents in terms of issue support [@kane_2019_harm]. All question wordings are based the ANES, CCES, and GSS surveys.^[In line with modern social science transparency [@ioannidis_2005_most; @miguel_2014_promoting], the experimental design, the hypothesis, and the planned regression models were pre-registered with the Open Science Foundation prior to data analysis: [https://osf.io/tvpwq/](https://osf.io/tvpwq/)]
+
+
+
+
+
+
+### Expectations {#framing-design-expectations}
+
+<!--
+-- We can test which issues are considered more moral than others
+
+Persuasion literature asserts that people with strongly held attitudes are not easily persuaded with arguments to the contrary. This indicates that it is difficult to move the attitudes of respondents who show high scores on moralization or self-interest, no matter what frame they are presented with. This in turn suggests that we can only move the attitudes of people who don't hold their attitudes strongly, i.e. those who score in the lower range on moralization and self-interest. For the respondents with strongly held attitudes on the issue, their support/opposition for/to the issue should be statistically the same across all frames, since their attitudes are set and can't easily be moved. For the respondents without strongly held attitudes on the issue, the frames should move responses towards support or opposition, depending on the direction of the frame. For these people, we can explore whether the moral or the self-interest frames cause bigger shifts. 
+-->
+
+Moral arguments are said to relate more strongly than non-moral ones since they are deeply connected to emotions. Non-moral arguments, on the other hand, are said to be more loosely connected to emotions and thus deemed less powerful [@haugtvedt_1994_message; @johnson_1989_effects]. This would suggest that moral frames exert a stronger influence on respondents' issue positioning than self-interest frames. The effect of different frames should also be differently felt conditional on respondents' own moral and self-interest priorities. A moral frame should affect respondents' opinion more if they score highly on the moral measures as this type of frame is likely to connect more with their values. Likewise, a self-interest frame should register more strongly with respondents if they score highly on the self-interest measures. I thus post the following hypotheses:
+
+\vspace{0.3cm}
+\begin{adjustwidth*}{+1cm}{+1cm}
+\noindent \textbf{H1.} Moral frames move people more than self-interest frames.\\
+\noindent \textbf{H2.} Moral frames move people with higher morality scores more than people with lower morality scores.\\
+\noindent \textbf{H3.} Self-interest frames move people with higher self-interest scores more than people with lower self-interest scores.\\
+\end{adjustwidth*}
+
+
+
+
+## Data {#framing-data}
+
+The data consist of a randomized survey experiment and an accompanying pre-test, both fielded online. Pre-testing frames with participants who are not part of the main survey experiment is crucial in framing analysis to test the mechanisms of the designed questionnaire [@carpini_1993_measuring;@stanley_2016_using;@conover_1991_nature]. The participants are exposed to the designed frames to test the core ideas behind morality and self-interest. This pre-test structure builds on work by @slothuus_political_2010, @chong_framing_2007 and the mass communication and persuasion literature [@okeefe_2002_persuasion]. The pre-test is carried out on Amazon's online platform MTurk. MTurk is a service where researchers can host tasks to be completed by anonymous participants. Participants receive financial compensation for their work and Amazon collects a commission. The use of MTurk in political science experiments has increased dramatically over the past decade due to its availability and cost efficiency [@hauser_attentive_2016]. The median hourly wage for an MTurk worker is \$1.38 [@paolacci_2010_running]. A short survey of up to 5 minutes commonly offers compensation around \$0.25 [@berinsky_evaluating_2012]. MTurk with its standing pool of participants is thus highly useful particularly to early career scholars who lack the funds for a traditional phone or in-person survey. While MTurk samples have been shown to be internally valid in survey experiments [@berinsky_evaluating_2012], caution is advised when it comes to external validity. MTurk samples have repeatedly been shown to be disproportionately male, atheist, white, liberal, and young [@clifford_2015_samples; @huff_who_2015]. While these differences usually do not amount to more than single-digit percentages, MTurk samples thus nonetheless suffer from bias. This limits their explanatory power in terms of national representation. Scholars widely agree, however, that MTurk provides a great source for pre-testing survey items and testing new ideas or concepts where external validity considerations do not come into play [@burnham_2018_mturk; @stritch_2017_opportunities; @coppock_2019_validating]. My pre-test collects a sample of 240 participants at a compensation of \$0.50 each. At a length of 15 minutes, it thus provides somewhat above average compensation.
+
+The experiment itself is carried out on Lucid. Lucid is an online marketplace aggregator of survey respondents from a variety of providers. Respondents receive compensation from the providers rather than from Lucid directly. Lucid's marketplace collects basic demographic information and matches US Census margins. Like MTurk, it is possible to access specific subsections of the population (only people of Hispanic origin, only bilingual speakers etc.) as well as the US population overall [@flores_2018_bilinguals]. Costs for researchers are slightly higher than on MTurk. A 5-minute survey that matches census demographics is charged at \$1 per completed response [@graham_2020_self-awareness].
+
+Lucid outperforms MTurk in terms of external validity. Lucid respondents are more similar to US census benchmarks regarding demographic, political, and psychological attributes. They are also closer to ANES means on gender, education, age, income, and race than MTurk. While MTurk respondents skew towards being more liberal, Lucid respondents exhibit the same party ID averages as the ANES [@coppock_2019_validating]. Lucid has been shown to be reliable and performs well on a national scale in survey experiments [@coppock_2019_validating]. As any non-probability platform, however, the use of Lucid in social science research nonetheless has limitations. Studies estimating sample average treatment effects replicate well on Lucid, but research into other forms of estimates remains limited. Whether more complex analysis designs lead to reliable results when used with Lucid respondents remains to be seen. Since my experiment estimates SATEs, though, fielding it with Lucid for a random sample of US adults appears valid.
+
+Both methods from the previous chapters are applied in the fielding and analysis of the experiment. Respondents are randomly presented with either the ANES education categories set or the ordered probit (OP) education categories set (see Q26) and subsequently blocked into treatment groups with the method from chapter \ref{ordblock}. This results in a set of results based on ANES blocking and a second set of results based on OP blocking. Both sets of results are evaluated substantively to reveal the effect of morality and self-interest on respondents' issue positions. As part of the analysis, the ordinal variable imputation method from chapter \ref{ordmiss} is applied to artificially insert missing data. This allows us to assess the performance of my imputation method with original data.
+
+Popular survey design providers such as Qualtrics currently do not offer the functionality to include `R` code as the basis for randomization. In order to conduct this experiment based on my blocking method, I set up an online survey environment based on `R shiny` that is fed into Lucid's marketplace.^[Because of the use of this 'external' platform, Lucid's charge per completed response was \$2.] The environment uses Dropbox to store responses and blocking information. The process is explained in detail in section \ref{app-ordblock} of the appendix.
+
+
+
+
+## Results {#framing-results}
+
+### Survey Experiment {#framing-results-experiment}
+
+```{r Framing-Experiment-ANES, include=FALSE}
+
+cols.fac <- c("hc.likert", "ev.likert")
+df.an <- read.csv("data/framing/experiment/an.clean.csv", stringsAsFactors = TRUE, check.names = FALSE)
+
+for (i in 1:length(cols.fac)){
+    df.an[,cols.fac[i]] <- factor(df.an[,cols.fac[i]])
+}
+
+# to extract the var names from the .csv question files
+varNames <- function(df, varName){
+  filter(df, id == varName) %>% 
+    dplyr::select(., choiceNames) %>% 
+    .[,1] %>% 
+    strsplit(., ",") %>%
+    .[[1]]
+} 
+questions.path <- "data/framing/questions"
+questions.csv <- list.files(path = questions.path, pattern="*.csv")
+names(questions.csv) <- questions.csv
+
+q1.an <- read.csv(paste0(questions.path, "/", questions.csv["education.an.csv"])) # education.an for educ
+var.educ.an <- varNames(q1.an, "educ")
+df.an$educ <- factor(df.an$educ, levels = var.educ.an)
+
+df.an$emply <- relevel(df.an$emply, "Unemployed") # to make Unemployed the base category
+
+colnames(df.an)
+vars.an <- c("hc.likert", "ev.likert", "hc.group", "ev.group",
+             "emply", "Income", "Democrat", "Male",
+             "educ")
+# vars.an <- c("hc.likert", "ev.likert", "hc.group", "ev.group", 
+#           "Employed" , "Retired" , "Student" , "Homemaker" , 
+#           "Income" , "Democrat" , "Male" , "Moral conviction" , "Self-interest",
+#           "1st-4th grade", "5th-6th grade", "7th-8th grade", "9th grade", 
+#           "10th grade", "11th grade", "12th grade", "High school graduate", "Some college", 
+#           "Associate degree", "Bachelor", "Master", "Professional degree", "Doctor")
+names(vars.an) <- vars.an
+
+create.formula.plr.out <- function(df, variables, treat){
+  treat.dv <- paste0(treat, ".likert")
+  if(treat == "hc"){
+    other.dvs <- c("ev.likert", "ev.group")
+  }else{
+    other.dvs <- c("hc.likert", "hc.group")
+  }
+  aa <- df %>% subset(.,  select = variables) # select the vars
+  ee <- c() # empty vector
+  for(i in 1:ncol(aa)){ # identify columns with only one value (deficient)
+    if(aa[, i] %>% unique %>% length == 1){
+      ee[i] <- paste0(colnames(aa)[i])
+      }
+    }
+  if(!is.null(ee)){ # if ee is not null, i.e. if there are deficient cols, remove NAs from vector, remove ee cols
+    ee <- na.omit(ee)
+    variables <- variables[!names(variables) %in% ee]
+  }
+  # exclude <- c(treat.dv, other.dvs)
+  # df.tmp <- dplyr::select(df.an, -one_of(exclude))
+  # vars.temp <- vars[!names(vars) %in% exclude]
+  # df.num <- dplyr::select_if(tmp.df[, vars.temp], is.numeric) 
+  # cor.vars <- cor(df.num) %>% abs() %>% findCorrelation(., cutoff = .5) %>% sort()
+  # if(!is.null(cor.vars)){ # if ee is not null, i.e. if there are deficient cols, remove NAs from vector, remove ee cols
+  #   vars <- vars[!names(vars) %in% names(df.num)[cor.vars]]
+  # }
+  variables <- variables[!names(variables) %in% other.dvs]
+  form <- as.formula(df[,variables]) # save regression formula
+  plr.out <- polr(form, data = df, Hess = TRUE)
+  return(plr.out)
+}
+
+plr.out.an.hc <- create.formula.plr.out(df.an, vars.an, "hc")
+plr.out.an.ev <- create.formula.plr.out(df.an, vars.an, "ev")
+
+# tidy version with confidence intervals for plots
+plot.an.hc <- tidy(plr.out.an.hc, exponentiate = TRUE, conf.int = TRUE) %>%
+  .[1:(nrow(.)-4),] # results in NAs for conf ints and huge estimates for educ categories
+plot.an.ev <- tidy(plr.out.an.ev, exponentiate = TRUE, conf.int = TRUE) %>%
+  .[1:(nrow(.)-4),] # results in massive high conf ints for educ categories that completely ruin the scale
+
+# adjust names (has to be done after tidy() because tidy() throws up an error otherwise)
+vars.repl <- c("emply", "educ")
+treat.names <- c("Moral opposing", "Moral supporting", "Self-interest opposing", "Self-interest supporting")
+
+repl.names <- function(vec, vars.repl){ # remove the patterns in vars.repl and replace treat names
+  new.names <- c(treat.names, # combine treatment names with other replaced names
+                 str_remove_all(vec, paste(vars.repl, collapse = "|")) %>% 
+                   .[5:length(.)]
+                 )
+  return(new.names)
+}
+
+tidy.names <- function(df, vec, vars.repl, plr.names){ 
+  df[, vec] <- repl.names(df[[vec]], vars.repl) %>%
+    factor(., levels = plr.names) # factorize replaced names for tidy plots
+  df <- plyr::rename(df, replace = c("estimate" = "Exponentiated Coefficient")) # rename column for plot
+  return(df)
+}
+
+names(plr.out.an.hc$coefficients) <- repl.names(names(plr.out.an.hc$coefficients), vars.repl)
+names(plr.out.an.ev$coefficients) <- repl.names(names(plr.out.an.ev$coefficients), vars.repl)
+
+# plot.an.hc <- tidy.names(plot.an.hc, "term", vars.repl) # no use since the code returns NAs
+plot.an.ev <- tidy.names(plot.an.ev[1:12,], "term", vars.repl, plr.names = names(plr.out.an.ev$coefficients)) # included but only the non-education categories (otherwise the scale is useless)
+
+```
+
+```{r Framing-Experiment-OP, include=FALSE}
+
+df.op <- read.csv("data/framing/experiment/op.clean.csv", stringsAsFactors = TRUE, check.names = FALSE)
+
+for (i in 1:length(cols.fac)){
+    df.op[,cols.fac[i]] <- factor(df.op[,cols.fac[i]])
+}
+
+q1.op <- read.csv(paste0(questions.path, "/", questions.csv["education.op.csv"])) # education.an for educ
+var.educ.op <- varNames(q1.op, "educ")
+df.op$educ <- factor(df.op$educ, levels = var.educ.op)
+
+df.op$emply <- relevel(df.op$emply, "Unemployed") # to make Unemployed the base category
+
+colnames(df.op)
+vars.op <- c("hc.likert", "ev.likert", "hc.group", "ev.group",
+             "emply", "Income", "Democrat", "Male",
+             "educ")
+# vars.op <- c("hc.likert", "ev.likert", "hc.group", "ev.group", 
+#           "Employed" , "Retired" , "Student" , "Homemaker" , 
+#           "Income" , "Democrat" , "Male" , "Moral conviction" , "Self-interest",
+#           "High school or lower", "Some college", 
+#           "Associate degree", "Bachelor", "Master or higher")
+names(vars.op) <- vars.op
+
+# logistic regressions
+plr.out.op.hc <- create.formula.plr.out(df.op, vars.op, "hc")
+plr.out.op.ev <- create.formula.plr.out(df.op, vars.op, "ev")
+
+# tidy version with confidence intervals for plots
+plot.op.hc <- tidy(plr.out.op.hc, exponentiate = TRUE, conf.int = TRUE) %>%
+  .[1:(nrow(.)-4),]
+plot.op.ev <- tidy(plr.out.op.ev, exponentiate = TRUE, conf.int = TRUE) %>%
+  .[1:(nrow(.)-4),]
+
+# adjust names (has to be done after tidy() because tidy() throws up an error otherwise)
+names(plr.out.op.hc$coefficients) <- repl.names(names(plr.out.op.hc$coefficients), vars.repl)
+names(plr.out.op.ev$coefficients) <- repl.names(names(plr.out.op.ev$coefficients), vars.repl)
+
+plot.op.hc <- tidy.names(plot.op.hc, "term", vars.repl, names(plr.out.op.hc$coefficients))
+plot.op.ev <- tidy.names(plot.op.ev, "term", vars.repl, names(plr.out.op.ev$coefficients))
+
+```
+
+```{r ANES-OP-Table, include=FALSE}
+
+stargazer(plr.out.an.hc, plr.out.op.hc, plr.out.an.ev, plr.out.op.ev,
+          header= FALSE,
+          align = TRUE,
+          single.row = TRUE,
+          title = "Ordinal Logistic Regression Results",
+          label = "exp-anes-op",
+          star.char = c("", "", ""),
+          omit.table.layout = "n",
+          ci = TRUE,
+          dep.var.labels = c("Healthcare", "Environment"),
+          column.labels = c("ANES", "OP", "ANES", "OP"),
+          column.sep.width = "-60pt",
+          model.numbers = FALSE)
+
+```
+
+
+\ssp
+
+\footnotesize
+
+\blandscape
+\centering
+\captionof{table}{Ordinal Logistic Regression Results\label{exp-anes-op}}
+\begin{tabular}{@{\extracolsep{-60pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{2}{c}{Healthcare} & \multicolumn{2}{c}{Environment} \\ 
+ & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} \\ 
+\hline \\[-1.8ex] 
+ Moral opposing & .001$ $(-.373$, $.376) & -.773^{}$ $(-1.121$, $-.425) & -.662^{}$ $(-1.035$, $-.288) & -.390^{}$ $(-.730$, $-.051) \\ 
+  Moral supporting & .481^{}$ $(.124$, $.838) & -.352^{}$ $(-.696$, $-.007) & -.128$ $(-.503$, $.247) & -.222$ $(-.571$, $.127) \\ 
+  Self-interest opposing & -.053$ $(-.385$, $.279) & -.578^{}$ $(-.928$, $-.228) & -.207$ $(-.575$, $.161) & -.270$ $(-.614$, $.073) \\ 
+  Self-interest supporting & .132$ $(-.227$, $.490) & -.212$ $(-.548$, $.124) & .292^{}$ $(-.056$, $.640) & -.054$ $(-.397$, $.289) \\ 
+  Employed full time & -.022$ $(-.416$, $.371) & -.126$ $(-.482$, $.230) & -.122$ $(-.515$, $.272) & -.068$ $(-.425$, $.289) \\ 
+  Employed part time & .072$ $(-.363$, $.508) & -.223$ $(-.625$, $.180) & -.165$ $(-.600$, $.271) & -.030$ $(-.434$, $.375) \\ 
+  Homemaker & -.038$ $(-.567$, $.492) & -.143$ $(-.651$, $.365) & .275$ $(-.271$, $.820) & -.151$ $(-.658$, $.356) \\ 
+  Retired & -.239$ $(-.654$, $.177) & -.268$ $(-.663$, $.126) & -.010$ $(-.422$, $.403) & .301$ $(-.096$, $.699) \\ 
+  Student & -.184$ $(-.828$, $.459) & -.411$ $(-.968$, $.145) & -.500$ $(-1.158$, $.158) & -.732^{}$ $(-1.307$, $-.158) \\ 
+  Income & -.083^{}$ $(-.154$, $-.012) & -.062^{}$ $(-.129$, $.005) & -.018$ $(-.089$, $.054) & .032$ $(-.035$, $.099) \\ 
+  Democrat & 1.135^{}$ $(.896$, $1.374) & 1.124^{}$ $(.893$, $1.355) & .727^{}$ $(.492$, $.961) & .794^{}$ $(.568$, $1.020) \\ 
+  Male & -.075$ $(-.305$, $.155) & -.181$ $(-.404$, $.042) & -.105$ $(-.334$, $.124) & -.381^{}$ $(-.606$, $-.156) \\ 
+  1st-4th grade & 14.492^{}$ $(12.189$, $16.795) &  & .332$ $(-4.322$, $4.987) &  \\ 
+  5th-6th grade & 16.039^{}$ $(13.666$, $18.411) &  & .487$ $(-4.099$, $5.074) &  \\ 
+  7th-8th grade & 16.656^{}$ $(15.203$, $18.108) &  & 1.426$ $(-3.010$, $5.861) &  \\ 
+  9th grade & 17.894^{}$ $(16.588$, $19.200) &  & .217$ $(-4.110$, $4.544) &  \\ 
+  10th grade & 17.849^{}$ $(16.649$, $19.050) &  & .781$ $(-3.487$, $5.049) &  \\ 
+  11th grade & 17.962^{}$ $(17.030$, $18.894) &  & .660$ $(-3.531$, $4.850) &  \\ 
+  12th grade & 17.221^{}$ $(16.375$, $18.067) &  & .721$ $(-3.466$, $4.908) &  \\ 
+  High school graduate & 17.777^{}$ $(17.393$, $18.162) &  & 1.157$ $(-2.934$, $5.248) &  \\ 
+  Some college & 17.814^{}$ $(17.437$, $18.190) & .214$ $(-.109$, $.536) & 1.397$ $(-2.692$, $5.485) & .227$ $(-.098$, $.552) \\ 
+  Associate degree & 17.888^{}$ $(17.453$, $18.322) & .083$ $(-.273$, $.438) & 1.472$ $(-2.622$, $5.566) & .136$ $(-.222$, $.493) \\ 
+  Bachelor & 17.844^{}$ $(17.450$, $18.239) & .064$ $(-.264$, $.392) & 1.639$ $(-2.445$, $5.724) & .115$ $(-.218$, $.449) \\ 
+  Master & 17.906^{}$ $(17.453$, $18.360) &  & 1.546$ $(-2.543$, $5.635) &  \\ 
+  Professional degree & 17.560^{}$ $(16.828$, $18.292) &  & 1.306$ $(-2.830$, $5.442) &  \\ 
+  Doctorate & 18.117^{}$ $(17.406$, $18.828) &  & 1.122$ $(-3.013$, $5.257) &  \\ 
+  Master or higher &  & .437^{}$ $(.048$, $.825) &  & .139$ $(-.245$, $.523) \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{1,062} & \multicolumn{1}{c}{1,103} & \multicolumn{1}{c}{1,062} & \multicolumn{1}{c}{1,103} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\fillandplacepagenumber
+\elandscape
+
+\dsp
+
+\normalsize
+
+
+Table \ref{exp-anes-op} shows the results of ordinal logistic regressions for both issues, separated into the ANES and the OP sets. For ANES healthcare, the confidence intervals for most variables include the null. The exceptions are `Moral supporting` (MS), `Income`, and `Democrat`. Identifying as a Democrat and receiving the MS frame leads to an increase in support for the healthcare policy (`r plr.out.an.hc$coefficients["Democrat"] %>% round(., digits = 3) %>% drop.zero.num` and `r plr.out.an.hc$coefficients["Moral supporting"] %>% round(., digits = 3) %>% drop.zero.num`). An increase in income leads to a decrease in support (`r plr.out.an.hc$coefficients["Income"] %>% round(., digits = 3) %>% drop.zero.num`). It is notable that the volume of education categories leads to very high education coefficients, which is likely due to a small number of observations in one of the categories. In the ANES environment regression, two variables exclude the null: Identifying as a Democrat increases support for the environmental policy (`r plr.out.an.ev$coefficients["Democrat"] %>% round(., digits = 3) %>% drop.zero.num`). Receiving the `Moral opposing` (MO) frame increases opposition (`r plr.out.an.ev$coefficients["Moral opposing"] %>% round(., digits = 3) %>% drop.zero.num`). The education coefficients are much smaller here, suggesting a better spread of observations across categories. All education confidence intervals nonetheless include the null.
+
+For OP healthcare, the confidence intervals for the coefficients of MO (`r plr.out.op.hc$coefficients["Moral opposing"] %>% round(., digits = 3) %>% drop.zero.num`), MS (`r plr.out.op.hc$coefficients["Moral supporting"] %>% round(., digits = 3) %>% drop.zero.num`), `Self-interest opposing` (SIO) (`r plr.out.op.hc$coefficients["Self-interest opposing"] %>% round(., digits = 3) %>% drop.zero.num`), `Democrat` (`r plr.out.op.hc$coefficients["Democrat"] %>% round(., digits = 3) %>% drop.zero.num`), and `Master or higher` (`r plr.out.op.hc$coefficients["Master or higher"] %>% round(., digits = 3) %>% drop.zero.num`) exclude the null. MS thus shows a negative effect of support, i.e. an increase in opposition to the proposed healthcare policy. This goes against expectations, as the supporting frame was designed to increase support. In the OP environment regression, MO (`r plr.out.op.ev$coefficients["Moral opposing"] %>% round(., digits = 3) %>% drop.zero.num`), `Student` (`r plr.out.op.ev$coefficients["Student"] %>% round(., digits = 3) %>% drop.zero.num`), `Democrat` (`r plr.out.op.ev$coefficients["Democrat"] %>% round(., digits = 3) %>% drop.zero.num`), and `Male` (`r plr.out.op.ev$coefficients["Male"] %>% round(., digits = 3) %>% drop.zero.num`) exclude the null.
+
+Figures \ref{ScatExpOpHc}, \ref{ScatExpOpEv}, and \ref{ScatExpAnEv} display the same results from a different perspective. They show the exponentiated regression coefficients with their confidence intervals for the ANES environment, OP healthcare, and OP environment regressions. Exponentiated coefficients ease interpretations as they represent proportional odds ratios, which we can interpret like odds ratios from a binary logistic regression.
+
+```{r Scatterplot-Exponentiated-OP-HC, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Exponentiated Coefficients with Confidence Intervals. OP, Healthcare\\label{ScatExpOpHc}"}
+
+ggplot(plot.op.hc, aes(x=term, y=`Exponentiated Coefficient`)) + 
+  geom_errorbar(aes(ymin=conf.low, ymax=conf.high)) + 
+  theme(axis.text.x = element_text(angle = 90), 
+        axis.title.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r Scatterplot-Exponentiated-OP-EV, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Exponentiated Coefficients with Confidence Intervals. OP, Environment\\label{ScatExpOpEv}"}
+
+ggplot(plot.op.ev, aes(x=term, y=`Exponentiated Coefficient`)) + 
+  geom_errorbar(aes(ymin=conf.low, ymax=conf.high)) + 
+  theme(axis.text.x = element_text(angle = 90), 
+        axis.title.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+
+In the OP healthcare plot, for respondents who received the healthcare MO frame, the odds of supporting the policy are between `r ((1-plot.op.hc$conf.high[1])*100) %>% round %>% drop.zero.num` and `r ((1-plot.op.hc$conf.low[1])*100) %>% round %>% drop.zero.num` percent lower than for respondents in other treatment groups. Similarly, the odds of supporting the OP environment policy for Democrats are between `r plot.op.ev$conf.low[11] %>% round(., digits = 2) %>% drop.zero.num` and `r plot.op.ev$conf.high[11] %>% round(., digits = 2) %>% drop.zero.num` times those of Republicans and Independents. The exponentiated estimates for the education categories in ANES environment are so large that they are excluded from Figure \ref{ScatExpAnEv} to make the other variables visible. There is no figure for ANES healthcare because the very high education coefficients did not allow exponentiated estimations.
+
+<!--
+ANES hc: Moral supporting, Income (minus),  Democrat (plus)
+ANES ev: Democrat (plus), Moral opposing
+OP hc: Moral opposing, Moral supporting (wrong sign), Self-interest opposing, Democrat (plus), Master or higher (plus)
+Op ev: Moral opposing, Student (minus), Democrat (plus), Male (minus)
+-->
+
+The results between the two sets of education categories and the two issues differ markedly. There is a positive effect for Democrats across all regressions, but this is hardly surprising since the proposed policies in both issues lean towards liberalism. MO also shows consistent results across ANES environment, OP healthcare, and OP environment. There is little consistency, however, regarding the other variables. `Income` only shows significant results for ANES healthcare, where wealthier respondents are more likely to oppose the policy. MS shows significant results for ANES healthcare and OP healthcare, but the sign in the latter is negative. SIO and `Master or higher` are only significant for OP healthcare, while `Male` only significantly decreases support for the OP environmental policy.
+
+Overall, the MS frames do not move people more towards supporting the issue policies than the self-interest frames. The ANES healthcare MS frame does elicit a stronger positive effect than the corresponding SIS frame, but the MS frames for ANES environment and OP environment include the null. MS for OP healthcare even shows statistically significant negative effects. There is some evidence, however, that MO frames move people more towards opposing the issue policies than the SIO frames. The MO frames in ANES environment, OP environment, and OP healthcare all show statistically significant negative effects that are larger than their self-interest counterparts. One could thus argue that the results partially confirm \textbf{H1} for opposing frames.
+
+
+```{r Scatterplot-Exponentiated-AN-EV, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Exponentiated Coefficients with Confidence Intervals. ANES, Environment\\label{ScatExpAnEv}"}
+
+ggplot(plot.an.ev, aes(x=term, y=`Exponentiated Coefficient`)) + 
+  geom_errorbar(aes(ymin=conf.low, ymax=conf.high)) + 
+  theme(axis.text.x = element_text(angle = 90), 
+        axis.title.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+
+
+
+
+#### High Morality {#framing-results-experiment-mor-high}
+
+```{r Framing-Experiment-ANES-Moral-High-Low, include=FALSE}
+
+mor.si <- c("Moral conviction", "Self-interest") # take out these vars here
+vars.excl.mor.si.an <- vars.an[!names(vars.an) %in% mor.si]
+
+df.an %>% filter(., `Moral conviction` > 4) %>% nrow # 688 people
+df.an.high.mor <- df.an %>% filter(., `Moral conviction` > 4) %>% dplyr::select(., -one_of(mor.si))
+plr.out.an.high.mor.hc <- create.formula.plr.out(df.an.high.mor, vars.excl.mor.si.an, "hc")
+plr.out.an.high.mor.ev <- create.formula.plr.out(df.an.high.mor, vars.excl.mor.si.an, "ev")
+names(plr.out.an.high.mor.hc$coefficients) <- repl.names(names(plr.out.an.high.mor.hc$coefficients), vars.repl)
+names(plr.out.an.high.mor.ev$coefficients) <- repl.names(names(plr.out.an.high.mor.ev$coefficients), vars.repl)
+
+df.an %>% filter(., `Moral conviction` < 3) %>% nrow # 74 people
+df.an.low.mor <- df.an %>% filter(., `Moral conviction` < 3) %>% dplyr::select(., -one_of(mor.si))
+plr.out.an.low.mor.hc <- create.formula.plr.out(df.an.low.mor, vars.excl.mor.si.an, "hc")
+plr.out.an.low.mor.ev <- create.formula.plr.out(df.an.low.mor, vars.excl.mor.si.an, "ev")
+names(plr.out.an.low.mor.hc$coefficients) <- repl.names(names(plr.out.an.low.mor.hc$coefficients), vars.repl)
+names(plr.out.an.low.mor.ev$coefficients) <- repl.names(names(plr.out.an.low.mor.ev$coefficients), vars.repl)
+
+```
+
+```{r Framing-Experiment-OP-Moral-High-Low, include=FALSE}
+
+vars.excl.mor.si.op <- vars.op[!names(vars.op) %in% mor.si]
+
+df.op %>% filter(., `Moral conviction` > 4) %>% nrow # 735 people
+df.op.high.mor <- df.op %>% filter(., `Moral conviction` > 4) %>% dplyr::select(., -one_of(mor.si))
+plr.out.op.high.mor.hc <- create.formula.plr.out(df.op.high.mor, vars.excl.mor.si.op, "hc")
+plr.out.op.high.mor.ev <- create.formula.plr.out(df.op.high.mor, vars.excl.mor.si.op, "ev")
+names(plr.out.op.high.mor.hc$coefficients) <- repl.names(names(plr.out.op.high.mor.hc$coefficients), vars.repl)
+names(plr.out.op.high.mor.ev$coefficients) <- repl.names(names(plr.out.op.high.mor.ev$coefficients), vars.repl)
+
+df.op %>% filter(., `Moral conviction` < 3) %>% nrow # 87 people
+df.op.low.mor <- df.op %>% filter(., `Moral conviction` < 3) %>% dplyr::select(., -one_of(mor.si))
+plr.out.op.low.mor.hc <- create.formula.plr.out(df.op.low.mor, vars.excl.mor.si.op, "hc")
+plr.out.op.low.mor.ev <- create.formula.plr.out(df.op.low.mor, vars.excl.mor.si.op, "ev")
+names(plr.out.op.low.mor.hc$coefficients) <- repl.names(names(plr.out.op.low.mor.hc$coefficients), vars.repl)
+names(plr.out.op.low.mor.ev$coefficients) <- repl.names(names(plr.out.op.low.mor.ev$coefficients), vars.repl)
+
+```
+
+
+In order to create a collective measure of morality, I take the average of all morality question responses. This results in one overall morality score for each respondent. Respondents with high morality scores are defined as respondents with an average morality score above 4 (on a scale of 1 to 6). Respondents with low morality scores are defined as respondents with an average morality score below 3. This asymmetrical separation is due to the number of respondents in each morality score group. Subsetting the data for respondents with an average morality score below 2 results in only 13 observations for the ANES and only 10 observations for the OP data. These low numbers would render any statistical analysis essentially meaningless. Defining low morality as an average score below 3 in turn results in 74 (ANES) and 87 (OP) observations, which is far from ideal but at least manageable in terms of statistical estimation.
+
+<!--
+HC
+ANES
+Moral opposing: High is null, Low is negative -> Fail to reject null hypothesis
+Moral supporting: High is positive, Low is null -> Reject nh
+
+OP
+Moral opposing: High is negative, Low is null -> Reject nh
+Moral supporting: Both are null -> Fail to reject nh
+
+EV
+ANES
+Moral opposing: High is negative, Low is null -> Reject nh
+Moral supporting: Both are null -> Fail to reject nh
+
+OP
+Moral opposing: High is negative, Low is null -> Reject nh 
+Moral supporting: Both are null -> Fail to reject nh
+-->
+
+I run the same regression models as before after subsetting both data sets. Tables \ref{exp-hc-mor-high-low} and \ref{exp-ev-mor-high-low} show the results separated by issue. For healthcare, the confidence interval for ANES high MO includes the null, whereas ANES low MO is negative. ANES high MS on the other hand is positive, while ANES low MS includes the null. \textbf{H2} claims that moral frames move people with higher morality scores more than people with lower morality scores. Based on the first finding, I would fail to reject the null hypothesis for \textbf{H2}. Based on the second finding, however, I would reject it. A similar pattern continues throughout all high and low morality estimates. For healthcare, OP high MO is negative but OP low MO includes the null, which means we would reject the null hypothesis. Both confidence intervals for OP high MS and OP low MS include zero, though, which means we would fail to reject the null hypothesis here. The same picture shows for environment: ANES high MO is negative and ANES low MO includes zero (i.e. reject the NH), but both CIs for MS include the null (i.e. fail to reject the NH). Likewise, OP high MO is negative and OP low MO includes the null (i.e. reject), while both CIs for MS again include the null (i.e. fail to reject). Results are thus mixed. The MO frames appear to resonate more strongly with respondents with high morality scores, which would support \textbf{H2}, but the MS frames mostly show null results, which would lead us to reject \textbf{H2}.
+
+
+```{r Healthcare-Moral-High-Low-Table, include=FALSE}
+
+stargazer(plr.out.an.high.mor.hc, plr.out.an.low.mor.hc, plr.out.op.high.mor.hc, plr.out.op.low.mor.hc,
+          header= FALSE,
+          align = TRUE,
+          single.row = TRUE,
+          title = "Ordinal Logistic Regression Results. High and Low Morality, Healthcare",
+          label = "exp-hc-mor-high-low",
+          star.char = c("", "", ""),
+          omit.table.layout = "n",
+          ci = TRUE,
+          column.labels = c("ANES High", "ANES Low", "OP High", "OP Low"),
+          column.sep.width = "-60pt",
+          dep.var.labels = c("Healthcare"),
+          model.numbers = FALSE)
+
+```
+
+
+\ssp
+
+\footnotesize
+
+\blandscape
+\centering
+\captionof{table}{Ordinal Logistic Regression Results. High and Low Morality, Healthcare\label{exp-hc-mor-high-low}}
+\begin{tabular}{@{\extracolsep{-60pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{4}{c}{Healthcare} \\ 
+ & \multicolumn{1}{c}{ANES High} & \multicolumn{1}{c}{ANES Low} & \multicolumn{1}{c}{OP High} & \multicolumn{1}{c}{OP Low} \\ 
+\hline \\[-1.8ex] 
+ Moral opposing & -.182$ $(-.649$, $.284) & -2.429^{}$ $(-4.312$, $-.546) & -.844^{}$ $(-1.277$, $-.412) & -.365$ $(-1.657$, $.928) \\ 
+  Moral supporting & .602^{}$ $(.139$, $1.065) & -1.238$ $(-2.905$, $.429) & -.394^{}$ $(-.813$, $.025) & -.810$ $(-2.247$, $.627) \\ 
+  Self-interest opposing & -.121$ $(-.547$, $.306) & -1.013$ $(-2.370$, $.343) & -.625^{}$ $(-1.050$, $-.199) & -.909$ $(-2.315$, $.496) \\ 
+  Self-interest supporting & .070$ $(-.385$, $.525) & -.876$ $(-2.478$, $.725) & -.131$ $(-.541$, $.279) & -.949$ $(-2.257$, $.358) \\ 
+  Employed full time & .082$ $(-.406$, $.570) & -.482$ $(-2.317$, $1.352) & .025$ $(-.417$, $.468) & .686$ $(-.721$, $2.093) \\ 
+  Employed part time & .304$ $(-.246$, $.854) & 1.505$ $(-.533$, $3.542) & -.041$ $(-.545$, $.464) & .428$ $(-1.063$, $1.918) \\ 
+  Homemaker & .272$ $(-.414$, $.958) & 2.245^{}$ $(-.424$, $4.914) & .184$ $(-.441$, $.808) & .472$ $(-1.947$, $2.891) \\ 
+  Retired & -.342$ $(-.843$, $.159) & .520$ $(-1.248$, $2.288) & -.335$ $(-.804$, $.135) & .392$ $(-1.250$, $2.034) \\ 
+  Student & -.278$ $(-1.218$, $.662) & .212$ $(-3.868$, $4.291) & -.342$ $(-1.076$, $.392) & .226$ $(-1.364$, $1.816) \\ 
+  Income & -.085^{}$ $(-.174$, $.003) & -.028$ $(-.328$, $.273) & -.106^{}$ $(-.188$, $-.024) & .029$ $(-.239$, $.298) \\ 
+  Democrat & 1.231^{}$ $(.931$, $1.530) & .849$ $(-.378$, $2.076) & 1.323^{}$ $(1.035$, $1.612) & .540$ $(-.384$, $1.464) \\ 
+  Male & .030$ $(-.261$, $.321) & 1.248^{}$ $(.061$, $2.435) & -.092$ $(-.369$, $.184) & .136$ $(-.840$, $1.112) \\ 
+  1st-4th grade &  & 1.274^{}$ $(1.274$, $1.274) &  &  \\ 
+  5th-6th grade &  & 25.328^{}$ $(20.619$, $30.037) &  &  \\ 
+  7th-8th grade & -3.768^{}$ $(-6.421$, $-1.115) & 22.934^{}$ $(19.171$, $26.698) &  &  \\ 
+  9th grade & .357$ $(-2.022$, $2.737) & 20.756^{}$ $(16.998$, $24.513) &  &  \\ 
+  10th grade & -.816$ $(-2.756$, $1.124) &  &  &  \\ 
+  11th grade & .708$ $(-1.169$, $2.584) & 23.747^{}$ $(18.989$, $28.504) &  &  \\ 
+  12th grade & -1.727^{}$ $(-3.251$, $-.202) & 26.190^{}$ $(23.091$, $29.290) &  &  \\ 
+  High school graduate & -.712$ $(-1.730$, $.307) & 22.751^{}$ $(21.440$, $24.061) &  &  \\ 
+  Some college & -.441$ $(-1.437$, $.555) & 23.269^{}$ $(21.959$, $24.579) & .259$ $(-.143$, $.661) & .235$ $(-.983$, $1.454) \\ 
+  Associate degree & -.493$ $(-1.531$, $.545) & 23.006^{}$ $(21.340$, $24.672) & .087$ $(-.356$, $.530) & -.150$ $(-1.581$, $1.282) \\ 
+  Bachelor & -.570$ $(-1.551$, $.411) & 22.783^{}$ $(21.352$, $24.214) & .082$ $(-.323$, $.488) & .002$ $(-1.481$, $1.485) \\ 
+  Master & -.537$ $(-1.557$, $.483) & 22.995^{}$ $(21.193$, $24.797) &  &  \\ 
+  Professional degree & .058$ $(-1.414$, $1.530) & 23.955^{}$ $(21.668$, $26.242) &  &  \\ 
+  Doctorate &  & 22.227^{}$ $(20.055$, $24.400) &  &  \\ 
+  Master or higher &  &  & .506^{}$ $(.030$, $.983) & -.513$ $(-2.256$, $1.230) \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{688} & \multicolumn{1}{c}{74} & \multicolumn{1}{c}{735} & \multicolumn{1}{c}{87} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular}
+\fillandplacepagenumber
+\elandscape
+
+\dsp
+
+\normalsize
+
+
+```{r Environment-Moral-High-Low-Table, include=FALSE}
+
+stargazer(plr.out.an.high.mor.ev, plr.out.an.low.mor.ev, plr.out.op.high.mor.ev, plr.out.op.low.mor.ev,
+          header= FALSE,
+          align = TRUE,
+          single.row = TRUE,
+          title = "Ordinal Logistic Regression Results. High and Low Morality, Environment",
+          label = "exp-ev-mor-high-low",
+          star.char = c("", "", ""),
+          omit.table.layout = "n",
+          ci = TRUE,
+          column.labels = c("ANES High", "ANES Low", "OP High", "OP Low"),
+          column.sep.width = "-60pt",
+          dep.var.labels = c("Environment"),
+          model.numbers = FALSE)
+
+```
+
+
+\ssp
+
+\footnotesize
+
+\blandscape
+\centering
+\captionof{table}{Ordinal Logistic Regression Results. High and Low Morality, Environment\label{exp-ev-mor-high-low}}
+\begin{tabular}{@{\extracolsep{-60pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{4}{c}{Environment} \\ 
+ & \multicolumn{1}{c}{ANES High} & \multicolumn{1}{c}{ANES Low} & \multicolumn{1}{c}{OP High} & \multicolumn{1}{c}{OP Low} \\ 
+\hline \\[-1.8ex] 
+ Moral opposing & -.963^{}$ $(-1.441$, $-.485) & -1.098$ $(-2.809$, $.613) & -.602^{}$ $(-1.025$, $-.179) & .880$ $(-.578$, $2.339) \\ 
+  Moral supporting & -.399$ $(-.877$, $.080) & -.007$ $(-1.629$, $1.614) & -.312$ $(-.745$, $.122) & -.738$ $(-2.130$, $.654) \\ 
+  Self-interest opposing & -.435^{}$ $(-.889$, $.019) & .797$ $(-.938$, $2.532) & -.393^{}$ $(-.814$, $.029) & .623$ $(-.923$, $2.168) \\ 
+  Self-interest supporting & .049$ $(-.389$, $.487) & .951$ $(-.439$, $2.341) & -.312$ $(-.734$, $.111) & .681$ $(-.689$, $2.051) \\ 
+  Employed full time & -.132$ $(-.623$, $.358) & 2.209^{}$ $(.374$, $4.044) & .211$ $(-.232$, $.655) & -1.201^{}$ $(-2.595$, $.192) \\ 
+  Employed part time & -.059$ $(-.611$, $.493) & 4.587^{}$ $(2.270$, $6.905) & .407$ $(-.098$, $.912) & -1.501^{}$ $(-2.977$, $-.025) \\ 
+  Homemaker & .609^{}$ $(-.103$, $1.321) & 4.381^{}$ $(1.766$, $6.996) & .232$ $(-.401$, $.865) & -.098$ $(-2.355$, $2.158) \\ 
+  Retired & -.044$ $(-.542$, $.455) & 2.077^{}$ $(.284$, $3.870) & .322$ $(-.156$, $.799) & -.312$ $(-2.030$, $1.405) \\ 
+  Student & -.428$ $(-1.379$, $.523) & 2.600$ $(-1.429$, $6.629) & -.503$ $(-1.271$, $.264) & -1.959^{}$ $(-3.704$, $-.214) \\ 
+  Income & -.021$ $(-.111$, $.069) & -.005$ $(-.302$, $.293) & .002$ $(-.080$, $.083) & .034$ $(-.228$, $.296) \\ 
+  Democrat & .817^{}$ $(.524$, $1.111) & .964$ $(-.271$, $2.200) & .989^{}$ $(.708$, $1.271) & .473$ $(-.424$, $1.371) \\ 
+  Male & .071$ $(-.219$, $.362) & .580$ $(-.580$, $1.741) & -.197$ $(-.477$, $.083) & .264$ $(-.617$, $1.146) \\ 
+  1st-4th grade &  & -19.332^{}$ $(-22.763$, $-15.901) &  &  \\ 
+  5th-6th grade &  & -18.824^{}$ $(-23.410$, $-14.239) &  &  \\ 
+  7th-8th grade & -1.220$ $(-5.148$, $2.708) & -20.606^{}$ $(-24.313$, $-16.899) &  &  \\ 
+  9th grade & .060$ $(-3.108$, $3.229) & -58.044^{}$ $(-58.044$, $-58.044) &  &  \\ 
+  10th grade & -.167$ $(-2.101$, $1.767) &  &  &  \\ 
+  11th grade & -.659$ $(-2.358$, $1.040) & -19.986^{}$ $(-24.583$, $-15.389) &  &  \\ 
+  12th grade & -.353$ $(-1.951$, $1.245) & -17.037^{}$ $(-20.256$, $-13.817) &  &  \\ 
+  High school graduate & -.099$ $(-1.150$, $.951) & -18.991^{}$ $(-20.247$, $-17.735) &  &  \\ 
+  Some college & .214$ $(-.822$, $1.250) & -17.735^{}$ $(-19.005$, $-16.465) & .342$ $(-.066$, $.749) & -.0002$ $(-1.288$, $1.287) \\ 
+  Associate degree & .267$ $(-.806$, $1.341) & -17.643^{}$ $(-19.408$, $-15.878) & .052$ $(-.397$, $.501) & -.110$ $(-1.547$, $1.326) \\ 
+  Bachelor & .532$ $(-.488$, $1.552) & -18.791^{}$ $(-20.166$, $-17.416) & .171$ $(-.247$, $.589) & .382$ $(-.986$, $1.751) \\ 
+  Master & .401$ $(-.650$, $1.453) & -20.528^{}$ $(-22.389$, $-18.667) &  &  \\ 
+  Professional degree & .813$ $(-.716$, $2.342) & -18.374^{}$ $(-20.901$, $-15.847) &  &  \\ 
+  Doctorate &  & -19.181^{}$ $(-21.302$, $-17.059) &  &  \\ 
+  Master or higher &  &  & .088$ $(-.384$, $.560) & -.148$ $(-1.872$, $1.576) \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{688} & \multicolumn{1}{c}{74} & \multicolumn{1}{c}{735} & \multicolumn{1}{c}{87} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular}
+\fillandplacepagenumber
+\elandscape
+
+\dsp
+
+\normalsize
+
+
+
+#### High Self-Interest {#framing-results-experiment-si-high}
+
+```{r Framing-Experiment-ANES-Self-Interest-High-Low, include=FALSE}
+
+# same parameter choices as above for moral conviction
+df.an %>% filter(., `Self-interest` > 4) %>% nrow # 215 people
+df.an.high.si <- df.an %>% filter(., `Self-interest` > 4) %>% dplyr::select(., -one_of(mor.si))
+plr.out.an.high.si.hc <- create.formula.plr.out(df.an.high.si, vars.excl.mor.si.an, "hc")
+plr.out.an.high.si.ev <- create.formula.plr.out(df.an.high.si, vars.excl.mor.si.an, "ev")
+names(plr.out.an.high.si.hc$coefficients) <- repl.names(names(plr.out.an.high.si.hc$coefficients), vars.repl)
+names(plr.out.an.high.si.ev$coefficients) <- repl.names(names(plr.out.an.high.si.ev$coefficients), vars.repl)
+
+df.an %>% filter(., `Self-interest` < 2) %>% nrow # 88 people
+df.an.low.si <- df.an %>% filter(., `Self-interest` < 2) %>% dplyr::select(., -one_of(mor.si))
+plr.out.an.low.si.hc <- create.formula.plr.out(df.an.low.si, vars.excl.mor.si.an, "hc")
+plr.out.an.low.si.ev <- create.formula.plr.out(df.an.low.si, vars.excl.mor.si.an, "ev")
+names(plr.out.an.low.si.hc$coefficients) <- repl.names(names(plr.out.an.low.si.hc$coefficients), vars.repl)
+names(plr.out.an.low.si.ev$coefficients) <- repl.names(names(plr.out.an.low.si.ev$coefficients), vars.repl)
+
+```
+
+```{r Framing-Experiment-OP-Self-Interest-High-Low, include=FALSE}
+
+# same parameter choices as above for moral conviction
+df.op %>% filter(., `Self-interest` > 4) %>% nrow # 243 people
+df.op.high.si <- df.op %>% filter(., `Self-interest` > 4) %>% dplyr::select(., -one_of(mor.si))
+plr.out.op.high.si.hc <- create.formula.plr.out(df.op.high.si, vars.excl.mor.si.op, "hc")
+plr.out.op.high.si.ev <- create.formula.plr.out(df.op.high.si, vars.excl.mor.si.op, "ev")
+names(plr.out.op.high.si.hc$coefficients) <- repl.names(names(plr.out.op.high.si.hc$coefficients), vars.repl)
+names(plr.out.op.high.si.ev$coefficients) <- repl.names(names(plr.out.op.high.si.ev$coefficients), vars.repl)
+
+df.op %>% filter(., `Self-interest` < 2) %>% nrow # 82 people
+df.op.low.si <- df.op %>% filter(., `Self-interest` < 2) %>% dplyr::select(., -one_of(mor.si))
+plr.out.op.low.si.hc <- create.formula.plr.out(df.op.low.si, vars.excl.mor.si.op, "hc")
+plr.out.op.low.si.ev <- create.formula.plr.out(df.op.low.si, vars.excl.mor.si.op, "ev")
+names(plr.out.op.low.si.hc$coefficients) <- repl.names(names(plr.out.op.low.si.hc$coefficients), vars.repl)
+names(plr.out.op.low.si.ev$coefficients) <- repl.names(names(plr.out.op.low.si.ev$coefficients), vars.repl)
+
+```
+
+
+The collective measure of self-interest is created in the same way as the above collective measure of morality. I take the average of all self-interest question responses, resulting in one overall self-interest score for each respondent. Respondents with high self-interest scores are again defined as respondents with an average self-interest score above 4 (on a scale of 1 to 6). Respondents with low self-interest scores, however, are defined as respondents with an average self-interest score below 2. Since respondents appear more evenly spread out across the range of self-interest scores, it is now possible to define high and low self-interest symmetrically (unlike morality above). Defining low self-interest as an average score below 2 results in 88 (ANES) and 82 (OP) observations, thus mirroring the number of respondents with low morality scores.
+
+<!--
+HC
+ANES
+Self-interest opposing: High is null, Low is negative -> Fail to reject null hypothesis
+Self-interest supporting: Both are null -> Fail to reject
+
+OP
+Self-interest opposing: High is null, Low is negative -> Fail to reject
+Self-interest supporting: Both are null -> Fail to reject
+
+EV
+ANES
+Self-interest opposing: Both are null -> Fail to reject
+Self-interest supporting: Both are null -> Fail to reject
+
+OP
+Self-interest opposing: Both are null -> Fail to reject 
+Self-interest supporting: High is negative, Low is null -> Fail to reject
+-->
+
+As above, I run the same regression models as before after subsetting both data sets. Tables \ref{exp-hc-si-high-low} and \ref{exp-ev-si-high-low} show the results separated by issue. While the evidence for high and low morality (\textbf{H2}) was mixed, with some results indicating the ability to reject the null hypothesis, this is not the case for self-interest. None of the results for any self-interest group for any data set for any issue show evidence that self-interest frames move people with higher self-interest scores more than people with lower self-interest scores, as \textbf{H3} asserts. Only one high self-interest result is statistically significant, namely OP High SIS, but the respective coefficient is negative, indicating that the support-inducing frame actually increases opposition. All other high self-interest confidence intervals include zero. Two results appear to support the theory that low self-interest frames resonate more strongly with respondents with low self-interest scores: ANES low SIO and OP low SIO both show statistically significant negative coefficients. I thus fail to reject the null hypothesis for \textbf{H3}.
+
+
+
+
+```{r Healthcare-Self-Interest-High-Low-Table, include=FALSE}
+
+stargazer(plr.out.an.high.si.hc, plr.out.an.low.si.hc, plr.out.op.high.si.hc, plr.out.op.low.si.hc,
+          header= FALSE,
+          align = TRUE,
+          single.row = TRUE,
+          title = "Ordinal Logistic Regression Results. High and Low Self-Interest, Healthcare",
+          label = "exp-hc-si-high-low",
+          star.char = c("", "", ""),
+          omit.table.layout = "n",
+          ci = TRUE,
+          column.labels = c("ANES High", "ANES Low", "OP High", "OP Low"),
+          column.sep.width = "-60pt",
+          dep.var.labels = c("Healthcare"),
+          model.numbers = FALSE)
+
+```
+
+
+\ssp
+
+\footnotesize
+
+\blandscape
+\centering
+\captionof{table}{Ordinal Logistic Regression Results. High and Low Self-Interest, Healthcare\label{exp-hc-si-high-low}}
+\begin{tabular}{@{\extracolsep{-60pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{4}{c}{Healthcare} \\ 
+ & \multicolumn{1}{c}{ANES High} & \multicolumn{1}{c}{ANES Low} & \multicolumn{1}{c}{OP High} & \multicolumn{1}{c}{OP Low} \\ 
+\hline \\[-1.8ex] 
+ Moral opposing & .233$ $(-.677$, $1.143) & -2.270^{}$ $(-3.890$, $-.651) & -.135$ $(-.973$, $.704) & .191$ $(-1.188$, $1.569) \\ 
+  Moral supporting & .346$ $(-.510$, $1.202) & .060$ $(-1.423$, $1.543) & -.161$ $(-.941$, $.618) & -1.186$ $(-2.665$, $.292) \\ 
+  Self-interest opposing & .001$ $(-.825$, $.827) & -1.767^{}$ $(-3.189$, $-.345) & -.243$ $(-1.055$, $.570) & -1.733^{}$ $(-3.300$, $-.166) \\ 
+  Self-interest supporting & -.006$ $(-.876$, $.864) & -.433$ $(-1.813$, $.947) & -.356$ $(-1.118$, $.406) & -.628$ $(-1.955$, $.699) \\ 
+  Employed full time & -.630$ $(-1.498$, $.239) & 1.178^{}$ $(-.144$, $2.500) & -.097$ $(-.871$, $.677) & .491$ $(-1.007$, $1.988) \\ 
+  Employed part time & .165$ $(-.811$, $1.141) & .155$ $(-1.760$, $2.071) & -.260$ $(-1.149$, $.629) & .679$ $(-1.154$, $2.512) \\ 
+  Homemaker & .561$ $(-1.031$, $2.152) & -.162$ $(-1.970$, $1.646) & -.030$ $(-1.520$, $1.460) & 1.004$ $(-.659$, $2.667) \\ 
+  Retired & -.146$ $(-1.124$, $.833) & -.706$ $(-2.084$, $.673) & .620$ $(-.355$, $1.596) & -1.249$ $(-2.829$, $.330) \\ 
+  Student & -1.490^{}$ $(-2.983$, $.004) &  & -.286$ $(-1.418$, $.845) & 1.132$ $(-1.236$, $3.499) \\ 
+  Income & .118$ $(-.055$, $.290) & -.064$ $(-.394$, $.266) & .034$ $(-.111$, $.180) & -.212$ $(-.500$, $.075) \\ 
+  Democrat & 1.522^{}$ $(.953$, $2.090) & 1.256^{}$ $(.311$, $2.201) & 1.148^{}$ $(.641$, $1.654) & 1.703^{}$ $(.677$, $2.728) \\ 
+  Male & -.053$ $(-.634$, $.528) & -.864$ $(-2.034$, $.305) & -.484^{}$ $(-.992$, $.025) & -.510$ $(-1.483$, $.462) \\ 
+  7th-8th grade & -20.217^{}$ $(-20.217$, $-20.217) &  &  &  \\ 
+  9th grade & -.303$ $(-2.834$, $2.229) &  &  &  \\ 
+  10th grade & .109$ $(-3.201$, $3.419) &  &  &  \\ 
+  11th grade & 1.015$ $(-1.789$, $3.819) & 22.370^{}$ $(19.324$, $25.417) &  &  \\ 
+  12th grade & .035$ $(-2.600$, $2.671) & 21.534^{}$ $(19.778$, $23.290) &  &  \\ 
+  High school graduate & -.417$ $(-2.112$, $1.278) & 23.587^{}$ $(22.626$, $24.548) &  &  \\ 
+  Some college & -.284$ $(-1.939$, $1.370) & 22.838^{}$ $(21.822$, $23.854) & .623$ $(-.120$, $1.367) & -.623$ $(-1.873$, $.628) \\ 
+  Associate degree & -.785$ $(-2.567$, $.997) & 23.082^{}$ $(21.818$, $24.345) & -.014$ $(-.849$, $.820) & -1.091$ $(-2.512$, $.330) \\ 
+  Bachelor & -.678$ $(-2.314$, $.958) & 22.859^{}$ $(21.470$, $24.248) & -.320$ $(-1.092$, $.451) & -.146$ $(-1.596$, $1.305) \\ 
+  Master & -1.258$ $(-2.933$, $.417) & 22.232^{}$ $(20.661$, $23.804) &  &  \\ 
+  Professional degree & -1.091$ $(-3.093$, $.911) & -.545^{}$ $(-.545$, $-.545) &  &  \\ 
+  Doctorate &  & 22.513^{}$ $(19.585$, $25.441) &  &  \\ 
+  Master or higher &  &  & .671$ $(-.182$, $1.525) & .633$ $(-.830$, $2.096) \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{215} & \multicolumn{1}{c}{88} & \multicolumn{1}{c}{243} & \multicolumn{1}{c}{82} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\fillandplacepagenumber
+\elandscape
+
+\dsp
+
+\normalsize
+
+
+```{r Environment-Self-Interest-High-Low-Table, include=FALSE}
+
+stargazer(plr.out.an.high.si.ev, plr.out.an.low.si.ev, plr.out.op.high.si.ev, plr.out.op.low.si.ev,
+          header= FALSE,
+          align = TRUE,
+          single.row = TRUE,
+          title = "Ordinal Logistic Regression Results. High and Low Self-Interest, Environment",
+          label = "exp-ev-si-high-low",
+          star.char = c("", "", ""),
+          omit.table.layout = "n",
+          ci = TRUE,
+          column.labels = c("ANES High", "ANES Low", "OP High", "OP Low"),
+          column.sep.width = "-60pt",
+          dep.var.labels = c("Environment"),
+          model.numbers = FALSE)
+
+```
+
+
+\ssp
+
+\footnotesize
+
+\blandscape
+\centering
+\captionof{table}{Ordinal Logistic Regression Results. High and Low Self-Interest, Environment\label{exp-ev-si-high-low}}
+\begin{tabular}{@{\extracolsep{-60pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{4}{c}{Environment} \\ 
+ & \multicolumn{1}{c}{ANES High} & \multicolumn{1}{c}{ANES Low} & \multicolumn{1}{c}{OP High} & \multicolumn{1}{c}{OP Low} \\ 
+\hline \\[-1.8ex] 
+ Moral opposing & -1.023^{}$ $(-1.933$, $-.113) & -.811$ $(-2.339$, $.718) & -.953^{}$ $(-1.671$, $-.235) & -.358$ $(-1.752$, $1.035) \\ 
+  Moral supporting & -.005$ $(-.916$, $.905) & -1.065$ $(-2.657$, $.527) & -1.265^{}$ $(-2.038$, $-.492) & .543$ $(-1.116$, $2.203) \\ 
+  Self-interest opposing & -.828^{}$ $(-1.711$, $.055) & -.572$ $(-2.024$, $.880) & -.606$ $(-1.408$, $.197) & -.611$ $(-2.106$, $.885) \\ 
+  Self-interest supporting & -.056$ $(-.902$, $.791) & .068$ $(-1.374$, $1.509) & -.790^{}$ $(-1.540$, $-.039) & .226$ $(-1.195$, $1.647) \\ 
+  Employed full time & -.464$ $(-1.330$, $.402) & .772$ $(-.536$, $2.081) & -.291$ $(-1.090$, $.508) & 1.996^{}$ $(.332$, $3.661) \\ 
+  Employed part time & -.313$ $(-1.298$, $.673) & 1.119$ $(-.760$, $2.997) & -.250$ $(-1.152$, $.651) & 1.835^{}$ $(-.156$, $3.826) \\ 
+  Homemaker & .173$ $(-1.375$, $1.721) & .724$ $(-1.194$, $2.642) & -.963$ $(-2.333$, $.406) & 1.666^{}$ $(-.206$, $3.538) \\ 
+  Retired & -.359$ $(-1.308$, $.590) & .355$ $(-.939$, $1.649) & -.616$ $(-1.655$, $.423) & 1.412$ $(-.329$, $3.153) \\ 
+  Student & -.672$ $(-2.488$, $1.143) &  & -.513$ $(-1.727$, $.701) & -.210$ $(-3.080$, $2.661) \\ 
+  Income & .060$ $(-.110$, $.229) & .048$ $(-.278$, $.375) & .130^{}$ $(-.012$, $.271) & -.421^{}$ $(-.725$, $-.118) \\ 
+  Democrat & .959^{}$ $(.408$, $1.509) & .973^{}$ $(-.013$, $1.959) & .750^{}$ $(.263$, $1.238) & .417$ $(-.612$, $1.447) \\ 
+  Male & .234$ $(-.348$, $.815) & -1.586^{}$ $(-2.763$, $-.409) & -.644^{}$ $(-1.153$, $-.134) & .221$ $(-.800$, $1.241) \\ 
+  7th-8th grade & -35.987^{}$ $(-35.987$, $-35.987) &  &  &  \\ 
+  9th grade & -.992$ $(-3.348$, $1.365) &  &  &  \\ 
+  10th grade & -2.552^{}$ $(-5.251$, $.148) &  &  &  \\ 
+  11th grade & -.844$ $(-3.698$, $2.010) & -10.483$ $(-176.017$, $155.050) &  &  \\ 
+  12th grade & .372$ $(-2.492$, $3.236) & -7.957$ $(-173.463$, $157.549) &  &  \\ 
+  High school graduate & -.122$ $(-1.707$, $1.463) & -9.263$ $(-174.759$, $156.233) &  &  \\ 
+  Some college & -.245$ $(-1.825$, $1.335) & -9.031$ $(-174.526$, $156.465) & .546$ $(-.237$, $1.329) & 1.112$ $(-.241$, $2.464) \\ 
+  Associate degree & -.612$ $(-2.308$, $1.084) & -9.826$ $(-175.324$, $155.671) & -.090$ $(-.928$, $.748) & 1.495^{}$ $(.053$, $2.937) \\ 
+  Bachelor & -.083$ $(-1.616$, $1.449) & -9.067$ $(-174.557$, $156.423) & .068$ $(-.706$, $.842) & 1.845^{}$ $(.340$, $3.350) \\ 
+  Master & -.322$ $(-1.917$, $1.274) & -9.495$ $(-174.988$, $155.999) &  &  \\ 
+  Professional degree & .333$ $(-1.565$, $2.231) & -7.620$ $(-173.135$, $157.896) &  &  \\ 
+  Doctorate &  & -.062$ $(-258.135$, $258.012) &  &  \\ 
+  Master or higher &  &  & .133$ $(-.710$, $.977) & .902$ $(-.640$, $2.444) \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{215} & \multicolumn{1}{c}{88} & \multicolumn{1}{c}{243} & \multicolumn{1}{c}{82} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular}
+\fillandplacepagenumber
+\elandscape
+
+\dsp
+
+\normalsize
+
+
+
+
+### Imputation {#framing-results-experiment-imputation}
+
+
+```{r MAR 5 Variables Framing, include=FALSE}
+
+mar.5var.frame.an <- read.csv("data/framing/experiment/mar/results/framing.an.mar.results.5var.1062n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+mar.5var.frame.op <- read.csv("data/framing/experiment/mar/results/framing.op.mar.results.5var.1103n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+
+mar.5var.frame.an$diff[mar.5var.frame.an$method == "true"] <- mar.5var.frame.an$value[mar.5var.frame.an$method == "true"]
+mar.5var.frame.op$diff[mar.5var.frame.op$method == "true"] <- mar.5var.frame.op$value[mar.5var.frame.op$method == "true"]
+
+levels(mar.5var.frame.op$method) <- levels(mar.5var.frame.an$method) <- levs
+
+mar.5var.frame <- cbind(mar.5var.frame.an[, c(1,2,4)], mar.5var.frame.op[,4])
+colnames(mar.5var.frame) <- c("Method", "Variable", "ANES", "OP")
+
+# to make the in-text citations shorter
+mar.5.frame.an <- mar.5var.frame$ANES
+mar.5.frame.op <- mar.5var.frame$OP
+mar.5.frame.meth <- mar.5var.frame$Method
+mar.5.frame.var <- mar.5var.frame$Variable
+
+tab.mar.5var.frame <- stargazer(mar.5var.frame, 
+                                summary = FALSE,
+                                align = TRUE,
+                                header = FALSE,
+                                rownames = FALSE,
+                                digits = 4,
+                                title = "Accuracy of Multiple Imputation Methods. Framing Data, MAR, 5 Variables with NA",
+                                label = "mar.5var.frame")
+
+it <- gsub("\\multicolumn{1}{c}{", "", tab.mar.5var.frame, fixed = TRUE)
+cat(it)
+
+```
+
+
+As mentioned above, both methods from the previous chapters are applied in the fielding and analysis of the experiment. The ordered probit blocking method from chapter \ref{ordblock} was used to block respondents into treatment groups based on two differing sets of education categories (ANES and OP). This section now applies the ordinal variable imputation method developed in chapter \ref{ordmiss} to both sets of data from the experiment. As in chapter \ref{ordmiss}, I artificially insert missing values and subsequently impute the missing data with four different imputation methods: `hot.deck` from the `hot.deck` package, `amelia` from the `Amelia` package, `mice` from the `mice` package, and my self-penned method `hd.ord` which is specifically designed for ordinal variables. As before, I also include listwise deletion with `na.omit`. Since we know the true values for each imputed variable, we can assess which method comes closest to the truth and thus performs best. As in chapter \ref{ordmiss}, the analysis is conducted for two missing data mechanisms, MAR and MNAR. Each data set is imputed 1,000 times with each of the four imputation methods. 20 percent missing values are randomly amputed in each iteration for each data set. As in the preceding sections of this chapter, the analysis is split into ANES and OP. As before, missing data is amputed for 5 variables.
+
+\dsp
+
+With data missing at random in the ANES set (Table \ref{mar.5var.frame}), `hd.ord` performs worse than `amelia` and `mice` but on par with `hot.deck` for the three binary variables `Democrat`, `Male` and `Employed`. `hd.ord` is furthest away from the true value for the interval variables `Income` (`r mar.5var.frame[mar.5var.frame$Method == "hd.ord" & mar.5var.frame$Variable == "Income", "ANES"]`) and `Age` (`r mar.5var.frame[mar.5var.frame$Method == "hd.ord" & mar.5var.frame$Variable == "Age", "ANES"]`), with the exception of `na.omit`.
+
+\ssp
+
+ \begin{table}[H] \centering  
+ \caption{Accuracy of Multiple Imputation Methods. Framing Data, MAR, 5 Variables with NA}   
+ \label{mar.5var.frame} 
+\begin{threeparttable}
+ \begin{tabular}{ccr@{}lr@{}l} 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex] 
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{OP} \\
+ \hline \\[-1.8ex]
+ true & Democrat & .&3879 & .&3826 \\ 
+ hot.deck & Democrat & +.&0006 & +.&0005 \\
+ hd.ord & Democrat & +.&0007 & +.&0004 \\
+ amelia & Democrat & +.&0001 & --.&0001 \\
+ mice & Democrat & +.&0001 & --.&0001 \\
+ na.omit & Democrat & --.&0313 & --.&0343 \\ 
+ true & Male & .&4576 & .&4714 \\ 
+ hot.deck & Male & +.&0008 & +.&0013 \\
+ hd.ord & Male & +.&0005 & +.&0013 \\
+ amelia & Male & +.&0001 & +.&0000 \\
+ mice & Male & +.&0000 & --.&0001 \\ 
+ na.omit & Male & --.&0429 & --.&0421 \\ 
+ true & Employed & .&5612 & .&5684 \\ 
+ hot.deck & Employed & +.&0012 & +.&0012 \\
+ hd.ord & Employed & +.&0013 & +.&0013 \\
+ amelia & Employed & +.&0002 & +.&0001 \\ 
+ mice & Employed & --.&0001 & --.&0001 \\
+ na.omit & Employed & --.&0353 & --.&0358 \\
+ true & Income & 3.&5537 & 3.&4923 \\
+ hot.deck & Income & --.&0047 & --.&0026 \\
+ hd.ord & Income & --.&0113 & --.&0107 \\ 
+ amelia & Income & --.&0004 & --.&0017 \\ 
+ mice & Income & --.&0014 & --.&0016 \\ 
+ na.omit & Income & --.&1924 & --.&1958 \\
+ true & Age & 46.&3475 & 44.&9574 \\
+ hot.deck & Age & --.&1621 & --.&1711 \\ 
+ hd.ord & Age & --.&3107 & --.&2837 \\
+ amelia & Age & --.&0009 & +.&0040 \\
+ mice & Age & --.&0073 & +.&0000 \\ 
+ na.omit & Age & --.&8376 & --.&8373 \\
+ \hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+
+
+
+```{r MNAR 5 Variables Framing, include=FALSE}
+
+mnar.5var.frame.an <- read.csv("data/framing/experiment/mnar/results/framing.an.mnar.results.5var.1062n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+mnar.5var.frame.op <- read.csv("data/framing/experiment/mnar/results/framing.op.mnar.results.5var.1103n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+
+mnar.5var.frame.an$diff[mnar.5var.frame.an$method == "true"] <- mnar.5var.frame.an$value[mnar.5var.frame.an$method == "true"]
+mnar.5var.frame.op$diff[mnar.5var.frame.op$method == "true"] <- mnar.5var.frame.op$value[mnar.5var.frame.op$method == "true"]
+
+levels(mnar.5var.frame.op$method) <- levels(mnar.5var.frame.an$method) <- levs
+
+mnar.5var.frame <- cbind(mnar.5var.frame.an[, c(1,2,4)], mnar.5var.frame.op[,4])
+colnames(mnar.5var.frame) <- c("Method", "Variable", "ANES", "OP")
+
+# to make the in-text citations shorter
+mnar.5.frame.an <- mnar.5var.frame$ANES
+mnar.5.frame.op <- mnar.5var.frame$OP
+mnar.5.frame.meth <- mnar.5var.frame$Method
+mnar.5.frame.var <- mnar.5var.frame$Variable
+
+tab.mnar.5var.frame <- stargazer(mnar.5var.frame, 
+                                 summary = FALSE,
+                                 align = TRUE,
+                                 header = FALSE,
+                                 rownames = FALSE,
+                                 digits = 4,
+                                 title = "Accuracy of Multiple Imputation Methods. Framing Data, MNAR, 5 Variables with NA",
+                                 label = "mnar.5var.frame")
+
+jt <- gsub("\\multicolumn{1}{c}{", "", tab.mnar.5var.frame, fixed = TRUE)
+cat(jt)
+
+```
+
+
+
+\begin{table}[H] \centering 
+ \caption{Accuracy of Multiple Imputation Methods. Framing Data, MNAR, 5 Variables with NA}  
+ \label{mnar.5var.frame}  
+ \begin{threeparttable}
+\begin{tabular}{ccr@{}lr@{}l} 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex]
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{OP} \\
+ \hline \\[-1.8ex] 
+ true & Democrat & .&3879 & .&3826 \\
+ hot.deck & Democrat & --.&0035 & --.&0031 \\ 
+ hd.ord & Democrat & --.&0039 & --.&0039 \\
+ amelia & Democrat & --.&0034 & --.&0032 \\
+ mice & Democrat & --.&0028 & --.&0028 \\ 
+ na.omit & Democrat & --.&0188 & --.&0197 \\ 
+ true & Male & .&4576 & .&4714 \\
+ hot.deck & Male & --.&0138 & --.&0127 \\
+ hd.ord & Male & --.&0134 & --.&0124 \\
+ amelia & Male & --.&0137 & --.&0133 \\
+ mice & Male & --.&0138 & --.&0136 \\
+ na.omit & Male & --.&0231 & --.&0220 \\
+ true & Employed & .&5612 & .&5684 \\
+ hot.deck & Employed & --.&0027 & --.&0028 \\
+ hd.ord & Employed & --.&0030 & --.&0034 \\
+ amelia & Employed & --.&0031 & --.&0030 \\
+ mice & Employed & --.&0030 & --.&0030 \\
+ na.omit & Employed & --.&0180 & --.&0178 \\
+ true & Income & 3.&5537 & 3.&4923 \\
+ hot.deck & Income & --.&0498 & --.&0480 \\
+ hd.ord & Income & --.&0528 & --.&0541 \\ 
+ amelia & Income & --.&0413 & --.&0439 \\ 
+ mice & Income & --.&0415 & --.&0441 \\ 
+ na.omit & Income & --.&1064 & --.&1043 \\
+ true & Age & 46.&3475 & 44.&9574 \\ 
+ hot.deck & Age & --.&4322 & --.&4795 \\
+ hd.ord & Age & --.&6215 & --.&5925 \\
+ amelia & Age & --.&2420 & --.&2725 \\ 
+ mice & Age & --.&2441 & --.&2768 \\ 
+ na.omit & Age & --.&5301 & --.&5076 \\
+ \hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+ 
+\dsp 
+
+While `mice` and `amelia` perform equally well for the binary variables, `amelia` shows a markedly better performance for the interval variables. The results for the OP data mirror the ANES results for `hot.deck` and `hd.ord`. They show the same levels of distances for the binary variables and `hd.ord` performs markedly worse for the interval variables. Notably, however, `mice` is not inferior to `amelia` for the interval variables in the OP data. `mice` actually beats `amelia` for `Age`, which is a striking reversal of the ANES results.^[For a repeat of this MAR analysis for 10 amputed variables, see appendix section \ref{app-framing-10var}. The results do not change substantively.]
+
+All imputation results for missing data inserted not at random (Table \ref{mnar.5var.frame}) are much further away from the true values than in Table \ref{mar.5var.frame}. This is to be expected given the differing missing data mechanisms. The pattern for MNAR is markedly different: `hot.deck` and `hd.ord` show virtually identical results as `amelia` and `mice` for the binary variables for both data sets. `hd.ord` even performs best among all mechanisms for `Male`. While `amelia` and `mice` still produce significantly closer results for `Income` and `Age`, the distance to the two hot decking methods is notably smaller. Between the two hot decking methods, however, `hd.ord` comes last. `hd.ord` in fact performs worse than `na.omit` for `Age` in both data sets.^[For a repeat of this MNAR analysis for 10 amputed variables, see appendix section \ref{app-framing-10var}. The results do not change substantively.]
+
+
+
+## Conclusion {#framing-conclusion}
+
+I set out to test the influence of morality and self-interest in political framing and to investigate how morality and self-interest contribute to persuasive strength in emphasis frames. Morality was defined along the lines of Moral Foundations Theory, while self-interest was considered to cover the areas of personal autonomy, health/safety, wealth, and status. I designed a survey experiment that measured respondents' morality and self-interest attitudes and applied my self-penned ordered probit method to block each respondent on the basis of their education (ANES, OP) into one of five treatment groups (`Moral opposing`, `Moral supporting`, `Self-interest opposing`, `Self-interest supporting`, and `Control`) for two political issues (healthcare, environment). On the basis of the asserted strength of moral arguments due to their deep connection with emotions and the corresponding lack of strength of non-moral arguments, I hypothesized that moral frames move respondents more than self-interest frames (\textbf{H1}). I further hypothesized that the effect of different frames should be felt differently conditional on respondents' own morality and self-interest priorities. A moral frame should affect respondents' opinion more if they score highly on the morality measures as this type of frame is likely to connect more with their values (\textbf{H2}). Correspondingly, a self-interest frame should register more with respondents' opinion if they score highly on the self-interest measures (\textbf{H3}). Finally, I tested the effectiveness of my developed ordinal variable imputation method by artificially inserting missing data.
+
+The results are mixed. \textbf{H1} is partially confirmed for opposing frames. There is evidence that MO frames move people more towards opposing the issue policies than SIO frames. The MO frames for ANES environment, OP environment, and OP healthcare all show statistically significant negative effects that are larger than their self-interest counterparts. The same does not hold for MS frames. Most of the corresponding regression confidence intervals here include the null of no treatment effect. \textbf{H2} is also partially confirmed for opposing frames. The MO frames appear to resonate more strongly with respondents with high morality scores for both issues, but the MS frames do not elicit a treatment effect. \textbf{H3}, however, is not confirmed. None of the results for any self-interest group for any data set for any issue show any evidence that self-interest frames move people with higher self-interest scores more than people with lower self-interest scores. The missing data analysis confirms the results from chapter \ref{ordmiss}. `hd.ord` does not perform on the level of `amelia`, particularly for non-binary variables.
+
+It is unclear why the MO frames confirm the hypotheses while the MS ones do not. One possible explanation could be differences in the level of frame wording. It could be that the MO categories are surreptitiously worded more effectively than their supporting counterparts. This seems unlikely, though, as the results for MO frames are consistent across both issues. Another potential area of investigation could be the juxtaposition of negativity and positivity. Perhaps it is easier and clearer for people to establish what they are morally against than what they morally support. What I dislike might be easier to figure out than the things I stand for.
+
+Two final aspects are notable: First, the sheer number of ANES education categories renders ordinal logistic regressions difficult. These finely grated and overly nuanced categories often result in a low number of observations per category. This greatly increases regression coefficients, which makes interpretation cumbersome and sometimes impossible, e.g. when exponentiated coefficients could not be calculated for ANES healthcare. The large number of ANES education categories also leads to frequent collinearity, causing the models to drop variable levels. None of this occurs with the OP education categories. Second, a lot of respondents show high morality scores. While the self-interest scores are evenly spread out, more than two thirds of respondents in each data set indicate great importance of morality in their lives. This represents evidence that morality disproportionately matters to people. Few respondents are on the fence, and even fewer eschew morality. Morality matters to people, with the possible addition that negative morality, i.e. what we are morally against, takes the front seat.
+
+
+

@@ -1,0 +1,41 @@
+\noindent {Table}\hfill {Page}\par 
+\addvspace {10\p@ }
+
+
+\contentsline {table}{\numberline {2.1}{\ignorespaces Ordered Probit Threshold Estimates\relax }}{17}{table.caption.9}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories. Differentiated by Treatment Group\relax }}{20}{table.caption.11}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces Summary of ANOVA Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group\relax }}{22}{table.caption.12}%
+\contentsline {table}{\numberline {2.4}{\ignorespaces Summary of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group\relax }}{23}{table.2.4}%
+
+\contentsline {table}{\numberline {3.1}{\ignorespaces Illustrative Data\relax }}{51}{table.caption.25}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Illustrative Data polr Results\relax }}{53}{table.caption.26}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Illustrative Data Value Replacements\relax }}{53}{table.caption.27}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 5 Variables with NA\relax }}{57}{table.caption.29}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 5 Variables with NA\relax }}{59}{table.caption.31}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, Two Ordinal Variables (Education, Interest), MAR, 4 Variables with NA\relax }}{61}{table.caption.33}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, Two Ordinal Variables (Education, Interest), MNAR, 4 Variables with NA\relax }}{62}{table.caption.35}%
+\contentsline {table}{\numberline {3.8}{\ignorespaces Accuracy of Multiple Imputation Methods for Increasing Percentages of Missingness. CCES Data\relax }}{63}{table.caption.37}%
+\contentsline {table}{\numberline {3.9}{\ignorespaces Runtimes of Multiple Imputation Methods (in Minutes) by Number of Imputed Variables. ANES and CCES Data\relax }}{64}{table.caption.39}%
+\contentsline {table}{\numberline {3.10}{\ignorespaces Runtimes of Multiple Imputation Methods (in Minutes) by Percentage of Missingness. CCES Data\relax }}{65}{table.caption.40}%
+\contentsline {table}{\numberline {3.11}{\ignorespaces lm and polr Differences in 1992 ANES Data as Used by Bartels (1999)\relax }}{66}{table.caption.41}%
+
+\contentsline {table}{\numberline {4.1}{\ignorespaces Foundations of Moral Intuitions\relax }}{77}{table.caption.43}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Ordinal Logistic Regression Results\relax }}{91}{table.4.2}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Ordinal Logistic Regression Results. High and Low Morality, Healthcare\relax }}{96}{table.4.3}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Ordinal Logistic Regression Results. High and Low Morality, Environment\relax }}{97}{table.4.4}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Ordinal Logistic Regression Results. High and Low Self-Interest, Healthcare\relax }}{99}{table.4.5}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Ordinal Logistic Regression Results. High and Low Self-Interest, Environment\relax }}{100}{table.4.6}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces Accuracy of Multiple Imputation Methods. Framing Data, MAR, 5 Variables with NA\relax }}{102}{table.caption.49}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces Accuracy of Multiple Imputation Methods. Framing Data, MNAR, 5 Variables with NA\relax }}{103}{table.caption.51}%
+\contentsline {table}{\numberline {4.9}{\ignorespaces Accuracy of Multiple Imputation Methods. Framing Data, MAR, 10 Variables with NA\relax }}{104}{table.4.9}%
+\contentsline {table}{\numberline {4.10}{\ignorespaces Accuracy of Multiple Imputation Methods. Framing Data, MNAR, 10 Variables with NA\relax }}{106}{table.4.10}%
+
+
+
+\contentsline {table}{\numberline {B.1}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 5 Variables with NA, All Observations\relax }}{114}{table.caption.54}%
+\contentsline {table}{\numberline {B.2}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 5 Variables with NA, All Observations\relax }}{115}{table.caption.55}%
+\contentsline {table}{\numberline {B.3}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 12 Variables with NA\relax }}{116}{table.B.3}%
+\contentsline {table}{\numberline {B.4}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 12 Variables with NA\relax }}{118}{table.B.4}%
+\contentsline {table}{\numberline {B.5}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, Two Ordinal Variables (Education, Interest), MAR, 11 Variables with NA\relax }}{121}{table.B.5}%
+\contentsline {table}{\numberline {B.6}{\ignorespaces Accuracy of Multiple Imputation Methods. ANES and CCES Data, Two Ordinal Variables (Education, Interest), MNAR, 11 Variables with NA\relax }}{123}{table.B.6}%
+
