@@ -1,6 +1,6 @@
 ---
 # AU dissertation fields
-title: "WHAT THE PEOPLE THINK: ADVANCES IN PUBLIC OPINION MEASUREMENT USING ORDINAL VARIABLES"
+title: "WHAT PEOPLE THINK: ADVANCES IN PUBLIC OPINION MEASUREMENT USING ORDINAL VARIABLES"
 author: "Simon Heuberger"
 degreeyear: "2021"
 degree: "Doctor of Philosophy"
@@ -10,9 +10,9 @@ thirdreader: "Professor Elizabeth Suhay"
 fourthreader: "Professor R. Michael Alvarez"
 degreefield: "Government"
 abstract: |
-  Surveys are a central part of political science. Without surveys, we would not know what people think about political issues. Survey experiments also enable us to test how people react to given treatments. Surveys and survey experiments are only as good as the analytical techniques we as researchers use, though. This applies particularly to how we use and measure variables. For ordinal variables, some of our current measurements and techniques are insufficient. Ordinal variables consist of ordered categories where the spacing between each category is uneven and not known. One example is education, one of the most important predictors of political behavior. The distances between education categories such as "Elementary School", "Some High School", and "High School Graduate" are not evenly spread. Current practice nonetheless often does not take this information into account. This could misrepresent the data and potentially distort survey results. My dissertation develops two methods to address this and applies them in original survey research. Chapter \ref{ordblock} develops a new method to improve the use of ordinal variables in the assignment of treatment in survey experiments. Chapter \ref{ordmiss} develops a new method to treat missing survey data with ordinal variables. Chapter \ref{framing} applies both methods in an online survey experiment on political framing. 
+  Surveys are a central part of political science. Without surveys, we would not know what people think about political issues. Survey experiments also enable us to test how people react to given treatments. Surveys and survey experiments are only as good as the analytical techniques we as researchers use, though. This applies particularly to how we use and measure variables. For ordinal variables, some of our current measurements and techniques are insufficient. Ordinal variables consist of ordered categories where the spacing between each category is uneven and not known. One example is education, one of the most important predictors of political behavior. The distances between education categories such as "Elementary School", "Some High School", and "High School Graduate" are not evenly spread. Current practice nonetheless often does not take this information into account. This could misrepresent the data and potentially distort results. My dissertation develops two methods to address this and applies them in original survey research. Chapter \ref{ordblock} develops a new method to improve the use of ordinal variables in the assignment of treatment in survey experiments. Chapter \ref{ordmiss} develops a new method to treat missing survey data with ordinal variables. Chapter \ref{framing} applies both methods in an online survey experiment on political framing. 
 acknowledgements: |
-  I want to thank Fendi and Muesli, the two greatest creatures on the planet. And of course Waldemar Burgo.
+  I want to thank Fendi and Muesli, the two greatest creatures on the planet. And of course Waldemar Burgo. To be continued closer to the defense.
 # End of AU dissertation fields
 knit: "bookdown::render_book"
 site: bookdown::bookdown_site

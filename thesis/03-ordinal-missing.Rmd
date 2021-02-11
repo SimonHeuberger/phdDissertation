@@ -103,7 +103,7 @@ While the bias inserted by listwise deletion in each individual data analysis ma
 
 ### Single Imputation {#ordmiss-theory-singimpute}
 
-Single imputation means replacing missing data with substituted values, i.e. the structural opposite of deletion. Imputation requires some method of creating a predictive distribution, based on the observed data, from which value substitutions are picked. Single imputation, regardless of its exact nature, is not recommended to impute missing data since, similar to deletion, it biases standard errors and confidence intervals [@honaker_2010_what]. Crucially, uncertainty is not reflected in the imputed values [@little_2002_statistical]. The following is a mere selection of the most common single imputation methods and makes no claim of completeness. Since single imputation is widely condemned as a general imputation method and as my focus lies on multiple imputation, they are also brief.
+Single imputation means replacing missing data with substituted values, i.e. the structural opposite of deletion. Imputation requires a predictive distribution, based on the observed data, from which value substitutions are picked. Single imputation, regardless of its exact nature, is not recommended to impute missing data since, similar to deletion, it biases standard errors and confidence intervals [@honaker_2010_what]. Crucially, uncertainty is not reflected in the imputed values [@little_2002_statistical]. The following is a mere selection of the most common single imputation methods and makes no claim of completeness. Since single imputation is widely condemned as a general imputation method and as my focus lies on multiple imputation, they are also brief.
 
 
 #### Mean {#ordmiss-theory-impute-mean}
@@ -143,10 +143,10 @@ Multiple imputation was invented by Rubin in the 1970s to account for the absenc
 
 (3) Combine the results from each of the $i$ analysis results into one collective result
 
-\vspace{0.8cm}
 
 \ssp
-\begin{figure}[ht]
+
+\begin{figure}
 \centering
 \begin{tikzpicture}
     \node [block3] (ds) {\scriptsize{Data set with missing values}};
@@ -251,12 +251,16 @@ with the chain starting from a random draw from observed marginal distributions 
 
 Figure \ref{mice-func} shows the package's main imputation function, `mice`, with all its arguments. As stated above, I will use `mice` with its default settings to ensure simplicity and user-friendliness.
 
-\begin{figure}[hbt]
+\vspace{0.5cm}
+
+\begin{figure}[!htbp] 
   \centering
   \includegraphics{figures/mice.png}
   \caption{The \texttt{mice} Function}
   \label{mice-func}
 \end{figure}
+
+\vspace{-0.5cm}
 
 The majority of arguments are not of importance to general users. Arguments like `predictorMatrix`, which specifies the set of predictors to be used for each target column, and `blocks`, which provides the option to manually put variables into imputation blocks, require too much statistical knowledge to be of use to non-specialists. Other arguments do not affect the basic workings of the function. This applies for instance to `printFlag`, which sets the console printing preference, `seed`, which is used to offset the random number generator, and `data.init`, which specifies a data frame to be used to initialize imputations before the start of the iterative process. 
 
@@ -332,12 +336,16 @@ Taking draws from this posterior is computationally intensive since the contents
 
 Figure \ref{amelia-func} shows the package's main imputation function, `amelia`, with all its arguments. As stated above, I will use `amelia` with its default settings to ensure simplicity and user-friendliness.
 
-\begin{figure}[hbt]
+\vspace{0.5cm}
+
+\begin{figure}[!htbp] 
   \centering
   \includegraphics{figures/amelia.png}
   \caption{The \texttt{amelia} Function}
   \label{amelia-func}
 \end{figure}
+
+\vspace{-0.5cm}
 
 As with `mice`, the majority of arguments are not of importance to general users. Specifications such as `splinetime`, which allows the control of cubic smoothing splines of time, and `lags`, which indicates columns in the data that should have their lags included in the imputation model, will only be used in very particular situations by a small minority of users. Other arguments likewise are not crucial to the basic workings of the function, such as `p2s`	to control console printing and `parallel` to identify any type of parallel operation to be used. 
 
@@ -435,12 +443,16 @@ for each missing value recipient $c$. When the number of identical matches decre
 
 Figure \ref{hot.deck-func} shows the package's main imputation function, `hot.deck`, with all its arguments. As before, I will use `hot.deck` with its default settings. 
 
-\begin{figure}[hbt]
+\vspace{0.5cm}
+
+\begin{figure}[!htbp] 
   \centering
   \includegraphics{figures/hot.deck.png}
   \caption{The \texttt{hot.deck} Function}
   \label{hot.deck-func}
 \end{figure}
+
+\vspace{-0.5cm}
 
 Like `mice` and `amelia`, `hot.deck` only requires user input for `data`. `m` should once more be set to the percentage of missingness. Specialized arguments such as `optimStep` and `optimStop`, which can be tweaked to optimize standard deviation cutoff parameters, as well as `weightedAffinity`, which indicates whether a correlation-weighted affinity score should be used, do not apply to general users.
 
@@ -486,8 +498,11 @@ A character vector of variable names not to be used in the imputation, but to be
 
 `hd.ord` is a self-penned `R` function designed specifically to implement multiple hot deck imputation with ordinal variables. It is an extension of `hot.deck` and fully utilizes the unevenly spaced yet ordered information contained in ordinal variables. As described in section \ref{ordblock-theory-op}, ordinal variables matter in political science surveys because a key variable in such surveys is ordinal: education. The importance of the spacing between education values is best demonstrated with a simplified example shown in Table \ref{ordmiss-ordspace}.
 
-\begin{table}[ht]
+
+\begin{table}[!htbp] 
   \centering
+  \caption{Illustrative Data}
+  \label{ordmiss-ordspace}
   \begin{tabular}{lccccc}
   \bottomrule 
   \midrule
@@ -498,9 +513,8 @@ A character vector of variable names not to be used in the imputation, but to be
   C & 30 & Democrat & Bachelor's Degree &  \$50-60,000 & Female\\
   \bottomrule 
   \end{tabular}
-  \caption{Illustrative Data}.
-  \label{ordmiss-ordspace}
 \end{table}
+
 
 
 Respondent B shows missing data for party ID. To impute a fill-in value, we look at how close respondents A and C are to B in terms of age, education, income, and gender. C is closer to B in terms of age and they share the same gender. A is closer to B on education and income. `hot.deck` measures these distances and estimates affinity scores for respondents A and C. The affinity scores measure how close A and C are to B on all variables except the missing one, i.e. party ID. B then receives the party ID fill-in value from whichever respondent has the higher score. The algorithm building the affinity score is based on evenly spaced sequential numerical values, e.g. 1, 2, 3 etc. to represent the distances between the variable categories. This makes sense for age, income, and gender, but not for education, since education is an ordinal variable. Applying `hot.deck` to such a numerical representation would misrepresent the data.
@@ -550,7 +564,7 @@ colnames(ill.data.cutp.tab) <- c("Original Education Categories", "Mid-Cutpoints
 Table \ref{ordmiss-ill-res} displays illustrative results from running `polr` on survey data, with column "Thresholds" showing the estimated cutoff thresholds between the education categories. Table \ref{ordmiss-ill-mid} in turn shows the estimated mid-cutpoints for each of the education categories. The mid-cutpoint values for the categories in Table \ref{ordmiss-ill-mid} fall between the adjacent values in Table \ref{ordmiss-ill-res}, i.e. the mid-cutpoint of `r ill.data.cutp$midc[ill.data.cutp$origed == "Some High School"]` for `Some High School` lies between the respective thresholds of `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"]` and `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"]`. To estimate the beginning cutpoint for the first category (`Less Than High School`), we halve the difference between the first and second threshold and subtract this value from the first threshold: `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"]` $-$ (`r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"]` $-$ `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric`) / 2 =  `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric - ((ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"] %>% as.numeric - ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric) / 2) %>% round(digits = 3)`. The same process is applied to estimate the ending cutpoint for the last category (`Master's Degree`). The mid-cutpoint values are then scaled and used for the calculation of the affinity scores.
 
 
-```{r Illustrative Data Table 1, results='asis', echo=FALSE}
+```{r Illustrative Data Table 1, include=FALSE}
 
 stargazer(ill.data.int.df.tab, 
           summary = FALSE,
@@ -560,6 +574,25 @@ stargazer(ill.data.int.df.tab,
           title = "Illustrative Data polr Results",
           label = "ordmiss-ill-res")
 ```
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Illustrative Data polr Results} 
+  \label{ordmiss-ill-res} 
+\begin{tabular}{r@{}lr@{}l} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{2}{c}{Intercepts} & \multicolumn{2}{c}{Thresholds} \\ 
+\hline \\[-1.8ex] 
+Less Than High School $\mid$ & \,Some High School & 2.&418 \\ 
+Some High School $\mid$ & \,High School Graduate & 3.&495 \\ 
+High School Graduate $\mid$ & \,Some College & 4.&214 \\ 
+Some College $\mid$ & \,Bachelor's Degree & 5.&727 \\ 
+Bachelor's Degree $\mid$ & \,Master's Degree & 7.&412 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
 
 ```{r Illustrative Data Table 2, results='asis', echo=FALSE}
 
@@ -578,12 +611,16 @@ stargazer(ill.data.cutp.tab,
 
 Figure \ref{hd.ord-func} shows `hd.ord` with all its arguments. As before, I will use `hd.ord` with its default settings. Since `hd.ord` is an adaptation of `hot.deck`, the two functions are identical except for the `ord` argument, which allows users to specify the ordinal variables for `polr` treatment.
 
-\begin{figure}[hbt]
+\vspace{0.5cm}
+
+\begin{figure}[!htbp]
   \centering
   \includegraphics{figures/hd.ord.png}
   \caption{The \texttt{hd.ord} Function}
   \label{hd.ord-func}
 \end{figure}
+
+\vspace{-0.5cm}
 
 
 
