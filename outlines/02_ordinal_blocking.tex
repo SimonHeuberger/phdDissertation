@@ -460,18 +460,42 @@
 		\item Write conclusion
 	\end{coi}
 	
-%\section*{Potential package setup}
-%	\begin{coi}
-%		\item Leave this until the very end. It's interesting, but I don't need it for the diss
-%		\item For my framing experiment, I use education and ANES to train the OPM, then I block on education and other covariates with \texttt{blockTools}. The package will be applicable much more generally: Set the package up so that the user specifies/loads the data, the DV, and the EVs to use for training. My functions then apply polr(), attach binned cases, create a new DV with re-estimated categories, and attach this variable to the originally supplied data. Then the user can block on the resulting variable with \texttt{blockTools}
-%			\begin{coi}
-%				\item \texttt{OPMord} comes before any blocking
-%				\item \texttt{OPMord} output can be used to \texttt{block} normally in interactive R
-%				\item \texttt{OPMord} output can be used to \texttt{seqblock} sequentially in \texttt{shiny} environment
-%			\end{coi}
-%		\item I currently don't have any `package' folder because it doesn't make sense to set that up before the functions are developed
-%		\item \href{https://deanattali.com/2015/04/21/r-package-shiny-app/}{Blog post to include {\tt shiny} in R package and launch app from within package}
-%	\end{coi}	
+\section*{Feedback Ryan}
+	\begin{coi}
+		\item p 7. This reads as "interval are categorical". Clarify
+		\item p 9. This implies that K \& T give "misinformation". Clarify
+		\item The first $E(\delta)$ piece is a definition unrelated to balance, despite what's implied
+		\item On the second $E(\delta)$ piece: the point is that if $Y$ and $T$ are independent, then we can substitute $E(Y_t|T = t)$ in for $E(Y_t)$, replacing something we can never observe with something we can estimate naturally from data. Randomization helps justify that independence. The relationship between the notation and the ideas isn't clear here. Rework or rephrase a bit
+		\item Did K \& T show balance? It's implied here
+		\item p 10. Citation: Remove "Elizabeth A."
+		\item p 11. $x= [1, \ldots, n]$. I think the goal here is to enumerate indices of a vector, not the "values" 1, 2, 3, ..., $n$. This notation needs to be adjusted
+		\item Typo: "becommes"
+		\item (2.2): Don't index $s$. It's common to all $i$
+		\item Describe how the Figure 1.1 data are blocked
+		\item p 13. Does the ANES know demographics before survey experiments? That's the implication here
+		\item p 13. Justify including the "on the go" section. That's not what you do in this chapter
+		\item p 14. (2.3) Fix the delimiter sizes with, e.g., \begin{verbatim}\left(\end{verbatim}
+		\item p 15. The difference between (2.4) and (2.1) is that in (2.4), one of these has not yet been assigned, and the other is a member of some treatment group. Not clear we need this discussion here, but if so, make the important ideas clear to the reader early
+		\item p 15. Check the "Not all" sentence for grammar
+		\item p 17. Show that the "create group indicators" strategy is often done, and, if possible, a consequence of throwing the ordering away
+		\item p 17. A clear statement of the problems of both typical ordinal variable treatments here
+		\item p 18. "I propose ordinals as predictors" immediately gives way to notation with ordinal \textbf{outcome}. Clarify what's about to happen before we read the notation. What's next? What will we need to take away from it? Your $Y$ is a covariate that will be the outcome of an ordered model, that \textbf{then} will be used for blocking/imputation?
+		\item p 18-19 is the critical proposal you make. Make this very clear to readers. Add a schematic figure showing the steps, e.g.
+		\item p 19. Are you binning by "coefficients"? Or linear combinations of covariates $\times$ predictors?
+		\item 20. Not "countless". Cite 2.
+		\item Any other justification of the model (2.8)? Strong correlations, e.g.? Write this in statistical, not R, notation. Same for (2.11)
+		\item Fig 2.3 is the first key result. Add a summary of the result to the caption. Fix the $x$-axis over-writing
+		\item Make a short (appendix?) table showing which ANES education categories map on to which OP categories. You named these, so let us see the groupings you used to do so
+		\item p 22. Five "treatment groups"? Just a coincidence that this is same number of OP groups discovered in education variable? Disambiguate these by changing number of treatment conditions
+		\item p 23. Make a figure and move this to the appendix. What's the big picture here? Add it to the caption and signpost it more strongly. Is it that using OP does better than ANES? Not worse than ANES? Something else? OK, I see some of this at the bottom of 24, but bring it to the front
+		\item (2.9) and (2.10) The syntax is not important (but should be in a replication file). Write the statistical idea down here instead
+		\item p 24. I worry about these $p$-values a bit. The smaller the ANES, the harder to detect differences. Maybe this is a weak, but acceptable, test, but it depends on sample sizes
+		\item p 27. Make a figure and move this to the appendix
+		\item 2.4.2. How do you do this blocking? 
+		\item p 29. Do this 5000 times, if easy
+		\item p 29. Is there any precision difference between the two methods?
+		\item p 31. "This indicates that \ldots". This paragraph is the most important point of the chapter. Don't make us wait until p. 31 to read it! It should be in the abstract, intro, and signposted earlier in the chapter
+	\end{coi}
 	
 	
 	

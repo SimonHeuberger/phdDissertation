@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  26 FEB 2021 14:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  26 FEB 2021 14:21
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**____admin.tex
-(./____admin.tex
+**01_introduction.tex
+(./01_introduction.tex
 LaTeX2e <2020-02-02> patch level 5
 L3 programming layer <2020-03-06> (/usr/local/texlive/2020/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
@@ -640,8 +640,8 @@ LaTeX Info: Redefining \cite on input line 694.
 File: l3backend-pdfmode.def 2020-03-12 L3 backend support: PDF mode
 \l__kernel_color_stack_int=\count323
 \l__pdf_internal_box=\box69
-) (/Users/simonheuberger/dissertation/diss/.texpadtmp/____admin.aux)
-\openout1 = `____admin.aux'.
+) (/Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/01_introduction.aux)
+\openout1 = `01_introduction.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
@@ -732,42 +732,42 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 9.
 LaTeX Info: Redefining \pageref on input line 9.
 LaTeX Info: Redefining \nameref on input line 9.
- (/Users/simonheuberger/dissertation/diss/.texpadtmp/____admin.out) (/Users/simonheuberger/dissertation/diss/.texpadtmp/____admin.out)
+ (/Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/01_introduction.out) (/Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/01_introduction.out)
 \@outlinefile=\write4
-\openout4 = `____admin.out'.
+\openout4 = `01_introduction.out'.
 
 
 
 LaTeX Warning: No \author given.
 
 \Changes@OutFile=\write5
-\openout5 = `____admin.soc'.
+\openout5 = `01_introduction.soc'.
 
 \tf@loc=\write6
-\openout6 = `____admin.loc'.
+\openout6 = `01_introduction.loc'.
 
 [1
 
 {/Users/simonheuberger/Library/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 28.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 28.
- (/Users/simonheuberger/dissertation/diss/.texpadtmp/____admin.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 28.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 28.
-Package rerunfilecheck Info: File `____admin.out' has not changed.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 30.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 30.
+ (/Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/01_introduction.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 30.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 30.
+Package rerunfilecheck Info: File `01_introduction.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 28.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 30.
  ) 
 Here is how much of TeX's memory you used:
  20774 strings out of 480608
- 381006 string characters out of 5903631
- 645475 words of memory out of 5000000
+ 381195 string characters out of 5903631
+ 646477 words of memory out of 5000000
  36202 multiletter control sequences out of 15000+600000
  541252 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 79i,6n,89p,540b,313s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 79i,6n,89p,546b,313s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb>
-Output written on /Users/simonheuberger/dissertation/diss/.texpadtmp/____admin.pdf (1 page, 43260 bytes).
+Output written on /Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/01_introduction.pdf (1 page, 45465 bytes).
 PDF statistics:
  56 PDF objects out of 1000 (max. 8388607)
  32 compressed objects within 1 object stream
