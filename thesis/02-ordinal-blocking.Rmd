@@ -35,13 +35,13 @@ drop.zero.num <- function(num, digits = 3){
 ```
 
 
-Survey experiments collect background information and attempt to uncover treatment effects on public opinion and political behavior. In order to identify such potential effects, the treatment groups need to be comparable. All treatment groups need to look the same in every measure, i.e. they must be balanced. This can be achieved through random assignment of participants to treatment groups. Randomization, i.e. flipping a coin to decide which treatment group a participant is assigned to, probabilistically results in balance based on the Law of Large Numbers [@urdan_statistics_2010]. For small samples, however, it can lead to serious imbalance. It can easily be that the treatment groups will not look the same. This can leave experimental results in statistically murky waters [@imai_quantitative_2018;@king_designing_1994;@fox_applied_2015]. In survey experiments, the overall sample size is often split across several treatment groups, which can exacerbate the problem. @chong_framing_2007, for instance, split 869 participants in a framing experiment on urban growth over 17 treatment groups, which leads to an average of just over 50 participants per group. Randomization is unlikely to lead to balanced treatment groups of this size. Researchers need to employ statistical methods to obtain balanced groups here. Blocking, i.e. arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries. 
+Survey experiments collect background information and attempt to uncover treatment effects on public opinion and political attitudes. In order to identify such potential effects, the treatment groups need to be balanced on the potential outcomes. This can be achieved through random assignment of participants to treatment groups. Randomization, i.e. flipping a coin to decide which treatment group a participant is assigned to, probabilistically results in balance based on the Law of Large Numbers [@urdan_statistics_2010]. For small samples, however, it can lead to serious imbalance. This can leave experimental results in statistically murky waters [@imai_quantitative_2018;@king_designing_1994;@fox_applied_2015]. In survey experiments, the overall sample size is often split across several treatment groups, which can exacerbate the problem. @chong_framing_2007, for instance, split 869 participants in a framing experiment on urban growth over 17 treatment groups, which leads to an average of just over 50 participants per group. Randomization is unlikely to lead to comparable treatment groups of this size. Researchers need to employ statistical methods to obtain balanced groups here. Blocking, i.e. arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries. 
 
-Blocking depends on covariates. In political science, many covariates with high predictive power are categorical variables, i.e. variables where the data can be divided into groups. These include interval (ordered and evenly spaced, e.g. income) and ordinal (ordered and unevenly spaced, e.g. education) variables. Ordinal variables are ordered categorical variables where the spacing between the values is not the same.
+Blocking depends on covariates. In political science, many covariates with high predictive power are categorical variables, i.e. variables where the data can be divided into groups (e.g. race). Others include interval (ordered and evenly spaced, e.g. income) and ordinal (ordered and unevenly spaced, e.g. education) variables. Ordinal variables are ordered variables where the spacing between the values is not the same.
 
 To block, these variables are often made numerical, e.g. by assigning the numbers 1-4 to the variable categories. This is acceptable for interval variables as the evenly spaced numbers correspond to the evenly spaced categories. For ordinal variables, however, this can be problematic. Take for instance the example of education: Each subsequent category has quantitatively more education than the previous, but the exact measure of the distance between the categories is unclear. An arbitrary evenly spaced string of numbers does not correspond to these unevenly spaced ordinal categories and may misrepresent the data. Do evenly spaced numbers really represent the distances between the categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all. 
 
-I propose an ordered probit threshold approach to circumvent this problem: This approach estimates an assumed underlying latent continuous structure underneath ordinal variables whose data-driven categories can then be used for blocking. The following sections provide a background on survey experiments and blocking, describe the key aspects of ordinal variables, and outline my proposed ordered probit approach. I then demonstrate the effect of this approach with external survey data and a placebo regression.
+I propose an ordered probit threshold approach to circumvent this problem: This approach estimates an assumed underlying latent continuous structure underneath ordinal variables whose data-driven categories can then be used for blocking. The following sections provide a background on survey experiments and blocking, describe the key aspects of ordinal variables, and outline my proposed ordered probit approach. I then demonstrate the effect of this approach with external survey data and a placebo regression. The results indicate that the re-estimation of ordinal variable categories is meaningful and statistically distinct from estimations with the original ordinal variable categories. 
 
 
 ## Theory {#ordblock-theory}
@@ -53,7 +53,7 @@ The simplest of survey experiments has two potential outcomes for participants $
 \vspace{0.3cm}
 \begin{adjustwidth}{50pt}{50pt}
 \ssp
-\noindent Imagine that the US is preparing for the outbreak of an unusual Asian disease, which is expected to kill 600 people. A program to combat the disease has been proposed. Assume that the exact scientific estimates of the consequences of the program are as follows...
+\noindent Imagine that the US is preparing for the outbreak of an unusual Asian disease. A program to combat the disease has been proposed. Assume that the exact scientific estimates of the consequences of the program are as follows...
 \end{adjustwidth}
 
 Participants in the control group receive the program description in survival format:
@@ -74,7 +74,7 @@ Participants in the treatment group receive the program description in mortality
 
 @tversky_framing_1981 use this experiment to demonstrate the importance of framing. Support for the program is much higher among respondents who received the survival format, even though the success rate of the program is identical in both formats. Framing the program in a positive light thus dramatically increases support by connecting the program to people's aversion of death and affirmation of life. While these findings stem from an experiment conducted in the 1970s, it is not a big leap to imagine a similar outcome in today's Covid-19 world. Misinformation abounds in all formats across countless media channels and there is little reason to assume human behavior has drastically changed. If we conducted this experiment today, it would be quite possible to once more find sizable differences between these two groups.
 
-After being shown one of the two formats, all participants are asked whether they support or oppose the program. The treatment effect for each individual participant $i$ is given by $y_{1i} - y_{0i}$. If both groups of participants look the same regarding their covariates (age, education, income etc.), a comparison of the groups' average support reveals the Average Treatment Effect (ATE) across all participants, $\mathbf{E}[\delta] = \mathbf{E}[y_{1i} - y_{0i}]$. A central characteristic of such a comparison is the fundamental problem of causal inference [@holland_1986_statistics;@rubin_1974_estimating]: We are unable to observe both potential outcomes for the same participant at once. In our case, we cannot observe how much participant A supports the program if given the survival format whilst also observing how much the same participant A would have supported the program if given the mortality format. If we could, it would be simple to calculate the true average treatment effect, $\mathbf{E}[\delta] = \mathbf{E}[y_{1i}|T=1] - \mathbf{E}[y_{0i}|T=0]$, with $T=0$ denoting the control and $T=1$ the treatment group. Since the true average treatment effect is unobservable, we need to use statistical means to assess the counterfactuals. This can be done by balancing the treatment and control groups. If both groups of participants look the same in every measure, we can use the participants who received the mortality format (treatment) to estimate what would have happened to the participants who did not receive any format (control). The crucial aspect is whether the two groups do indeed look the same in terms of participants' covariates. The potential outcome of the control group needs to mirror what would have happened in the case of treatment, and vice versa. This was the case in @tversky_framing_1981's study, which is why they were able to accurately detect causal differences between the format effects. There are two main means by which this comparability may be achieved: randomization and blocking.
+Let $T=0$ denote the control group and $T=1$ denote the treatment group. After being shown one of the two groups, all participants are asked whether they support or oppose the program. The treatment effect for each individual participant $i$ is given by $y_{1i} - y_{0i}$. A comparison of the groups' average support reveals the Average Treatment Effect (ATE) across all participants, $\mathbf{E}[\delta] = \mathbf{E}[y_{1i} - y_{0i}]$. A central characteristic of such a comparison is the fundamental problem of causal inference [@holland_1986_statistics;@rubin_1974_estimating]: We are unable to observe both potential outcomes for the same participant at once. In our case, we cannot observe how much participant A supports the program if given the survival format whilst also observing how much the same participant A would have supported the program if given the mortality format. Since the true average treatment effect is unobservable, we need to use statistical means to assess the unobservable counterfactuals. If $Y$ and $T$ are independent, we can substitute $\mathbf{E}[Y_t|T=t]$ for $\mathbf{E}[Y_t]$, thereby replacing an unobservable entity with something we can estimate from the data. If this independence is given, we can use the participants who received the mortality format (treatment) to estimate what would have happened to the participants who did not receive any format (control). The potential outcome of the control group then mirrors what would have happened in the case of treatment, and vice versa. The process of randomization helps justify this independence and allows comparibility. Another means to achieve comparibility is the process of blocking. 
 
 
 ### Randomization {#ordblock-theory-randomization}
@@ -86,21 +86,39 @@ While randomization thus guarantees balance as the sample size reaches infinity,
 
 ### Blocking {#ordblock-theory-blocking}
 
-Identical levels in terms of covariates across treatment groups represent the key aspect in experimental studies. In randomization, this is achieved by random chance. In blocking, this is achieved by combining covariate information about the participants with randomization. Specifically, participants are blocked into treatment groups that are similar to one another in terms of the their covariates before treatment is assigned. Their similarity is estimated with the Mahalanobis or Euclidian distance. The Mahalanobis distance (MD) is a multivariate distance metric which measures the distance between two vectors (or between a point and a distribution). For two random vectors $x$ with $x_i = [1,\ldots,n]$ and $y$ with $y_i = [1,\ldots,n]$ of the same distribution, the MD is defined as
+Identical levels in terms of covariates across treatment groups represent the key aspect in experimental studies. In randomization, this is achieved by random chance. In blocking, this is achieved by combining covariate information about the participants with randomization. Specifically, participants are blocked into treatment groups that are similar to one another in terms of the their covariates before treatment is assigned. Their similarity is estimated with the Mahalanobis or Euclidian distance. The Mahalanobis distance (MD) is a multivariate distance metric which measures the distance between two vectors (or between a point and a distribution). For two random vectors $x_i$ and $y_i$ with $i = [1,\ldots,n]$ of the same distribution, the MD is defined as
 
 \begin{align}
 MD_{xy} = \sqrt{(\bm{x}_i - \bm{y}_i)' S^{-1} (\bm{x}_i - \bm{y}_i)},
 \end{align}
 
-where $S$ denotes the covariance matrix. If the covariance matrix is a diagonal identity matrix, the resulting distance measure becommes the Euclidian distance (ED), 
+where $S$ denotes the covariance matrix. If the covariance matrix is a diagonal identity matrix, the resulting distance measure becomes the Euclidian distance (ED), 
 
 \begin{align}
-ED_{xy} = \sqrt{\sum_{i=1}^N \frac{(\bm{x}_i - \bm{y}_i)^2}{s_i^2}},
+ED_{xy} = \sqrt{\sum_{i=1}^N \frac{(\bm{x}_i - \bm{y}_i)^2}{s^2}},
 \end{align}
 
 with $s_i$ denoting the standard deviation of $x_i$ and $y_i$. The MD accounts for covariances, whereas the ED assumes equal variances and zero covariances. The ED thus can be argued to represent a special case of the MD.
 
-Blocking is better suited to achieving balance in finite samples than randomization, as it "directly controls the estimation error due to differing levels of observed covariates in the treatment and control groups" [@moore_2012_multivariate, p. 463]. This is particularly relevant with small samples and a high number of treatment groups, as the overall number of participants needs to be divided up. Figures \ref{BoxLawLarNum} and \ref{HistLawLarNum} show this visually. A numerical discrete variable with levels 1 to 5 is randomized and blocked for different sample sizes and different numbers of treatment groups. This is repeated 100 times for each sample size. Figure \ref{BoxLawLarNum} shows the maximum distances between treatment groups across these repetitions for sample sizes up to 1,000 for 2, 3, 5, and 10 treatment groups. Blocking outperforms randomization in every scenario. The difference between the two methods is smallest for large samples and a small number of treatment groups. 
+Blocking is better suited to achieving balance in finite samples than randomization, as it "directly controls the estimation error due to differing levels of observed covariates in the treatment and control groups" [@moore_2012_multivariate, p. 463]. This is particularly relevant with small samples and a high number of treatment groups, as the overall number of participants needs to be divided up. Figures \ref{BoxLawLarNum} shows this visually. The following steps outline the estimation process: 
+
+\vspace{0.3cm}
+\begin{adjustwidth*}{+0.5cm}{+0.5cm}
+\ssp
+\begin{enumerate}
+\item \noindent Randomly sample a discrete variable $v$ with levels 1 to 5.
+\item Randomly assign the sample to a specified number of treatment groups. 
+\item Block the sample separately into the same number of treatment groups. 
+\item Take the mean of $v$ for each randomly assigned treatment group. 
+\item Take the mean of $v$ for each blocked treatment group. 
+\item Estimate the distances between the means of the randomized groups.
+\item Estimate the distances between the means of the blocked groups.
+\item Repeat steps 1 to 4 100 times.
+\end{enumerate}
+\end{adjustwidth*}
+\vspace{0.3cm}
+
+We follow these steps repeatedly for sample sizes up to 1,000 for 2, 3, 5, and 10 treatment groups. Figure \ref{BoxLawLarNum} shows the resulting distributions of maximum mean distances. Blocking outperforms randomization in every scenario. The difference between the two methods is smallest for large samples and a small number of treatment groups. 
 
 ```{r Law of Large Numbers Simulations, eval=FALSE, include=FALSE}
 
@@ -220,23 +238,29 @@ grid.arrange(plot_first_more, plots_more[[1]], plots_more[[2]], plots_more[[3]],
 
 #### Blocking On The Go {#ordblock-theory-blocking-onthego}
 
-In political science, researchers often have an already-collected data set in front of them. One example are the American National Election Studies (ANES). The ANES are the oldest continuous collection of national surveys on electoral behavior and attitudes in the US. They are conducted before and after every US presidential and Congressional election by the University of Michigan and Stanford University. Data have been collected since 1948 in the attempt to understand voter behavior and candidate choice, among many others. The list of questions has been continually expanded and refined over the years. All ANES data are publicly available. The ANES are frequently used for high-profile publications [see for instance @jackman_2018_does; @leighley_who_2014]. Working with such a 'ready-made' data set means all covariate information of all participants is known at the time of assignment, which makes blocking straight-forward. Oftentimes, however, the covariate information of all participants is not known at the time of assignment. This is the case, for instance, for online survey experiments, where participants complete the survey at differing times. Participants 'trickle in' for treatment assignment as the experiment progresses. 'Traditional' blocking can not be used here, since it relies on covariate information about the entire sample, which is not available. Instead, we need to block continuously as the experiment progresses, or block 'on the go'. This is called sequential blocking. 
+Survey experiments can utilize blocking in two ways: with all data present and 'on the go'. The above data represents a simplified example of the former. All respondent covariate data has been collected before respondents are blocked into treatment groups, i.e. covariate data is known for all respondents before assignment to treatment. Blocking 'on the go' involves blocking respondents as they arrive for treatment at differing times. This is the case, for instance, for online survey experiments, where participants complete the survey at differing times. Participants 'trickle in' for treatment assignment as the experiment progresses. 'Traditional' blocking can not be used here, since it relies on covariate information about the entire sample, which is not available. Instead, we need to block continuously as the experiment progresses, or block 'on the go'. This is called sequential blocking. I use this method in the online survey experiment in chapter \ref{framing}.
 
 Sequential blocking in political science is based on covariate-adaptive randomization, which varies probabilities based on knowledge about previous participants and the current participant [@chow_2007_adaptive]. Traditional covariate-adaptive approaches, such as the biased coin design [@efron_1971_forcing] and minimization [@pocock_1975_sequential], assign the incoming participant to the treatment group with the fewest participants with identical covariate information. For discrete covariates, for instance, this takes the form of assigning all participants except the first one, $q$, for covariate $c$ with value $d$ to a treatment group $g$ with probability
 
 \begin{align}
-\text{prob}(g* = g) = (1 - \frac{q_{cdg}}{\sum^G_{g = 1} q_{cdg}}) (\sum_{g = 1}^G(1 - \frac{q_{cdg}}{\sum^G_{g = 1} q_{cdg}}))^{-1}.
+\text{prob}\left(g* = g\right) = \left(1 - \frac{q_{cdg}}{\sum^G_{g = 1} q_{cdg}}\right) \left(\sum_{g = 1}^G\left(1 - \frac{q_{cdg}}{\sum^G_{g = 1} q_{cdg}}\right)\right)^{-1}.
 \end{align}
 
-This works for discrete covariates as the number of possible covariate levels is finite. For continuous covariates, the number of possible covariate levels rises exponentially. Participants are unlikely to look the same, and identical participants are rare. Blocking on continuous covariates is not possible with these traditional approaches [@markaryan_2010_exact;@rosenberger_2002_randomization;@eisele_1995_biased]. @moore_blocking_2013 develop a method to do so by exploiting relationships between the current participant's covariate profile and those of all previously assigned participants. They define the similarity between participants with the Mahalanobis distance between participants $q$ and $r$ with covariate vectors $\bm{x}_q$ and $\bm{x}_r$, 
+This works for discrete covariates as the number of possible covariate levels is finite. For continuous covariates, the number of possible covariate levels rises exponentially. Participants are unlikely to look the same, and identical participants are rare. Blocking on continuous covariates is not possible with these traditional approaches [@markaryan_2010_exact;@rosenberger_2002_randomization;@eisele_1995_biased]. @moore_blocking_2013 develop a method to do so by exploiting relationships between the current participant's covariate profile and those of all previously assigned participants. They define the similarity between participants with the Mahalanobis distance between participants.
+
+<!--
+$q$ and $r$ with covariate vectors $\bm{x}_q$ and $\bm{x}_r$, 
 
 \begin{align}
 MD_{qr} = \sqrt{(\bm{x}_q - \bm{x}_r)' S^{-1} (\bm{x}_q - \bm{x}_r)}.
 \end{align}
 
-Recall that $S$ denotes the covariance matrix. To aggregate pairwise similarity, they implement the mean, median, and trimmed mean of the pairwise MDs between the current participant and the participants in each treatment condition: Participants are indexed with treatment condition $t$ using $r \in \{1,...,R\}$. For each condition $t$, an average MD between the current participant, $q$, and the participants previously assigned, $t$. If the distance in terms of MD for the incoming participant is 2 in the control and 5 in the treatment condition, the incoming participant looks more similar to the control condition. To set the probability of assignment, @moore_blocking_2013 calculate the mean MDs for each incoming participant, $q$, for all treatment conditions, $t$, and sort the treatment conditions by these averages. Randomization is biased towards conditions with high scores. For each value of $k$, with $k \in \{2,3,...,6\}$, the condition with the highest average MD is then assigned a probability $k$ times larger than all other assignment probabilities. 
+Recall that $S$ denotes the covariance matrix. 
+-->
 
-Blocking is thus possible when all covariate information is known at the time of assignment and when this information 'trickles in' over time. Covariate information, however, is only one side of the coin. Researchers also need to take into consideration the characteristics of the variable to block on. Not all types of variables can and should be used the same way to be blocked on. Specifically, the current use of ordinal variables as blocking variables is somewhat problematic.
+To aggregate pairwise similarity, they implement the mean, median, and trimmed mean of the pairwise MDs between the current participant and the participants in each treatment condition: Participants are indexed with treatment condition $t$ using $r \in \{1,...,R\}$. For each condition $t$, they estimate an average MD between the current participant, $q$, and the participants previously assigned. If the distance in terms of MD for the incoming participant is 2 in the control and 5 in the treatment condition, the incoming participant looks more similar to the control condition. To set the probability of assignment, @moore_blocking_2013 calculate the mean MDs for each incoming participant, $q$, for all treatment conditions, $t$, and sort the treatment conditions by these averages. Randomization is biased towards conditions with high scores. For each value of $k$, with $k \in \{2,3,...,6\}$, the condition with the highest average MD is then assigned a probability $k$ times larger than all other assignment probabilities. 
+
+Blocking is thus possible when all covariate information is known at the time of assignment and when this information 'trickles in' over time. Covariate information, however, is only one side of the coin. Researchers also need to take into consideration the characteristics of the variable to block on. Not all types of variables can and should be used the same way for blocking. Specifically, the current use of ordinal variables as blocking variables is somewhat problematic.
 
 
 
@@ -244,15 +268,51 @@ Blocking is thus possible when all covariate information is known at the time of
 
 Ordinal variables matter in surveys. One of the most important ordinal variables in political science surveys is education. It is widely established that education represents one of the major driving forces behind public opinion and political behavior, such as turnout or donations, in the U.S. [@dawood_campaign_2015; @fiorina_disconnect_2009; @leighley_who_2014; @abramowitz_disappearing_2010; @druckman_how_2013; @fiorina_culture_2011; @king_polarization_1997]. Ordinal variables are part of the larger framework of categorical variables. Categorical variables represent types of data which are commonly divided into three groups: nominal, interval, and ordinal variables. Nominal variables are categorical variables with two or more categories that are not intrinsically ordered. Examples include gender (Female, Male, Transgender etc.), race (African-American, White, Hispanic etc.), and party ID (Democrat, Republican, Independent) where the categories cannot be ordered sensibly into highest or lowest. Interval variables are ordered categorical variables with evenly spaced values. Examples include income (\$20,000, \$40,000, \$60,000, \$80,000 etc.), where the distance between \$20,000 and \$40,000 is the same as the distance between \$60,000 and \$80,000. Ordinal variables are ordered categorical variables where the spacing between values is not the same. Examples include education (Elementary School, Some High School, High School Graduate etc.) where the distance between "Elementary School" and "Some High School" is likely different than the distance between "Some High School" and "High School Graduate". Each subsequent category has quantitatively more education than the previous one, but the exact measure of the distances between the categories is unclear.  
 
-For statistical analysis, the categories of nominal variables are often turned into binary variables. This manipulation does not impose any unnatural ordering onto the variable and thus does not require any theoretical assumptions. Interval variables are often made numerical, which is statistically sound. It makes sense to assign numerical values such as 1, 2, 3, and 4 to income categories of \$20,000, \$40,000, \$60,000, and \$80,000 as the distance between each of these categories is identical between any adjacent pair. This translates perfectly into the numerical values with identical distances, i.e. the distance between \$20,000 and \$40,000 is the same as the distance between 1 and 2. Ordinal variables are also often made numerical for analytic purposes. This is problematic because of their unevenly spaced categories. If the education categories "Elementary School", "Some High School", and "High School Graduate" were turned into the numerical values 1, 2, and 3, we would wrongly assume that the distances between the education categories correspond to these evenly spaced values. Do the numbers 1 to 3 really represent the distances between these categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all. We cannot answer this by making an arbitrary assumption that is not justified by the data. Alternatively, if "Elementary School", "Some High School", and "High School Graduate" were turned into three separate dummy variables, we would wrongly assume that there is no ordering to these values. In both cases, important information would be lost, which could lead to a large degree of distortion [@obrien_1981_using]. To truly use the ordinal nature of a variable, we need to use both its quantitative and its inherent unevenly spaced ordered aspects to make a more underlying description of the data possible [@agresti_2010_analysis]. To fill this gap, I borrow from machine learning, which has close connections to problems of causal inference [@grimmer_2015_social], and propose an ordered probit model that estimates an ordinal variable's underlying latent continuous structure and is trained on external data.
+
+For statistical analysis, the categories of nominal variables are often turned into binary variables. This manipulation does not impose any unnatural ordering onto the variable and thus does not require any theoretical assumptions. Interval variables are often made numerical, which is statistically sound. It makes sense to assign numerical values such as 1, 2, 3, and 4 to income categories of \$20,000, \$40,000, \$60,000, and \$80,000 as the distance between each of these categories is identical between any adjacent pair. This translates perfectly into the numerical values with identical distances, i.e. the distance between \$20,000 and \$40,000 is the same as the distance between 1 and 2. Ordinal variables are often treated as nominal variables. Researchers here create a new binary variable for an education category, for instance "High School Graduate". This approach ignores the ordered nature contained in ordinal variables and we would wrongly assume that the ordering of education categories is arbitrary. Ordinal variables are also often made numerical for analytic purposes. This is problematic because of their unevenly spaced categories. If the education categories "Elementary School", "Some High School", and "High School Graduate" were turned into the numerical values 1, 2, and 3, we would wrongly assume that the distances between the education categories correspond to these evenly spaced values. Do the numbers 1 to 3 really represent the distances between these categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all. We cannot answer this by making an arbitrary assumption that is not justified by the data. Alternatively, if "Elementary School", "Some High School", and "High School Graduate" were turned into three separate dummy variables, we would wrongly assume that there is no ordering to these values. In both cases, important information would be lost, which could lead to a large degree of distortion [@obrien_1981_using]. Unfortunately, using one of these two approaches is common applied to ordinal variables in the social sciences. @liddell_2018_analyzing for instance report that all articles in the Journal of Personality and Social Psychology (JPSP), Psychological Science (PS), and the Journal of Experimental Psychology that mention the term 'Likert' analyzed ordinal data with a metric or binary model. Do so can cause inversions of effects as well as Type I and Type II errors [@lalla_2017_fundamental;@torra_2006_regression]. To truly use the ordinal nature of a variable, we need to use both its quantitative and its inherent unevenly spaced ordered aspects to make a more underlying description of the data possible [@agresti_2010_analysis]. To fill this gap, I borrow from machine learning, which has close connections to problems of causal inference [@grimmer_2015_social], and propose an ordered probit model that estimates an ordinal variable's underlying latent continuous structure and is trained on external data.
 
 
 
 ### Ordered Probit Approach {#ordblock-theory-op}
 
-Many approaches in the literature on the analysis of ordinal variables incorporate the distribution of the variable categories [@agresti_1996_introduction]. The most promising suggestions focus on natural extensions of probit and logit models [@winship_1984_regression] by assigning scores to be estimated from the data [@agresti_1990_categorical] and quantifying each non-quantitative variable according to the empirical distributions of the variable, assuming the presence of a continuous underlying variable for each ordinal indicator [@lucadamoa_2014_scaling]. In fact, @agresti_2010_analysis states "that the type of ordinal method used is not that crucial" but that the "results may be quite different, however, from those obtained using methods that treat all the variables as nominal" (p. 3). The same applies to methods which treat ordinal variables as interval [@gertheiss_2008_penalized]. This suggests that a probit or logit model is suitable to uncover the latent continuous variable underlying an ordinal variable, thereby using the ordinal information provided and respecting uneven distances. In the literature, this approach is focused exclusively on the analysis of ordinal variables as a response variable. I propose an ordered probit model that applies to ordinal variables as predictors.
+Many approaches in the literature on the analysis of ordinal variables incorporate the distribution of the variable categories [@agresti_1996_introduction]. The most promising suggestions focus on natural extensions of probit and logit models [@winship_1984_regression] by assigning scores to be estimated from the data [@agresti_1990_categorical] and quantifying each non-quantitative variable according to the empirical distributions of the variable, assuming the presence of a continuous underlying variable for each ordinal indicator [@lucadamoa_2014_scaling]. In fact, @agresti_2010_analysis states "that the type of ordinal method used is not that crucial" but that the "results may be quite different, however, from those obtained using methods that treat all the variables as nominal" (p. 3). The same applies to methods which treat ordinal variables as interval [@gertheiss_2008_penalized]. This suggests that a probit or logit model is suitable to uncover the latent continuous variable underlying an ordinal variable, thereby using the ordinal information provided and respecting uneven distances. In the literature, this approach is focused exclusively on the analysis of ordinal variables as a response variable. I propose an ordered probit model that applies to ordinal variables as predictors. The workflow of the model is shown in Figure \ref{op-workflow}.
 
-Let there be $\bm{X}$, an $n \times k$ matrix of explanatory variables. Let further $\bm{Y}$ be observed on the ordered categories $\bm{Y}_i \in [1,\ldots,k]$, for $i=1,\ldots n$, and let $\bm{Y}$ be assumed to be produced by the unobserved latent continuous variable $\bm{Y^{cont}}$. $\bm{Y^{cont}}$ is continuous on $R$ from $-\infty$ to $\infty$. The 'response mechanism' for the $r^{th}$ category is $Y=r \Longleftrightarrow \xi_{r-1} < Y^{cont} < \xi_r$. This requires there to be thresholds on $R$:
+\vspace{0.2cm}
+
+\ssp
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    \node [block2rw] (model) {\scriptsize{Linear Model: Ordinal Variable $\sim$ Predictors}};
+    \node [block2rw, below =1cm of model] (train) {\scriptsize{Train model on data}};
+    \node [block2rw, below =1cm of train] (cutoff) {\scriptsize{Estimate cutoff thresholds between categories}};
+    \node [block2rw, below =1cm of cutoff] (bin) {\scriptsize{Bin cases according to linear predictors}};
+    \node [block2rw, below =1cm of bin] (cats) {\scriptsize{Use re-estimated categories}};
+	\coordinate[below=0cm of model] (modelc);
+	\coordinate[above=0cm of train] (trainac);
+	\coordinate[below=0cm of train] (trainbc);
+	\coordinate[above=0cm of cutoff] (cutoffac);
+	\coordinate[below=0cm of cutoff] (cutoffbc);
+	\coordinate[above=0cm of bin] (binac);
+	\coordinate[below=0cm of bin] (binbc);
+	\coordinate[above=0cm of cats] (catsc);
+	\path [line] (modelc) -- (trainac);
+	\path [line] (trainbc) -- (cutoffac);
+	\path [line] (cutoffbc) -- (binac);
+	\path [line] (binbc) -- (catsc);
+\end{tikzpicture}
+\caption{Ordered Probit Workflow} 
+\label{op-workflow}
+\end{figure}
+
+\dsp
+
+\vspace{-0.4cm}
+
+We need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. We then train this model on externally and internally valid data. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. We then replace the original categories with these re-estimated categories and conduct the statistical analysis of interest. 
+
+Notationally, let there be $\bm{X}$, an $n \times k$ matrix of explanatory variables. Let further $\bm{Y}$ be observed on the ordered categories $\bm{Y}_i \in [1,\ldots,k]$, for $i=1,\ldots n$, and let $\bm{Y}$ be assumed to be produced by the unobserved latent continuous variable $\bm{Y^{cont}}$. $\bm{Y^{cont}}$ is continuous on $R$ from $-\infty$ to $\infty$. The 'response mechanism' for the $r^{th}$ category is $Y=r \Longleftrightarrow \xi_{r-1} < Y^{cont} < \xi_r$. This requires there to be thresholds on $R$:
 $Y^{cont}_i: \; \xi_0 \underset{a=1}{\longleftarrow\!\longrightarrow} \xi_1 \underset{a=2}{\longleftarrow\!\longrightarrow} \xi_2 \underset{a=3}{\longleftarrow\!\longrightarrow} \xi_3\ldots \xi_{A-1} \underset{a=A}{\longleftarrow\!\longrightarrow} \xi_A$. The vector of (unseen) utilities across individuals in the sample, $Y^{cont}$, is determined by a linear model of explanatory variables: $\bm{Y^{cont}} = \bm{X} \bm{\beta} + \mu$, where $\bm{\beta} =[\beta_1,\beta_2,\ldots,\beta_p]$ does not depend on the $\xi_j$ and $\mu \sim F_{\mu}$. For the observed vector $\bm{Y}$,
 
 \begin{align}
@@ -272,9 +332,7 @@ The likelihood function is
 L(\bm{\beta},\bm{\xi}|\bm{X},\bm{Y}) = \prod_{i=1}^{n}\prod_{j=1}^{A-1}\left[\Lambda(\xi_j + \bm{X}_i'\bm{\beta}) - \Lambda(\xi_{j-1} + \bm{X}_i'\bm{\beta}) \right]^{z_{ij}}
 \end{align}
 
-where $z_{ij}=1$ if the $i^\text{th}$ case is in the $j^\text{th}$ category, and $z_{ij}=0$ otherwise. The thresholds on $R$ partition the variable into regions corresponding to the ordinal categories. The linear model, $Y^{cont}$, bins the observations between these thresholds according to the linear predictors. 
-
-Practically, we need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. We then train this model on externally and internally valid data. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. We then replace the original categories with these re-estimated categories and conduct the statistical analysis of interest. In `R`, the ordered probit model can be implemented with the `polr` function from the `MASS` package [@ripley_2020_package].
+where $z_{ij}=1$ if the $i^\text{th}$ case is in the $j^\text{th}$ category, and $z_{ij}=0$ otherwise. The thresholds on $R$ partition the variable into regions corresponding to the ordinal categories. The linear model, $Y^{cont}$, bins the observations between these thresholds according to the linear predictors. In `R`, the ordered probit model can be implemented with the `polr` function from the `MASS` package [@ripley_2020_package].
 
 
 
@@ -283,17 +341,18 @@ Practically, we need to estimate a linear combination of meaningful covariates a
 
 ## Data {#ordblock-data}
 
-I apply the proposed ordered probit method to the 2016 American National Election Studies and train a specified regression model on these data. This estimates the thresholds between each existing ANES education category. All observations are then binned according to the estimated coefficients to determine the education categories that make sense, based on the underlying latent continuous variable. This results in two sets of education categories: ANES and ordered probit (OP). The ANES data are then blocked into five treatment groups to simulate a survey experiment environment. This process is repeated twice: once with the ANES categories, and once with the OP categories. To simulate sequential blocking, the order of observations is assumed to represent the sequential order of arrival to treatment. The estimation of group means and variances together with statistical tests reveals the suitability of this approach. Finally, I block the ANES data once more and conduct a placebo regression to test model fitness further.
+I use the American National Election Studies (ANES) to implement the proposed ordered probit method. The ANES are the oldest continuous collection of national surveys on electoral behavior and attitudes in the US. They are conducted before and after every US presidential and Congressional election by the University of Michigan and Stanford University. Data have been collected since 1948 in the attempt to understand voter behavior and candidate choice, among many others. The list of questions has been continually expanded and refined over the years. All ANES data are publicly available. The ANES are frequently used for high-profile publications [see for instance @jackman_2018_does; @leighley_who_2014]. I apply the proposed ordered probit method to the 2016 ANES data and train a specified regression model on these data. This estimates the thresholds between each existing ANES education category. All observations are then binned according to the linear predictors to determine the education categories that make sense, based on the underlying latent continuous variable. This results in two sets of education categories: ANES and ordered probit (OP). The ANES data are then blocked into five treatment groups to simulate a survey experiment environment. This process is repeated twice: once with the ANES categories, and once with the OP categories. To simulate sequential blocking, the order of observations is assumed to represent the sequential order of arrival to treatment. The estimation of group means and variances together with statistical tests reveals the suitability of this approach. Finally, I block the ANES data once more and conduct a placebo regression to test model fitness further.
 
 
 
 
 ## Results {#ordblock-results}
 
-Recall that we need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. This model needs to be trained on externally and internally valid data. The ANES data have been shown to be externally and internally valid in countless publications. I employ the following model with these data, using standard demographics in political science as predictors: 
+Recall that we need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. This model needs to be trained on externally and internally valid data. The ANES data have been shown to fulfill these criteria [@krupnikov_2014_cross-sample;@malhotra_2007_effect]. I employ the following model with these data, using standard demographics in political science as predictors for all observations $i$ with $i = [1,\ldots,n]$: 
 
 \begin{align}
-\text{Education} \sim \text{Gender} + \text{Race} + \text{Age} + \text{Income} + \text{Occupation} + \text{Party ID}
+\text{Education}_i \sim & \,\beta_0 + \beta_1 \text{Gender}_i + \beta_2 \text{Race}_i + \beta_3 \text{Age}_i + \beta_4 \text{Income}_i \,+ \nonumber \\
+& \beta_5 \text{Occupation}_i + \beta_6 \text{Party ID}_i + \epsilon_i
 \end{align}
 
 We then train this model on the ANES data. This estimates cutoff thresholds between the OP categories and bins data cases according to the linear predictors. When trained on these data, this ordinal probit model estimates the thresholds between each of the education categories shown in Table \ref{education-categories}.
@@ -344,12 +403,12 @@ The observations in the data are binned according to the estimated threshold coe
 ```{r Education Categories Plotting Code Histograms, include=FALSE}
 
 op.model.data <- readRDS("data/anes/anes_education.rds")
-plot.orig <- ggplot(op.model.data, aes(x = education)) + geom_bar(aes(y = (..count..)/sum(..count..)), fill = "darkred") + theme(axis.title=element_blank())
-plot.new <- ggplot(op.model.data, aes(x = education.new)) + geom_bar(aes(y = (..count..)/sum(..count..)), fill = "darkblue") + theme(axis.title=element_blank())
+plot.orig <- ggplot(op.model.data, aes(x = education)) + geom_bar(aes(y = (..count..)/sum(..count..)), fill = "darkred") + theme(axis.title=element_blank(), axis.text.x = element_text(angle = 45))
+plot.new <- ggplot(op.model.data, aes(x = education.new)) + geom_bar(aes(y = (..count..)/sum(..count..)), fill = "darkblue") + theme(axis.title=element_blank(), axis.text.x = element_text(angle = 45))
 
 ```
 
-```{r Barplot-Education-Categories, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distribution of Education Categories. Original ANES Categories on the Left, Ordered Probit Estimated Categories on the Right\\label{BarEducCat}"}
+```{r Barplot-Education-Categories, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distribution of Education Categories. Original ANES Categories on the Left, Ordered Probit Estimated Categories on the Right. Categories Below `High School Graduate` and Above `Master's` Are Collapsed. OP Categories Can Now Be Used For Blocking.\\label{BarEducCat}"}
 
 grid.arrange(plot.orig, plot.new, ncol = 2, nrow = 1, bottom = "Education", left = "Percentages")
 
@@ -363,7 +422,12 @@ As we can see, all categories 'below' "High School Graduate" and 'above' "Master
 
 ### Blocking Differences {#ordblock-data-blockdiff}
 
-```{r Block-ANES-OP-categories, include=FALSE}
+We block the ANES on education into three treatment groups, once based on the original ANES education categories, and once based on the newly estimated OP education categories. We overall do not observe large differences between the ANES and OP variable proportions/means in each treatment group with the naked eye (see appendix Figures \ref{ANBlock1} to \ref{ANBlock3} for details). Because of the wider range of possible values, this might apply somewhat less for the variables `Age` and `Feel Trump`. To analyze this, I run an ANOVA test on both variables. I form a combined data set of all observations for each education set for each treatment group. This results in three data sets, i.e. one per treatment group. The first data set contains all observations from the ANES set that were assigned to treatment group 1 and all observations from the OP set that were assigned to treatment group 1. It also contains the column `Education Set` which denotes the education set each observation belongs to. For treatment group 1, `Education Set` contains the unique values `ANES` and `OP`. I then run an Analysis of Variance (ANOVA) regression of each numerical variable on `Education Set`. An ANOVA regression provides information about levels of variability within a regression model and forms a basis for tests of significance. As the name implies, ANOVA analyzes the variance in the data to look for differences. It calculates the the sums of squares to measure the distances of each data point to the mean. The ratio of the sums of squares forms the F-statistic, which is used to gauge statistical significance. I use it to test whether the choice of education set has a significant effect on `Age` and `Feel Trump`.
+
+
+```{r Block-ANES-OP-Categories, include=FALSE}
+
+#### This block is only needed for list.dfs, which I need here. Everything else is used for stuff in the appendix ####
 
 df.an <- readRDS("data/blocking/df_an.RDS")
 df.op <- readRDS("data/blocking/df_op.RDS")
@@ -385,22 +449,25 @@ assigned.op <- readRDS("data/blocking/assigned_op.RDS")
 an.t1 <- df.an[df.an$id %in% assigned.an$assg[[1]][,1],] %>% subset(., select=-c(id, education))
 an.t2 <- df.an[df.an$id %in% assigned.an$assg[[1]][,2],] %>% subset(., select=-c(id, education))
 an.t3 <- df.an[df.an$id %in% assigned.an$assg[[1]][,3],] %>% subset(., select=-c(id, education))
-an.t4 <- df.an[df.an$id %in% assigned.an$assg[[1]][,4],] %>% subset(., select=-c(id, education))
-an.t5 <- df.an[df.an$id %in% assigned.an$assg[[1]][,5],] %>% subset(., select=-c(id, education))
+# an.t4 <- df.an[df.an$id %in% assigned.an$assg[[1]][,4],] %>% subset(., select=-c(id, education))
+# an.t5 <- df.an[df.an$id %in% assigned.an$assg[[1]][,5],] %>% subset(., select=-c(id, education))
 
 op.t1 <- df.op[df.op$id %in% assigned.op$assg[[1]][,1],] %>% subset(., select=-c(id, education))
 op.t2 <- df.op[df.op$id %in% assigned.op$assg[[1]][,2],] %>% subset(., select=-c(id, education))
 op.t3 <- df.op[df.op$id %in% assigned.op$assg[[1]][,3],] %>% subset(., select=-c(id, education))
-op.t4 <- df.op[df.op$id %in% assigned.op$assg[[1]][,4],] %>% subset(., select=-c(id, education))
-op.t5 <- df.op[df.op$id %in% assigned.op$assg[[1]][,5],] %>% subset(., select=-c(id, education))
+# op.t4 <- df.op[df.op$id %in% assigned.op$assg[[1]][,4],] %>% subset(., select=-c(id, education))
+# op.t5 <- df.op[df.op$id %in% assigned.op$assg[[1]][,5],] %>% subset(., select=-c(id, education))
 
 
 ### props of factor columns, except education ###
 
 list.props <- list()
-list.dfs <- list(an.t1, an.t2, an.t3, an.t4, an.t5,
-                 op.t1, op.t2, op.t3, op.t4, op.t5)
-n.tr <- 5
+list.dfs <- list(an.t1, an.t2, an.t3,
+                 op.t1, op.t2, op.t3)
+# list.dfs <- list(an.t1, an.t2, an.t3, an.t4, an.t5,
+#                  op.t1, op.t2, op.t3, op.t4, op.t5)
+n.tr <- 3
+# n.tr <- 5
 an <- c()
 op <- c()
 
@@ -433,7 +500,9 @@ lev.names <- sapply(tmp, levels) %>% unlist
 lev.names["pid4"] <- "Something else"
 rownames(df.props) <- lev.names
 df.props <- drop.zero(df.props, digits = 3) %>%
-  .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3", "ANES4", "OP4", "ANES5", "OP5")]
+  .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3")]
+# df.props <- drop.zero(df.props, digits = 3) %>%
+#   .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3", "ANES4", "OP4", "ANES5", "OP5")]
 
 
 ### means of numeric columns ###
@@ -456,7 +525,10 @@ for(i in 1:ncol(tmp2)){
 }
 
 df.means <- plyr::ldply(list.means, data.frame, .id = NULL) %>%
-  .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3", "ANES4", "OP4", "ANES5", "OP5")]
+  .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3")]
+# df.means <- plyr::ldply(list.means, data.frame, .id = NULL) %>%
+#   .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3", "ANES4", "OP4", "ANES5", "OP5")]
+
 rownames(df.means) <- colnames(tmp2) %>%
   gsub("\\.", " ", .) %>%
   tools::toTitleCase(.)
@@ -467,10 +539,11 @@ rownames(df.means) <- colnames(tmp2) %>%
 an.ed.t1 <- df.an[df.an$id %in% assigned.an$assg[[1]][,1],] %>% subset(., select=c(education))
 an.ed.t2 <- df.an[df.an$id %in% assigned.an$assg[[1]][,2],] %>% subset(., select=c(education))
 an.ed.t3 <- df.an[df.an$id %in% assigned.an$assg[[1]][,3],] %>% subset(., select=c(education))
-an.ed.t4 <- df.an[df.an$id %in% assigned.an$assg[[1]][,4],] %>% subset(., select=c(education))
-an.ed.t5 <- df.an[df.an$id %in% assigned.an$assg[[1]][,5],] %>% subset(., select=c(education))
+# an.ed.t4 <- df.an[df.an$id %in% assigned.an$assg[[1]][,4],] %>% subset(., select=c(education))
+# an.ed.t5 <- df.an[df.an$id %in% assigned.an$assg[[1]][,5],] %>% subset(., select=c(education))
 
-list.eds.an <- list(an.ed.t1, an.ed.t2, an.ed.t3, an.ed.t4, an.ed.t5)
+list.eds.an <- list(an.ed.t1, an.ed.t2, an.ed.t3)
+# list.eds.an <- list(an.ed.t1, an.ed.t2, an.ed.t3, an.ed.t4, an.ed.t5)
 
 df.ed.an <- data.frame(matrix(NA, levels(an.ed.t1[,1]) %>% length, length(list.eds.an)))
 rownames(df.ed.an) <- levels(an.ed.t1[,1])
@@ -487,10 +560,12 @@ df.ed.an <- drop.zero(df.ed.an, digits = 3)
 op.ed.t1 <- df.op[df.op$id %in% assigned.op$assg[[1]][,1],] %>% subset(., select=c(education))
 op.ed.t2 <- df.op[df.op$id %in% assigned.op$assg[[1]][,2],] %>% subset(., select=c(education))
 op.ed.t3 <- df.op[df.op$id %in% assigned.op$assg[[1]][,3],] %>% subset(., select=c(education))
-op.ed.t4 <- df.op[df.op$id %in% assigned.op$assg[[1]][,4],] %>% subset(., select=c(education))
-op.ed.t5 <- df.op[df.op$id %in% assigned.op$assg[[1]][,5],] %>% subset(., select=c(education))
+# op.ed.t4 <- df.op[df.op$id %in% assigned.op$assg[[1]][,4],] %>% subset(., select=c(education))
+# op.ed.t5 <- df.op[df.op$id %in% assigned.op$assg[[1]][,5],] %>% subset(., select=c(education))
 
-list.eds.op <- list(op.ed.t1, op.ed.t2, op.ed.t3, op.ed.t4, op.ed.t5)
+list.eds.op <- list(op.ed.t1, op.ed.t2, op.ed.t3)
+# list.eds.op <- list(op.ed.t1, op.ed.t2, op.ed.t3, op.ed.t4, op.ed.t5)
+
 df.ed.op <- data.frame(matrix(NA, levels(op.ed.t1[,1]) %>% length, length(list.eds.op)))
 rownames(df.ed.op) <- levels(op.ed.t1[,1])
 colnames(df.ed.op) <- op
@@ -509,137 +584,16 @@ bottom <- data.frame(matrix(NA, 2, length(list.eds.op)))
 colnames(bottom) <- colnames(top)
 rownames(bottom) <- rownames(df.ed.an)[14:15]
 df.ed.all <-rbind(top, df.ed.op, bottom) %>% cbind(df.ed.an, .) %>%
-  .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3", "ANES4", "OP4", "ANES5", "OP5")]
+  .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3")]
+# df.ed.all <-rbind(top, df.ed.op, bottom) %>% cbind(df.ed.an, .) %>%
+#   .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3", "ANES4", "OP4", "ANES5", "OP5")]
 
 ### combine and print (and manually adjust) factors, numerics, education ###
 
 df.all <- rbind(df.props, df.means) # I decided not to include ed.all because I don't want to have to explain the differing numbers (which might well be meaningless anyway)
 
 rownames(df.all)[17] <- "Employed" # sounds better than "Working"
-
-tab <- stargazer(df.all, 
-                 summary = FALSE,
-                 header=FALSE,
-                 align = TRUE,
-                 title = "Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories. Differentiated by Treatment Group",
-                 label = "education-blocked")
-st <- gsub("{c}", "{l}", tab, fixed = TRUE)
-cat(st)
-
 ```
-
-
-Table \ref{education-blocked} shows the variable proportions or means, depending on the type of variable in question, after blocking the ANES data on education into five treatment groups. As outlined above, this is done twice, once based on the original ANES education categories, and once based on the newly estimated OP education categories.
-
-
-\begin{table}[!htbp] \centering    
-\caption{Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories. Differentiated by Treatment Group}
-\label{education-blocked} 
-\resizebox{11.5cm}{!}{%
-\begin{tabular}{cc c @{\hspace{1.3cm}} c c @{\hspace{1.3cm}} c c @{\hspace{1.3cm}} c c @{\hspace{1.3cm}} c c } \\[-1.8ex]\hline  
-\hline \\[-1.8ex] 
- & \multicolumn{2}{c}{\hspace{-1cm}Group 1} & \multicolumn{2}{c}{\hspace{-1.3cm}Group 2} & \multicolumn{2}{c}{\hspace{-1.3cm}Group 3} & \multicolumn{2}{c}{\hspace{-1.3cm}Group 4} & \multicolumn{2}{c}{\hspace{-0.2cm}Group 5}\\ 
-\hline \\[-1.8ex]  
- & ANES & OP & ANES & OP & ANES & OP & ANES & OP & ANES & OP \\  
-\cline{2-3}
-\cline{4-5}
-\cline{6-7}
-\cline{8-9}
-\cline{10-11} \\[-1.8ex]
-\textbf{Gender} & & & & & & & & & & \\  
-Male & .467 & .468 & .473 & .481 & .475 & .463 & .463 & .468 & .476 & .473 \\  
-Female & .533 & .529 & .524 & .514 & .522 & .535 & .533 & .532 & .521 & .524 \\  
-Other & .000 & .003 & .003 & .005 & .003 & .002 & 
-.003 & .000 & .003 & .003 \\  
- & & & & & & & & & & \\
-\textbf{Race} & & & & & & & & & & \\  
-White & .763 & .751 & .770 & .778 & .752 & .743 & .749 & .746 & .752 & .770 \\  
-African American & .095 & .089 & .090 & .089 & .106 & .100 & .094 & .117 & .110 & .100 \\  
-Asian & .032 & .035 & .041 & .027 & .027 & .035 & .027 & .032 & .030 & .029 \\  
-Native American & .008 & .000 & .003 & .005 & .003 & .006 & .006 & .008 & .006 & .008 \\  
-Hispanic & .102 & .125 & .095 & .102 & .111 & .116 & .124 & .097 & .102 & .094 \\  
- & & & & & & & & & & \\
-\textbf{Income} & & & & & & & & & & \\  
-Under 25,000 & .206 & .203 & .198 & .219 & .224 & .206 & .216 & .211 & .211 & .216 \\  
-25,000-49,999 & .246 & .237 & .246 & .205 & .190 & .225 & .211 & .206 & .217 & .238 \\ 
-50,000-749,999 & .167 & .175 & .187 & .178 & .210 & .173 & .189 & .208 & .162 & .181 \\  
-75,000-99,999 & .119 & .135 & .148 & .133 & .130 & .151 & .133 & .127 & .135 & .119 \\  
-100,000-124,999 & .102 & .090 & .094 & .095 & .094 & .092 & .079 & .087 & .089 & .092 \\  
-125,000-149,999 & .038 & .040 & .033 & .052 & .040 & .035 & .049 & .041 & .052 & .044 \\  
-150,000-174,999 & .046 & .038 & .030 & .035 & .041 & .038 & .043 & .040 & .044 & .054 \\  
-175,000 or more & .076 & .083 & .063 & .083 & .071 & .079 & .079 & .079 & .089 & .056 \\  
- & & & & & & & & & & \\
-\textbf{Employment} & & & & & & & & & & \\  
-Employed & .646 & .646 & .649 & .608 & .600 & .652 & .624 & .613 & .622 & .622 \\  
-Unemployed & .056 & .065 & .057 & .054 & .063 & .051 & .051 & .059 & .075 & .073 \\  
-Retired & .183 & .181 & .184 & .213 & .203 & .179 & .214 & .210 & .192 & .194 \\  
-Disabled & .033 & .035 & .043 & .046 & .051 & .037 & .027 & .033 & .038 & .041 \\  
-Homemaker & .049 & .049 & .052 & .054 & .052 & .052 & .060 & .063 & .054 & .049 \\  
-Student & .033 & .024 & .014 & .025 & .030 & .029 & .024 & .022 & .019 & .021 \\  
- & & & & & & & & & & \\
-\textbf{Party ID} & & & & & & & & & & \\  
-Democrat & .314 & .378 & .367 & .348 & .338 & .341 & .378 & .344 & .378 & .363 \\  
-Republican & .279 & .292 & .279 & .294 & .317 & .281 & .308 & .321 & .295 & .292 \\  
-Independent & .362 & .300 & .330 & .324 & .311 & .333 & .284 & .302 & .292 & .321 \\  
-Something else & .044 & .030 & .024 & .035 & .033 & .044 & .030 & .033 & .035 & .024 \\  
- & & & & & & & & & & \\
-\textbf{President} & & & & & & & & & & \\  
-Approve & .551 & .533 & .514 & .524 & .502 & .535 & .522 & .522 & .544 & .519 \\  
-Disapprove & .449 & .467 & .486 & .476 & .498 & .465 & .478 & .478 & .456 & .481 \\  
- & & & & & & & & & & \\
-\textbf{Min. Wage} & & & & & & & & & & \\  
-Raised & .648 & .635 & .621 & .630 & .644 & .662 & .619 & .637 & .681 & .649 \\  
-Kept the same & .302 & .303 & .302 & .289 & .308 & .273 & .310 & .308 & .251 & .298 \\  
-Lowered & .019 & .021 & .027 & .029 & .013 & .027 & .025 & .021 & .025 & .013 \\  
-Eliminated & .032 & .041 & .051 & .052 & .035 & .038 & .046 & .035 & .043 & .040 \\  
- & & & & & & & & & & \\
-\textbf{Country} & & & & & & & & & & \\  
-Right direction & .290 & .292 & .252 & .251 & .249 & .252 & .267 & .265 & .268 & .267 \\  
-Wrong track & .710 & .708 & .748 & .749 & .751 & .748 & .733 & .735 & .732 & .733 \\ 
- & & & & & & & & & & \\
-\textbf{Age} & \hspace{-0.4cm}48.548 & \hspace{-0.4cm}48.957 & \hspace{-0.4cm}48.949 & \hspace{-0.4cm}49.540 & \hspace{-0.4cm}48.811 & \hspace{-0.4cm}47.157 & \hspace{-0.4cm}49.702 & \hspace{-0.4cm}49.773 & \hspace{-0.4cm}49.100 & \hspace{-0.4cm}49.683 \\  
- & & & & & & & & & & \\
-\textbf{Feel Trump} & \hspace{-0.4cm}34.695 & \hspace{-0.4cm}34.378 & \hspace{-0.4cm}37.278 & \hspace{-0.4cm}36.394 & \hspace{-0.4cm}40.579 & \hspace{-0.4cm}36.241 & \hspace{-0.4cm}35.767 & \hspace{-0.4cm}38.584 & \hspace{-0.4cm}34.590 & \hspace{-0.4cm}37.313 \\  
-\hline \\[-1.8ex]  
-\end{tabular}}
-\end{table}
-
-
-
-<!--
-Gender: Even across all groups for both sets
-A few small distances for White (.752 vs. .770), African American (.094 vs. .117), Hispanic (.124 vs. .097)
-Under 25: .198 vs. .219
-25-50: .246 vs. .205
-50-75: .210 vs. .173
-Working: .600 vs. 652
-Retired: .184 vs. .213
-Democrat: .378 vs. 344
-Republican: .317 vs. .281
-Approve: .502 vs. 535
-Disapprove: .456 vs. 482
-Raised: .681 vs. 649
-Kept the same: .251 vs. .298
-Age: 48.811 vs. 47.151
-Feel Trump: 40.579 vs. 36.241, 35.767 vs. 38.584, 34.590 vs. 37.313
--->
-
-The focus here lies on the differences between the two sets of blocked education categories for each treatment group, i.e. the proportions/means of all variables for the ANES set in treatment group 1 should look the same as the proportions/means of all variables for the OP set in treatment group 1. We overall do not observe large differences. All `Gender` proportions for instance are virtually identical between the two sets for each group. Scattered throughout, somewhat more noticeable differences occur: The proportion of white respondents in group 5 for example is `r df.all["White", "ANES5"]` for ANES but `r df.all["White", "OP5"]` for OP. The proportions for African-American and Hispanic respondents similarly differ (`r df.all["African-American", "ANES4"]` vs. `r df.all["African-American", "OP4"]` and `r df.all["Hispanic", "ANES4"]` vs. `r df.all["Hispanic", "OP4"]`, both in group 4). Other differences include respondents who earn more than \$25,000 and up to \$50,000 (`r df.all["$25,000-49,999", "ANES2"]` vs. `r df.all["$25,000-49,999", "OP2"]` in group 2), are employed (`r df.all["Employed", "ANES3"]` vs. `r df.all["Employed", "OP3"]` in group 3), and identify as Republican (`r df.all["Republican", "ANES3"]` vs. `r df.all["Republican", "OP3"]` in group 3). The largest differences can be observed for the numerical variables, `Age` and `Feel Trump`: Respondents in group 3 are on average `r df.all["Age", "ANES3"]` years old in the ANES set, but only `r df.all["Age", "OP3"]` years old in the OP set. For `Feel Trump`, respondents in group 3 feel more than `r ((df.all["Feel Trump", "ANES3"] %>% as.numeric) - (df.all["Feel Trump", "OP3"] %>% as.numeric)) %>% round(., digits = 0)` points more sympathetic towards Trump in the ANES set. This is reversed in groups 4 and 5, where OP respondents are `r ((df.all["Feel Trump", "OP4"] %>% as.numeric) - (df.all["Feel Trump", "ANES4"] %>% as.numeric)) %>% round(., digits = 0)` points more favorable towards Trump.
-
-\clearpage
-
-The somewhat larger differences in `Age` and `Feel Trump` could be cause for concern. To analyze this, I run an ANOVA test on both variables. I form a combined data set of all observations for each education set for each treatment group. This results in five data sets, i.e. one per treatment group. The first data set contains all observations from the ANES set that were assigned to treatment group 1 and all observations from the OP set that were assigned to treatment group 1. It also contains the column `Education Set` which denotes the education set each observation belongs to. For treatment group 1, `Education Set` contains the unique values `ANES1` and `OP1`. I then run an ANOVA regression of each numerical variable on `Education Set`. The corresponding models with the respective `R` function read
-
-\begin{align}
-\text{aov}(\text{Age} \sim \text{Education Set})
-\end{align}
-
-and 
-
-\begin{align}
-\text{aov}(\text{Feel Trump} \sim \text{Education Set}).
-\end{align}
-
 
 ```{r Variance-In-Treatment-Groups, include=FALSE}
 
@@ -648,27 +602,27 @@ and
 list.dfs.var <- list.dfs # so I don't mess with the output from above
 
 # add a treatment group column (ANES 1, OP 1 etc.) to each data frame
-# result is a list of length 10
+# result is a list of length 6
 # each cat only has one unique value (e.g. ANES 1)
 for(x in 1:(length(list.dfs)/2)){
   list.dfs.var[[x]]$cat <- rep(paste0("ANES", x), nrow(list.dfs.var[[x]])) %>% as.factor
-  list.dfs.var[[x+5]]$cat <- rep(paste0("OP", x), nrow(list.dfs.var[[x+5]])) %>% as.factor
+  list.dfs.var[[x+3]]$cat <- rep(paste0("OP", x), nrow(list.dfs.var[[x+3]])) %>% as.factor
 }
 
 list.dfs.t <- list()
 
 # combine ANES and OP data for each treatment group
-# result is a list of length 5
+# result is a list of length 3
 # cat now has two unique values respective of treatment group (e.g. OP 1, ANES 1)
 for(x in 1:(length(list.dfs)/2)){
-  list.dfs.t[[x]] <- c(list.dfs.var[x], list.dfs.var[x+5]) %>%
+  list.dfs.t[[x]] <- c(list.dfs.var[x], list.dfs.var[x+3]) %>%
     ldply(., data.frame) %>% subset(., select =-c(.id))
 }
 
 num.res <- rep(list(list()), 2)
 names(num.res) <- c("aov.sum", "aov.tukey")
-list.dfs.num.aov <- rep(list(num.res), 5)
-names(list.dfs.num.aov) <- c("T1", "T2", "T3", "T4", "T5")
+list.dfs.num.aov <- rep(list(num.res), 3)
+names(list.dfs.num.aov) <- c("T1", "T2", "T3")
 
 for(t in 1:length(list.dfs.num.aov)){
   for(w in 1:ncol(dplyr::select_if(list.dfs.t[[1]], is.numeric))){
@@ -689,8 +643,8 @@ for(t in 1:length(list.dfs.num.aov)){
 
 fac.res <- rep(list(list()), 2)
 names(fac.res) <- c("glm.sum", "glm.anov")
-list.dfs.fac.aov <- rep(list(fac.res), 5)
-treats <- c("T1", "T2", "T3", "T4", "T5")
+list.dfs.fac.aov <- rep(list(fac.res), 3)
+treats <- c("T1", "T2", "T3")
 names(list.dfs.fac.aov) <- treats
 
 for(t in 1:length(list.dfs.num.aov)){
@@ -705,7 +659,7 @@ for(t in 1:length(list.dfs.num.aov)){
 }
 
 # These commented out lines are just for me as an overview how all the lists are structured and how to get the numbers as a df
-# Lists of length 5, named T1 to T5
+# Lists of length 3, named T1 to T3
 # list.dfs.num.aov %>% length
 # list.dfs.num.aov %>% names
 # list.dfs.fac.aov %>% length
@@ -798,6 +752,7 @@ at <- gsub("{c}", "{l}", tab.aov.sum, fixed = TRUE) %>%
   gsub("Resid", " Residuals", ., fixed = TRUE)
 cat(at)
 
+# this one is commented out below
 tab.aov.tukey <- stargazer(df.aov.tukey, 
                  summary = FALSE,
                  header=FALSE,
@@ -810,6 +765,7 @@ bt <- gsub("{c}", "{l}", tab.aov.tukey, fixed = TRUE) %>%
   gsub("OP", " OP", ., fixed = TRUE)
 cat(bt)
 
+# this one is in the appendix
 tab.glm.sum <- stargazer(df.glm.sum, 
                  summary = FALSE,
                  header=FALSE,
@@ -829,6 +785,27 @@ ct <- gsub("{c}", "{l}", tab.glm.sum, fixed = TRUE) %>%
   gsub("\\multicolumn{1}{l}{", "", ., fixed = TRUE)
 cat(ct)
 
+# this one is commented out in the appendix
+tab.glm.anov <- stargazer(df.glm.anov, 
+                 summary = FALSE,
+                 header=FALSE,
+                 align = TRUE,
+                 title = "ANOVA Chisq Test of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group",
+                 label = "glm-anov")
+dt <- gsub("{c}", "{l}", tab.glm.anov, fixed = TRUE) %>%
+  gsub("gender", "", ., fixed = TRUE) %>%
+  gsub("race", "", ., fixed = TRUE) %>%
+  gsub("income", "", ., fixed = TRUE) %>%
+  gsub("occupation", "", ., fixed = TRUE) %>%
+  gsub("pid", "", ., fixed = TRUE) %>%
+  gsub("pres.approv", "", ., fixed = TRUE) %>%
+  gsub("min.wage", "", ., fixed = TRUE) %>%
+  gsub("country.track", "", ., fixed = TRUE)
+cat(dt)
+
+
+
+
 # To align ct along dots: Straighten the cat output out. Copy only the actual rows into a Latex doc. Replace all } with nothing. Replace all . with .&
 # Copy rows back into R. Add \multicolumn{2}{l} for the column headings. Add variable title rows. Replace extracolsep etc. with r@{}l for each numerical column.
 # Add longtable stuff
@@ -837,43 +814,34 @@ cat(ct)
 ```
 
 
-This is repeated for each of the five data sets. Tables \ref{aov-sum} shows a summary of the results. Almost all variable intercepts do not show statistical significance. An exception here is treatment group 3, which shows $p$-values of `r df.aov.sum["ageT3", "p-value"]` for `Age` and `r df.aov.sum["feel.trumpT3", "p-value"]` for `Feel Trump`, with the latter showing statistical significance. Overall, however, the differences between the treatment group means of `Age` and `Feel Trump` are not statistically significant, i.e. blocking on two different sets of education categories does not result in significantly differing means for the numerical variables.
+The ANOVA regression is repeated for each of the three data sets. Tables \ref{aov-sum} shows a summary of the results. Almost all variable intercepts do not show statistical significance. An exception here is treatment group 2, which shows a $p$-value of `r df.aov.sum["feel.trumpT2", "p-value"]` for `Feel Trump`. Overall, however, the differences between the treatment group means of `Age` and `Feel Trump` are not statistically significant for this sample size, i.e. blocking on two different sets of education categories does not result in significantly differing means for the numerical variables.^[For a similar analysis of the non-numerical factor variables (a binomial GLM regression), see appendix Table \ref{glm-sum}).]
 
-
-\begin{table}[!htbp] \centering    
-\caption{Summary of ANOVA Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}    
-\label{aov-sum}  
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
-\\[-1.8ex]\hline
-\hline \\[-1.8ex]  
-\multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Sum.Sq} & \multicolumn{1}{l}{Mean.Sq} & \multicolumn{1}{l}{F-value} & \multicolumn{1}{l}{p-value} \\  
-\hline \\[-1.8ex]  
+ \begin{table}[!htbp] \centering  
+ \caption{Summary of ANOVA Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}   
+ \label{aov-sum}
+ \begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex] 
+ \multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Sum.Sq} & \multicolumn{1}{l}{Mean.Sq} & \multicolumn{1}{l}{F-value} & \multicolumn{1}{l}{p-value} \\ 
+ \hline \\[-1.8ex] 
 \multicolumn{1}{l}{\textbf{Age}} & & & & & \\ 
-\multicolumn{1}{l}{T1} & 1 & 52.829 & 52.829 & .173 & .678 \\  
-\multicolumn{1}{l}{T1 Residuals} & 1,258 & 384,359.900 & 305.533 &  &  \\  
-\multicolumn{1}{l}{T2} & 1 & 109.829 & 109.829 & .355 & .551 \\  
-\multicolumn{1}{l}{T2 Residuals} & 1,258 & 388,724.900 & 309.002 &  &  \\  
-\multicolumn{1}{l}{T3} & 1 & 861.717 & 861.717 & 2.805 & .094 \\ 
-\multicolumn{1}{l}{T3 Residuals} & 1,258 & 386,400.000 & 307.154 &  &  \\  
-\multicolumn{1}{l}{T4} & 1 & 1.607 & 1.607 & .005 & .942 \\  
-\multicolumn{1}{l}{T4 Residuals} & 1,258 & 387,498.400 & 308.027 &  &  \\  
-\multicolumn{1}{l}{T5} & 1 & 106.896 & 106.896 & .351 & .553 \\  
-\multicolumn{1}{l}{T5 Residuals} & 1,258 & 382,695.200 & 304.209 &  &  \\  
+ \multicolumn{1}{l}{T1} & 1 & 0.107 & 0.107 & .000 & .985 \\
+ \multicolumn{1}{l}{T1 Residuals} & 2,098 & 641,917.600 & 305.966 & & \\
+ \multicolumn{1}{l}{T2} & 1 & 414.519 & 414.519 & 1.340 & .247 \\ 
+ \multicolumn{1}{l}{T2 Residuals} & 2,098 & 648,946.600 & 309.317 & & \\
+ \multicolumn{1}{l}{T3} & 1 & 427.954 & 427.954 & 1.401 & .237 \\
+ \multicolumn{1}{l}{T3 Residuals} & 2,098 & 641,038.400 & 305.547 & & \\ 
  & & & & & \\
 \multicolumn{1}{l}{\textbf{Feel Trump}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & 31.746 & 31.746 & .027 & .869 \\  
-\multicolumn{1}{l}{T1 Residuals} & 1,258 & 1,465,958.000 & 1,165.308 &  &  \\  
-\multicolumn{1}{l}{T2} & 1 & 246.229 & 246.229 & .196 & .658 \\ 
-\multicolumn{1}{l}{T2 Residuals} & 1,258 & 1,576,959.000 & 1,253.544 &  &  \\  
-\multicolumn{1}{l}{T3} & 1 & 5,928.007 & 5,928.007 & 4.871 & .027 \\ 
-\multicolumn{1}{l}{T3 Residuals} & 1,258 & 1,530,847.000 & 1,216.889 &  &  \\ 
-\multicolumn{1}{l}{T4} & 1 & 2,500.496 & 2,500.496 & 2.044 & .153 \\  
-\multicolumn{1}{l}{T4 Residuals} & 1,258 & 1,539,114.000 & 1,223.461 &  &  \\ 
-\multicolumn{1}{l}{T5} & 1 & 2,334.306 & 2,334.306 & 1.894 & .169 \\ 
-\multicolumn{1}{l}{T5 Residuals} & 1,258 & 1,550,046.000 & 1,232.151 &  &  \\ 
-\hline \\[-1.8ex]  
-\end{tabular}  
-\end{table} 
+ \multicolumn{1}{l}{T1} & 1 & 1,164.808 & 1,164.808 & .979 & .323 \\ 
+ \multicolumn{1}{l}{T1 Residuals} & 2,098 & 2,496,492.000 & 1,189.939 & & \\
+ \multicolumn{1}{l}{T2} & 1 & 7,054.667 & 7,054.667 & 5.699 & .017 \\ 
+ \multicolumn{1}{l}{T2 Residuals} & 2,098 & 2,597,204.000 & 1,237.943 & & \\
+ \multicolumn{1}{l}{T3} & 1 & 2,486.298 & 2,486.298 & 2.023 & .155 \\ 
+ \multicolumn{1}{l}{T3 Residuals} & 2,098 & 2,577,984.000 & 1,228.782 & & \\ 
+ \hline \\[-1.8ex]
+ \end{tabular} 
+ \end{table}
 
 
 <!--
@@ -911,137 +879,17 @@ with $M_I$ and $M_J$ denoting two means (with $M_I$ being the larger one) and $S
 \end{table} 
 -->
 
-\clearpage
-
-
-This leaves the factor variables. Since an ANOVA test is not possible for non-numerical factor variables (e.g. `Gender`, `Race` etc.), I conduct a binomial GLM regression here. The model formula is the same as above, with the `R` function `glm` replacing `aov`. The results are shown in Table \ref{glm-sum}.
-
-
-\ssp
-
-\footnotesize
-
-\begin{longtable}{lr@{}lr@{}lr@{}lr@{}l}  
-\caption{Summary of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}    
-\label{glm-sum}  
-\\[-1.8ex]\hline  
-\hline \\[-1.8ex]  
-  & \multicolumn{2}{l}{Estimate} & \multicolumn{2}{l}{Std.Error} & \multicolumn{2}{l}{z-value} & \multicolumn{2}{l}{p-value} \\  
-\hline \\[-1.8ex]  
-\textbf{Gender} & & & & \\  
-  T1 Intercept & .&134 & .&080 & 1.&672 & .&095 \\ 
-  T1 & -.&006 & .&113 & -.&056 & .&955 \\  
-  T2 Intercept & .&108 & .&080 & 1.&354 & .&176 \\ 
-  T2 & -.&032 & .&113 & -.&282 & .&778 \\ 
-  T3 Intercept & .&102 & .&080 & 1.&274 & .&203 \\ 
-  T3 & .&045 & .&113 & .&395 & .&693 \\  
-  T4 Intercept & .&146 & .&080 & 1.&831 & .&067 \\
-  T4 & -.&019 & .&113 & -.&169 & .&865 \\
-  T5 Intercept & .&095 & .&080 & 1.&195 & .&232 \\
-  T5 & .&013 & .&113 & .&113 & .&910 \\
- & & & & \\  
-\textbf{Race} & & & & \\  
-  T1 Intercept & -1.&172 & .&094 & -12.&500 & .&000 \\
-  T1 & .&069 & .&131 & .&526 & .&599 \\
-  T2 Intercept & -1.&207 & .&095 & -12.&757 & .&000 \\ 
-  T2 & -.&045 & .&135 & -.&337 & .&736 \\
-  T3 Intercept & -1.&111 & .&092 & -12.&040 & .&000 \\
-  T3 & .&050 & .&130 & .&389 & .&697 \\
-  T4 Intercept & -1.&094 & .&092 & -11.&907 & .&000 \\ 
-  T4 & .&017 & .&130 & .&130 & .&897 \\
-  T5 Intercept & -1.&111 & .&092 & -12.&040 & .&000 \\
-  T5 & -.&096 & .&132 & -.&727 & .&467 \\
-   & & & & \\  
-\textbf{Income} & & & & \\  
-  T1 Intercept & 1.&347 & .&098 & 13.&683 & .&000 \\
-  T1 & .&019 & .&140 & .&140 & .&889 \\
-  T2 Intercept & 1.&396 & .&100 & 13.&976 & .&000 \\
-  T2 & -.&125 & .&139 & -.&901 & .&368 \\
-  T3 Intercept & 1.&244 & .&096 & 13.&010 & .&000 \\
-  T3 & .&103 & .&137 & .&754 & .&451 \\
-  T4 Intercept & 1.&290 & .&097 & 13.&320 & .&000 \\
-  T4 & .&028 & .&138 & .&206 & .&837 \\
-  T5 Intercept & 1.&318 & .&098 & 13.&503 & .&000 \\
-  T5 & -.&028 & .&138 & -.&206 & .&837 \\
- & & & & \\  
-\textbf{Occupation} & & & & \\  
-  T1 Intercept & -.&602 & .&083 & -7.&221 & .&000 \\
-  T1 & -.&000 & .&118 & -.&000 & 1.&000 \\
-  T2 Intercept & -.&616 & .&083 & -7.&373 & .&000 \\
-  T2 & .&177 & .&117 & 1.&515 & .&130 \\
-  T3 Intercept & -.&405 & .&081 & -4.&986 & .&000 \\
-  T3 & -.&224 & .&117 & -1.&920 & .&055 \\
-  T4 Intercept & -.&506 & .&082 & -6.&149 & .&000 \\ 
-  T4 & .&047 & .&116 & .&406 & .&685 \\ 
-  T5 Intercept & -.&499 & .&082 & -6.&072 & .&000 \\ 
-  T5 & .&000 & .&116 & .&000 & 1.&000 \\
- & & & & \\  
-  \textbf{Party ID} & & & & \\  
-  T1 Intercept & .&780 & .&086 & 9.&090 & .&000 \\
-  T1 & -.&281 & .&119 & -2.&366 & .&018 \\
-  T2 Intercept & .&547 & .&083 & 6.&611 & .&000 \\
-  T2 & .&083 & .&118 & .&705 & .&481 \\
-  T3 Intercept & .&672 & .&084 & 7.&977 & .&000 \\
-  T3 & -.&014 & .&119 & -.&119 & .&905 \\
-  T4 Intercept & .&499 & .&082 & 6.&072 & .&000 \\
-  T4 & .&145 & .&117 & 1.&231 & .&218 \\ 
-  T5 Intercept & .&499 & .&082 & 6.&072 & .&000 \\ 
-  T5 & .&061 & .&117 & .&525 & .&600 \\
- & & & & \\  
-\textbf{Pres. Approval} & & & & \\  
-  T1 Intercept & -.&204 & .&080 & -2.&545 & .&011 \\
-  T1 & .&070 & .&113 & .&622 & .&534 \\
-  T2 Intercept & -.&057 & .&080 & -.&717 & .&473 \\
-  T2 & -.&038 & .&113 & -.&338 & .&735 \\
-  T3 Intercept & -.&006 & .&080 & -.&080 & .&936 \\
-  T3 & -.&134 & .&113 & -1.&184 & .&236 \\
-  T4 Intercept & -.&089 & .&080 & -1.&115 & .&265 \\
-  T4 & .&000 & .&113 & .&000 & 1.&000 \\
-  T5 Intercept & -.&178 & .&080 & -2.&228 & .&026 \\
-  T5 & .&102 & .&113 & .&903 & .&366 \\
- & & & & \\  
-\textbf{Min. Wage} & & & & \\  
-  T1 Intercept & -.&609 & .&083 & -7.&297 & .&000 \\
-  T1 & .&055 & .&117 & .&470 & .&638 \\
-  T2 Intercept & -.&492 & .&082 & -5.&995 & .&000 \\
-  T2 & -.&041 & .&116 & -.&349 & .&727 \\
-  T3 Intercept & -.&595 & .&083 & -7.&145 & .&000 \\
-  T3 & -.&077 & .&118 & -.&651 & .&515 \\
-  T4 Intercept & -.&486 & .&082 & -5.&918 & .&000 \\
-  T4 & -.&075 & .&117 & -.&641 & .&522 \\ 
-  T5 Intercept & -.&758 & .&085 & -8.&870 & .&000 \\
-  T5 & .&143 & .&119 & 1.&193 & .&233 \\
- & & & & \\  
-\textbf{Country Track} & & & & \\  
-  T1 Intercept & .&893 & .&088 & 10.&176 & .&000 \\
-  T1 & -.&008 & .&124 & -.&062 & .&951 \\
-  T2 Intercept & 1.&086 & .&092 & 11.&840 & .&000 \\
-  T2 & .&008 & .&130 & .&065 & .&948 \\
-  T3 Intercept & 1.&103 & .&092 & 11.&974 & .&000 \\
-  T3 & -.&017 & .&130 & -.&130 & .&897 \\
-  T4 Intercept & 1.&012 & .&090 & 11.&228 & .&000 \\
-  T4 & .&008 & .&128 & .&064 & .&949 \\
-  T5 Intercept & 1.&003 & .&090 & 11.&159 & .&000 \\
-  T5 & .&008 & .&127 & .&064 & .&949 \\ 
- \hline \\[-1.8ex]
- \end{longtable} 
-
-\dsp
-
-\normalsize
-
-
-Contrary to the numerical variables, a large number of the $p$-values for the variable intercepts are highly significant here. This includes all intercepts of `Race`, `Income`, `Occupation`, `Party ID`, `Min. Wage`, and `Country Track`. The only exceptions are `Gender` and `Pres. Approval`. None of the `Gender` intercepts in any treatment group reach statistical significance, while only the intercepts in treatment groups 1 and 5 do so for `Pres. Approval` (`r df.glm.sum["pres.approvT1Int", "p-value"]` and `r df.glm.sum["pres.approvT5Int", "p-value"]`, respectively). These reliably highly significant intercept values indicate that a differentiation in education categories is important for non-numerical factor variables as the categories are statistically distinct. 
 
 
 
 
 ### Placebo Regression {#ordblock-data-plac}
 
-To further test the usefulness of the ordered probit categories, I conduct a placebo regression. Placebo tests are most commonly used for difference-in-differences estimators and are falsification tests to analyze whether an effect exists that should not exist [@bertrand_2004_much; @mills_2009_palgrave; @rothstein_2010_teacher]. The placebo treatment should be unrelated to the model or method being studied [@hartman_2018_equivalence; @rosenbaum_2002_observational; @mora_2019_alternative]. In the effort to conduct an analysis that is separate from the previous section, I block the 2016 ANES data anew, this time into two treatment groups. As before, this is done separately for the original ANES and the OP education categories. We then model the following OLS regression on the feeling thermometer towards Donald Trump as the Republican presidential candidate:
+To further test the usefulness of the ordered probit categories, I conduct a placebo regression. Placebo tests are most commonly used for difference-in-differences estimators and are falsification tests to analyze whether an effect exists that should not exist [@bertrand_2004_much; @mills_2009_palgrave; @rothstein_2010_teacher]. The placebo treatment should be unrelated to the model or method being studied [@hartman_2018_equivalence; @rosenbaum_2002_observational; @mora_2019_alternative]. In the effort to conduct an analysis that is separate from the previous section, I block the 2016 ANES data anew on education, this time into two treatment groups. As before, this is done separately for the original ANES and the OP education categories. We then model the following OLS regression on the feeling thermometer towards Donald Trump as the Republican presidential candidate for all observations $i$ with $i = [1,\ldots,n]$:
 
 \begin{align}
-\text{Feel Trump} \sim \text{Group} + \text{Democrat} + \text{Republican} + \text{Income} + \text{Male} + \text{White} + \text{Black} + \text{Hispanic}
+\text{Feel Trump}_i \sim & \,\beta_0 + \beta_1 \text{Group}_i + \beta_2 \text{Democrat}_i + \beta_3 \text{Republican}_i + \beta_4 \text{Income}_i \,+ \nonumber \\ 
+& \beta_5 \text{Male}_i + \beta_6 \text{White}_i + \beta_7 \text{Black}_i + \beta_8 \text{Hispanic}_i
 \end{align}
 
 The \texttt{Group} variable is added after the data was collected. This means no actual treatment was administered, i.e. \texttt{Group} is a placebo treatment. I did not conduct an experiment on the ANES data. Instead, I created the \texttt{Group} variable, randomly 'assigned' observations to the two treatment groups, and then used this variable as an explanatory variable. The treatment is thus completely artificial. In the absence of actual treatment, the difference between both treatment groups should be zero, i.e. there should be no significant differences between the \texttt{Group} regression coefficients. The null hypothesis thus assumes that there is no effect. To test this, each blocking/regression process for each set of categories is repeated 1,000 times. The distribution of the placebo treatment indicator (\texttt{Group}) is visualized in Figure \ref{DensPlacTreat}. 
@@ -1050,7 +898,6 @@ The \texttt{Group} variable is added after the data was collected. This means no
 ```{r Placebo Treatment Plotting Code, include=FALSE}
 
 repeats <- 1000
-
 list.list.gt2.coeff <- readRDS(paste("data/blocking/list_list_test_ols_trump_gt2_coeff_all_obs_", repeats, "_runs.rds", sep = ""))
 
 gt2.orig <- unlist(list.list.gt2.coeff[[1]], recursive = FALSE)
@@ -1085,6 +932,7 @@ I set out to improve the use of ordinal variables to block respondents into trea
 Blocking naturally depends on covariates. One of the most important covariates in political science is education. Out of convenience, education is often converted to a numerical variable for regressions in practice. Due to education's special nature as an ordinal variable, such an approach is potentially problematic as ordinal variable levels are not evenly spaced. The distance between the education categories "Elementary School" and "Some High School" is very likely not the same as the distance between "Some High School" and "High School Graduate". Converting these three categories to the numerical values 1, 2, and 3, however, assumes evenly spaced distances. This could lead to a misrepresentation of the data.
 
 As an alternative, I proposed an ordered probit approach whereby we estimate the latent underlying continuous variable underneath education. This estimates cutoff thresholds between the education categories, bins observations according to linear model predictors, and results in a new set of education categories that fit the data and, most importantly, represent the latent underlying continuous variable with its unevenly spaced distances. I applied this approach to the 2016 ANES data, resulting in two sets of education categories: the original ANES categories, and the newly estimated ordered probit (OP) categories. I subsequently blocked both sets into five treatment groups and analyzed the group means and variances. While the numerical variables do not show statistically distinct intercepts, almost all intercepts for the non-numerical factor variables are statistically significant. This indicates that the two sets of covariates are statistically distinct and that the re-estimation of education categories is meaningful. I also ran a placebo regression 1,000 times to conduct a falsification test. This shows distributions of the placebo treatment variable around the statistically expected zero but also reveals the OP variable to be closer to zero than the ANES variable for both mean and median. This also indicates slightly superior performance by the OP method. Together, these tests thus show that the re-estimation of ordinal variable categories with an ordered probit approach matters. The next chapter will use the OP approach to address multiple imputation with ordinal variables.
+
 
 
 

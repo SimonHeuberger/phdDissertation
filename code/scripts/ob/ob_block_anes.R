@@ -12,7 +12,7 @@ df$id <- 1:nrow(df) # add "id" column for blocking
 vars <- c("age", "gender", "race", "income", "occupation", 
           "pid", "pres.approv", "min.wage", "country.track", 
           "feel.trump", "id")
-n.tr <- 5
+n.tr <- 3
 means.an <- c()
 means.op <- c()
 

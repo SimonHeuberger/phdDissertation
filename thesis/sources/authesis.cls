@@ -510,7 +510,10 @@ In \par
  &          &        & {\@thirdreader}             & & &\\
  &          &        &                             & & &\\
  &          &        &                             & & &\\ \cline{4-7}
- &          &        & {\@fourthreader}            & & &\\
+ &          &        & {\@fourthreader}             & & &\\
+ &          &        &                             & & &\\
+ &          &        &                             & & &\\ \cline{4-7}
+ &          &        & {\@fifthreader}            & & &\\
  &          &        &                             & & &\\
  &          &        &                             & & &\\ \cline{1-2}
 %\small{Dean of the School \phantom{ CAS or SPA}} & & & & & &\\

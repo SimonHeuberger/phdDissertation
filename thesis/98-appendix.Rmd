@@ -2,6 +2,8 @@
 
 # BLOCKING {#app-ordblock}
 
+## Online Experiment Environment {#app-ordblock-env}
+
 In order to conduct this experiment, I created an online survey environment based on `R` with `shiny` [@boas_fielding_2013], as there currently is no available tool to block sequentially online. Popular online survey platforms, such as Qualtrics, do not offer this functionality, and none of the attempts to combine `R` code work with Qualtrics concern the 'injection' of `R` code into the Qualtrics randomization engine, which blocking would require [@hainmueller_2014_causal;@barari_2017_package;@testa_2017_qualtricstools;@ginn_2018_package]. The following is a basic outline of the mechanisms behind this survey environment.
 
 The survey questions, i.e. questions that collect demographic information and questions that apply treatment, need to be designed as `.txt` files and incorporated into a local `shiny` environment. This local environment is then hosted in the cloud and publicly accessible. The hosted website sequentially blocks each incoming respondent based on her covariate information and covariate information from all previous respondents through constant interaction with the `R` code. The workflow for any incoming respondent is illustrated in Figure \ref{online-workflow} below.
@@ -31,101 +33,536 @@ The survey questions, i.e. questions that collect demographic information and qu
 A respondent clicks on the survey link and answers the demographic question. After she selects her level of education, `R` code in the background pulls previous respondents' covariate information from a Dropbox server. Based on this information and her chosen education level, the `R` code sequentially blocks and assigns her to a treatment group. The respondent then sees and answers the respective treatment question(s). Her responses are then saved on the same Dropbox server. This process is repeated for all incoming respondents. If the respondent is the first person to take the survey, i.e. if there is no covariate information from previous respondents yet, the code randomly assigns her to one of the treatment groups. All subsequent respondents are then blocked and assigned as just described. To recruit respondents, the website was fed into Lucid's marketplace. 
 
 
+
+## Blocking Differences {#app-ordblock-blockdiff}
+
 <!--
-## Blocking Differences {#app-ordblock-diff}
+One block of code is in ordinal-blocking because I needed it for a table there
+-->
 
-```{r Variance Table, include=FALSE}
+```{r Block-ANES-OP-Categories-Table, include=FALSE}
 
-tab.glm.anov <- stargazer(df.glm.anov, 
+df.all.table <- df.all # I need the columns numeric for the plot, but I want the leading zero dropped for the table
+# I might not need the table, but I don't want to throw it away
+
+tab <- stargazer(df.all, 
                  summary = FALSE,
                  header=FALSE,
                  align = TRUE,
-                 title = "ANOVA Chisq Test of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group",
-                 label = "glm-anov")
-dt <- gsub("{c}", "{l}", tab.glm.anov, fixed = TRUE) %>%
-  gsub("gender", "", ., fixed = TRUE) %>%
-  gsub("race", "", ., fixed = TRUE) %>%
-  gsub("income", "", ., fixed = TRUE) %>%
-  gsub("occupation", "", ., fixed = TRUE) %>%
-  gsub("pid", "", ., fixed = TRUE) %>%
-  gsub("pres.approv", "", ., fixed = TRUE) %>%
-  gsub("min.wage", "", ., fixed = TRUE) %>%
-  gsub("country.track", "", ., fixed = TRUE)
-cat(dt)
+                 title = "Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories. Differentiated by Treatment Group",
+                 label = "education-blocked")
+st <- gsub("{c}", "{l}", tab, fixed = TRUE)
+cat(st)
+
+```
+
+```{r Block-ANES-OP-Categories-Figure, include=FALSE}
+
+for(i in 1:ncol(df.all)){
+  df.all[,i] <- as.numeric(df.all[,i])
+}
+
+df.all <- tibble::rownames_to_column(df.all, "categories")
+df.all$categories <- as.factor(df.all$categories)
+
+col.n <- c("categories", "ANES", "OP")
+
+
+# Group 1
+group1 <- df.all[,1:3]
+colnames(group1) <- col.n
+
+gender1 <- group1[1:3,]
+gender1$variable <- rep("Gender", 3) %>% as.factor
+gender1.melt <- melt(gender1, variable.name = "group")
+
+race1 <- group1[4:8,]
+race1$variable <- rep("Race", 5) %>% as.factor
+race1.melt <- melt(race1, variable.name = "group")
+
+income1 <- group1[9:16,]
+income1$categories <- c("<25k", "25-50k", "50-75k", "75-100k", "100-125k", "125-150k", "150-175k", ">175K") %>% factor
+income1$variable <- rep("Income", 8) %>% as.factor
+income1.melt <- melt(income1, variable.name = "group")
+
+empl1 <- group1[17:22,]
+empl1$variable <- rep("Employment", 6) %>% as.factor
+empl1.melt <- melt(empl1, variable.name = "group")
+
+pid1 <- group1[23:26,]
+pid1$variable <- rep("Party ID", 4) %>% as.factor
+pid1.melt <- melt(pid1, variable.name = "group")
+
+pres1 <- group1[27:28,]
+pres1$variable <- rep("President", 2) %>% as.factor
+pres1.melt <- melt(pres1, variable.name = "group")
+
+minw1 <- group1[29:32,]
+minw1$variable <- rep("Minimum Wage", 4) %>% as.factor
+minw1.melt <- melt(minw1, variable.name = "group")
+
+country1 <- group1[33:34,]
+country1$variable <- rep("Country", 2) %>% as.factor
+country1.melt <- melt(country1, variable.name = "group")
+
+age1 <- group1[35,]
+age1$variable <- rep("Age", 1) %>% as.factor
+age1.melt <- melt(age1, variable.name = "group")
+
+feel1 <- group1[36,]
+feel1$variable <- rep("Feel Trump", 1) %>% as.factor
+feel1.melt <- melt(feel1, variable.name = "group")
+
+p.gender1 <- ggplot(data = gender1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Gender") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.race1 <- ggplot(data = race1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Race") + 
+  theme(axis.title.y=element_blank(), legend.position = c(0.4, 0.7), axis.text.x = element_text(angle = 45)) + 
+  guides(fill=guide_legend(title="Categories"))
+p.empl1 <- ggplot(data = empl1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Employment") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.pid1 <- ggplot(data = pid1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Party ID") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.age1 <- ggplot(data = age1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Age") + 
+  theme(axis.title.y=element_blank(), legend.position='none',
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+p.income1 <- ggplot(data = income1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Income") + theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.pres1 <- ggplot(data = pres1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("President") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.minw1 <- ggplot(data = minw1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Minimum Wage") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.country1 <- ggplot(data = country1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Country") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.feel1 <- ggplot(data = feel1.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Feel Trump") + 
+  theme(axis.title.y=element_blank(), legend.position='none',
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+
+# Group 2
+
+group2 <- df.all[,c(1, 4, 5)]
+colnames(group2) <- col.n
+
+gender2 <- group2[1:3,]
+gender2$variable <- rep("Gender", 3) %>% as.factor
+gender2.melt <- melt(gender2, variable.name = "group")
+
+race2 <- group2[4:8,]
+race2$variable <- rep("Race", 5) %>% as.factor
+race2.melt <- melt(race2, variable.name = "group")
+
+income2 <- group2[9:16,]
+income2$categories <- c("<25k", "25-50k", "50-75k", "75-100k", "100-125k", "125-150k", "150-175k", ">175K") %>% factor
+income2$variable <- rep("Income", 8) %>% as.factor
+income2.melt <- melt(income2, variable.name = "group")
+
+empl2 <- group2[17:22,]
+empl2$variable <- rep("Employment", 6) %>% as.factor
+empl2.melt <- melt(empl2, variable.name = "group")
+
+pid2 <- group2[23:26,]
+pid2$variable <- rep("Party ID", 4) %>% as.factor
+pid2.melt <- melt(pid2, variable.name = "group")
+
+pres2 <- group2[27:28,]
+pres2$variable <- rep("President", 2) %>% as.factor
+pres2.melt <- melt(pres2, variable.name = "group")
+
+minw2 <- group2[29:32,]
+minw2$variable <- rep("Minimum Wage", 4) %>% as.factor
+minw2.melt <- melt(minw2, variable.name = "group")
+
+country2 <- group2[33:34,]
+country2$variable <- rep("Country", 2) %>% as.factor
+country2.melt <- melt(country2, variable.name = "group")
+
+age2 <- group2[35,]
+age2$variable <- rep("Age", 1) %>% as.factor
+age2.melt <- melt(age2, variable.name = "group")
+
+feel2 <- group2[36,]
+feel2$variable <- rep("Feel Trump", 1) %>% as.factor
+feel2.melt <- melt(feel2, variable.name = "group")
+
+p.gender2 <- ggplot(data = gender2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Gender") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.race2 <- ggplot(data = race2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Race") + 
+  theme(axis.title.y=element_blank(), legend.position = c(0.4, 0.7), axis.text.x = element_text(angle = 45)) + 
+  guides(fill=guide_legend(title="Categories"))
+p.empl2 <- ggplot(data = empl2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Employment") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.pid2 <- ggplot(data = pid2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Party ID") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.age2 <- ggplot(data = age2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Age") + 
+  theme(axis.title.y=element_blank(), legend.position='none',
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+p.income2 <- ggplot(data = income2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Income") + theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.pres2 <- ggplot(data = pres2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("President") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.minw2 <- ggplot(data = minw2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Minimum Wage") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.country2 <- ggplot(data = country2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Country") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.feel2 <- ggplot(data = feel2.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Feel Trump") + 
+  theme(axis.title.y=element_blank(), legend.position='none',
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+
+# Group 3
+group3 <- df.all[,c(1, 6, 7)]
+colnames(group3) <- col.n
+
+gender3 <- group3[1:3,]
+gender3$variable <- rep("Gender", 3) %>% as.factor
+gender3.melt <- melt(gender3, variable.name = "group")
+
+race3 <- group3[4:8,]
+race3$variable <- rep("Race", 5) %>% as.factor
+race3.melt <- melt(race3, variable.name = "group")
+
+income3 <- group3[9:16,]
+income3$categories <- c("<25k", "25-50k", "50-75k", "75-100k", "100-125k", "125-150k", "150-175k", ">175K") %>% factor
+income3$variable <- rep("Income", 8) %>% as.factor
+income3.melt <- melt(income3, variable.name = "group")
+
+empl3 <- group3[17:22,]
+empl3$variable <- rep("Employment", 6) %>% as.factor
+empl3.melt <- melt(empl3, variable.name = "group")
+
+pid3 <- group3[23:26,]
+pid3$variable <- rep("Party ID", 4) %>% as.factor
+pid3.melt <- melt(pid3, variable.name = "group")
+
+pres3 <- group3[27:28,]
+pres3$variable <- rep("President", 2) %>% as.factor
+pres3.melt <- melt(pres3, variable.name = "group")
+
+minw3 <- group3[29:32,]
+minw3$variable <- rep("Minimum Wage", 4) %>% as.factor
+minw3.melt <- melt(minw3, variable.name = "group")
+
+country3 <- group3[33:34,]
+country3$variable <- rep("Country", 2) %>% as.factor
+country3.melt <- melt(country3, variable.name = "group")
+
+age3 <- group3[35,]
+age3$variable <- rep("Age", 1) %>% as.factor
+age3.melt <- melt(age3, variable.name = "group")
+
+feel3 <- group3[36,]
+feel3$variable <- rep("Feel Trump", 1) %>% as.factor
+feel3.melt <- melt(feel3, variable.name = "group")
+
+p.gender3 <- ggplot(data = gender3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Gender") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.race3 <- ggplot(data = race3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Race") + 
+  theme(axis.title.y=element_blank(), legend.position = c(0.4, 0.7), axis.text.x = element_text(angle = 45)) + 
+  guides(fill=guide_legend(title="Categories"))
+p.empl3 <- ggplot(data = empl3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Employment") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.pid3 <- ggplot(data = pid3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Party ID") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.age3 <- ggplot(data = age3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Age") + 
+  theme(axis.title.y=element_blank(), legend.position='none',
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+p.income3 <- ggplot(data = income3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Income") + theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.pres3 <- ggplot(data = pres3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("President") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.minw3 <- ggplot(data = minw3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Minimum Wage") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.country3 <- ggplot(data = country3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Country") + 
+  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+p.feel3 <- ggplot(data = feel3.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Feel Trump") + 
+  theme(axis.title.y=element_blank(), legend.position='none',
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 
 ```
 
 
-\begin{table}[!htbp] \centering    
-\caption{ANOVA Chisq Test of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}    
-\label{glm-anov}  
-\resizebox{10.5cm}{!}{%
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
-\\[-1.8ex]\hline  
-\hline \\[-1.8ex]  
-\multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Deviance} & \multicolumn{1}{l}{Resid.Df} & \multicolumn{1}{l}{Residual Deviance} & \multicolumn{1}{l}{Pr.Chi} \\  
-\hline \\[-1.8ex]  
-\multicolumn{1}{l}{\textbf{Gender}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.003} & 1,258 & 1,741.387 & \multicolumn{1}{l}{.955} \\  
-\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.080} & 1,258 & 1,743.981 & \multicolumn{1}{l}{.778} \\  
-\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.156} & 1,258 & 1,741.743 & \multicolumn{1}{l}{.693} \\  
-\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.029} & 1,258 & 1,740.828 & \multicolumn{1}{l}{.865} \\  
-\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.013} & 1,258 & 1,743.466 & \multicolumn{1}{l}{.910} \\  
- & & & & & \\  
-\multicolumn{1}{l}{\textbf{Race}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.276} & 1,258 & 1,396.688 & \multicolumn{1}{l}{.599} \\ 
-\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.113} & 1,258 & 1,347.160 & \multicolumn{1}{l}{.736} \\  
-\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.151} & 1,258 & 1,423.487 & \multicolumn{1}{l}{.697} \\  
-\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.017} & 1,258 & 1,423.621 & \multicolumn{1}{l}{.897} \\  
-\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.528} & 1,258 & 1,384.957 & \multicolumn{1}{l}{.467} \\  
- & & & & & \\  
-\multicolumn{1}{l}{\textbf{Income}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.019} & 1,258 & 1,277.453 & \multicolumn{1}{l}{.889} \\  
-\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.812} & 1,258 & 1,290.106 & \multicolumn{1}{l}{.367} \\  
-\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.569} & 1,258 & 1,311.366 & \multicolumn{1}{l}{.451} \\  
-\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.043} & 1,258 & 1,306.695 & \multicolumn{1}{l}{.837} \\  
-\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.043} & 1,258 & 1,306.695 & \multicolumn{1}{l}{.837} \\  
- & & & & & \\  
-\multicolumn{1}{l}{\textbf{Occupation}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,637.669 & \multicolumn{1}{l}{1.000} \\  
-\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{2.299} & 1,258 & 1,660.174 & \multicolumn{1}{l}{.129} \\  
-\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{3.695} & 1,258 & 1,661.905 & \multicolumn{1}{l}{.055} \\  
-\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.165} & 1,258 & 1,675.415 & \multicolumn{1}{l}{.685} \\  
-\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,670.674 & \multicolumn{1}{l}{1.000} \\  
- & & & & & \\  
-\multicolumn{1}{l}{\textbf{Party ID}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{5.617} & 1,258 & 1,619.670 & \multicolumn{1}{l}{.018} \\  
-\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.498} & 1,258 & 1,641.929 & \multicolumn{1}{l}{.480} \\  
-\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.014} & 1,258 & 1,614.864 & \multicolumn{1}{l}{.905} \\  
-\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{1.517} & 1,258 & 1,646.701 & \multicolumn{1}{l}{.218} \\  
-\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.276} & 1,258 & 1,661.142 & \multicolumn{1}{l}{.600} \\  
- & & & & & \\  
-\multicolumn{1}{l}{\textbf{Pres. Approval}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.387} & 1,258 & 1,737.416 & \multicolumn{1}{l}{.534} \\  
-\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.114} & 1,258 & 1,744.787 & \multicolumn{1}{l}{.735} \\  
-\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{1.402} & 1,258 & 1,743.649 & \multicolumn{1}{l}{.236} \\  
-\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.000} & 1,258 & 1,744.241 & \multicolumn{1}{l}{1.000} \\  
-\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.816} & 1,258 & 1,740.832 & \multicolumn{1}{l}{.366} \\  
- & & & & & \\  
-\multicolumn{1}{l}{\textbf{Min. Wage}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.221} & 1,258 & 1,644.543 & \multicolumn{1}{l}{.638} \\  
-\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.122} & 1,258 & 1,666.506 & \multicolumn{1}{l}{.727} \\  
-\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.424} & 1,258 & 1,626.133 & \multicolumn{1}{l}{.515} \\  
-\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.411} & 1,258 & 1,663.111 & \multicolumn{1}{l}{.521} \\  
-\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{1.426} & 1,258 & 1,605.348 & \multicolumn{1}{l}{.232} \\  
- & & & & & \\  
-\multicolumn{1}{l}{\textbf{Country Track}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,520.274 & \multicolumn{1}{l}{.951} \\  
-\multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,421.458 & \multicolumn{1}{l}{.948} \\  
-\multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.017} & 1,258 & 1,419.261 & \multicolumn{1}{l}{.897} \\  
-\multicolumn{1}{l}{T4} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,459.355 & \multicolumn{1}{l}{.949} \\  
-\multicolumn{1}{l}{T5} & 1 & \multicolumn{1}{l}{.004} & 1,258 & 1,463.401 & \multicolumn{1}{l}{.949} \\  
-\hline \\[-1.8ex]  
-\end{tabular}}  
-\end{table}
+Figures \ref{ANBlock1} to \ref{ANBlock3} show the variable proportions or means, depending on the type of variable in question, after blocking the ANES data on education into three treatment groups. As outlined above, this is done twice, once based on the original ANES education categories, and once based on the newly estimated OP education categories. Table \ref{glm-sum} shows a binomial GLM regression of the non-numerical factor variables.
+
+
+```{r ANES-Blocked-Plot-1, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 1. `Age` and `Feel Trump` Show Means, All Others Show Proportions.\\label{ANBlock1}"}
+
+grid.arrange(p.gender1, p.race1, p.empl1, p.pid1, p.age1, 
+             p.income1, p.pres1, p.minw1, p.country1, p.feel1,
+             ncol = 5, nrow = 2)
+
+```
+
+```{r ANES-Blocked-Plot-2, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 2. `Age` and `Feel Trump` Show Means, All Others Show Proportions.\\label{ANBlock2}"}
+
+grid.arrange(p.gender2, p.race2, p.empl2, p.pid2, p.age2, 
+             p.income2, p.pres2, p.minw2, p.country2, p.feel2,
+             ncol = 5, nrow = 2)
+
+```
+
+```{r ANES-Blocked-Plot-3, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 3. `Age` and `Feel Trump` Show Means, All Others Show Proportions.\\label{ANBlock3}"}
+
+grid.arrange(p.gender3, p.race3, p.empl3, p.pid3, p.age3, 
+             p.income3, p.pres3, p.minw3, p.country3, p.feel3,
+             ncol = 5, nrow = 2)
+
+```
+
 
 \clearpage
+
+<!---
+\ssp
+
+\footnotesize
+
+\begin{longtable}{cc c @{\hspace{1.3cm}} c c @{\hspace{1.3cm}} c c} \\
+ \caption{Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories. Differentiated by Treatment Group}  
+ \label{education-blocked} 
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\hspace{-1cm}Group 1} & \multicolumn{2}{c}{\hspace{-1.3cm}Group 2} & \multicolumn{2}{c}{\hspace{-1.3cm}Group 3}\\ 
+\hline \\[-1.8ex]  
+ & ANES & OP & ANES & OP & ANES & OP \\  
+\cline{2-3}
+\cline{4-5}
+\cline{6-7}\\[-1.8ex]
+\textbf{Gender} & & & & & & \\  
+Male & .477 & .468 & .469 & .470 & .467 & .475 \\
+Female & .520 & .530 & .529 & .528 & .531 & .522 \\ 
+Other & .003 & .002 & .003 & .003 & .002 & .003 \\
+ & & & & & & \\
+\textbf{Race} & & & & & & \\  
+White & .743 & .750 & .760 & .752 & .770 & .770 \\ 
+African-American & .111 & .108 & .088 & .087 & .098 & .103 \\ 
+Asian & .035 & .025 & .030 & .039 & .030 & .030 \\ 
+Native American & .003 & .003 & .007 & .007 & .007 & .007 \\ 
+Hispanic & .108 & .115 & .116 & .115 & .096 & .090 \\
+ & & & & & & \\
+\textbf{Income} & & & & & & \\  
+Under \$25,000 & .209 & .210 & .227 & .220 & .198 & .204 \\
+\$25,000-49,999 & .225 & .220 & .208 & .214 & .234 & .232 \\ 
+\$50,000-74,9999 & .175 & .183 & .178 & .186 & .195 & .180 \\
+\$75,000-99,999 & .123 & .137 & .144 & .133 & .132 & .129 \\
+\$100,000-124,999 & .105 & .096 & .089 & .090 & .081 & .089 \\
+\$125,000-149,999 & .036 & .038 & .043 & .041 & .049 & .049 \\ 
+\$150,000-174,999 & .047 & .041 & .038 & .041 & .038 & .041 \\ 
+\$175,000 or more & .081 & .075 & .074 & .075 & .072 & .077 \\ 
+ & & & & & & \\
+\textbf{Employment} & & & & & & \\  
+Employed & .604 & .661 & .638 & .592 & .643 & .631 \\ 
+Unemployed & .064 & .050 & .060 & .076 & .057 & .055 \\ 
+Retired & .198 & .186 & .187 & .210 & .201 & .190 \\ 
+Disabled & .049 & .035 & .035 & .044 & .031 & .036 \\ 
+Homemaker & .055 & .047 & .055 & .050 & .050 & .065 \\
+Student & .030 & .022 & .025 & .028 & .017 & .023 \\
+ & & & & & & \\
+\textbf{Party ID} & & & & & & \\  
+Democrat & .370 & .342 & .342 & .370 & .352 & .352 \\
+Republican & .270 & .294 & .319 & .291 & .298 & .302 \\
+Independent & .322 & .325 & .308 & .309 & .318 & .314 \\ 
+Something else & .037 & .039 & .031 & .030 & .031 & .031 \\ 
+ & & & & & & \\
+\textbf{President} & & & & & & \\  
+Approve & .552 & .538 & .502 & .535 & .526 & .507 \\ 
+Disapprove & .448 & .462 & .498 & .465 & .474 & .493 \\ 
+ & & & & & & \\
+\textbf{Minimum Wage} & & & & & & \\  
+Raised & .649 & .639 & .614 & .639 & .665 & .650 \\ 
+Kept the same & .289 & .300 & .321 & .296 & .273 & .287 \\
+Lowered & .015 & .017 & .028 & .028 & .023 & .021 \\
+Eliminated & .048 & .044 & .037 & .037 & .039 & .043 \\ 
+ & & & & & & \\
+\textbf{Country} & & & & & & \\  
+Right direction & .278 & .279 & .248 & .258 & .270 & .259 \\
+Wrong track & .722 & .721 & .752 & .742 & .730 & .741 \\
+ & & & & & & \\
+\textbf{Age} & \hspace{-0.4cm}48.699 & \hspace{-0.4cm}48.713 & \hspace{-0.4cm}48.873 & \hspace{-0.4cm}49.762 & \hspace{-0.4cm}49.493 & \hspace{-0.4cm}48.590 \\
+ & & & & & & \\
+\textbf{Feel Trump} & \hspace{-0.4cm}35.064 & \hspace{-0.4cm}36.553 & \hspace{-0.4cm}38.582 & \hspace{-0.4cm}34.916 & \hspace{-0.4cm}36.100 & \hspace{-0.4cm}38.276 \\
+ \hline \\[-1.8ex]
+ \end{longtable}
+
+\dsp
+
+\normalsize
 -->
+
+
+
+\ssp
+
+\footnotesize
+
+\begin{longtable}{lr@{}lr@{}lr@{}lr@{}l}  
+\caption{Summary of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}    
+\label{glm-sum}  
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex]  
+  & \multicolumn{2}{l}{Estimate} & \multicolumn{2}{l}{Std.Error} & \multicolumn{2}{l}{z-value} & \multicolumn{2}{l}{p-value} \\  
+\hline \\[-1.8ex]  
+\textbf{Gender} & & & & \\  
+ T1 Intercept & .091 & .062 & 1.481 & .139 \\ 
+ T1 & .038 & .087 & .437 & .662 \\ 
+ T2 Intercept & .126 & .062 & 2.035 & .042 \\
+ T2 & -.004 & .087 & -.044 & .965 \\
+ T3 Intercept & .134 & .062 & 2.159 & .031 \\
+ T3 & -.034 & .087 & -.393 & .694 \\ 
+ & & & & \\  
+\textbf{Race} & & & & \\  
+ T1 Intercept & -1.061 & .071 & -15.024 & .000 \\
+ T1 & -.035 & .100 & -.351 & .726 \\ 
+ T2 Intercept & -1.153 & .072 & -15.952 & .000 \\
+ T2 & .041 & .102 & .407 & .684 \\
+ T3 Intercept & -1.206 & .073 & -16.452 & .000 \\
+ T3 & -.005 & .104 & -.052 & .959 \\
+   & & & & \\  
+\textbf{Income} & & & & \\  
+ T1 Intercept & 1.334 & .076 & 17.557 & .000 \\
+ T1 & -.006 & .107 & -.054 & .957 \\
+ T2 Intercept & 1.227 & .074 & 16.649 & .000 \\ 
+ T2 & .038 & .105 & .367 & .714 \\ 
+ T3 Intercept & 1.398 & .077 & 18.058 & .000 \\ 
+ T3 & -.036 & .109 & -.327 & .744 \\
+ & & & & \\  
+\textbf{Employment} & & & & \\  
+ T1 Intercept & -.421 & .063 & -6.678 & .000 \\
+ T1 & -.246 & .091 & -2.713 & .007 \\
+ T2 Intercept & -.567 & .064 & -8.831 & .000 \\
+ T2 & .193 & .090 & 2.152 & .031 \\
+ T3 Intercept & -.588 & .064 & -9.126 & .000 \\ 
+ T3 & .049 & .091 & .545 & .586 \\ 
+ & & & & \\  
+  \textbf{Party ID} & & & & \\  
+ T1 Intercept & .530 & .064 & 8.297 & .000 \\
+ T1 & .125 & .091 & 1.367 & .172 \\
+ T2 Intercept & .655 & .065 & 10.065 & .000 \\
+ T2 & -.125 & .091 & -1.367 & .172 \\
+ T3 Intercept & .609 & .065 & 9.421 & .000 \\ 
+ T3 & -.000 & .091 & -.000 & 1.000 \\ 
+ & & & & \\  
+\textbf{President} & & & & \\  
+ T1 Intercept & -.210 & .062 & -3.388 & .001 \\ 
+ T1 & .058 & .088 & .657 & .511 \\ 
+ T2 Intercept & -.008 & .062 & -.123 & .902 \\ 
+ T2 & -.134 & .087 & -1.528 & .126 \\ 
+ T3 Intercept & -.103 & .062 & -1.666 & .096 \\
+ T3 & .076 & .087 & .873 & .383 \\ 
+ & & & & \\  
+\textbf{Minimum Wage} & & & & \\  
+ T1 Intercept & -.613 & .065 & -9.480 & .000 \\ 
+ T1 & .042 & .091 & .456 & .649 \\ 
+ T2 Intercept & -.465 & .063 & -7.340 & .000 \\
+ T2 & -.106 & .090 & -1.173 & .241 \\
+ T3 Intercept & -.685 & .065 & -10.472 & .000 \\ 
+ T3 & .068 & .092 & .736 & .462 \\
+ & & & & \\  
+\textbf{Country} & & & & \\  
+ T1 Intercept & .954 & .069 & 13.850 & .000 \\ 
+ T1 & -.005 & .097 & -.049 & .961 \\ 
+ T2 Intercept & 1.111 & .071 & 15.544 & .000 \\ 
+ T2 & -.055 & .100 & -.552 & .581 \\ 
+ T3 Intercept & .992 & .069 & 14.282 & .000 \\
+ T3 & .059 & .099 & .593 & .553 \\ 
+ \hline \\[-1.8ex]
+ \end{longtable} 
+
+\dsp
+
+\normalsize
+
+<!--
+\ssp
+
+\footnotesize
+
+ \begin{longtable}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }
+ \caption{ANOVA Chisq Test of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}  
+ \label{glm-anov} 
+ \\[-1.8ex]\hline
+ \hline \\[-1.8ex]  
+ \multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Deviance} & \multicolumn{1}{l}{Resid.Df} & \multicolumn{1}{l}{Residual Deviance} & \multicolumn{1}{l}{Pr.Chi} \\ 
+ \hline \\[-1.8ex]  
+\multicolumn{1}{l}{\textbf{Gender}} & & & & & \\  
+ \multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.191} & 2,098 & 2,904.616 & \multicolumn{1}{l}{.662} \\
+ \multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.002} & 2,098 & 2,903.163 & \multicolumn{1}{l}{.965} \\
+ \multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.155} & 2,098 & 2,903.972 & \multicolumn{1}{l}{.694} \\ 
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Race}} & & & & & \\  
+ \multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.123} & 2,098 & 2,379.100 & \multicolumn{1}{l}{.726} \\
+ \multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.165} & 2,098 & 2,332.647 & \multicolumn{1}{l}{.684} \\
+ \multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.003} & 2,098 & 2,264.958 & \multicolumn{1}{l}{.959} \\
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Income}} & & & & & \\  
+ \multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.003} & 2,098 & 2,153.304 & \multicolumn{1}{l}{.957} \\
+ \multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.135} & 2,098 & 2,230.463 & \multicolumn{1}{l}{.714} \\
+ \multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.107} & 2,098 & 2,107.117 & \multicolumn{1}{l}{.744} \\
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Employment}} & & & & & \\  
+ \multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{7.380} & 2,098 & 2,754.861 & \multicolumn{1}{l}{.007} \\
+ \multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{4.637} & 2,098 & 2,794.022 & \multicolumn{1}{l}{.031} \\
+ \multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.297} & 2,098 & 2,750.890 & \multicolumn{1}{l}{.586} \\ 
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Party ID}} & & & & & \\  
+ \multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{1.869} & 2,098 & 2,733.149 & \multicolumn{1}{l}{.172} \\ 
+ \multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{1.869} & 2,098 & 2,733.149 & \multicolumn{1}{l}{.172} \\ 
+ \multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.000} & 2,098 & 2,725.414 & \multicolumn{1}{l}{1.000} \\ 
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{President}} & & & & & \\  
+ \multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.432} & 2,098 & 2,893.572 & \multicolumn{1}{l}{.511} \\ 
+ \multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{2.337} & 2,098 & 2,905.983 & \multicolumn{1}{l}{.126} \\
+ \multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.763} & 2,098 & 2,908.253 & \multicolumn{1}{l}{.382} \\ 
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Minimum Wage}} & & & & & \\  
+ \multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.208} & 2,098 & 2,734.810 & \multicolumn{1}{l}{.649} \\ 
+ \multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{1.376} & 2,098 & 2,773.589 & \multicolumn{1}{l}{.241} \\
+ \multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.541} & 2,098 & 2,699.691 & \multicolumn{1}{l}{.462} \\ 
+ & & & & & \\  
+\multicolumn{1}{l}{\textbf{Country}} & & & & & \\  
+ \multicolumn{1}{l}{T1} & 1 & \multicolumn{1}{l}{.002} & 2,098 & 2,484.714 & \multicolumn{1}{l}{.961} \\ 
+ \multicolumn{1}{l}{T2} & 1 & \multicolumn{1}{l}{.305} & 2,098 & 2,374.595 & \multicolumn{1}{l}{.581} \\ 
+ \multicolumn{1}{l}{T3} & 1 & \multicolumn{1}{l}{.352} & 2,098 & 2,427.160 & \multicolumn{1}{l}{.553} \\  
+ \hline \\[-1.8ex]  
+ \end{longtable} 
+-->
+
+
 
 
 

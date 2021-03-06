@@ -7,13 +7,12 @@
 \usepackage{url} 
 \def\UrlBreaks{\do\/\do-}
 % The following packages are for the LaTeX generated graph
-\usepackage{threeparttable}
-\usepackage{tikz}
-\usetikzlibrary{arrows}
 \usepackage{tikz}
 \usepackage{pdflscape}
 \newcommand{\blandscape}{\begin{landscape}} % for the framing landscape tables
 \newcommand{\elandscape}{\end{landscape}}
+\usepackage{threeparttable}
+\def\tightlist{}
 % The next three lines put the page number non-rotated and to the top right of the page
 \def\fillandplacepagenumber{%
  \par\pagestyle{empty}%
@@ -60,6 +59,9 @@
 
 % Define another block
 \tikzstyle{block2r} = [rectangle, draw, fill=red!20, text width=3cm, text centered, rounded corners, minimum height=2em]
+
+% Define another block
+\tikzstyle{block2rw} = [rectangle, draw, fill=red!20, text width=7cm, text centered, rounded corners, minimum height=2em]
 
 % Define yet another block
 \tikzstyle{block3} = [rectangle, draw, fill=blue!20, text width=2cm, text centered, rounded corners, minimum height=3em]
@@ -139,6 +141,7 @@
 \secondreader{Professor Ryan T. Moore}
 \thirdreader{Professor Elizabeth Suhay}
 \fourthreader{Professor R. Michael Alvarez}
+\fifthreader{Professor Elizabeth Malloy}
 \degreefield{Government}
 
 \begin{document}
@@ -161,7 +164,7 @@
 % Do NOT use the 'abstract' macro, which generates an unnumbered, abstract page.
 % (NOTE: The Guide no longer requires two abstract pages, one numbered, one without numbers.)
 
-\abstractn{Surveys are a central part of political science. Without surveys, we would not know what people think about political issues. Survey experiments also enable us to test how people react to given treatments. Surveys and survey experiments are only as good as the analytical techniques we as researchers use, though. This applies particularly to how we use and measure variables. For ordinal variables, some of our current measurements and techniques are insufficient. Ordinal variables consist of ordered categories where the spacing between each category is uneven and not known. One example is education, one of the most important predictors of political behavior. The distances between education categories such as ``Elementary School'', ``Some High School'', and ``High School Graduate'' are not evenly spread. Current practice nonetheless often does not take this information into account. This could misrepresent the data and potentially distort results. My dissertation develops two methods to address this and applies them in original survey research. Chapter \ref{ordblock} develops a new method to improve the use of ordinal variables in the assignment of treatment in survey experiments. Chapter \ref{ordmiss} develops a new method to treat missing survey data with ordinal variables. Chapter \ref{framing} applies both methods in an online survey experiment on political framing.}
+\abstractn{Surveys are a central part of political science. Without surveys, we would not know what people think about political issues. Survey experiments also enable us to test how people react to given treatments. Surveys and survey experiments are only as good as the analytical techniques we as researchers use, though. This applies particularly to how we use and measure variables. For ordinal variables, some of our current measurements and techniques are insufficient. Ordinal variables consist of ordered categories where the spacing between each category is uneven and not known. One example is education, one of the most important predictors of political behavior. The distances between education categories such as ``Elementary School'', ``Some High School'', and ``High School Graduate'' are not evenly spread. Current practice nonetheless often does not take this information into account. This could misrepresent the data and potentially distort results. My dissertation develops two methods to address this and applies them in original survey research. Chapter \ref{ordblock} develops a new method to improve the use of ordinal variables in the assignment of treatment in survey experiments. Preliminary evidence suggests that the re-estimation of ordinal variable categories with an ordered probit approach matters. Chapter \ref{ordmiss} develops a new method to treat missing survey data with ordinal variables. The results show that the method performs worse than existing software, despite expectations to the contrary. Chapter \ref{framing} applies both methods in an online survey experiment that tests morality in political framing. The findings show tentative evidence for the importance of morality in issue-opposing frames.}
 
 %This is an abstractn.  There are page numbers.
 %The \emph{Guide} says an abstract should not exceed 350 words.
@@ -187,21 +190,21 @@
 \hypertarget{intro}{%
 \chapter{INTRODUCTION}\label{intro}}
 
-News outlets, political campaigns, and survey institutes spend millions of dollars every year in the attempt to uncover what people want. The exact nature of public opinion is highly sought after information. It is not hard to see why: Public opinion is central to the functioning of democracy. It consists of the desires and wants of people. Their collective views and resulting behavior determine who gets elected, what policies are enacted, and how society is structured. We need to know what people want, how they think, how they feel, what they support, and what they oppose because these wants and desires directly inform policy making and political decisions. We do so by conducting surveys. Surveys are a central part of public opinion. Without surveys, we would not know what people think. They collect data from a population or a sample population to gain information and insights into political issues. Surveys are ubiquitous in today's media environment. Research institutes like the Pew Research Center conduct dozens of surveys on numerous topics every year. In the run-up to the 2020 presidential election, the number of opinion polls conducted in swing states easily reached triple digits.
+News outlets, political campaigns, and survey institutes spend millions of dollars every year in the attempt to uncover what people want. The exact nature of public opinion is highly sought after information. It is not hard to see why: Public opinion is central to the functioning of democracy. It consists of the desires and wants of people. Their collective views and opinions determine who gets elected, what policies are enacted, and how society is structured. We need to know what people want, how they think, how they feel, what they support, and what they oppose because these wants and desires directly inform policy making and political decisions. We do so by conducting surveys. Surveys are a central part of public opinion. Without surveys, we would not know what people think. They collect data from a population or a sample population to gain information and insights into political issues. Surveys are ubiquitous in today's media environment. Research institutes like the Pew Research Center conduct dozens of surveys on numerous topics every year. In the run-up to the 2020 presidential election, the number of opinion polls conducted in swing states easily reached triple digits.
 
-In political science, surveys are often used to analyze behavior. To establish causal effects, researchers use survey experiments. Like surveys, survey experiments collect background information on people's demographics. Unlike surveys, however, they also include attempts to uncover treatment effects on public opinion by testing one or several hypotheses. Similar to a laboratory setting, this involves exposing respondents to differing conditions in order to determine the effect of the intervention in question. In medical research, a treatment may take the form of a pill. In a survey context, a treatment can take the form of particular types of questions, different question wording, or exposure to a particular type of content, among many others. Survey experiments are one of the most powerful methodological tools in political science. By combining experimental design that provides clear causal inference with the flexibility of the survey context as a site for behavioral research, survey experiments can be used in almost any field to study almost any question.
+In political science, surveys are often used to analyze political attitudes. To establish causal effects, researchers use survey experiments. Like surveys, survey experiments collect background information on people's demographics. Unlike surveys, however, they also include attempts to uncover treatment effects on public opinion by testing one or several hypotheses. Similar to a laboratory setting, this involves exposing respondents to differing conditions in order to determine the effect of the intervention in question. In medical research, a treatment may take the form of a pill. In a survey context, a treatment can take the form of particular types of questions, different question wording, or exposure to a particular type of content, among many others. Survey experiments are one of the most powerful methodological tools in political science. By combining experimental design that provides clear causal inference with the flexibility of the survey context as a site for attitude research, survey experiments can be used in almost any field to study almost any question.
 
 Surveys and survey experiments are only as good as the analytical techniques we as researchers use, though. This applies particularly to how we phrase and measure the questions we ask respondents. If a question is worded confusingly, for instance with a double negative, we cannot gain much insight from it. If we provide unsuitable response options, for instance in multiple choice questions, we might obtain inaccurate information. Take for instance a potential question inquiring after support for the legalization of marijuana. Say this question only offered the response choices ``Yes, I support legalization'' and ``No, I don't support legalization''. Are these good choices? Most likely not. Restricting the range of possible answers to a binary choice denies respondents the chance to voice more complex opinions. Some people might support legalization a little bit. Others might be highly enthusiastic about it. Yet others again might rigidly oppose it, while a fourth group is ambivalent about the subject. How we word questions and how we measure responses matters. This does not end at questionnaire design. How we use the collected information for subsequent analysis is just as, if not more, important. The statistical techniques and methods we use to analyze survey and survey experiment data crucially influence the results we obtain. This applies particularly to different types of variables. While some variables are comparatively easy to wrangle, such as numerical ones, others provide a greater challenge. For one particular type, namely ordinal variables, I consider some of our analytical techniques to be insufficient.
 
 Ordinal variables are part of the larger framework of categorical variables. Categorical variables represent types of data which are commonly divided into three groups: nominal, interval, and ordinal. Nominal variables are categorical variables with two or more categories that are not intrinsically ordered. Examples include gender (Female, Male, Transgender etc.), race (African-American, White, Hispanic etc.), and party ID (Democrat, Republican, Independent) where the categories cannot be ordered sensibly into highest or lowest. Interval variables are ordered categorical variables with evenly spaced values. Examples include income (\$20,000, \$40,000, \$60,000, \$80,000 etc.), where the distance between \$20,000 and \$40,000 is the same as the distance between \$60,000 and \$80,000. Ordinal variables are ordered categorical variables where the spacing between values is not the same. Examples include education (Elementary School, Some High School, High School Graduate etc.) where the distance between ``Elementary School'' and ``Some High School'' is likely different than the distance between ``Some High School'' and ``High School Graduate''. Each subsequent category has quantitatively more education than the previous one, but the exact measure of the distances between the categories is not known.
 
-Current practice often does not take ordinal variable information into account. Instead, ordinal variables are often made numerical for analytic purposes. This is problematic because of their unevenly spaced categories. If we turn the education categories ``Elementary School'', ``Some High School'', and ``High School Graduate'' into the numerical values 1, 2, and 3, we wrongly assume that the distances between the education categories correspond to these evenly spaced values. Do the numbers 1 to 3 really represent the distances between these categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all. We cannot answer this by making an arbitrary assumption that may not be justified by the data. Important information might be lost for one of the major predictors of political behavior, which could lead to distortion (O'Brien, 1981). To truly use the ordinal nature of a variable, we need to use its inherent unevenly spaced order to make a more underlying description of the data possible (Agresti, 2010). To fill this gap, I propose an ordered probit approach that estimates an ordinal variable's underlying latent continuous structure. I use this approach to develop two methods: The first method improves the use of ordinal variables in blocking in survey experiments. The second method provides a new way to treat missing survey data with ordinal variables. I subsequently apply both methods in an online survey experiment on political framing.
+Current practice often does not take ordinal variable information into account. One such technique involves turning ordinal categories into categorical indicators. Researchers here create a new binary variable for an education category, for instance ``High School Graduate''. While it removes the issue of uneven distances, this approach ignores the ordered nature contained in ordinal variables. Education categories are treated like nominal variables, i.e.~we would wrongly assume that the ordering of education categories is arbitrary. Ordinal variables are also often made numerical for analytic purposes. This is problematic because of their unevenly spaced categories. If we turn the education categories ``Elementary School'', ``Some High School'', and ``High School Graduate'' into the numerical values 1, 2, and 3, we wrongly assume that the distances between the education categories correspond to these evenly spaced values. Do the numbers 1 to 3 really represent the distances between these categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all. We cannot answer this by making an arbitrary assumption that may not be justified by the data. Important information might be lost for one of the major predictors of political opinion, which could lead to distortion (O'Brien, 1981). To truly use the ordinal nature of a variable, we need to use its inherent unevenly spaced order to make a more underlying description of the data possible (Agresti, 2010). To fill this gap, I propose an ordered probit approach that estimates an ordinal variable's underlying latent continuous structure. I use this approach to develop two methods: The first method improves the use of ordinal variables in blocking in survey experiments. The second method provides a new way to treat missing survey data with ordinal variables. I subsequently apply both methods in an online survey experiment on political framing.
 
-Chapter \ref{ordblock} outlines the blocking method. Survey experiments depend on balance to enable causal estimates. In order to identify potential causal effects, the treatment groups in a survey experiment need to be comparable, i.e.~all treatment groups need to look the same in terms of covariates. While this can be achieved with randomization, this typically leads to problems for small samples. Blocking, i.e.~arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries. I use an ordered probit approach to estimate an assumed underlying latent continuous structure underneath ordinal variables. This results in a new set of data-driven variable categories which can then be used for blocking. This avoids arbitrary numerical conversion and fully utilizes the ordinal information provided in the unevenly spaced variable categories. I test this method by blocking external survey data, conducting variance tests, and running a placebo regression.
+Chapter \ref{ordblock} outlines the blocking method. Survey experiments depend on balance to enable causal estimates. In order to identify potential causal effects, all treatment groups in a survey experiment need to be balanced on the potential outcomes. We get there by making all treatment groups look the same in terms of covariates. While this can be achieved with randomization, this typically leads to problems for small samples. Blocking, i.e.~arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries. I use an ordered probit approach to estimate an assumed underlying latent continuous structure underneath ordinal variables. This results in a new set of data-driven variable categories which can then be used for blocking. This avoids arbitrary numerical conversion and fully utilizes the ordinal information provided in the unevenly spaced variable categories. I test this method by blocking external survey data, conducting variance tests, and running a placebo regression. These tests thus show that the re-estimation of ordinal variable categories with an ordered probit approach matters and is statistically distinct.
 
-Chapter \ref{ordmiss} describes a new method to treat missing survey data with ordinal variables. Missing data are ubiquitous in survey research (Allison, 2002; Raghunathan, 2016). This poses a big problem for researchers because data can typically not be analyzed with statistical software if they contain missing values (Little \& Rubin, 2002; Molenberghs \& Kenward, 2007). Scholars have developed several ways to treat missing data, among them multiple imputation, which accounts for and incorporates uncertainty around the estimated imputations through repeated draws (Andridge \& Little, 2010; Graham \& Schafer, 1999; Schafer \& Graham, 2002; White, Royston, \& Wood, 2011). Multiple imputation, however, is not necessarily always the most suitable method for all types of variables. I develop a method to impute discrete missing data specifically for the specific circumstances of ordinal variables. This method is based on multiple hot deck imputation and applies a scaled solution with newly estimated numerical thresholds from an assumed underlying latent continuous variable to measure the distances between the categories and calculate affinity scores. I test this method by imputing artificially inserted missing values in external survey data and comparing its performance to common imputation techniques.
+Chapter \ref{ordmiss} describes a new method to treat missing survey data with ordinal variables. Missing data are ubiquitous in survey research (Allison, 2002; Raghunathan, 2016). This poses a big problem for researchers because data can typically not be analyzed with statistical software if they contain missing values (Little \& Rubin, 2002; Molenberghs \& Kenward, 2007). Scholars have developed several ways to treat missing data, among them multiple imputation, which accounts for and incorporates uncertainty around the estimated imputations through repeated draws (Andridge \& Little, 2010; Graham \& Schafer, 1999; Schafer \& Graham, 2002; White, Royston, \& Wood, 2011). I develop a method to impute discrete missing data specifically for the specific circumstances of ordinal variables. This method is based on multiple hot deck imputation and applies a scaled solution with newly estimated numerical thresholds from an assumed underlying latent continuous variable to measure the distances between the categories and calculate affinity scores. I test this method by imputing artificially inserted missing values in external survey data and comparing its performance to common imputation techniques. The results show that the method performs worse than existing techniques, despite expectations to the contrary.
 
-Chapter \ref{framing} applies both methods in an online survey experiment on political framing. Framing is the practice of presenting an issue to affect the way people see it (Chong \& Druckman, 2007). It reorganizes existing information already present in people's minds and attempts to direct people's attention towards particular considerations (Druckman \& Nelson, 2003). While numerous experiments have shown that frames can have substantial influence on people's opinions, we still don't know what aspects make frames strong. I provide an avenue of clarification by testing the influence of morality and self-interest on frame strength in direct juxtaposition.
+Chapter \ref{framing} applies both methods in an online survey experiment on political framing. Framing is the practice of presenting an issue to affect the way people see it (Chong \& Druckman, 2007). It reorganizes existing information already present in people's minds and attempts to direct people's attention towards particular considerations (Druckman \& Nelson, 2003). While numerous experiments have shown that frames can have substantial influence on people's opinions, we still don't know what aspects make frames strong. I provide an avenue of clarification by testing the influence of morality and self-interest on frame strength in direct juxtaposition. The findings show tentative evidence for the importance of morality in issue-opposing frames.
 
 \hypertarget{ordblock}{%
 \chapter{PRECISION IN SURVEY EXPERIMENTS -- A NEW METHOD TO IMPROVE BLOCKING ON ORDINAL VARIABLES}\label{ordblock}}
@@ -209,13 +212,13 @@ Chapter \ref{framing} applies both methods in an online survey experiment on pol
 \hypertarget{ordblock-intro}{%
 \section{Introduction}\label{ordblock-intro}}
 
-Survey experiments collect background information and attempt to uncover treatment effects on public opinion and political behavior. In order to identify such potential effects, the treatment groups need to be comparable. All treatment groups need to look the same in every measure, i.e.~they must be balanced. This can be achieved through random assignment of participants to treatment groups. Randomization, i.e.~flipping a coin to decide which treatment group a participant is assigned to, probabilistically results in balance based on the Law of Large Numbers (Urdan, 2010). For small samples, however, it can lead to serious imbalance. It can easily be that the treatment groups will not look the same. This can leave experimental results in statistically murky waters (Fox, 2015; Imai, 2018; King, Keohane, \& Verba, 1994). In survey experiments, the overall sample size is often split across several treatment groups, which can exacerbate the problem. Chong \& Druckman (2007), for instance, split 869 participants in a framing experiment on urban growth over 17 treatment groups, which leads to an average of just over 50 participants per group. Randomization is unlikely to lead to balanced treatment groups of this size. Researchers need to employ statistical methods to obtain balanced groups here. Blocking, i.e.~arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries.
+Survey experiments collect background information and attempt to uncover treatment effects on public opinion and political attitudes. In order to identify such potential effects, the treatment groups need to be balanced on the potential outcomes. This can be achieved through random assignment of participants to treatment groups. Randomization, i.e.~flipping a coin to decide which treatment group a participant is assigned to, probabilistically results in balance based on the Law of Large Numbers (Urdan, 2010). For small samples, however, it can lead to serious imbalance. This can leave experimental results in statistically murky waters (Fox, 2015; Imai, 2018; King, Keohane, \& Verba, 1994). In survey experiments, the overall sample size is often split across several treatment groups, which can exacerbate the problem. Chong \& Druckman (2007), for instance, split 869 participants in a framing experiment on urban growth over 17 treatment groups, which leads to an average of just over 50 participants per group. Randomization is unlikely to lead to comparable treatment groups of this size. Researchers need to employ statistical methods to obtain balanced groups here. Blocking, i.e.~arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries.
 
-Blocking depends on covariates. In political science, many covariates with high predictive power are categorical variables, i.e.~variables where the data can be divided into groups. These include interval (ordered and evenly spaced, e.g.~income) and ordinal (ordered and unevenly spaced, e.g.~education) variables. Ordinal variables are ordered categorical variables where the spacing between the values is not the same.
+Blocking depends on covariates. In political science, many covariates with high predictive power are categorical variables, i.e.~variables where the data can be divided into groups (e.g.~race). Others include interval (ordered and evenly spaced, e.g.~income) and ordinal (ordered and unevenly spaced, e.g.~education) variables. Ordinal variables are ordered variables where the spacing between the values is not the same.
 
 To block, these variables are often made numerical, e.g.~by assigning the numbers 1-4 to the variable categories. This is acceptable for interval variables as the evenly spaced numbers correspond to the evenly spaced categories. For ordinal variables, however, this can be problematic. Take for instance the example of education: Each subsequent category has quantitatively more education than the previous, but the exact measure of the distance between the categories is unclear. An arbitrary evenly spaced string of numbers does not correspond to these unevenly spaced ordinal categories and may misrepresent the data. Do evenly spaced numbers really represent the distances between the categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all.
 
-I propose an ordered probit threshold approach to circumvent this problem: This approach estimates an assumed underlying latent continuous structure underneath ordinal variables whose data-driven categories can then be used for blocking. The following sections provide a background on survey experiments and blocking, describe the key aspects of ordinal variables, and outline my proposed ordered probit approach. I then demonstrate the effect of this approach with external survey data and a placebo regression.
+I propose an ordered probit threshold approach to circumvent this problem: This approach estimates an assumed underlying latent continuous structure underneath ordinal variables whose data-driven categories can then be used for blocking. The following sections provide a background on survey experiments and blocking, describe the key aspects of ordinal variables, and outline my proposed ordered probit approach. I then demonstrate the effect of this approach with external survey data and a placebo regression. The results indicate that the re-estimation of ordinal variable categories is meaningful and statistically distinct from estimations with the original ordinal variable categories.
 
 \hypertarget{ordblock-theory}{%
 \section{Theory}\label{ordblock-theory}}
@@ -228,7 +231,7 @@ The simplest of survey experiments has two potential outcomes for participants \
 \vspace{0.3cm}
 \begin{adjustwidth}{50pt}{50pt}
 \ssp
-\noindent Imagine that the US is preparing for the outbreak of an unusual Asian disease, which is expected to kill 600 people. A program to combat the disease has been proposed. Assume that the exact scientific estimates of the consequences of the program are as follows...
+\noindent Imagine that the US is preparing for the outbreak of an unusual Asian disease. A program to combat the disease has been proposed. Assume that the exact scientific estimates of the consequences of the program are as follows...
 \end{adjustwidth}
 Participants in the control group receive the program description in survival format:
 
@@ -246,29 +249,47 @@ Participants in the treatment group receive the program description in mortality
 \end{adjustwidth}
 Tversky \& Kahneman (1981) use this experiment to demonstrate the importance of framing. Support for the program is much higher among respondents who received the survival format, even though the success rate of the program is identical in both formats. Framing the program in a positive light thus dramatically increases support by connecting the program to people's aversion of death and affirmation of life. While these findings stem from an experiment conducted in the 1970s, it is not a big leap to imagine a similar outcome in today's Covid-19 world. Misinformation abounds in all formats across countless media channels and there is little reason to assume human behavior has drastically changed. If we conducted this experiment today, it would be quite possible to once more find sizable differences between these two groups.
 
-After being shown one of the two formats, all participants are asked whether they support or oppose the program. The treatment effect for each individual participant \(i\) is given by \(y_{1i} - y_{0i}\). If both groups of participants look the same regarding their covariates (age, education, income etc.), a comparison of the groups' average support reveals the Average Treatment Effect (ATE) across all participants, \(\mathbf{E}[\delta] = \mathbf{E}[y_{1i} - y_{0i}]\). A central characteristic of such a comparison is the fundamental problem of causal inference (Holland, 1986; Rubin, 1974): We are unable to observe both potential outcomes for the same participant at once. In our case, we cannot observe how much participant A supports the program if given the survival format whilst also observing how much the same participant A would have supported the program if given the mortality format. If we could, it would be simple to calculate the true average treatment effect, \(\mathbf{E}[\delta] = \mathbf{E}[y_{1i}|T=1] - \mathbf{E}[y_{0i}|T=0]\), with \(T=0\) denoting the control and \(T=1\) the treatment group. Since the true average treatment effect is unobservable, we need to use statistical means to assess the counterfactuals. This can be done by balancing the treatment and control groups. If both groups of participants look the same in every measure, we can use the participants who received the mortality format (treatment) to estimate what would have happened to the participants who did not receive any format (control). The crucial aspect is whether the two groups do indeed look the same in terms of participants' covariates. The potential outcome of the control group needs to mirror what would have happened in the case of treatment, and vice versa. This was the case in Tversky \& Kahneman (1981)'s study, which is why they were able to accurately detect causal differences between the format effects. There are two main means by which this comparability may be achieved: randomization and blocking.
+Let \(T=0\) denote the control group and \(T=1\) denote the treatment group. After being shown one of the two groups, all participants are asked whether they support or oppose the program. The treatment effect for each individual participant \(i\) is given by \(y_{1i} - y_{0i}\). A comparison of the groups' average support reveals the Average Treatment Effect (ATE) across all participants, \(\mathbf{E}[\delta] = \mathbf{E}[y_{1i} - y_{0i}]\). A central characteristic of such a comparison is the fundamental problem of causal inference (Holland, 1986; Rubin, 1974): We are unable to observe both potential outcomes for the same participant at once. In our case, we cannot observe how much participant A supports the program if given the survival format whilst also observing how much the same participant A would have supported the program if given the mortality format. Since the true average treatment effect is unobservable, we need to use statistical means to assess the unobservable counterfactuals. If \(Y\) and \(T\) are independent, we can substitute \(\mathbf{E}[Y_t|T=t]\) for \(\mathbf{E}[Y_t]\), thereby replacing an unobservable entity with something we can estimate from the data. If this independence is given, we can use the participants who received the mortality format (treatment) to estimate what would have happened to the participants who did not receive any format (control). The potential outcome of the control group then mirrors what would have happened in the case of treatment, and vice versa. The process of randomization helps justify this independence and allows comparibility. Another means to achieve comparibility is the process of blocking.
 
 \hypertarget{ordblock-theory-randomization}{%
 \subsection{Randomization}\label{ordblock-theory-randomization}}
 
 Randomization is equivalent to flipping a coin for each participant to be assigned to treatment or control. This chance procedure gives each participant an equal chance of being assigned to either group (or groups, in case of multiple treatment groups) (Lachin, 1988). Randomization increases covariate balance as the number of participants, \(n\), increases (Imai, King, \& Nall, 2009). The larger a researcher's sample, the better the resulting balance from randomization in expectation. Probabilistically, randomization enables the comparison of the average treatment effect to be unbiased, which allows the researcher to attribute any treatment effects to the treatment (King et al., 2007).
 
-While randomization thus guarantees balance as the sample size reaches infinity, it often does not do so in the naturally finite sample sizes researchers actually work with. With huge samples, the Law of Large Numbers predicts that treatment groups selected through randomization will be balanced. With small samples, however, it is possible to get unlucky and end up with unbalanced groups (Imai, King, \& Elizabeth A. Stuart, 2008). Blocking can help achieve balance in such scenarios (Epstein \& King, 2002).
+While randomization thus guarantees balance as the sample size reaches infinity, it often does not do so in the naturally finite sample sizes researchers actually work with. With huge samples, the Law of Large Numbers predicts that treatment groups selected through randomization will be balanced. With small samples, however, it is possible to get unlucky and end up with unbalanced groups (Imai, King, \& Stuart, 2008). Blocking can help achieve balance in such scenarios (Epstein \& King, 2002).
 
 \hypertarget{ordblock-theory-blocking}{%
 \subsection{Blocking}\label{ordblock-theory-blocking}}
 
-Identical levels in terms of covariates across treatment groups represent the key aspect in experimental studies. In randomization, this is achieved by random chance. In blocking, this is achieved by combining covariate information about the participants with randomization. Specifically, participants are blocked into treatment groups that are similar to one another in terms of the their covariates before treatment is assigned. Their similarity is estimated with the Mahalanobis or Euclidian distance. The Mahalanobis distance (MD) is a multivariate distance metric which measures the distance between two vectors (or between a point and a distribution). For two random vectors \(x\) with \(x_i = [1,\ldots,n]\) and \(y\) with \(y_i = [1,\ldots,n]\) of the same distribution, the MD is defined as
+Identical levels in terms of covariates across treatment groups represent the key aspect in experimental studies. In randomization, this is achieved by random chance. In blocking, this is achieved by combining covariate information about the participants with randomization. Specifically, participants are blocked into treatment groups that are similar to one another in terms of the their covariates before treatment is assigned. Their similarity is estimated with the Mahalanobis or Euclidian distance. The Mahalanobis distance (MD) is a multivariate distance metric which measures the distance between two vectors (or between a point and a distribution). For two random vectors \(x_i\) and \(y_i\) with \(i = [1,\ldots,n]\) of the same distribution, the MD is defined as
 \begin{align}
 MD_{xy} = \sqrt{(\bm{x}_i - \bm{y}_i)' S^{-1} (\bm{x}_i - \bm{y}_i)},
 \end{align}
-where \(S\) denotes the covariance matrix. If the covariance matrix is a diagonal identity matrix, the resulting distance measure becommes the Euclidian distance (ED),
+where \(S\) denotes the covariance matrix. If the covariance matrix is a diagonal identity matrix, the resulting distance measure becomes the Euclidian distance (ED),
 \begin{align}
-ED_{xy} = \sqrt{\sum_{i=1}^N \frac{(\bm{x}_i - \bm{y}_i)^2}{s_i^2}},
+ED_{xy} = \sqrt{\sum_{i=1}^N \frac{(\bm{x}_i - \bm{y}_i)^2}{s^2}},
 \end{align}
 with \(s_i\) denoting the standard deviation of \(x_i\) and \(y_i\). The MD accounts for covariances, whereas the ED assumes equal variances and zero covariances. The ED thus can be argued to represent a special case of the MD.
 
-Blocking is better suited to achieving balance in finite samples than randomization, as it ``directly controls the estimation error due to differing levels of observed covariates in the treatment and control groups'' (Moore, 2012, p. 463). This is particularly relevant with small samples and a high number of treatment groups, as the overall number of participants needs to be divided up. Figures \ref{BoxLawLarNum} and \ref{HistLawLarNum} show this visually. A numerical discrete variable with levels 1 to 5 is randomized and blocked for different sample sizes and different numbers of treatment groups. This is repeated 100 times for each sample size. Figure \ref{BoxLawLarNum} shows the maximum distances between treatment groups across these repetitions for sample sizes up to 1,000 for 2, 3, 5, and 10 treatment groups. Blocking outperforms randomization in every scenario. The difference between the two methods is smallest for large samples and a small number of treatment groups.
+Blocking is better suited to achieving balance in finite samples than randomization, as it ``directly controls the estimation error due to differing levels of observed covariates in the treatment and control groups'' (Moore, 2012, p. 463). This is particularly relevant with small samples and a high number of treatment groups, as the overall number of participants needs to be divided up. Figures \ref{BoxLawLarNum} shows this visually. The following steps outline the estimation process:
+
+\vspace{0.3cm}
+\begin{adjustwidth*}{+0.5cm}{+0.5cm}
+\ssp
+\begin{enumerate}
+\item \noindent Randomly sample a discrete variable $v$ with levels 1 to 5.
+\item Randomly assign the sample to a specified number of treatment groups. 
+\item Block the sample separately into the same number of treatment groups. 
+\item Take the mean of $v$ for each randomly assigned treatment group. 
+\item Take the mean of $v$ for each blocked treatment group. 
+\item Estimate the distances between the means of the randomized groups.
+\item Estimate the distances between the means of the blocked groups.
+\item Repeat steps 1 to 4 100 times.
+\end{enumerate}
+\end{adjustwidth*}
+\vspace{0.3cm}
+
+We follow these steps repeatedly for sample sizes up to 1,000 for 2, 3, 5, and 10 treatment groups. Figure \ref{BoxLawLarNum} shows the resulting distributions of maximum mean distances. Blocking outperforms randomization in every scenario. The difference between the two methods is smallest for large samples and a small number of treatment groups.
 \begin{figure}
 \centering
 \includegraphics{dissertation_files/figure-latex/Boxplot-Law-Large-Numbers-1.pdf}
@@ -285,33 +306,64 @@ Figure \ref{HistLawLarNum} shows the count distributions of these imbalances. Fo
 \hypertarget{ordblock-theory-blocking-onthego}{%
 \subsubsection{Blocking On The Go}\label{ordblock-theory-blocking-onthego}}
 
-In political science, researchers often have an already-collected data set in front of them. One example are the American National Election Studies (ANES). The ANES are the oldest continuous collection of national surveys on electoral behavior and attitudes in the US. They are conducted before and after every US presidential and Congressional election by the University of Michigan and Stanford University. Data have been collected since 1948 in the attempt to understand voter behavior and candidate choice, among many others. The list of questions has been continually expanded and refined over the years. All ANES data are publicly available. The ANES are frequently used for high-profile publications (see for instance Jackman \& Spahn, 2018; Leighley \& Nagler, 2014). Working with such a `ready-made' data set means all covariate information of all participants is known at the time of assignment, which makes blocking straight-forward. Oftentimes, however, the covariate information of all participants is not known at the time of assignment. This is the case, for instance, for online survey experiments, where participants complete the survey at differing times. Participants `trickle in' for treatment assignment as the experiment progresses. `Traditional' blocking can not be used here, since it relies on covariate information about the entire sample, which is not available. Instead, we need to block continuously as the experiment progresses, or block `on the go'. This is called sequential blocking.
+Survey experiments can utilize blocking in two ways: with all data present and `on the go'. The above data represents a simplified example of the former. All respondent covariate data has been collected before respondents are blocked into treatment groups, i.e.~covariate data is known for all respondents before assignment to treatment. Blocking `on the go' involves blocking respondents as they arrive for treatment at differing times. This is the case, for instance, for online survey experiments, where participants complete the survey at differing times. Participants `trickle in' for treatment assignment as the experiment progresses. `Traditional' blocking can not be used here, since it relies on covariate information about the entire sample, which is not available. Instead, we need to block continuously as the experiment progresses, or block `on the go'. This is called sequential blocking. I use this method in the online survey experiment in chapter \ref{framing}.
 
 Sequential blocking in political science is based on covariate-adaptive randomization, which varies probabilities based on knowledge about previous participants and the current participant (Chow \& Chang, 2007). Traditional covariate-adaptive approaches, such as the biased coin design (Efron, 1971) and minimization (Pocock \& Simon, 1975), assign the incoming participant to the treatment group with the fewest participants with identical covariate information. For discrete covariates, for instance, this takes the form of assigning all participants except the first one, \(q\), for covariate \(c\) with value \(d\) to a treatment group \(g\) with probability
 \begin{align}
-\text{prob}(g* = g) = (1 - \frac{q_{cdg}}{\sum^G_{g = 1} q_{cdg}}) (\sum_{g = 1}^G(1 - \frac{q_{cdg}}{\sum^G_{g = 1} q_{cdg}}))^{-1}.
+\text{prob}\left(g* = g\right) = \left(1 - \frac{q_{cdg}}{\sum^G_{g = 1} q_{cdg}}\right) \left(\sum_{g = 1}^G\left(1 - \frac{q_{cdg}}{\sum^G_{g = 1} q_{cdg}}\right)\right)^{-1}.
 \end{align}
-This works for discrete covariates as the number of possible covariate levels is finite. For continuous covariates, the number of possible covariate levels rises exponentially. Participants are unlikely to look the same, and identical participants are rare. Blocking on continuous covariates is not possible with these traditional approaches (Eisele, 1995; Markaryan \& Rosenberger, 2010; Rosenberger \& Lachin, 2002). Moore \& Moore (2013) develop a method to do so by exploiting relationships between the current participant's covariate profile and those of all previously assigned participants. They define the similarity between participants with the Mahalanobis distance between participants \(q\) and \(r\) with covariate vectors \(\bm{x}_q\) and \(\bm{x}_r\),
-\begin{align}
-MD_{qr} = \sqrt{(\bm{x}_q - \bm{x}_r)' S^{-1} (\bm{x}_q - \bm{x}_r)}.
-\end{align}
-Recall that \(S\) denotes the covariance matrix. To aggregate pairwise similarity, they implement the mean, median, and trimmed mean of the pairwise MDs between the current participant and the participants in each treatment condition: Participants are indexed with treatment condition \(t\) using \(r \in \{1,...,R\}\). For each condition \(t\), an average MD between the current participant, \(q\), and the participants previously assigned, \(t\). If the distance in terms of MD for the incoming participant is 2 in the control and 5 in the treatment condition, the incoming participant looks more similar to the control condition. To set the probability of assignment, Moore \& Moore (2013) calculate the mean MDs for each incoming participant, \(q\), for all treatment conditions, \(t\), and sort the treatment conditions by these averages. Randomization is biased towards conditions with high scores. For each value of \(k\), with \(k \in \{2,3,...,6\}\), the condition with the highest average MD is then assigned a probability \(k\) times larger than all other assignment probabilities.
+This works for discrete covariates as the number of possible covariate levels is finite. For continuous covariates, the number of possible covariate levels rises exponentially. Participants are unlikely to look the same, and identical participants are rare. Blocking on continuous covariates is not possible with these traditional approaches (Eisele, 1995; Markaryan \& Rosenberger, 2010; Rosenberger \& Lachin, 2002). Moore \& Moore (2013) develop a method to do so by exploiting relationships between the current participant's covariate profile and those of all previously assigned participants. They define the similarity between participants with the Mahalanobis distance between participants.
 
-Blocking is thus possible when all covariate information is known at the time of assignment and when this information `trickles in' over time. Covariate information, however, is only one side of the coin. Researchers also need to take into consideration the characteristics of the variable to block on. Not all types of variables can and should be used the same way to be blocked on. Specifically, the current use of ordinal variables as blocking variables is somewhat problematic.
+To aggregate pairwise similarity, they implement the mean, median, and trimmed mean of the pairwise MDs between the current participant and the participants in each treatment condition: Participants are indexed with treatment condition \(t\) using \(r \in \{1,...,R\}\). For each condition \(t\), they estimate an average MD between the current participant, \(q\), and the participants previously assigned. If the distance in terms of MD for the incoming participant is 2 in the control and 5 in the treatment condition, the incoming participant looks more similar to the control condition. To set the probability of assignment, Moore \& Moore (2013) calculate the mean MDs for each incoming participant, \(q\), for all treatment conditions, \(t\), and sort the treatment conditions by these averages. Randomization is biased towards conditions with high scores. For each value of \(k\), with \(k \in \{2,3,...,6\}\), the condition with the highest average MD is then assigned a probability \(k\) times larger than all other assignment probabilities.
+
+Blocking is thus possible when all covariate information is known at the time of assignment and when this information `trickles in' over time. Covariate information, however, is only one side of the coin. Researchers also need to take into consideration the characteristics of the variable to block on. Not all types of variables can and should be used the same way for blocking. Specifically, the current use of ordinal variables as blocking variables is somewhat problematic.
 
 \hypertarget{ordblock-theory-ordinal}{%
 \subsection{Ordinal Variables}\label{ordblock-theory-ordinal}}
 
 Ordinal variables matter in surveys. One of the most important ordinal variables in political science surveys is education. It is widely established that education represents one of the major driving forces behind public opinion and political behavior, such as turnout or donations, in the U.S. (Abramowitz, 2010; Dawood, 2015; Druckman, Peterson, \& Slothuus, 2013; Fiorina \& Abrams, 2009; Fiorina, Abrams, \& Pope, 2011; King, 1997; Leighley \& Nagler, 2014). Ordinal variables are part of the larger framework of categorical variables. Categorical variables represent types of data which are commonly divided into three groups: nominal, interval, and ordinal variables. Nominal variables are categorical variables with two or more categories that are not intrinsically ordered. Examples include gender (Female, Male, Transgender etc.), race (African-American, White, Hispanic etc.), and party ID (Democrat, Republican, Independent) where the categories cannot be ordered sensibly into highest or lowest. Interval variables are ordered categorical variables with evenly spaced values. Examples include income (\$20,000, \$40,000, \$60,000, \$80,000 etc.), where the distance between \$20,000 and \$40,000 is the same as the distance between \$60,000 and \$80,000. Ordinal variables are ordered categorical variables where the spacing between values is not the same. Examples include education (Elementary School, Some High School, High School Graduate etc.) where the distance between ``Elementary School'' and ``Some High School'' is likely different than the distance between ``Some High School'' and ``High School Graduate''. Each subsequent category has quantitatively more education than the previous one, but the exact measure of the distances between the categories is unclear.
 
-For statistical analysis, the categories of nominal variables are often turned into binary variables. This manipulation does not impose any unnatural ordering onto the variable and thus does not require any theoretical assumptions. Interval variables are often made numerical, which is statistically sound. It makes sense to assign numerical values such as 1, 2, 3, and 4 to income categories of \$20,000, \$40,000, \$60,000, and \$80,000 as the distance between each of these categories is identical between any adjacent pair. This translates perfectly into the numerical values with identical distances, i.e.~the distance between \$20,000 and \$40,000 is the same as the distance between 1 and 2. Ordinal variables are also often made numerical for analytic purposes. This is problematic because of their unevenly spaced categories. If the education categories ``Elementary School'', ``Some High School'', and ``High School Graduate'' were turned into the numerical values 1, 2, and 3, we would wrongly assume that the distances between the education categories correspond to these evenly spaced values. Do the numbers 1 to 3 really represent the distances between these categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all. We cannot answer this by making an arbitrary assumption that is not justified by the data. Alternatively, if ``Elementary School'', ``Some High School'', and ``High School Graduate'' were turned into three separate dummy variables, we would wrongly assume that there is no ordering to these values. In both cases, important information would be lost, which could lead to a large degree of distortion (O'Brien, 1981). To truly use the ordinal nature of a variable, we need to use both its quantitative and its inherent unevenly spaced ordered aspects to make a more underlying description of the data possible (Agresti, 2010). To fill this gap, I borrow from machine learning, which has close connections to problems of causal inference (Grimmer, 2015), and propose an ordered probit model that estimates an ordinal variable's underlying latent continuous structure and is trained on external data.
+For statistical analysis, the categories of nominal variables are often turned into binary variables. This manipulation does not impose any unnatural ordering onto the variable and thus does not require any theoretical assumptions. Interval variables are often made numerical, which is statistically sound. It makes sense to assign numerical values such as 1, 2, 3, and 4 to income categories of \$20,000, \$40,000, \$60,000, and \$80,000 as the distance between each of these categories is identical between any adjacent pair. This translates perfectly into the numerical values with identical distances, i.e.~the distance between \$20,000 and \$40,000 is the same as the distance between 1 and 2. Ordinal variables are often treated as nominal variables. Researchers here create a new binary variable for an education category, for instance ``High School Graduate''. This approach ignores the ordered nature contained in ordinal variables and we would wrongly assume that the ordering of education categories is arbitrary. Ordinal variables are also often made numerical for analytic purposes. This is problematic because of their unevenly spaced categories. If the education categories ``Elementary School'', ``Some High School'', and ``High School Graduate'' were turned into the numerical values 1, 2, and 3, we would wrongly assume that the distances between the education categories correspond to these evenly spaced values. Do the numbers 1 to 3 really represent the distances between these categories? Perhaps the true spacing between some of the categories is so narrow they should not even be separate categories at all. We cannot answer this by making an arbitrary assumption that is not justified by the data. Alternatively, if ``Elementary School'', ``Some High School'', and ``High School Graduate'' were turned into three separate dummy variables, we would wrongly assume that there is no ordering to these values. In both cases, important information would be lost, which could lead to a large degree of distortion (O'Brien, 1981). Unfortunately, using one of these two approaches is common applied to ordinal variables in the social sciences. Liddell \& Kruschke (2018) for instance report that all articles in the Journal of Personality and Social Psychology (JPSP), Psychological Science (PS), and the Journal of Experimental Psychology that mention the term `Likert' analyzed ordinal data with a metric or binary model. Do so can cause inversions of effects as well as Type I and Type II errors (Lalla, 2017; Torra, Domingo-Ferrer, Mateo-Sanz, \& Ng, 2006). To truly use the ordinal nature of a variable, we need to use both its quantitative and its inherent unevenly spaced ordered aspects to make a more underlying description of the data possible (Agresti, 2010). To fill this gap, I borrow from machine learning, which has close connections to problems of causal inference (Grimmer, 2015), and propose an ordered probit model that estimates an ordinal variable's underlying latent continuous structure and is trained on external data.
 
 \hypertarget{ordblock-theory-op}{%
 \subsection{Ordered Probit Approach}\label{ordblock-theory-op}}
 
-Many approaches in the literature on the analysis of ordinal variables incorporate the distribution of the variable categories (Agresti, 1996). The most promising suggestions focus on natural extensions of probit and logit models (Winship \& Mare, 1984) by assigning scores to be estimated from the data (Agresti, 1990) and quantifying each non-quantitative variable according to the empirical distributions of the variable, assuming the presence of a continuous underlying variable for each ordinal indicator (Lucadamoa \& Amenta, 2014). In fact, Agresti (2010) states ``that the type of ordinal method used is not that crucial'' but that the ``results may be quite different, however, from those obtained using methods that treat all the variables as nominal'' (p.~3). The same applies to methods which treat ordinal variables as interval (Gertheiss \& Tutz, 2008). This suggests that a probit or logit model is suitable to uncover the latent continuous variable underlying an ordinal variable, thereby using the ordinal information provided and respecting uneven distances. In the literature, this approach is focused exclusively on the analysis of ordinal variables as a response variable. I propose an ordered probit model that applies to ordinal variables as predictors.
+Many approaches in the literature on the analysis of ordinal variables incorporate the distribution of the variable categories (Agresti, 1996). The most promising suggestions focus on natural extensions of probit and logit models (Winship \& Mare, 1984) by assigning scores to be estimated from the data (Agresti, 1990) and quantifying each non-quantitative variable according to the empirical distributions of the variable, assuming the presence of a continuous underlying variable for each ordinal indicator (Lucadamoa \& Amenta, 2014). In fact, Agresti (2010) states ``that the type of ordinal method used is not that crucial'' but that the ``results may be quite different, however, from those obtained using methods that treat all the variables as nominal'' (p.~3). The same applies to methods which treat ordinal variables as interval (Gertheiss \& Tutz, 2008). This suggests that a probit or logit model is suitable to uncover the latent continuous variable underlying an ordinal variable, thereby using the ordinal information provided and respecting uneven distances. In the literature, this approach is focused exclusively on the analysis of ordinal variables as a response variable. I propose an ordered probit model that applies to ordinal variables as predictors. The workflow of the model is shown in Figure \ref{op-workflow}.
 
-Let there be \(\bm{X}\), an \(n \times k\) matrix of explanatory variables. Let further \(\bm{Y}\) be observed on the ordered categories \(\bm{Y}_i \in [1,\ldots,k]\), for \(i=1,\ldots n\), and let \(\bm{Y}\) be assumed to be produced by the unobserved latent continuous variable \(\bm{Y^{cont}}\). \(\bm{Y^{cont}}\) is continuous on \(R\) from \(-\infty\) to \(\infty\). The `response mechanism' for the \(r^{th}\) category is \(Y=r \Longleftrightarrow \xi_{r-1} < Y^{cont} < \xi_r\). This requires there to be thresholds on \(R\):
+\vspace{0.2cm}
+
+\ssp
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    \node [block2rw] (model) {\scriptsize{Linear Model: Ordinal Variable $\sim$ Predictors}};
+    \node [block2rw, below =1cm of model] (train) {\scriptsize{Train model on data}};
+    \node [block2rw, below =1cm of train] (cutoff) {\scriptsize{Estimate cutoff thresholds between categories}};
+    \node [block2rw, below =1cm of cutoff] (bin) {\scriptsize{Bin cases according to linear predictors}};
+    \node [block2rw, below =1cm of bin] (cats) {\scriptsize{Use re-estimated categories}};
+    \coordinate[below=0cm of model] (modelc);
+    \coordinate[above=0cm of train] (trainac);
+    \coordinate[below=0cm of train] (trainbc);
+    \coordinate[above=0cm of cutoff] (cutoffac);
+    \coordinate[below=0cm of cutoff] (cutoffbc);
+    \coordinate[above=0cm of bin] (binac);
+    \coordinate[below=0cm of bin] (binbc);
+    \coordinate[above=0cm of cats] (catsc);
+    \path [line] (modelc) -- (trainac);
+    \path [line] (trainbc) -- (cutoffac);
+    \path [line] (cutoffbc) -- (binac);
+    \path [line] (binbc) -- (catsc);
+\end{tikzpicture}
+\caption{Ordered Probit Workflow} 
+\label{op-workflow}
+\end{figure}
+\dsp
+
+\vspace{-0.4cm}
+
+We need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. We then train this model on externally and internally valid data. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. We then replace the original categories with these re-estimated categories and conduct the statistical analysis of interest.
+
+Notationally, let there be \(\bm{X}\), an \(n \times k\) matrix of explanatory variables. Let further \(\bm{Y}\) be observed on the ordered categories \(\bm{Y}_i \in [1,\ldots,k]\), for \(i=1,\ldots n\), and let \(\bm{Y}\) be assumed to be produced by the unobserved latent continuous variable \(\bm{Y^{cont}}\). \(\bm{Y^{cont}}\) is continuous on \(R\) from \(-\infty\) to \(\infty\). The `response mechanism' for the \(r^{th}\) category is \(Y=r \Longleftrightarrow \xi_{r-1} < Y^{cont} < \xi_r\). This requires there to be thresholds on \(R\):
 \(Y^{cont}_i: \; \xi_0 \underset{a=1}{\longleftarrow\!\longrightarrow} \xi_1 \underset{a=2}{\longleftarrow\!\longrightarrow} \xi_2 \underset{a=3}{\longleftarrow\!\longrightarrow} \xi_3\ldots \xi_{A-1} \underset{a=A}{\longleftarrow\!\longrightarrow} \xi_A\). The vector of (unseen) utilities across individuals in the sample, \(Y^{cont}\), is determined by a linear model of explanatory variables: \(\bm{Y^{cont}} = \bm{X} \bm{\beta} + \mu\), where \(\bm{\beta} =[\beta_1,\beta_2,\ldots,\beta_p]\) does not depend on the \(\xi_j\) and \(\mu \sim F_{\mu}\). For the observed vector \(\bm{Y}\),
 \begin{align}
 p(\bm{Y} \leq r|\bm{X}) &= p(\bm{Y^{cont}} \leq \xi_r) = p(\bm{X}\bm{\beta} + \mu \leq \xi_r) \nonumber\\
@@ -325,21 +377,20 @@ The likelihood function is
 \begin{align}
 L(\bm{\beta},\bm{\xi}|\bm{X},\bm{Y}) = \prod_{i=1}^{n}\prod_{j=1}^{A-1}\left[\Lambda(\xi_j + \bm{X}_i'\bm{\beta}) - \Lambda(\xi_{j-1} + \bm{X}_i'\bm{\beta}) \right]^{z_{ij}}
 \end{align}
-where \(z_{ij}=1\) if the \(i^\text{th}\) case is in the \(j^\text{th}\) category, and \(z_{ij}=0\) otherwise. The thresholds on \(R\) partition the variable into regions corresponding to the ordinal categories. The linear model, \(Y^{cont}\), bins the observations between these thresholds according to the linear predictors.
-
-Practically, we need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. We then train this model on externally and internally valid data. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. We then replace the original categories with these re-estimated categories and conduct the statistical analysis of interest. In \texttt{R}, the ordered probit model can be implemented with the \texttt{polr} function from the \texttt{MASS} package (Ripley et al., 2020).
+where \(z_{ij}=1\) if the \(i^\text{th}\) case is in the \(j^\text{th}\) category, and \(z_{ij}=0\) otherwise. The thresholds on \(R\) partition the variable into regions corresponding to the ordinal categories. The linear model, \(Y^{cont}\), bins the observations between these thresholds according to the linear predictors. In \texttt{R}, the ordered probit model can be implemented with the \texttt{polr} function from the \texttt{MASS} package (Ripley et al., 2020).
 
 \hypertarget{ordblock-data}{%
 \section{Data}\label{ordblock-data}}
 
-I apply the proposed ordered probit method to the 2016 American National Election Studies and train a specified regression model on these data. This estimates the thresholds between each existing ANES education category. All observations are then binned according to the estimated coefficients to determine the education categories that make sense, based on the underlying latent continuous variable. This results in two sets of education categories: ANES and ordered probit (OP). The ANES data are then blocked into five treatment groups to simulate a survey experiment environment. This process is repeated twice: once with the ANES categories, and once with the OP categories. To simulate sequential blocking, the order of observations is assumed to represent the sequential order of arrival to treatment. The estimation of group means and variances together with statistical tests reveals the suitability of this approach. Finally, I block the ANES data once more and conduct a placebo regression to test model fitness further.
+I use the American National Election Studies (ANES) to implement the proposed ordered probit method. The ANES are the oldest continuous collection of national surveys on electoral behavior and attitudes in the US. They are conducted before and after every US presidential and Congressional election by the University of Michigan and Stanford University. Data have been collected since 1948 in the attempt to understand voter behavior and candidate choice, among many others. The list of questions has been continually expanded and refined over the years. All ANES data are publicly available. The ANES are frequently used for high-profile publications (see for instance Jackman \& Spahn, 2018; Leighley \& Nagler, 2014). I apply the proposed ordered probit method to the 2016 ANES data and train a specified regression model on these data. This estimates the thresholds between each existing ANES education category. All observations are then binned according to the linear predictors to determine the education categories that make sense, based on the underlying latent continuous variable. This results in two sets of education categories: ANES and ordered probit (OP). The ANES data are then blocked into five treatment groups to simulate a survey experiment environment. This process is repeated twice: once with the ANES categories, and once with the OP categories. To simulate sequential blocking, the order of observations is assumed to represent the sequential order of arrival to treatment. The estimation of group means and variances together with statistical tests reveals the suitability of this approach. Finally, I block the ANES data once more and conduct a placebo regression to test model fitness further.
 
 \hypertarget{ordblock-results}{%
 \section{Results}\label{ordblock-results}}
 
-Recall that we need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. This model needs to be trained on externally and internally valid data. The ANES data have been shown to be externally and internally valid in countless publications. I employ the following model with these data, using standard demographics in political science as predictors:
+Recall that we need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. This model needs to be trained on externally and internally valid data. The ANES data have been shown to fulfill these criteria (Krupnikov \& Levine, 2014; Malhotra \& Krosnick, 2007). I employ the following model with these data, using standard demographics in political science as predictors for all observations \(i\) with \(i = [1,\ldots,n]\):
 \begin{align}
-\text{Education} \sim \text{Gender} + \text{Race} + \text{Age} + \text{Income} + \text{Occupation} + \text{Party ID}
+\text{Education}_i \sim & \,\beta_0 + \beta_1 \text{Gender}_i + \beta_2 \text{Race}_i + \beta_3 \text{Age}_i + \beta_4 \text{Income}_i \,+ \nonumber \\
+& \beta_5 \text{Occupation}_i + \beta_6 \text{Party ID}_i + \epsilon_i
 \end{align}
 We then train this model on the ANES data. This estimates cutoff thresholds between the OP categories and bins data cases according to the linear predictors. When trained on these data, this ordinal probit model estimates the thresholds between each of the education categories shown in Table \ref{education-categories}.
 \begin{table}[!htbp] \centering 
@@ -371,255 +422,49 @@ The observations in the data are binned according to the estimated threshold coe
 \begin{figure}
 \centering
 \includegraphics{dissertation_files/figure-latex/Barplot-Education-Categories-1.pdf}
-\caption{\label{fig:Barplot-Education-Categories}Distribution of Education Categories. Original ANES Categories on the Left, Ordered Probit Estimated Categories on the Right\label{BarEducCat}}
+\caption{\label{fig:Barplot-Education-Categories}Distribution of Education Categories. Original ANES Categories on the Left, Ordered Probit Estimated Categories on the Right. Categories Below \texttt{High\ School\ Graduate} and Above \texttt{Master\textquotesingle{}s} Are Collapsed. OP Categories Can Now Be Used For Blocking.\label{BarEducCat}}
 \end{figure}
 As we can see, all categories `below' ``High School Graduate'' and `above' ``Master's'' are collapsed in the OP education variable because they do not fit the data. We can now use these estimated education categories as the basis for blocking. Assigning numerical values to the new categories is now justifiable because they are based on data-driven estimations. This allows us to block on numerical values with the MD, which would not be permitted on theoretical grounds without empirical justification. The following sections demonstrate how the newly estimated categories affect blocking and regression results.
 
 \hypertarget{ordblock-data-blockdiff}{%
 \subsection{Blocking Differences}\label{ordblock-data-blockdiff}}
 
-Table \ref{education-blocked} shows the variable proportions or means, depending on the type of variable in question, after blocking the ANES data on education into five treatment groups. As outlined above, this is done twice, once based on the original ANES education categories, and once based on the newly estimated OP education categories.
-\begin{table}[!htbp] \centering    
-\caption{Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories. Differentiated by Treatment Group}
-\label{education-blocked} 
-\resizebox{11.5cm}{!}{%
-\begin{tabular}{cc c @{\hspace{1.3cm}} c c @{\hspace{1.3cm}} c c @{\hspace{1.3cm}} c c @{\hspace{1.3cm}} c c } \\[-1.8ex]\hline  
-\hline \\[-1.8ex] 
- & \multicolumn{2}{c}{\hspace{-1cm}Group 1} & \multicolumn{2}{c}{\hspace{-1.3cm}Group 2} & \multicolumn{2}{c}{\hspace{-1.3cm}Group 3} & \multicolumn{2}{c}{\hspace{-1.3cm}Group 4} & \multicolumn{2}{c}{\hspace{-0.2cm}Group 5}\\ 
-\hline \\[-1.8ex]  
- & ANES & OP & ANES & OP & ANES & OP & ANES & OP & ANES & OP \\  
-\cline{2-3}
-\cline{4-5}
-\cline{6-7}
-\cline{8-9}
-\cline{10-11} \\[-1.8ex]
-\textbf{Gender} & & & & & & & & & & \\  
-Male & .467 & .468 & .473 & .481 & .475 & .463 & .463 & .468 & .476 & .473 \\  
-Female & .533 & .529 & .524 & .514 & .522 & .535 & .533 & .532 & .521 & .524 \\  
-Other & .000 & .003 & .003 & .005 & .003 & .002 & 
-.003 & .000 & .003 & .003 \\  
- & & & & & & & & & & \\
-\textbf{Race} & & & & & & & & & & \\  
-White & .763 & .751 & .770 & .778 & .752 & .743 & .749 & .746 & .752 & .770 \\  
-African American & .095 & .089 & .090 & .089 & .106 & .100 & .094 & .117 & .110 & .100 \\  
-Asian & .032 & .035 & .041 & .027 & .027 & .035 & .027 & .032 & .030 & .029 \\  
-Native American & .008 & .000 & .003 & .005 & .003 & .006 & .006 & .008 & .006 & .008 \\  
-Hispanic & .102 & .125 & .095 & .102 & .111 & .116 & .124 & .097 & .102 & .094 \\  
- & & & & & & & & & & \\
-\textbf{Income} & & & & & & & & & & \\  
-Under 25,000 & .206 & .203 & .198 & .219 & .224 & .206 & .216 & .211 & .211 & .216 \\  
-25,000-49,999 & .246 & .237 & .246 & .205 & .190 & .225 & .211 & .206 & .217 & .238 \\ 
-50,000-749,999 & .167 & .175 & .187 & .178 & .210 & .173 & .189 & .208 & .162 & .181 \\  
-75,000-99,999 & .119 & .135 & .148 & .133 & .130 & .151 & .133 & .127 & .135 & .119 \\  
-100,000-124,999 & .102 & .090 & .094 & .095 & .094 & .092 & .079 & .087 & .089 & .092 \\  
-125,000-149,999 & .038 & .040 & .033 & .052 & .040 & .035 & .049 & .041 & .052 & .044 \\  
-150,000-174,999 & .046 & .038 & .030 & .035 & .041 & .038 & .043 & .040 & .044 & .054 \\  
-175,000 or more & .076 & .083 & .063 & .083 & .071 & .079 & .079 & .079 & .089 & .056 \\  
- & & & & & & & & & & \\
-\textbf{Employment} & & & & & & & & & & \\  
-Employed & .646 & .646 & .649 & .608 & .600 & .652 & .624 & .613 & .622 & .622 \\  
-Unemployed & .056 & .065 & .057 & .054 & .063 & .051 & .051 & .059 & .075 & .073 \\  
-Retired & .183 & .181 & .184 & .213 & .203 & .179 & .214 & .210 & .192 & .194 \\  
-Disabled & .033 & .035 & .043 & .046 & .051 & .037 & .027 & .033 & .038 & .041 \\  
-Homemaker & .049 & .049 & .052 & .054 & .052 & .052 & .060 & .063 & .054 & .049 \\  
-Student & .033 & .024 & .014 & .025 & .030 & .029 & .024 & .022 & .019 & .021 \\  
- & & & & & & & & & & \\
-\textbf{Party ID} & & & & & & & & & & \\  
-Democrat & .314 & .378 & .367 & .348 & .338 & .341 & .378 & .344 & .378 & .363 \\  
-Republican & .279 & .292 & .279 & .294 & .317 & .281 & .308 & .321 & .295 & .292 \\  
-Independent & .362 & .300 & .330 & .324 & .311 & .333 & .284 & .302 & .292 & .321 \\  
-Something else & .044 & .030 & .024 & .035 & .033 & .044 & .030 & .033 & .035 & .024 \\  
- & & & & & & & & & & \\
-\textbf{President} & & & & & & & & & & \\  
-Approve & .551 & .533 & .514 & .524 & .502 & .535 & .522 & .522 & .544 & .519 \\  
-Disapprove & .449 & .467 & .486 & .476 & .498 & .465 & .478 & .478 & .456 & .481 \\  
- & & & & & & & & & & \\
-\textbf{Min. Wage} & & & & & & & & & & \\  
-Raised & .648 & .635 & .621 & .630 & .644 & .662 & .619 & .637 & .681 & .649 \\  
-Kept the same & .302 & .303 & .302 & .289 & .308 & .273 & .310 & .308 & .251 & .298 \\  
-Lowered & .019 & .021 & .027 & .029 & .013 & .027 & .025 & .021 & .025 & .013 \\  
-Eliminated & .032 & .041 & .051 & .052 & .035 & .038 & .046 & .035 & .043 & .040 \\  
- & & & & & & & & & & \\
-\textbf{Country} & & & & & & & & & & \\  
-Right direction & .290 & .292 & .252 & .251 & .249 & .252 & .267 & .265 & .268 & .267 \\  
-Wrong track & .710 & .708 & .748 & .749 & .751 & .748 & .733 & .735 & .732 & .733 \\ 
- & & & & & & & & & & \\
-\textbf{Age} & \hspace{-0.4cm}48.548 & \hspace{-0.4cm}48.957 & \hspace{-0.4cm}48.949 & \hspace{-0.4cm}49.540 & \hspace{-0.4cm}48.811 & \hspace{-0.4cm}47.157 & \hspace{-0.4cm}49.702 & \hspace{-0.4cm}49.773 & \hspace{-0.4cm}49.100 & \hspace{-0.4cm}49.683 \\  
- & & & & & & & & & & \\
-\textbf{Feel Trump} & \hspace{-0.4cm}34.695 & \hspace{-0.4cm}34.378 & \hspace{-0.4cm}37.278 & \hspace{-0.4cm}36.394 & \hspace{-0.4cm}40.579 & \hspace{-0.4cm}36.241 & \hspace{-0.4cm}35.767 & \hspace{-0.4cm}38.584 & \hspace{-0.4cm}34.590 & \hspace{-0.4cm}37.313 \\  
-\hline \\[-1.8ex]  
-\end{tabular}}
-\end{table}
-The focus here lies on the differences between the two sets of blocked education categories for each treatment group, i.e.~the proportions/means of all variables for the ANES set in treatment group 1 should look the same as the proportions/means of all variables for the OP set in treatment group 1. We overall do not observe large differences. All \texttt{Gender} proportions for instance are virtually identical between the two sets for each group. Scattered throughout, somewhat more noticeable differences occur: The proportion of white respondents in group 5 for example is .752 for ANES but .770 for OP. The proportions for African-American and Hispanic respondents similarly differ (.094 vs.~.117 and .124 vs.~.097, both in group 4). Other differences include respondents who earn more than \$25,000 and up to \$50,000 (.246 vs.~.205 in group 2), are employed (.600 vs.~.652 in group 3), and identify as Republican (.317 vs.~.281 in group 3). The largest differences can be observed for the numerical variables, \texttt{Age} and \texttt{Feel\ Trump}: Respondents in group 3 are on average 48.811 years old in the ANES set, but only 47.157 years old in the OP set. For \texttt{Feel\ Trump}, respondents in group 3 feel more than 4 points more sympathetic towards Trump in the ANES set. This is reversed in groups 4 and 5, where OP respondents are 3 points more favorable towards Trump.
+We block the ANES on education into three treatment groups, once based on the original ANES education categories, and once based on the newly estimated OP education categories. We overall do not observe large differences between the ANES and OP variable proportions/means in each treatment group with the naked eye (see appendix Figures \ref{ANBlock1} to \ref{ANBlock3} for details). Because of the wider range of possible values, this might apply somewhat less for the variables \texttt{Age} and \texttt{Feel\ Trump}. To analyze this, I run an ANOVA test on both variables. I form a combined data set of all observations for each education set for each treatment group. This results in three data sets, i.e.~one per treatment group. The first data set contains all observations from the ANES set that were assigned to treatment group 1 and all observations from the OP set that were assigned to treatment group 1. It also contains the column \texttt{Education\ Set} which denotes the education set each observation belongs to. For treatment group 1, \texttt{Education\ Set} contains the unique values \texttt{ANES} and \texttt{OP}. I then run an Analysis of Variance (ANOVA) regression of each numerical variable on \texttt{Education\ Set}. An ANOVA regression provides information about levels of variability within a regression model and forms a basis for tests of significance. As the name implies, ANOVA analyzes the variance in the data to look for differences. It calculates the the sums of squares to measure the distances of each data point to the mean. The ratio of the sums of squares forms the F-statistic, which is used to gauge statistical significance. I use it to test whether the choice of education set has a significant effect on \texttt{Age} and \texttt{Feel\ Trump}.
 
-\clearpage
-
-The somewhat larger differences in \texttt{Age} and \texttt{Feel\ Trump} could be cause for concern. To analyze this, I run an ANOVA test on both variables. I form a combined data set of all observations for each education set for each treatment group. This results in five data sets, i.e.~one per treatment group. The first data set contains all observations from the ANES set that were assigned to treatment group 1 and all observations from the OP set that were assigned to treatment group 1. It also contains the column \texttt{Education\ Set} which denotes the education set each observation belongs to. For treatment group 1, \texttt{Education\ Set} contains the unique values \texttt{ANES1} and \texttt{OP1}. I then run an ANOVA regression of each numerical variable on \texttt{Education\ Set}. The corresponding models with the respective \texttt{R} function read
-\begin{align}
-\text{aov}(\text{Age} \sim \text{Education Set})
-\end{align}
-and
-\begin{align}
-\text{aov}(\text{Feel Trump} \sim \text{Education Set}).
-\end{align}
-This is repeated for each of the five data sets. Tables \ref{aov-sum} shows a summary of the results. Almost all variable intercepts do not show statistical significance. An exception here is treatment group 3, which shows \(p\)-values of .094 for \texttt{Age} and .027 for \texttt{Feel\ Trump}, with the latter showing statistical significance. Overall, however, the differences between the treatment group means of \texttt{Age} and \texttt{Feel\ Trump} are not statistically significant, i.e.~blocking on two different sets of education categories does not result in significantly differing means for the numerical variables.
-\begin{table}[!htbp] \centering    
-\caption{Summary of ANOVA Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}    
-\label{aov-sum}  
-\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} }  
-\\[-1.8ex]\hline
-\hline \\[-1.8ex]  
-\multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Sum.Sq} & \multicolumn{1}{l}{Mean.Sq} & \multicolumn{1}{l}{F-value} & \multicolumn{1}{l}{p-value} \\  
-\hline \\[-1.8ex]  
+The ANOVA regression is repeated for each of the three data sets. Tables \ref{aov-sum} shows a summary of the results. Almost all variable intercepts do not show statistical significance. An exception here is treatment group 2, which shows a \(p\)-value of .017 for \texttt{Feel\ Trump}. Overall, however, the differences between the treatment group means of \texttt{Age} and \texttt{Feel\ Trump} are not statistically significant for this sample size, i.e.~blocking on two different sets of education categories does not result in significantly differing means for the numerical variables.\footnote{For a similar analysis of the non-numerical factor variables (a binomial GLM regression), see appendix Table \ref{glm-sum}).}
+\begin{table}[!htbp] \centering  
+ \caption{Summary of ANOVA Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}   
+ \label{aov-sum}
+ \begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex] 
+ \multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Sum.Sq} & \multicolumn{1}{l}{Mean.Sq} & \multicolumn{1}{l}{F-value} & \multicolumn{1}{l}{p-value} \\ 
+ \hline \\[-1.8ex] 
 \multicolumn{1}{l}{\textbf{Age}} & & & & & \\ 
-\multicolumn{1}{l}{T1} & 1 & 52.829 & 52.829 & .173 & .678 \\  
-\multicolumn{1}{l}{T1 Residuals} & 1,258 & 384,359.900 & 305.533 &  &  \\  
-\multicolumn{1}{l}{T2} & 1 & 109.829 & 109.829 & .355 & .551 \\  
-\multicolumn{1}{l}{T2 Residuals} & 1,258 & 388,724.900 & 309.002 &  &  \\  
-\multicolumn{1}{l}{T3} & 1 & 861.717 & 861.717 & 2.805 & .094 \\ 
-\multicolumn{1}{l}{T3 Residuals} & 1,258 & 386,400.000 & 307.154 &  &  \\  
-\multicolumn{1}{l}{T4} & 1 & 1.607 & 1.607 & .005 & .942 \\  
-\multicolumn{1}{l}{T4 Residuals} & 1,258 & 387,498.400 & 308.027 &  &  \\  
-\multicolumn{1}{l}{T5} & 1 & 106.896 & 106.896 & .351 & .553 \\  
-\multicolumn{1}{l}{T5 Residuals} & 1,258 & 382,695.200 & 304.209 &  &  \\  
+ \multicolumn{1}{l}{T1} & 1 & 0.107 & 0.107 & .000 & .985 \\
+ \multicolumn{1}{l}{T1 Residuals} & 2,098 & 641,917.600 & 305.966 & & \\
+ \multicolumn{1}{l}{T2} & 1 & 414.519 & 414.519 & 1.340 & .247 \\ 
+ \multicolumn{1}{l}{T2 Residuals} & 2,098 & 648,946.600 & 309.317 & & \\
+ \multicolumn{1}{l}{T3} & 1 & 427.954 & 427.954 & 1.401 & .237 \\
+ \multicolumn{1}{l}{T3 Residuals} & 2,098 & 641,038.400 & 305.547 & & \\ 
  & & & & & \\
 \multicolumn{1}{l}{\textbf{Feel Trump}} & & & & & \\  
-\multicolumn{1}{l}{T1} & 1 & 31.746 & 31.746 & .027 & .869 \\  
-\multicolumn{1}{l}{T1 Residuals} & 1,258 & 1,465,958.000 & 1,165.308 &  &  \\  
-\multicolumn{1}{l}{T2} & 1 & 246.229 & 246.229 & .196 & .658 \\ 
-\multicolumn{1}{l}{T2 Residuals} & 1,258 & 1,576,959.000 & 1,253.544 &  &  \\  
-\multicolumn{1}{l}{T3} & 1 & 5,928.007 & 5,928.007 & 4.871 & .027 \\ 
-\multicolumn{1}{l}{T3 Residuals} & 1,258 & 1,530,847.000 & 1,216.889 &  &  \\ 
-\multicolumn{1}{l}{T4} & 1 & 2,500.496 & 2,500.496 & 2.044 & .153 \\  
-\multicolumn{1}{l}{T4 Residuals} & 1,258 & 1,539,114.000 & 1,223.461 &  &  \\ 
-\multicolumn{1}{l}{T5} & 1 & 2,334.306 & 2,334.306 & 1.894 & .169 \\ 
-\multicolumn{1}{l}{T5 Residuals} & 1,258 & 1,550,046.000 & 1,232.151 &  &  \\ 
-\hline \\[-1.8ex]  
-\end{tabular}  
-\end{table}
-\clearpage
-
-This leaves the factor variables. Since an ANOVA test is not possible for non-numerical factor variables (e.g.~\texttt{Gender}, \texttt{Race} etc.), I conduct a binomial GLM regression here. The model formula is the same as above, with the \texttt{R} function \texttt{glm} replacing \texttt{aov}. The results are shown in Table \ref{glm-sum}.
-
-\ssp
-
-\footnotesize
-\begin{longtable}{lr@{}lr@{}lr@{}lr@{}l}  
-\caption{Summary of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}    
-\label{glm-sum}  
-\\[-1.8ex]\hline  
-\hline \\[-1.8ex]  
-  & \multicolumn{2}{l}{Estimate} & \multicolumn{2}{l}{Std.Error} & \multicolumn{2}{l}{z-value} & \multicolumn{2}{l}{p-value} \\  
-\hline \\[-1.8ex]  
-\textbf{Gender} & & & & \\  
-  T1 Intercept & .&134 & .&080 & 1.&672 & .&095 \\ 
-  T1 & -.&006 & .&113 & -.&056 & .&955 \\  
-  T2 Intercept & .&108 & .&080 & 1.&354 & .&176 \\ 
-  T2 & -.&032 & .&113 & -.&282 & .&778 \\ 
-  T3 Intercept & .&102 & .&080 & 1.&274 & .&203 \\ 
-  T3 & .&045 & .&113 & .&395 & .&693 \\  
-  T4 Intercept & .&146 & .&080 & 1.&831 & .&067 \\
-  T4 & -.&019 & .&113 & -.&169 & .&865 \\
-  T5 Intercept & .&095 & .&080 & 1.&195 & .&232 \\
-  T5 & .&013 & .&113 & .&113 & .&910 \\
- & & & & \\  
-\textbf{Race} & & & & \\  
-  T1 Intercept & -1.&172 & .&094 & -12.&500 & .&000 \\
-  T1 & .&069 & .&131 & .&526 & .&599 \\
-  T2 Intercept & -1.&207 & .&095 & -12.&757 & .&000 \\ 
-  T2 & -.&045 & .&135 & -.&337 & .&736 \\
-  T3 Intercept & -1.&111 & .&092 & -12.&040 & .&000 \\
-  T3 & .&050 & .&130 & .&389 & .&697 \\
-  T4 Intercept & -1.&094 & .&092 & -11.&907 & .&000 \\ 
-  T4 & .&017 & .&130 & .&130 & .&897 \\
-  T5 Intercept & -1.&111 & .&092 & -12.&040 & .&000 \\
-  T5 & -.&096 & .&132 & -.&727 & .&467 \\
-   & & & & \\  
-\textbf{Income} & & & & \\  
-  T1 Intercept & 1.&347 & .&098 & 13.&683 & .&000 \\
-  T1 & .&019 & .&140 & .&140 & .&889 \\
-  T2 Intercept & 1.&396 & .&100 & 13.&976 & .&000 \\
-  T2 & -.&125 & .&139 & -.&901 & .&368 \\
-  T3 Intercept & 1.&244 & .&096 & 13.&010 & .&000 \\
-  T3 & .&103 & .&137 & .&754 & .&451 \\
-  T4 Intercept & 1.&290 & .&097 & 13.&320 & .&000 \\
-  T4 & .&028 & .&138 & .&206 & .&837 \\
-  T5 Intercept & 1.&318 & .&098 & 13.&503 & .&000 \\
-  T5 & -.&028 & .&138 & -.&206 & .&837 \\
- & & & & \\  
-\textbf{Occupation} & & & & \\  
-  T1 Intercept & -.&602 & .&083 & -7.&221 & .&000 \\
-  T1 & -.&000 & .&118 & -.&000 & 1.&000 \\
-  T2 Intercept & -.&616 & .&083 & -7.&373 & .&000 \\
-  T2 & .&177 & .&117 & 1.&515 & .&130 \\
-  T3 Intercept & -.&405 & .&081 & -4.&986 & .&000 \\
-  T3 & -.&224 & .&117 & -1.&920 & .&055 \\
-  T4 Intercept & -.&506 & .&082 & -6.&149 & .&000 \\ 
-  T4 & .&047 & .&116 & .&406 & .&685 \\ 
-  T5 Intercept & -.&499 & .&082 & -6.&072 & .&000 \\ 
-  T5 & .&000 & .&116 & .&000 & 1.&000 \\
- & & & & \\  
-  \textbf{Party ID} & & & & \\  
-  T1 Intercept & .&780 & .&086 & 9.&090 & .&000 \\
-  T1 & -.&281 & .&119 & -2.&366 & .&018 \\
-  T2 Intercept & .&547 & .&083 & 6.&611 & .&000 \\
-  T2 & .&083 & .&118 & .&705 & .&481 \\
-  T3 Intercept & .&672 & .&084 & 7.&977 & .&000 \\
-  T3 & -.&014 & .&119 & -.&119 & .&905 \\
-  T4 Intercept & .&499 & .&082 & 6.&072 & .&000 \\
-  T4 & .&145 & .&117 & 1.&231 & .&218 \\ 
-  T5 Intercept & .&499 & .&082 & 6.&072 & .&000 \\ 
-  T5 & .&061 & .&117 & .&525 & .&600 \\
- & & & & \\  
-\textbf{Pres. Approval} & & & & \\  
-  T1 Intercept & -.&204 & .&080 & -2.&545 & .&011 \\
-  T1 & .&070 & .&113 & .&622 & .&534 \\
-  T2 Intercept & -.&057 & .&080 & -.&717 & .&473 \\
-  T2 & -.&038 & .&113 & -.&338 & .&735 \\
-  T3 Intercept & -.&006 & .&080 & -.&080 & .&936 \\
-  T3 & -.&134 & .&113 & -1.&184 & .&236 \\
-  T4 Intercept & -.&089 & .&080 & -1.&115 & .&265 \\
-  T4 & .&000 & .&113 & .&000 & 1.&000 \\
-  T5 Intercept & -.&178 & .&080 & -2.&228 & .&026 \\
-  T5 & .&102 & .&113 & .&903 & .&366 \\
- & & & & \\  
-\textbf{Min. Wage} & & & & \\  
-  T1 Intercept & -.&609 & .&083 & -7.&297 & .&000 \\
-  T1 & .&055 & .&117 & .&470 & .&638 \\
-  T2 Intercept & -.&492 & .&082 & -5.&995 & .&000 \\
-  T2 & -.&041 & .&116 & -.&349 & .&727 \\
-  T3 Intercept & -.&595 & .&083 & -7.&145 & .&000 \\
-  T3 & -.&077 & .&118 & -.&651 & .&515 \\
-  T4 Intercept & -.&486 & .&082 & -5.&918 & .&000 \\
-  T4 & -.&075 & .&117 & -.&641 & .&522 \\ 
-  T5 Intercept & -.&758 & .&085 & -8.&870 & .&000 \\
-  T5 & .&143 & .&119 & 1.&193 & .&233 \\
- & & & & \\  
-\textbf{Country Track} & & & & \\  
-  T1 Intercept & .&893 & .&088 & 10.&176 & .&000 \\
-  T1 & -.&008 & .&124 & -.&062 & .&951 \\
-  T2 Intercept & 1.&086 & .&092 & 11.&840 & .&000 \\
-  T2 & .&008 & .&130 & .&065 & .&948 \\
-  T3 Intercept & 1.&103 & .&092 & 11.&974 & .&000 \\
-  T3 & -.&017 & .&130 & -.&130 & .&897 \\
-  T4 Intercept & 1.&012 & .&090 & 11.&228 & .&000 \\
-  T4 & .&008 & .&128 & .&064 & .&949 \\
-  T5 Intercept & 1.&003 & .&090 & 11.&159 & .&000 \\
-  T5 & .&008 & .&127 & .&064 & .&949 \\ 
+ \multicolumn{1}{l}{T1} & 1 & 1,164.808 & 1,164.808 & .979 & .323 \\ 
+ \multicolumn{1}{l}{T1 Residuals} & 2,098 & 2,496,492.000 & 1,189.939 & & \\
+ \multicolumn{1}{l}{T2} & 1 & 7,054.667 & 7,054.667 & 5.699 & .017 \\ 
+ \multicolumn{1}{l}{T2 Residuals} & 2,098 & 2,597,204.000 & 1,237.943 & & \\
+ \multicolumn{1}{l}{T3} & 1 & 2,486.298 & 2,486.298 & 2.023 & .155 \\ 
+ \multicolumn{1}{l}{T3 Residuals} & 2,098 & 2,577,984.000 & 1,228.782 & & \\ 
  \hline \\[-1.8ex]
- \end{longtable}
-\dsp
-
-\normalsize
-
-Contrary to the numerical variables, a large number of the \(p\)-values for the variable intercepts are highly significant here. This includes all intercepts of \texttt{Race}, \texttt{Income}, \texttt{Occupation}, \texttt{Party\ ID}, \texttt{Min.\ Wage}, and \texttt{Country\ Track}. The only exceptions are \texttt{Gender} and \texttt{Pres.\ Approval}. None of the \texttt{Gender} intercepts in any treatment group reach statistical significance, while only the intercepts in treatment groups 1 and 5 do so for \texttt{Pres.\ Approval} (.011 and .026, respectively). These reliably highly significant intercept values indicate that a differentiation in education categories is important for non-numerical factor variables as the categories are statistically distinct.
-
+ \end{tabular} 
+ \end{table}
 \hypertarget{ordblock-data-plac}{%
 \subsection{Placebo Regression}\label{ordblock-data-plac}}
 
-To further test the usefulness of the ordered probit categories, I conduct a placebo regression. Placebo tests are most commonly used for difference-in-differences estimators and are falsification tests to analyze whether an effect exists that should not exist (Bertrand, Duflo, \& Mullainathan, 2004; Mills \& Patterson, 2009; Rothstein, 2010). The placebo treatment should be unrelated to the model or method being studied (Hartman \& Hidalgo, 2018; Mora \& Reggio, 2019; Rosenbaum, 2002). In the effort to conduct an analysis that is separate from the previous section, I block the 2016 ANES data anew, this time into two treatment groups. As before, this is done separately for the original ANES and the OP education categories. We then model the following OLS regression on the feeling thermometer towards Donald Trump as the Republican presidential candidate:
+To further test the usefulness of the ordered probit categories, I conduct a placebo regression. Placebo tests are most commonly used for difference-in-differences estimators and are falsification tests to analyze whether an effect exists that should not exist (Bertrand, Duflo, \& Mullainathan, 2004; Mills \& Patterson, 2009; Rothstein, 2010). The placebo treatment should be unrelated to the model or method being studied (Hartman \& Hidalgo, 2018; Mora \& Reggio, 2019; Rosenbaum, 2002). In the effort to conduct an analysis that is separate from the previous section, I block the 2016 ANES data anew on education, this time into two treatment groups. As before, this is done separately for the original ANES and the OP education categories. We then model the following OLS regression on the feeling thermometer towards Donald Trump as the Republican presidential candidate for all observations \(i\) with \(i = [1,\ldots,n]\):
 \begin{align}
-\text{Feel Trump} \sim \text{Group} + \text{Democrat} + \text{Republican} + \text{Income} + \text{Male} + \text{White} + \text{Black} + \text{Hispanic}
+\text{Feel Trump}_i \sim & \,\beta_0 + \beta_1 \text{Group}_i + \beta_2 \text{Democrat}_i + \beta_3 \text{Republican}_i + \beta_4 \text{Income}_i \,+ \nonumber \\ 
+& \beta_5 \text{Male}_i + \beta_6 \text{White}_i + \beta_7 \text{Black}_i + \beta_8 \text{Hispanic}_i
 \end{align}
 The \texttt{Group} variable is added after the data was collected. This means no actual treatment was administered, i.e.~\texttt{Group} is a placebo treatment. I did not conduct an experiment on the ANES data. Instead, I created the \texttt{Group} variable, randomly `assigned' observations to the two treatment groups, and then used this variable as an explanatory variable. The treatment is thus completely artificial. In the absence of actual treatment, the difference between both treatment groups should be zero, i.e.~there should be no significant differences between the \texttt{Group} regression coefficients. The null hypothesis thus assumes that there is no effect. To test this, each blocking/regression process for each set of categories is repeated 1,000 times. The distribution of the placebo treatment indicator (\texttt{Group}) is visualized in Figure \ref{DensPlacTreat}.
 \begin{figure}
@@ -1449,7 +1294,7 @@ Lucid outperforms MTurk in terms of external validity. Lucid respondents are mor
 
 Both methods from the previous chapters are applied in the fielding and analysis of the experiment. Respondents are randomly presented with either the ANES education categories set or the ordered probit (OP) education categories set (see Q26) and subsequently blocked into treatment groups with the method from chapter \ref{ordblock}. This results in a set of results based on ANES blocking and a second set of results based on OP blocking. Both sets of results are evaluated substantively to reveal the effect of morality and self-interest on respondents' issue positions. As part of the analysis, the ordinal variable imputation method from chapter \ref{ordmiss} is applied to artificially insert missing data. This allows us to assess the performance of my imputation method with original data.
 
-Popular survey design providers such as Qualtrics currently do not offer the functionality to include \texttt{R} code as the basis for randomization. In order to conduct this experiment based on my blocking method, I set up an online survey environment based on \texttt{R\ shiny} that is fed into Lucid's marketplace.\footnote{Because of the use of this `external' platform, Lucid's charge per completed response was \$2.} The environment uses Dropbox to store responses and blocking information. The process is explained in detail in section \ref{app-ordblock} of the appendix.
+Popular survey design providers such as Qualtrics currently do not offer the functionality to include \texttt{R} code as the basis for randomization. In order to conduct this experiment based on my blocking method, I set up an online survey environment based on \texttt{R\ shiny} that is fed into Lucid's marketplace.\footnote{Because of the use of this `external' platform, Lucid's charge per completed response was \$2.} The environment uses Dropbox to store responses and blocking information. The process is explained in detail in section \ref{app-ordblock-env} of the appendix.
 
 \hypertarget{framing-results}{%
 \section{Results}\label{framing-results}}
@@ -1901,6 +1746,9 @@ It is never fun to find out that a developed method does not work, and I natural
 \hypertarget{app-ordblock}{%
 \chapter{BLOCKING}\label{app-ordblock}}
 
+\hypertarget{app-ordblock-env}{%
+\section{Online Experiment Environment}\label{app-ordblock-env}}
+
 In order to conduct this experiment, I created an online survey environment based on \texttt{R} with \texttt{shiny} (Boas \& Hidalgo, 2013), as there currently is no available tool to block sequentially online. Popular online survey platforms, such as Qualtrics, do not offer this functionality, and none of the attempts to combine \texttt{R} code work with Qualtrics concern the `injection' of \texttt{R} code into the Qualtrics randomization engine, which blocking would require (Barari et al., 2017; Ginn, 2018; Hainmueller, Hopkins, \& Yamamoto, 2014; Testa, 2017). The following is a basic outline of the mechanisms behind this survey environment.
 
 The survey questions, i.e.~questions that collect demographic information and questions that apply treatment, need to be designed as \texttt{.txt} files and incorporated into a local \texttt{shiny} environment. This local environment is then hosted in the cloud and publicly accessible. The hosted website sequentially blocks each incoming respondent based on her covariate information and covariate information from all previous respondents through constant interaction with the \texttt{R} code. The workflow for any incoming respondent is illustrated in Figure \ref{online-workflow} below.
@@ -1926,6 +1774,106 @@ The survey questions, i.e.~questions that collect demographic information and qu
 \caption{Online Survey Experiment Workflow} \label{online-workflow}
 \end{figure}
 A respondent clicks on the survey link and answers the demographic question. After she selects her level of education, \texttt{R} code in the background pulls previous respondents' covariate information from a Dropbox server. Based on this information and her chosen education level, the \texttt{R} code sequentially blocks and assigns her to a treatment group. The respondent then sees and answers the respective treatment question(s). Her responses are then saved on the same Dropbox server. This process is repeated for all incoming respondents. If the respondent is the first person to take the survey, i.e.~if there is no covariate information from previous respondents yet, the code randomly assigns her to one of the treatment groups. All subsequent respondents are then blocked and assigned as just described. To recruit respondents, the website was fed into Lucid's marketplace.
+
+\hypertarget{app-ordblock-blockdiff}{%
+\section{Blocking Differences}\label{app-ordblock-blockdiff}}
+
+Figures \ref{ANBlock1} to \ref{ANBlock3} show the variable proportions or means, depending on the type of variable in question, after blocking the ANES data on education into three treatment groups. As outlined above, this is done twice, once based on the original ANES education categories, and once based on the newly estimated OP education categories. Table \ref{glm-sum} shows a binomial GLM regression of the non-numerical factor variables.
+\begin{figure}
+\centering
+\includegraphics{dissertation_files/figure-latex/ANES-Blocked-Plot-1-1.pdf}
+\caption{\label{fig:ANES-Blocked-Plot-1}Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 1. \texttt{Age} and \texttt{Feel\ Trump} Show Means, All Others Show Proportions.\label{ANBlock1}}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics{dissertation_files/figure-latex/ANES-Blocked-Plot-2-1.pdf}
+\caption{\label{fig:ANES-Blocked-Plot-2}Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 2. \texttt{Age} and \texttt{Feel\ Trump} Show Means, All Others Show Proportions.\label{ANBlock2}}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics{dissertation_files/figure-latex/ANES-Blocked-Plot-3-1.pdf}
+\caption{\label{fig:ANES-Blocked-Plot-3}Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 3. \texttt{Age} and \texttt{Feel\ Trump} Show Means, All Others Show Proportions.\label{ANBlock3}}
+\end{figure}
+\clearpage
+
+\ssp
+
+\footnotesize
+\begin{longtable}{lr@{}lr@{}lr@{}lr@{}l}  
+\caption{Summary of GLM Regression of Variable on ANES/OP Indicator. Differentiated by Treatment Group}    
+\label{glm-sum}  
+\\[-1.8ex]\hline  
+\hline \\[-1.8ex]  
+  & \multicolumn{2}{l}{Estimate} & \multicolumn{2}{l}{Std.Error} & \multicolumn{2}{l}{z-value} & \multicolumn{2}{l}{p-value} \\  
+\hline \\[-1.8ex]  
+\textbf{Gender} & & & & \\  
+ T1 Intercept & .091 & .062 & 1.481 & .139 \\ 
+ T1 & .038 & .087 & .437 & .662 \\ 
+ T2 Intercept & .126 & .062 & 2.035 & .042 \\
+ T2 & -.004 & .087 & -.044 & .965 \\
+ T3 Intercept & .134 & .062 & 2.159 & .031 \\
+ T3 & -.034 & .087 & -.393 & .694 \\ 
+ & & & & \\  
+\textbf{Race} & & & & \\  
+ T1 Intercept & -1.061 & .071 & -15.024 & .000 \\
+ T1 & -.035 & .100 & -.351 & .726 \\ 
+ T2 Intercept & -1.153 & .072 & -15.952 & .000 \\
+ T2 & .041 & .102 & .407 & .684 \\
+ T3 Intercept & -1.206 & .073 & -16.452 & .000 \\
+ T3 & -.005 & .104 & -.052 & .959 \\
+   & & & & \\  
+\textbf{Income} & & & & \\  
+ T1 Intercept & 1.334 & .076 & 17.557 & .000 \\
+ T1 & -.006 & .107 & -.054 & .957 \\
+ T2 Intercept & 1.227 & .074 & 16.649 & .000 \\ 
+ T2 & .038 & .105 & .367 & .714 \\ 
+ T3 Intercept & 1.398 & .077 & 18.058 & .000 \\ 
+ T3 & -.036 & .109 & -.327 & .744 \\
+ & & & & \\  
+\textbf{Employment} & & & & \\  
+ T1 Intercept & -.421 & .063 & -6.678 & .000 \\
+ T1 & -.246 & .091 & -2.713 & .007 \\
+ T2 Intercept & -.567 & .064 & -8.831 & .000 \\
+ T2 & .193 & .090 & 2.152 & .031 \\
+ T3 Intercept & -.588 & .064 & -9.126 & .000 \\ 
+ T3 & .049 & .091 & .545 & .586 \\ 
+ & & & & \\  
+  \textbf{Party ID} & & & & \\  
+ T1 Intercept & .530 & .064 & 8.297 & .000 \\
+ T1 & .125 & .091 & 1.367 & .172 \\
+ T2 Intercept & .655 & .065 & 10.065 & .000 \\
+ T2 & -.125 & .091 & -1.367 & .172 \\
+ T3 Intercept & .609 & .065 & 9.421 & .000 \\ 
+ T3 & -.000 & .091 & -.000 & 1.000 \\ 
+ & & & & \\  
+\textbf{President} & & & & \\  
+ T1 Intercept & -.210 & .062 & -3.388 & .001 \\ 
+ T1 & .058 & .088 & .657 & .511 \\ 
+ T2 Intercept & -.008 & .062 & -.123 & .902 \\ 
+ T2 & -.134 & .087 & -1.528 & .126 \\ 
+ T3 Intercept & -.103 & .062 & -1.666 & .096 \\
+ T3 & .076 & .087 & .873 & .383 \\ 
+ & & & & \\  
+\textbf{Minimum Wage} & & & & \\  
+ T1 Intercept & -.613 & .065 & -9.480 & .000 \\ 
+ T1 & .042 & .091 & .456 & .649 \\ 
+ T2 Intercept & -.465 & .063 & -7.340 & .000 \\
+ T2 & -.106 & .090 & -1.173 & .241 \\
+ T3 Intercept & -.685 & .065 & -10.472 & .000 \\ 
+ T3 & .068 & .092 & .736 & .462 \\
+ & & & & \\  
+\textbf{Country} & & & & \\  
+ T1 Intercept & .954 & .069 & 13.850 & .000 \\ 
+ T1 & -.005 & .097 & -.049 & .961 \\ 
+ T2 Intercept & 1.111 & .071 & 15.544 & .000 \\ 
+ T2 & -.055 & .100 & -.552 & .581 \\ 
+ T3 Intercept & .992 & .069 & 14.282 & .000 \\
+ T3 & .059 & .099 & .593 & .553 \\ 
+ \hline \\[-1.8ex]
+ \end{longtable}
+\dsp
+
+\normalsize
 
 \hypertarget{app-ordmiss}{%
 \chapter{MISSING DATA}\label{app-ordmiss}}
@@ -3203,11 +3151,11 @@ Huff, C., \& Tingley, D. (2015). "Who Are These people?" Evaluating the Demograp
 \leavevmode\hypertarget{ref-imai_quantitative_2018}{}%
 Imai, K. (2018). \emph{Quantitative Social Science}. Princeton, NJ: Princeton University Press.
 
-\leavevmode\hypertarget{ref-imai_2008_misunderstandings}{}%
-Imai, K., King, G., \& Elizabeth A. Stuart. (2008). Misunderstandings between experimentalists and observationalists about causal inference. \emph{Journal of the Royal Statistical Society, Series A}, \emph{171}, 481--502.
-
 \leavevmode\hypertarget{ref-imai_2009_essential}{}%
 Imai, K., King, G., \& Nall, C. (2009). The essential role of pair-matching in cluster-randomized experiments, with application to the mexican universal health insurance evaluation. \emph{Statistical Science}, \emph{24}, 29--53.
+
+\leavevmode\hypertarget{ref-imai_2008_misunderstandings}{}%
+Imai, K., King, G., \& Stuart, E. (2008). Misunderstandings between experimentalists and observationalists about causal inference. \emph{Journal of the Royal Statistical Society, Series A}, \emph{171}, 481--502.
 
 \leavevmode\hypertarget{ref-ioannidis_2005_most}{}%
 Ioannidis, J. P. (2005). Why Most Published Research Findings Are False. \emph{PLoS Med}, \emph{2}(8), 696--701.
@@ -3281,6 +3229,9 @@ Kroh, M. (2006). Taking 'Don't Knows' as Valid Responses: A Multiple Complete Ra
 \leavevmode\hypertarget{ref-krosnick_1996_satisficing}{}%
 Krosnick, J. A., Sowmya, N., \& Smith, W. (1996). Satisficing in Surveys: Initial Evidence. \emph{Advances in Survey Research}, \emph{70}, 29--44.
 
+\leavevmode\hypertarget{ref-krupnikov_2014_cross-sample}{}%
+Krupnikov, Y., \& Levine, A. (2014). Cross-Sample Comparisons and External Validity. \emph{Journal of Experimental Political Science}, \emph{1}(1), 59--80.
+
 \leavevmode\hypertarget{ref-kurzban_2010_everyone}{}%
 Kurzban, R. (2010). \emph{Why Everyone (Else) Is a Hypocrite: Evolution and the Modular mind}. Princeton, NJ: Princeton University Press.
 
@@ -3295,6 +3246,9 @@ Lahav, G., \& Courtemanche, M. (2012). The Ideological Effects of Framing Threat
 
 \leavevmode\hypertarget{ref-lahlrl_2003_impact}{}%
 Lahlrl, P. (2003). On the Impact of Bootstrapping in Survey Sampling and Small Area Estimation. \emph{Statistical Science}, \emph{18}(2), 199--210.
+
+\leavevmode\hypertarget{ref-lalla_2017_fundamental}{}%
+Lalla, M. (2017). Fundamental Characteristics and Statistical Analysis of Ordinal Variables: A Review. \emph{Quality and Quantity}, \emph{51}, 435--458.
 
 \leavevmode\hypertarget{ref-lau_proposition_1983}{}%
 Lau, R., Coulam, R., \& Sears, D. O. (1983). \emph{Proposition 2.5 in Massachusetts: Self-Interest, Anti-Government Attitudes, and Political Schemas}.
@@ -3320,11 +3274,17 @@ Levin, I. P., Schneider, S. L., \& Gaeth, G. J. (1998). All Frames Are Not Creat
 \leavevmode\hypertarget{ref-lewis-beck_2008_american}{}%
 Lewis-Beck, M. S., Jacoby, W. G., Norpoth, H., \& Weisberg, H. F. (2008). \emph{The American Voter Revisited}. Ann Arbor, MI: University of Michigan Press.
 
+\leavevmode\hypertarget{ref-liddell_2018_analyzing}{}%
+Liddell, T. M., \& Kruschke, J. K. (2018). Analyzing Ordinal Data with Metric Models: What Could Possibly Go Wrong? \emph{Journal of Experimental Social Psychology}, \emph{79}, 328--348.
+
 \leavevmode\hypertarget{ref-little_2002_statistical}{}%
 Little, R. J., \& Rubin, D. (2002). \emph{Statistical Analysis with Missing Data} (2nd ed.). Hoboken, NJ: Wiley-Interscience.
 
 \leavevmode\hypertarget{ref-lucadamoa_2014_scaling}{}%
 Lucadamoa, A., \& Amenta, P. (2014). A new scaling proposal for handling ordinal categorical variables in co-inertia (-pls) analysis. \emph{Procedia Economics and Finance}, \emph{17}, 10--19.
+
+\leavevmode\hypertarget{ref-malhotra_2007_effect}{}%
+Malhotra, N., \& Krosnick, J. A. (2007). The Effect of Survey Mode and Sampling on Inferences about Political Attitudes and Behavior: Comparing the 2000 and 2004 ANES to Internet Surveys with Nonprobability Samples. \emph{Political Analysis}, \emph{15}(3), 286--323.
 
 \leavevmode\hypertarget{ref-mansbridge_1990_relation}{}%
 Mansbridge, J. (1990a). On the Relation of Altruism and Self-Interest. In \emph{Beyond Self-Interest}. Chicago, IL: Chicago University Press.
@@ -3598,6 +3558,9 @@ Testa, C. (2017). QualtricsTools. Retrieved from \url{https://github.com/emmamor
 
 \leavevmode\hypertarget{ref-tetlock_1996_revising}{}%
 Tetlock, P. E., Peterson, R. S., \& Lerner, J. S. (1996). Revising the Value Pluralism Model: Incorporating Social Content and Context Postulates. In C. Seligman, J. M. Olson, \& M. P. Zanna (Eds.), \emph{The Psychology of Values: The Ontario Symposium} (Vol. 8, pp. 25--51). Mahwah, NJ: Lawrence Erlbaum.
+
+\leavevmode\hypertarget{ref-torra_2006_regression}{}%
+Torra, V., Domingo-Ferrer, J., Mateo-Sanz, J. M., \& Ng, M. (2006). Regression for Ordinal Variables without Underlying Continuous Variables. \emph{Information Sciences}, \emph{176}(4), 465--474.
 
 \leavevmode\hypertarget{ref-tversky_framing_1981}{}%
 Tversky, A., \& Kahneman, D. (1981). The Framing of Decisions and the Psychology of Choice. \emph{Science}, \emph{211}, 453--458.
