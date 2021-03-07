@@ -62,257 +62,100 @@ for(i in 1:ncol(df.all)){
   df.all[,i] <- as.numeric(df.all[,i])
 }
 
-df.all <- tibble::rownames_to_column(df.all, "categories")
+df.all <- tibble::rownames_to_column(df.all, "categories") # turn row names into column
 df.all$categories <- as.factor(df.all$categories)
-
+df.all <- df.all[,c(1:3, 1, 4, 5, 1, 6, 7)] # repeat the categories column so I can loop over everything
 col.n <- c("categories", "ANES", "OP")
+iters <- c(1, 1+n.tr, 1+n.tr*2) # it needs to go 1, 2, 3, then 4, 5, 6, then 7, 8, 9. So we need the numbers 1, 4, 7 as i for the loop
+blocked.plots <- list()
 
-
-# Group 1
-group1 <- df.all[,1:3]
-colnames(group1) <- col.n
-
-gender1 <- group1[1:3,]
-gender1$variable <- rep("Gender", 3) %>% as.factor
-gender1.melt <- melt(gender1, variable.name = "group")
-
-race1 <- group1[4:8,]
-race1$variable <- rep("Race", 5) %>% as.factor
-race1.melt <- melt(race1, variable.name = "group")
-
-income1 <- group1[9:16,]
-income1$categories <- c("<25k", "25-50k", "50-75k", "75-100k", "100-125k", "125-150k", "150-175k", ">175K") %>% factor
-income1$variable <- rep("Income", 8) %>% as.factor
-income1.melt <- melt(income1, variable.name = "group")
-
-empl1 <- group1[17:22,]
-empl1$variable <- rep("Employment", 6) %>% as.factor
-empl1.melt <- melt(empl1, variable.name = "group")
-
-pid1 <- group1[23:26,]
-pid1$variable <- rep("Party ID", 4) %>% as.factor
-pid1.melt <- melt(pid1, variable.name = "group")
-
-pres1 <- group1[27:28,]
-pres1$variable <- rep("President", 2) %>% as.factor
-pres1.melt <- melt(pres1, variable.name = "group")
-
-minw1 <- group1[29:32,]
-minw1$variable <- rep("Minimum Wage", 4) %>% as.factor
-minw1.melt <- melt(minw1, variable.name = "group")
-
-country1 <- group1[33:34,]
-country1$variable <- rep("Country", 2) %>% as.factor
-country1.melt <- melt(country1, variable.name = "group")
-
-age1 <- group1[35,]
-age1$variable <- rep("Age", 1) %>% as.factor
-age1.melt <- melt(age1, variable.name = "group")
-
-feel1 <- group1[36,]
-feel1$variable <- rep("Feel Trump", 1) %>% as.factor
-feel1.melt <- melt(feel1, variable.name = "group")
-
-p.gender1 <- ggplot(data = gender1.melt, aes(x = categories, y = value)) +
+for(i in iters){
+  group <- df.all[,c(i, i+1, i+2)]
+  colnames(group) <- col.n
+  
+  gender <- group[1:3,]
+  gender$variable <- rep("Gender", 3) %>% as.factor
+  gender.melt <- melt(gender, variable.name = "group")
+  
+  race <- group[4:8,]
+  race$variable <- rep("Race", 5) %>% as.factor
+  race.melt <- melt(race, variable.name = "group")
+  
+  income <- group[9:16,]
+  income$categories <- c("<25k", "25-50k", "50-75k", "75-100k", "100-125k", "125-150k", "150-175k", ">175K") %>% factor
+  income$variable <- rep("Income", 8) %>% as.factor
+  income.melt <- melt(income, variable.name = "group")
+  
+  empl <- group[17:22,]
+  empl$variable <- rep("Employment", 6) %>% as.factor
+  empl.melt <- melt(empl, variable.name = "group")
+  
+  pid <- group[23:26,]
+  pid$variable <- rep("Party ID", 4) %>% as.factor
+  pid.melt <- melt(pid, variable.name = "group")
+  
+  pres <- group[27:28,]
+  pres$variable <- rep("President", 2) %>% as.factor
+  pres.melt <- melt(pres, variable.name = "group")
+  
+  minw <- group[29:32,]
+  minw$variable <- rep("Minimum Wage", 4) %>% as.factor
+  minw.melt <- melt(minw, variable.name = "group")
+  
+  country <- group[33:34,]
+  country$variable <- rep("Country", 2) %>% as.factor
+  country.melt <- melt(country, variable.name = "group")
+  
+  age <- group[35,]
+  age$variable <- rep("Age", 1) %>% as.factor
+  age.melt <- melt(age, variable.name = "group")
+  
+  feel <- group[36,]
+  feel$variable <- rep("Feel Trump", 1) %>% as.factor
+  feel.melt <- melt(feel, variable.name = "group")
+  
+  p.gender <- ggplot(data = gender.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Gender") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.race1 <- ggplot(data = race1.melt, aes(x = categories, y = value)) +
+    theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+  p.race <- ggplot(data = race.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Race") + 
-  theme(axis.title.y=element_blank(), legend.position = c(0.4, 0.7), axis.text.x = element_text(angle = 45)) + 
-  guides(fill=guide_legend(title="Categories"))
-p.empl1 <- ggplot(data = empl1.melt, aes(x = categories, y = value)) +
+    theme(axis.title.y=element_blank(), legend.position = c(0.4, 0.7), axis.text.x = element_text(angle = 45)) + 
+    guides(fill=guide_legend(title="Categories"))
+  p.empl <- ggplot(data = empl.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Employment") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.pid1 <- ggplot(data = pid1.melt, aes(x = categories, y = value)) +
+    theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+  p.pid <- ggplot(data = pid.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Party ID") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.age1 <- ggplot(data = age1.melt, aes(x = categories, y = value)) +
+    theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+  p.age <- ggplot(data = age.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Age") + 
-  theme(axis.title.y=element_blank(), legend.position='none',
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
-
-p.income1 <- ggplot(data = income1.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Income") + theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.pres1 <- ggplot(data = pres1.melt, aes(x = categories, y = value)) +
+    theme(axis.title.y=element_blank(), legend.position='none',
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank())
+  
+  p.income <- ggplot(data = income.melt, aes(x = categories, y = value)) +
+    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Income") + 
+    theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+  p.pres <- ggplot(data = pres.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("President") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.minw1 <- ggplot(data = minw1.melt, aes(x = categories, y = value)) +
+    theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+  p.minw <- ggplot(data = minw.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Minimum Wage") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.country1 <- ggplot(data = country1.melt, aes(x = categories, y = value)) +
+    theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+  p.country <- ggplot(data = country.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Country") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.feel1 <- ggplot(data = feel1.melt, aes(x = categories, y = value)) +
+    theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
+  p.feel <- ggplot(data = feel.melt, aes(x = categories, y = value)) +
     geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Feel Trump") + 
-  theme(axis.title.y=element_blank(), legend.position='none',
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+    theme(axis.title.y=element_blank(), legend.position='none',
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank())
+  
+  blocked.plots[[i]] <- list(p.gender, p.race, p.empl, p.pid, p.age, 
+                             p.income, p.pres, p.minw, p.country, p.feel)
+}
 
-
-# Group 2
-
-group2 <- df.all[,c(1, 4, 5)]
-colnames(group2) <- col.n
-
-gender2 <- group2[1:3,]
-gender2$variable <- rep("Gender", 3) %>% as.factor
-gender2.melt <- melt(gender2, variable.name = "group")
-
-race2 <- group2[4:8,]
-race2$variable <- rep("Race", 5) %>% as.factor
-race2.melt <- melt(race2, variable.name = "group")
-
-income2 <- group2[9:16,]
-income2$categories <- c("<25k", "25-50k", "50-75k", "75-100k", "100-125k", "125-150k", "150-175k", ">175K") %>% factor
-income2$variable <- rep("Income", 8) %>% as.factor
-income2.melt <- melt(income2, variable.name = "group")
-
-empl2 <- group2[17:22,]
-empl2$variable <- rep("Employment", 6) %>% as.factor
-empl2.melt <- melt(empl2, variable.name = "group")
-
-pid2 <- group2[23:26,]
-pid2$variable <- rep("Party ID", 4) %>% as.factor
-pid2.melt <- melt(pid2, variable.name = "group")
-
-pres2 <- group2[27:28,]
-pres2$variable <- rep("President", 2) %>% as.factor
-pres2.melt <- melt(pres2, variable.name = "group")
-
-minw2 <- group2[29:32,]
-minw2$variable <- rep("Minimum Wage", 4) %>% as.factor
-minw2.melt <- melt(minw2, variable.name = "group")
-
-country2 <- group2[33:34,]
-country2$variable <- rep("Country", 2) %>% as.factor
-country2.melt <- melt(country2, variable.name = "group")
-
-age2 <- group2[35,]
-age2$variable <- rep("Age", 1) %>% as.factor
-age2.melt <- melt(age2, variable.name = "group")
-
-feel2 <- group2[36,]
-feel2$variable <- rep("Feel Trump", 1) %>% as.factor
-feel2.melt <- melt(feel2, variable.name = "group")
-
-p.gender2 <- ggplot(data = gender2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Gender") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.race2 <- ggplot(data = race2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Race") + 
-  theme(axis.title.y=element_blank(), legend.position = c(0.4, 0.7), axis.text.x = element_text(angle = 45)) + 
-  guides(fill=guide_legend(title="Categories"))
-p.empl2 <- ggplot(data = empl2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Employment") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.pid2 <- ggplot(data = pid2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Party ID") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.age2 <- ggplot(data = age2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Age") + 
-  theme(axis.title.y=element_blank(), legend.position='none',
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
-
-p.income2 <- ggplot(data = income2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Income") + theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.pres2 <- ggplot(data = pres2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("President") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.minw2 <- ggplot(data = minw2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Minimum Wage") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.country2 <- ggplot(data = country2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Country") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.feel2 <- ggplot(data = feel2.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Feel Trump") + 
-  theme(axis.title.y=element_blank(), legend.position='none',
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
-
-
-# Group 3
-group3 <- df.all[,c(1, 6, 7)]
-colnames(group3) <- col.n
-
-gender3 <- group3[1:3,]
-gender3$variable <- rep("Gender", 3) %>% as.factor
-gender3.melt <- melt(gender3, variable.name = "group")
-
-race3 <- group3[4:8,]
-race3$variable <- rep("Race", 5) %>% as.factor
-race3.melt <- melt(race3, variable.name = "group")
-
-income3 <- group3[9:16,]
-income3$categories <- c("<25k", "25-50k", "50-75k", "75-100k", "100-125k", "125-150k", "150-175k", ">175K") %>% factor
-income3$variable <- rep("Income", 8) %>% as.factor
-income3.melt <- melt(income3, variable.name = "group")
-
-empl3 <- group3[17:22,]
-empl3$variable <- rep("Employment", 6) %>% as.factor
-empl3.melt <- melt(empl3, variable.name = "group")
-
-pid3 <- group3[23:26,]
-pid3$variable <- rep("Party ID", 4) %>% as.factor
-pid3.melt <- melt(pid3, variable.name = "group")
-
-pres3 <- group3[27:28,]
-pres3$variable <- rep("President", 2) %>% as.factor
-pres3.melt <- melt(pres3, variable.name = "group")
-
-minw3 <- group3[29:32,]
-minw3$variable <- rep("Minimum Wage", 4) %>% as.factor
-minw3.melt <- melt(minw3, variable.name = "group")
-
-country3 <- group3[33:34,]
-country3$variable <- rep("Country", 2) %>% as.factor
-country3.melt <- melt(country3, variable.name = "group")
-
-age3 <- group3[35,]
-age3$variable <- rep("Age", 1) %>% as.factor
-age3.melt <- melt(age3, variable.name = "group")
-
-feel3 <- group3[36,]
-feel3$variable <- rep("Feel Trump", 1) %>% as.factor
-feel3.melt <- melt(feel3, variable.name = "group")
-
-p.gender3 <- ggplot(data = gender3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Gender") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.race3 <- ggplot(data = race3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Race") + 
-  theme(axis.title.y=element_blank(), legend.position = c(0.4, 0.7), axis.text.x = element_text(angle = 45)) + 
-  guides(fill=guide_legend(title="Categories"))
-p.empl3 <- ggplot(data = empl3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Employment") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.pid3 <- ggplot(data = pid3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Party ID") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.age3 <- ggplot(data = age3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Age") + 
-  theme(axis.title.y=element_blank(), legend.position='none',
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
-
-p.income3 <- ggplot(data = income3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Income") + theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.pres3 <- ggplot(data = pres3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("President") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.minw3 <- ggplot(data = minw3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Minimum Wage") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.country3 <- ggplot(data = country3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Country") + 
-  theme(axis.title.y=element_blank(), legend.position='none', axis.text.x = element_text(angle = 45))
-p.feel3 <- ggplot(data = feel3.melt, aes(x = categories, y = value)) +
-    geom_bar(aes(fill = group), stat = "identity", position = "dodge") + xlab("Feel Trump") + 
-  theme(axis.title.y=element_blank(), legend.position='none',
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+blocked.plots <- blocked.plots[lengths(blocked.plots) != 0] # to remove null elements from list
 
 ```
 
@@ -322,25 +165,19 @@ Figures \ref{ANBlock1} to \ref{ANBlock3} show the variable proportions or means,
 
 ```{r ANES-Blocked-Plot-1, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 1. `Age` and `Feel Trump` Show Means, All Others Show Proportions.\\label{ANBlock1}"}
 
-grid.arrange(p.gender1, p.race1, p.empl1, p.pid1, p.age1, 
-             p.income1, p.pres1, p.minw1, p.country1, p.feel1,
-             ncol = 5, nrow = 2)
+grid.arrange(grobs = blocked.plots[[1]], ncol = 5, nrow = 2)
 
 ```
 
 ```{r ANES-Blocked-Plot-2, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 2. `Age` and `Feel Trump` Show Means, All Others Show Proportions.\\label{ANBlock2}"}
 
-grid.arrange(p.gender2, p.race2, p.empl2, p.pid2, p.age2, 
-             p.income2, p.pres2, p.minw2, p.country2, p.feel2,
-             ncol = 5, nrow = 2)
+grid.arrange(grobs = blocked.plots[[2]], ncol = 5, nrow = 2)
 
 ```
 
 ```{r ANES-Blocked-Plot-3, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Variable Proportions/Means After Blocking ANES Data on ANES and OP Education Categories, Treatment Group 3. `Age` and `Feel Trump` Show Means, All Others Show Proportions.\\label{ANBlock3}"}
 
-grid.arrange(p.gender3, p.race3, p.empl3, p.pid3, p.age3, 
-             p.income3, p.pres3, p.minw3, p.country3, p.feel3,
-             ncol = 5, nrow = 2)
+grid.arrange(grobs = blocked.plots[[3]], ncol = 5, nrow = 2)
 
 ```
 

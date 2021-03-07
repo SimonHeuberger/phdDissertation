@@ -591,8 +591,8 @@ df.ed.all <-rbind(top, df.ed.op, bottom) %>% cbind(df.ed.an, .) %>%
 ### combine and print (and manually adjust) factors, numerics, education ###
 
 df.all <- rbind(df.props, df.means) # I decided not to include ed.all because I don't want to have to explain the differing numbers (which might well be meaningless anyway)
-
 rownames(df.all)[17] <- "Employed" # sounds better than "Working"
+
 ```
 
 ```{r Variance-In-Treatment-Groups, include=FALSE}
