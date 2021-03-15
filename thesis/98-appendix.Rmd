@@ -278,63 +278,63 @@ Wrong track & .722 & .721 & .752 & .742 & .730 & .741 \\
  T1 Intercept & .091 & .062 & 1.481 & .139 \\ 
  T1 & .038 & .087 & .437 & .662 \\ 
  T2 Intercept & .126 & .062 & 2.035 & .042 \\
- T2 & -.004 & .087 & -.044 & .965 \\
+ T2 & -0.004 & .087 & -0.044 & .965 \\
  T3 Intercept & .134 & .062 & 2.159 & .031 \\
- T3 & -.034 & .087 & -.393 & .694 \\ 
+ T3 & -0.034 & .087 & -0.393 & .694 \\ 
  & & & & \\  
 \textbf{Race} & & & & \\  
  T1 Intercept & -1.061 & .071 & -15.024 & .000 \\
- T1 & -.035 & .100 & -.351 & .726 \\ 
+ T1 & -0.035 & .100 & -0.351 & .726 \\ 
  T2 Intercept & -1.153 & .072 & -15.952 & .000 \\
  T2 & .041 & .102 & .407 & .684 \\
  T3 Intercept & -1.206 & .073 & -16.452 & .000 \\
- T3 & -.005 & .104 & -.052 & .959 \\
+ T3 & -0.005 & .104 & -0.052 & .959 \\
    & & & & \\  
 \textbf{Income} & & & & \\  
  T1 Intercept & 1.334 & .076 & 17.557 & .000 \\
- T1 & -.006 & .107 & -.054 & .957 \\
+ T1 & -0.006 & .107 & -0.054 & .957 \\
  T2 Intercept & 1.227 & .074 & 16.649 & .000 \\ 
  T2 & .038 & .105 & .367 & .714 \\ 
  T3 Intercept & 1.398 & .077 & 18.058 & .000 \\ 
- T3 & -.036 & .109 & -.327 & .744 \\
+ T3 & -0.036 & .109 & -0.327 & .744 \\
  & & & & \\  
 \textbf{Employment} & & & & \\  
- T1 Intercept & -.421 & .063 & -6.678 & .000 \\
- T1 & -.246 & .091 & -2.713 & .007 \\
- T2 Intercept & -.567 & .064 & -8.831 & .000 \\
+ T1 Intercept & -0.421 & .063 & -6.678 & .000 \\
+ T1 & -0.246 & .091 & -2.713 & .007 \\
+ T2 Intercept & -0.567 & .064 & -8.831 & .000 \\
  T2 & .193 & .090 & 2.152 & .031 \\
- T3 Intercept & -.588 & .064 & -9.126 & .000 \\ 
+ T3 Intercept & -0.588 & .064 & -9.126 & .000 \\ 
  T3 & .049 & .091 & .545 & .586 \\ 
  & & & & \\  
   \textbf{Party ID} & & & & \\  
  T1 Intercept & .530 & .064 & 8.297 & .000 \\
  T1 & .125 & .091 & 1.367 & .172 \\
  T2 Intercept & .655 & .065 & 10.065 & .000 \\
- T2 & -.125 & .091 & -1.367 & .172 \\
+ T2 & -0.125 & .091 & -1.367 & .172 \\
  T3 Intercept & .609 & .065 & 9.421 & .000 \\ 
- T3 & -.000 & .091 & -.000 & 1.000 \\ 
+ T3 & -0.000 & .091 & -0.000 & 1.000 \\ 
  & & & & \\  
 \textbf{President} & & & & \\  
- T1 Intercept & -.210 & .062 & -3.388 & .001 \\ 
+ T1 Intercept & -0.210 & .062 & -3.388 & .001 \\ 
  T1 & .058 & .088 & .657 & .511 \\ 
- T2 Intercept & -.008 & .062 & -.123 & .902 \\ 
- T2 & -.134 & .087 & -1.528 & .126 \\ 
- T3 Intercept & -.103 & .062 & -1.666 & .096 \\
+ T2 Intercept & -0.008 & .062 & -0.123 & .902 \\ 
+ T2 & -0.134 & .087 & -1.528 & .126 \\ 
+ T3 Intercept & -0.103 & .062 & -1.666 & .096 \\
  T3 & .076 & .087 & .873 & .383 \\ 
  & & & & \\  
 \textbf{Minimum Wage} & & & & \\  
- T1 Intercept & -.613 & .065 & -9.480 & .000 \\ 
+ T1 Intercept & -0.613 & .065 & -9.480 & .000 \\ 
  T1 & .042 & .091 & .456 & .649 \\ 
- T2 Intercept & -.465 & .063 & -7.340 & .000 \\
- T2 & -.106 & .090 & -1.173 & .241 \\
- T3 Intercept & -.685 & .065 & -10.472 & .000 \\ 
+ T2 Intercept & -0.465 & .063 & -7.340 & .000 \\
+ T2 & -0.106 & .090 & -1.173 & .241 \\
+ T3 Intercept & -0.685 & .065 & -10.472 & .000 \\ 
  T3 & .068 & .092 & .736 & .462 \\
  & & & & \\  
 \textbf{Country} & & & & \\  
  T1 Intercept & .954 & .069 & 13.850 & .000 \\ 
- T1 & -.005 & .097 & -.049 & .961 \\ 
+ T1 & -0.005 & .097 & -0.049 & .961 \\ 
  T2 Intercept & 1.111 & .071 & 15.544 & .000 \\ 
- T2 & -.055 & .100 & -.552 & .581 \\ 
+ T2 & -0.055 & .100 & -0.552 & .581 \\ 
  T3 Intercept & .992 & .069 & 14.282 & .000 \\
  T3 & .059 & .099 & .593 & .553 \\ 
  \hline \\[-1.8ex]
@@ -457,35 +457,35 @@ cat(kt)
  \hline \\[-1.8ex]
  \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
  \hline \\[-1.8ex] 
- true & Democrat & .&3370 & .&4032 \\
- hd.ord & Democrat & --.&0001 & +.&0006 \\
- hot.deck & Democrat & --.&0002 & +.&0006 \\ 
- amelia & Democrat & +.&0000 & +.&0003 \\
- mice & Democrat & +.&0000 & +.&0003 \\
- na.omit & Democrat & --.&0302 & --.&0250 \\
- true & Male & .&4868 & .&4521 \\
- hd.ord & Male & --.&0004 & --.&0001 \\ 
- hot.deck & Male & --.&0008 & --.&0002 \\
- amelia & Male & +.&0001 & +.&0001 \\
- mice & Male & +.&0001 & +.&0001 \\
- na.omit & Male & --.&0365 & --.&0436 \\
+ true & Democrat & 0.&3370 & 0.&4032 \\
+ hd.ord & Democrat & --0.&0001 & + 0.&0006 \\
+ hot.deck & Democrat & --0.&0002 & + 0.&0006 \\ 
+ amelia & Democrat & + 0.&0000 & + 0.&0003 \\
+ mice & Democrat & + 0.&0000 & + 0.&0003 \\
+ na.omit & Democrat & --0.&0302 & --0.&0250 \\
+ true & Male & 0.&4868 & 0.&4521 \\
+ hd.ord & Male & --0.&0004 & --0.&0001 \\ 
+ hot.deck & Male & --0.&0008 & --0.&0002 \\
+ amelia & Male & + 0.&0001 & + 0.&0001 \\
+ mice & Male & + 0.&0001 & + 0.&0001 \\
+ na.omit & Male & --0.&0365 & --0.&0436 \\
  true & Interest & 2.&8806 & 3.&3301 \\
- hd.ord & Interest & --.&0087 & --.&0033 \\
- hot.deck & Interest & --.&0135 & --.&0046 \\
- amelia & Interest & +.&0001 & +.&0001 \\
- mice & Interest & +.&0000 & +.&0000 \\ 
- na.omit & Interest & --.&0741 & --.&0763 \\
+ hd.ord & Interest & --0.&0087 & --0.&0033 \\
+ hot.deck & Interest & --0.&0135 & --0.&0046 \\
+ amelia & Interest & + 0.&0001 & + 0.&0001 \\
+ mice & Interest & + 0.&0000 & + 0.&0000 \\ 
+ na.omit & Interest & --0.&0741 & --0.&0763 \\
  true & Income & 16.&6894 & 6.&5830 \\
- hd.ord & Income & --.&0606 & --.&0009 \\ 
- hot.deck & Income & --.&1030 & --.&0073 \\
- amelia & Income & +.&0009 & --.&0021 \\
- mice & Income & --.&0007 & --.&0022 \\
- na.omit & Income & --.&5574 & --.&2592 \\
+ hd.ord & Income & --0.&0606 & --0.&0009 \\ 
+ hot.deck & Income & --0.&1030 & --0.&0073 \\
+ amelia & Income & + 0.&0009 & --0.&0021 \\
+ mice & Income & --0.&0007 & --0.&0022 \\
+ na.omit & Income & --0.&5574 & --0.&2592 \\
  true & Age & 50.&3745 & 52.&8639 \\
- hd.ord & Age & --.&2355 & --.&0221 \\ 
- hot.deck & Age & --.&3698 & --.&0790 \\ 
- amelia & Age & +.&0056 & --.&0006 \\
- mice & Age & +.&0053 & --.&0132 \\
+ hd.ord & Age & --0.&2355 & --0.&0221 \\ 
+ hot.deck & Age & --0.&3698 & --0.&0790 \\ 
+ amelia & Age & + 0.&0056 & --0.&0006 \\
+ mice & Age & + 0.&0053 & --0.&0132 \\
  na.omit & Age & --1.&2785 & --1.&2190 \\
  \hline \\[-1.8ex] 
 \multicolumn{2}{c}{Observations} & \multicolumn{2}{c}{2395} & \multicolumn{2}{c}{42205} \\ 
@@ -542,36 +542,36 @@ cat(lt)
  \hline \\[-1.8ex] 
  \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
  \hline \\[-1.8ex]  
- true & Democrat & .&3370 & .&4032 \\ 
- hd.ord & Democrat & --.&0109 & --.&0105 \\
- hot.deck & Democrat & --.&0113 & --.&0105 \\
- amelia & Democrat & --.&0110 & --.&0109 \\
- mice & Democrat & --.&0103 & --.&0106 \\
- na.omit & Democrat & --.&0185 & --.&0145 \\  
- true & Male & .&4868 & .&4521 \\ 
- hd.ord & Male & --.&0138 & --.&0129 \\ 
- hot.deck & Male & --.&0136 & --.&0131 \\ 
- amelia & Male & --.&0134 & --.&0132 \\
- mice & Male & --.&0134 & --.&0131 \\ 
- na.omit & Male & --.&0196 & --.&0244 \\ 
+ true & Democrat & 0.&3370 & 0.&4032 \\ 
+ hd.ord & Democrat & --0.&0109 & --0.&0105 \\
+ hot.deck & Democrat & --0.&0113 & --0.&0105 \\
+ amelia & Democrat & --0.&0110 & --0.&0109 \\
+ mice & Democrat & --0.&0103 & --0.&0106 \\
+ na.omit & Democrat & --0.&0185 & --0.&0145 \\  
+ true & Male & 0.&4868 & 0.&4521 \\ 
+ hd.ord & Male & --0.&0138 & --0.&0129 \\ 
+ hot.deck & Male & --0.&0136 & --0.&0131 \\ 
+ amelia & Male & --0.&0134 & --0.&0132 \\
+ mice & Male & --0.&0134 & --0.&0131 \\ 
+ na.omit & Male & --0.&0196 & --0.&0244 \\ 
  true & Interest & 2.&8806 & 3.&3301 \\
- hd.ord & Interest & --.&0257 & --.&0171 \\
- hot.deck & Interest & --.&0299 & --.&0179 \\
- amelia & Interest & --.&0178 & --.&0147 \\
- mice & Interest & --.&0179 & --.&0148 \\
- na.omit & Interest & --.&0407 & --.&0418 \\
+ hd.ord & Interest & --0.&0257 & --0.&0171 \\
+ hot.deck & Interest & --0.&0299 & --0.&0179 \\
+ amelia & Interest & --0.&0178 & --0.&0147 \\
+ mice & Interest & --0.&0179 & --0.&0148 \\
+ na.omit & Interest & --0.&0407 & --0.&0418 \\
  true & Income & 16.&6894 & 6.&5830 \\
- hd.ord & Income & --.&1874 & --.&0691 \\ 
- hot.deck & Income & --.&2287 & --.&0696 \\
- amelia & Income & --.&1292 & --.&0637 \\
- mice & Income & --.&1297 & --.&0634 \\
- na.omit & Income & --.&2729 & --.&1375 \\
+ hd.ord & Income & --0.&1874 & --0.&0691 \\ 
+ hot.deck & Income & --0.&2287 & --0.&0696 \\
+ amelia & Income & --0.&1292 & --0.&0637 \\
+ mice & Income & --0.&1297 & --0.&0634 \\
+ na.omit & Income & --0.&2729 & --0.&1375 \\
  true & Age & 50.&3745 & 52.&8639 \\ 
- hd.ord & Age & --.&5240 & --.&2331 \\
- hot.deck & Age & --.&6609 & --.&2764 \\
- amelia & Age & --.&2533 & --.&2342 \\
- mice & Age & --.&2474 & --.&2371 \\
- na.omit & Age & --.&7188 & --.&6476 \\
+ hd.ord & Age & --0.&5240 & --0.&2331 \\
+ hot.deck & Age & --0.&6609 & --0.&2764 \\
+ amelia & Age & --0.&2533 & --0.&2342 \\
+ mice & Age & --0.&2474 & --0.&2371 \\
+ na.omit & Age & --0.&7188 & --0.&6476 \\
 \hline \\[-1.8ex] 
 \multicolumn{2}{c}{Observations} & \multicolumn{2}{c}{2395} & \multicolumn{2}{c}{42205} \\ 
 \multicolumn{2}{c}{Iterations} & \multicolumn{2}{c}{1000} & \multicolumn{2}{c}{10} \\ 
@@ -1160,90 +1160,90 @@ Table \ref{mar.12var} shows the results of imputing both data sets MAR for 12 am
  \hline \\[-1.8ex] 
  \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
  \hline \\[-1.8ex] 
- true & Democrat & .&3420 & .&3770 \\ 
- hd.ord & Democrat & --.&0005 & --.&0003 \\
- hot.deck & Democrat & --.&0005 & --.&0004 \\
- amelia & Democrat & +.&0000 & +.&0000 \\
- mice & Democrat & +.&0000 & +.&0001 \\
- na.omit & Democrat & --.&0191 & --.&0172 \\
- true & Male & .&4890 & .&4830 \\ 
- hd.ord & Male & --.&0004 & --.&0002 \\
- hot.deck & Male & --.&0001 & --.&0003 \\  
- amelia & Male & +.&0001 & --.&0001 \\
- mice & Male & +.&0000 & --.&0002 \\
- na.omit & Male & --.&0256 & --.&0364 \\
+ true & Democrat & 0.&3420 & 0.&3770 \\ 
+ hd.ord & Democrat & --0.&0005 & --0.&0003 \\
+ hot.deck & Democrat & --0.&0005 & --0.&0004 \\
+ amelia & Democrat & + 0.&0000 & + 0.&0000 \\
+ mice & Democrat & + 0.&0000 & + 0.&0001 \\
+ na.omit & Democrat & --0.&0191 & --0.&0172 \\
+ true & Male & 0.&4890 & 0.&4830 \\ 
+ hd.ord & Male & --0.&0004 & --0.&0002 \\
+ hot.deck & Male & --0.&0001 & --0.&0003 \\  
+ amelia & Male & + 0.&0001 & --0.&0001 \\
+ mice & Male & + 0.&0000 & --0.&0002 \\
+ na.omit & Male & --0.&0256 & --0.&0364 \\
  true & Interest & 2.&9340 & 3.&3290 \\
- hd.ord & Interest & --.&0053 & --.&0041 \\
- hot.deck & Interest & --.&0077 & --.&0067 \\
- amelia & Interest & +.&0001 & --.&0001 \\
- mice & Interest & +.&0000 & --.&0001 \\ 
- na.omit & Interest & --.&0620 & --.&0515 \\
+ hd.ord & Interest & --0.&0053 & --0.&0041 \\
+ hot.deck & Interest & --0.&0077 & --0.&0067 \\
+ amelia & Interest & + 0.&0001 & --0.&0001 \\
+ mice & Interest & + 0.&0000 & --0.&0001 \\ 
+ na.omit & Interest & --0.&0620 & --0.&0515 \\
  true & Income & 16.&6140 & 6.&4810 \\ 
- hd.ord & Income & --.&0470 & --.&0130 \\ 
- hot.deck & Income & --.&0591 & --.&0212 \\
- amelia & Income & --.&0007 & --.&0005 \\
- mice & Income & --.&0013 & --.&0003 \\ 
- na.omit & Income & --.&6303 & --.&2860 \\
+ hd.ord & Income & --0.&0470 & --0.&0130 \\ 
+ hot.deck & Income & --0.&0591 & --0.&0212 \\
+ amelia & Income & --0.&0007 & --0.&0005 \\
+ mice & Income & --0.&0013 & --0.&0003 \\ 
+ na.omit & Income & --0.&6303 & --0.&2860 \\
  true & Age & 50.&0410 & 52.&8230 \\
- hd.ord & Age & --.&1391 & --.&0883 \\ 
- hot.deck & Age & --.&1835 & --.&1435 \\
- amelia & Age & +.&0056 & --.&0015 \\ 
- mice & Age & +.&0048 & --.&0050 \\ 
- na.omit & Age & --.&8638 & --.&5974 \\
- true & Black & .&0790 & .&0950 \\ 
- hd.ord & Black & +.&0000 & +.&0000 \\
- hot.deck & Black & +.&0000 & +.&0000 \\ 
- amelia & Black & +.&0000 & +.&0001 \\
- mice & Black & +.&0000 & +.&0001 \\ 
- na.omit & Black & --.&0092 & --.&0090 \\
- true & Employed & .&6610 & .&4370 \\ 
- hd.ord & Employed & +.&0006 & +.&0000 \\ 
- hot.deck & Employed & +.&0006 & +.&0001 \\
- amelia & Employed & +.&0000 & +.&0000 \\
- mice & Employed & +.&0000 & --.&0001 \\
- na.omit & Employed & --.&0087 & --.&0301 \\
- true & Religious & .&6460 & .&6420 \\ 
- hd.ord & Religious & --.&0006 & --.&0003 \\ 
- hot.deck & Religious & --.&0005 & --.&0003 \\
- amelia & Religious & --.&0001 & --.&0001 \\
- mice & Religious & --.&0001 & --.&0002 \\ 
- na.omit & Religious & --.&0166 & --.&0234 \\ 
- true & Married & .&5290 & .&6310 \\
- hd.ord & Married & +.&0002 & --.&0001 \\
- hot.deck & Married & +.&0002 & +.&0001 \\
- amelia & Married & --.&0001 & --.&0002 \\
- mice & Married & --.&0001 & --.&0002 \\ 
- na.omit & Married & --.&0384 & --.&0326 \\ 
- true & OwnHome & .&6820 & .&7010 \\
- hd.ord & OwnHome & --.&0001 & --.&0002 \\ 
- hot.deck & OwnHome & +.&0000 & +.&0000 \\ 
- amelia & OwnHome & +.&0001 & +.&0000 \\ 
- mice & OwnHome & --.&0001 & --.&0001 \\
- na.omit & OwnHome & --.&0334 & --.&0304 \\
- true & Rally & .&0830 & --- \\
- hd.ord & Rally & --.&0001 & --- \\ 
- hot.deck & Rally & --.&0002 & --- \\ 
- amelia & Rally & +.&0001 & --- \\ 
- mice & Rally & +.&0001 & --- \\ 
- na.omit & Rally & --.&0191 & --- \\ 
- true & Donate & .&1390 & --- \\ 
- hd.ord & Donate & --.&0002 & --- \\ 
- hot.deck & Donate & --.&0005 & --- \\
- amelia & Donate & +.&0000 & --- \\ 
- mice & Donate & +.&0001 & --- \\ 
- na.omit & Donate & --.&0320 & --- \\ 
- true & Gay & \multicolumn{2}{l}{---} & .&0420 \\ 
- hd.ord & Gay & \multicolumn{2}{l}{---}  & +.&0001 \\
- hot.deck & Gay & \multicolumn{2}{l}{---} & +.&0000 \\ 
- amelia & Gay & \multicolumn{2}{l}{---} & +.&0000 \\
- mice & Gay & \multicolumn{2}{l}{---} & +.&0000 \\
- na.omit & Gay & \multicolumn{2}{l}{---} &  --.&0112 \\
- true & StudLoans & \multicolumn{2}{l}{---} & .&1910 \\
- hd.ord & StudLoans & \multicolumn{2}{l}{---} & +.&0003 \\
- hot.deck & StudLoans & \multicolumn{2}{l}{---} & +.&0002 \\
- amelia & StudLoans & \multicolumn{2}{l}{---} & +.&0000 \\
- mice & StudLoans & \multicolumn{2}{l}{---} & --.&0001 \\
- na.omit & StudLoans & \multicolumn{2}{l}{---} & --.&0117 \\ 
+ hd.ord & Age & --0.&1391 & --0.&0883 \\ 
+ hot.deck & Age & --0.&1835 & --0.&1435 \\
+ amelia & Age & + 0.&0056 & --0.&0015 \\ 
+ mice & Age & + 0.&0048 & --0.&0050 \\ 
+ na.omit & Age & --0.&8638 & --0.&5974 \\
+ true & Black & 0.&0790 & 0.&0950 \\ 
+ hd.ord & Black & + 0.&0000 & + 0.&0000 \\
+ hot.deck & Black & + 0.&0000 & + 0.&0000 \\ 
+ amelia & Black & + 0.&0000 & + 0.&0001 \\
+ mice & Black & + 0.&0000 & + 0.&0001 \\ 
+ na.omit & Black & --0.&0092 & --0.&0090 \\
+ true & Employed & 0.&6610 & 0.&4370 \\ 
+ hd.ord & Employed & + 0.&0006 & + 0.&0000 \\ 
+ hot.deck & Employed & + 0.&0006 & + 0.&0001 \\
+ amelia & Employed & + 0.&0000 & + 0.&0000 \\
+ mice & Employed & + 0.&0000 & --0.&0001 \\
+ na.omit & Employed & --0.&0087 & --0.&0301 \\
+ true & Religious & 0.&6460 & 0.&6420 \\ 
+ hd.ord & Religious & --0.&0006 & --0.&0003 \\ 
+ hot.deck & Religious & --0.&0005 & --0.&0003 \\
+ amelia & Religious & --0.&0001 & --0.&0001 \\
+ mice & Religious & --0.&0001 & --0.&0002 \\ 
+ na.omit & Religious & --0.&0166 & --0.&0234 \\ 
+ true & Married & 0.&5290 & 0.&6310 \\
+ hd.ord & Married & + 0.&0002 & --0.&0001 \\
+ hot.deck & Married & + 0.&0002 & + 0.&0001 \\
+ amelia & Married & --0.&0001 & --0.&0002 \\
+ mice & Married & --0.&0001 & --0.&0002 \\ 
+ na.omit & Married & --0.&0384 & --0.&0326 \\ 
+ true & OwnHome & 0.&6820 & 0.&7010 \\
+ hd.ord & OwnHome & --0.&0001 & --0.&0002 \\ 
+ hot.deck & OwnHome & + 0.&0000 & + 0.&0000 \\ 
+ amelia & OwnHome & + 0.&0001 & + 0.&0000 \\ 
+ mice & OwnHome & --0.&0001 & --0.&0001 \\
+ na.omit & OwnHome & --0.&0334 & --0.&0304 \\
+ true & Rally & 0.&0830 & --- \\
+ hd.ord & Rally & --0.&0001 & --- \\ 
+ hot.deck & Rally & --0.&0002 & --- \\ 
+ amelia & Rally & + 0.&0001 & --- \\ 
+ mice & Rally & + 0.&0001 & --- \\ 
+ na.omit & Rally & --0.&0191 & --- \\ 
+ true & Donate & 0.&1390 & --- \\ 
+ hd.ord & Donate & --0.&0002 & --- \\ 
+ hot.deck & Donate & --0.&0005 & --- \\
+ amelia & Donate & + 0.&0000 & --- \\ 
+ mice & Donate & + 0.&0001 & --- \\ 
+ na.omit & Donate & --0.&0320 & --- \\ 
+ true & Gay & \multicolumn{2}{l}{---} & 0.&0420 \\ 
+ hd.ord & Gay & \multicolumn{2}{l}{---}  & + 0.&0001 \\
+ hot.deck & Gay & \multicolumn{2}{l}{---} & + 0.&0000 \\ 
+ amelia & Gay & \multicolumn{2}{l}{---} & + 0.&0000 \\
+ mice & Gay & \multicolumn{2}{l}{---} & + 0.&0000 \\
+ na.omit & Gay & \multicolumn{2}{l}{---} &  --0.&0112 \\
+ true & StudLoans & \multicolumn{2}{l}{---} & 0.&1910 \\
+ hd.ord & StudLoans & \multicolumn{2}{l}{---} & + 0.&0003 \\
+ hot.deck & StudLoans & \multicolumn{2}{l}{---} & + 0.&0002 \\
+ amelia & StudLoans & \multicolumn{2}{l}{---} & + 0.&0000 \\
+ mice & StudLoans & \multicolumn{2}{l}{---} & --0.&0001 \\
+ na.omit & StudLoans & \multicolumn{2}{l}{---} & --0.&0117 \\ 
  \hline \\[-1.8ex]
  \end{longtable}
 
@@ -1340,90 +1340,90 @@ Table \ref{mnar.12var} shows the results of imputing both data sets MNAR for 12 
  \hline \\[-1.8ex]
  \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
  \hline \\[-1.8ex] 
- true & Democrat & .&3420 & .&3770 \\
- hd.ord & Democrat & --.&0049 & --.&0046 \\
- hot.deck & Democrat & --.&0049 & --.&0049 \\
- amelia & Democrat & --.&0043 & --.&0045 \\
- mice & Democrat & --.&0040 & --.&0044 \\ 
- na.omit & Democrat & --.&0092 & --.&0081 \\
- true & Male & .&4890 & .&4830 \\ 
- hd.ord & Male & --.&0055 & --.&0049 \\ 
- hot.deck & Male & --.&0053 & --.&0051 \\ 
- amelia & Male & --.&0055 & --.&0050 \\
- mice & Male & --.&0055 & --.&0049 \\
- na.omit & Male & --.&0093 & --.&0119 \\ 
+ true & Democrat & 0.&3420 & 0.&3770 \\
+ hd.ord & Democrat & --0.&0049 & --0.&0046 \\
+ hot.deck & Democrat & --0.&0049 & --0.&0049 \\
+ amelia & Democrat & --0.&0043 & --0.&0045 \\
+ mice & Democrat & --0.&0040 & --0.&0044 \\ 
+ na.omit & Democrat & --0.&0092 & --0.&0081 \\
+ true & Male & 0.&4890 & 0.&4830 \\ 
+ hd.ord & Male & --0.&0055 & --0.&0049 \\ 
+ hot.deck & Male & --0.&0053 & --0.&0051 \\ 
+ amelia & Male & --0.&0055 & --0.&0050 \\
+ mice & Male & --0.&0055 & --0.&0049 \\
+ na.omit & Male & --0.&0093 & --0.&0119 \\ 
  true & Interest & 2.&9340 & 3.&3290 \\
- hd.ord & Interest & --.&0113 & --.&0090 \\ 
- hot.deck & Interest & --.&0134 & --.&0113 \\
- amelia & Interest & --.&0068 & --.&0061 \\
- mice & Interest & --.&0068 & --.&0061 \\
- na.omit & Interest & --.&0236 & --.&0161 \\ 
+ hd.ord & Interest & --0.&0113 & --0.&0090 \\ 
+ hot.deck & Interest & --0.&0134 & --0.&0113 \\
+ amelia & Interest & --0.&0068 & --0.&0061 \\
+ mice & Interest & --0.&0068 & --0.&0061 \\
+ na.omit & Interest & --0.&0236 & --0.&0161 \\ 
  true & Income & 16.&6140 & 6.&4810 \\ 
- hd.ord & Income & --.&0899 & --.&0350 \\ 
- hot.deck & Income & --.&1046 & --.&0421 \\
- amelia & Income & --.&0495 & --.&0223 \\
- mice & Income & --.&0503 & --.&0218 \\ 
- na.omit & Income & --.&2088 & --.&0970 \\
+ hd.ord & Income & --0.&0899 & --0.&0350 \\ 
+ hot.deck & Income & --0.&1046 & --0.&0421 \\
+ amelia & Income & --0.&0495 & --0.&0223 \\
+ mice & Income & --0.&0503 & --0.&0218 \\ 
+ na.omit & Income & --0.&2088 & --0.&0970 \\
  true & Age & 50.&0410 & 52.&8230 \\ 
- hd.ord & Age & --.&2571 & --.&1732 \\ 
- hot.deck & Age & --.&3081 & --.&2251 \\
- amelia & Age & --.&1100 & --.&1014 \\ 
- mice & Age & --.&1047 & --.&0986 \\ 
- na.omit & Age & --.&3397 & --.&1367 \\
- true & Black & .&0790 & .&0950 \\
- hd.ord & Black & --.&0035 & --.&0038 \\
- hot.deck & Black & --.&0037 & --.&0038 \\ 
- amelia & Black & --.&0037 & --.&0040 \\ 
- mice & Black & --.&0034 & --.&0038 \\
- na.omit & Black & --.&0045 & --.&0052 \\
- true & Employed & .&6610 & .&4370 \\
- hd.ord & Employed & --.&0034 & --.&0053 \\
- hot.deck & Employed & --.&0033 & --.&0053 \\
- amelia & Employed & --.&0031 & --.&0040 \\
- mice & Employed & --.&0031 & --.&0040 \\ 
- na.omit & Employed & --.&0014 & --.&0111 \\ 
- true & Religious & .&6460 & .&6420 \\ 
- hd.ord & Religious & --.&0045 & --.&0039 \\
- hot.deck & Religious & --.&0043 & --.&0038 \\
- amelia & Religious & --.&0040 & --.&0040 \\
- mice & Religious & --.&0040 & --.&0040 \\ 
- na.omit & Religious & --.&0049 & --.&0073 \\ 
- true & Married & .&5290 & .&6310 \\ 
- hd.ord & Married & --.&0041 & --.&0038 \\
- hot.deck & Married & --.&0040 & --.&0037 \\ 
- amelia & Married & --.&0042 & --.&0037 \\ 
- mice & Married & --.&0042 & --.&0037 \\ 
- na.omit & Married & --.&0122 & --.&0096 \\ 
- true & OwnHome & .&6820 & .&7010 \\ 
- hd.ord & OwnHome & --.&0030 & --.&0030 \\ 
- hot.deck & OwnHome & --.&0028 & --.&0027 \\
- amelia & OwnHome & --.&0027 & --.&0030 \\ 
- mice & OwnHome & --.&0027 & --.&0030 \\ 
- na.omit & OwnHome & --.&0111 & --.&0090 \\
- true & Rally & .&0830 & --- \\ 
- hd.ord & Rally & --.&0043 & --- \\ 
- hot.deck & Rally & --.&0042 & --- \\ 
- amelia & Rally & --.&0040 & --- \\ 
- mice & Rally & --.&0039 & --- \\ 
- na.omit & Rally & --.&0077 & --- \\  
- true & Donate & .&1390 & --- \\ 
- hd.ord & Donate & --.&0051 & --- \\ 
- hot.deck & Donate & --.&0054 & --- \\ 
- amelia & Donate & --.&0049 & --- \\ 
- mice & Donate & --.&0048 & --- \\ 
- na.omit & Donate & --.&0122 & --- \\ 
- true & Gay & \multicolumn{2}{l}{---} & .&0420 \\ 
- hd.ord & Gay & \multicolumn{2}{l}{---} & --.&0024 \\ 
- hot.deck & Gay & \multicolumn{2}{l}{---} & --.&0025 \\ 
- amelia & Gay & \multicolumn{2}{l}{---} & --.&0026 \\
- mice & Gay & \multicolumn{2}{l}{---} & --.&0024 \\ 
- na.omit & Gay & \multicolumn{2}{l}{---} & --.&0035 \\ 
- true & StudLoans & \multicolumn{2}{l}{---} & .&1910 \\
- hd.ord & StudLoans & \multicolumn{2}{l}{---} & --.&0058 \\
- hot.deck & StudLoans & \multicolumn{2}{l}{---} & --.&0058 \\ 
- amelia & StudLoans & \multicolumn{2}{l}{---} & --.&0051 \\ 
- mice & StudLoans & \multicolumn{2}{l}{---} & --.&0050 \\ 
- na.omit & StudLoans & \multicolumn{2}{l}{---} & --.&0070 \\ 
+ hd.ord & Age & --0.&2571 & --0.&1732 \\ 
+ hot.deck & Age & --0.&3081 & --0.&2251 \\
+ amelia & Age & --0.&1100 & --0.&1014 \\ 
+ mice & Age & --0.&1047 & --0.&0986 \\ 
+ na.omit & Age & --0.&3397 & --0.&1367 \\
+ true & Black & 0.&0790 & 0.&0950 \\
+ hd.ord & Black & --0.&0035 & --0.&0038 \\
+ hot.deck & Black & --0.&0037 & --0.&0038 \\ 
+ amelia & Black & --0.&0037 & --0.&0040 \\ 
+ mice & Black & --0.&0034 & --0.&0038 \\
+ na.omit & Black & --0.&0045 & --0.&0052 \\
+ true & Employed & 0.&6610 & 0.&4370 \\
+ hd.ord & Employed & --0.&0034 & --0.&0053 \\
+ hot.deck & Employed & --0.&0033 & --0.&0053 \\
+ amelia & Employed & --0.&0031 & --0.&0040 \\
+ mice & Employed & --0.&0031 & --0.&0040 \\ 
+ na.omit & Employed & --0.&0014 & --0.&0111 \\ 
+ true & Religious & 0.&6460 & 0.&6420 \\ 
+ hd.ord & Religious & --0.&0045 & --0.&0039 \\
+ hot.deck & Religious & --0.&0043 & --0.&0038 \\
+ amelia & Religious & --0.&0040 & --0.&0040 \\
+ mice & Religious & --0.&0040 & --0.&0040 \\ 
+ na.omit & Religious & --0.&0049 & --0.&0073 \\ 
+ true & Married & 0.&5290 & 0.&6310 \\ 
+ hd.ord & Married & --0.&0041 & --0.&0038 \\
+ hot.deck & Married & --0.&0040 & --0.&0037 \\ 
+ amelia & Married & --0.&0042 & --0.&0037 \\ 
+ mice & Married & --0.&0042 & --0.&0037 \\ 
+ na.omit & Married & --0.&0122 & --0.&0096 \\ 
+ true & OwnHome & 0.&6820 & 0.&7010 \\ 
+ hd.ord & OwnHome & --0.&0030 & --0.&0030 \\ 
+ hot.deck & OwnHome & --0.&0028 & --0.&0027 \\
+ amelia & OwnHome & --0.&0027 & --0.&0030 \\ 
+ mice & OwnHome & --0.&0027 & --0.&0030 \\ 
+ na.omit & OwnHome & --0.&0111 & --0.&0090 \\
+ true & Rally & 0.&0830 & --- \\ 
+ hd.ord & Rally & --0.&0043 & --- \\ 
+ hot.deck & Rally & --0.&0042 & --- \\ 
+ amelia & Rally & --0.&0040 & --- \\ 
+ mice & Rally & --0.&0039 & --- \\ 
+ na.omit & Rally & --0.&0077 & --- \\  
+ true & Donate & 0.&1390 & --- \\ 
+ hd.ord & Donate & --0.&0051 & --- \\ 
+ hot.deck & Donate & --0.&0054 & --- \\ 
+ amelia & Donate & --0.&0049 & --- \\ 
+ mice & Donate & --0.&0048 & --- \\ 
+ na.omit & Donate & --0.&0122 & --- \\ 
+ true & Gay & \multicolumn{2}{l}{---} & 0.&0420 \\ 
+ hd.ord & Gay & \multicolumn{2}{l}{---} & --0.&0024 \\ 
+ hot.deck & Gay & \multicolumn{2}{l}{---} & --0.&0025 \\ 
+ amelia & Gay & \multicolumn{2}{l}{---} & --0.&0026 \\
+ mice & Gay & \multicolumn{2}{l}{---} & --0.&0024 \\ 
+ na.omit & Gay & \multicolumn{2}{l}{---} & --0.&0035 \\ 
+ true & StudLoans & \multicolumn{2}{l}{---} & 0.&1910 \\
+ hd.ord & StudLoans & \multicolumn{2}{l}{---} & --0.&0058 \\
+ hot.deck & StudLoans & \multicolumn{2}{l}{---} & --0.&0058 \\ 
+ amelia & StudLoans & \multicolumn{2}{l}{---} & --0.&0051 \\ 
+ mice & StudLoans & \multicolumn{2}{l}{---} & --0.&0050 \\ 
+ na.omit & StudLoans & \multicolumn{2}{l}{---} & --0.&0070 \\ 
  \hline \\[-1.8ex]
  \end{longtable} 
  
@@ -1548,84 +1548,84 @@ Table \ref{mult.mar.11var} shows the results of imputing both data sets with two
  \hline \\[-1.8ex]
  \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
  \hline \\[-1.8ex]
- true & Democrat & .&3420 & .&3770 \\ 
- hd.ord & Democrat & --.&0002 & --.&0004 \\ 
- hot.deck & Democrat & --.&0005 & --.&0005 \\ 
- amelia & Democrat & +.&0000 & --.&0001 \\ 
- mice & Democrat & +.&0000 & +.&0000 \\ 
- na.omit & Democrat & --.&0200 & --.&0213 \\
- true & Male & .&4890 & .&4830 \\ 
- hd.ord & Male & --.&0002 & --.&0005 \\
- hot.deck & Male & --.&0001 & --.&0004 \\
- amelia & Male & +.&0000 & --.&0001 \\
- mice & Male & +.&0000 & --.&0001 \\ 
- na.omit & Male & --.&0254 & --.&0350 \\ 
+ true & Democrat & 0.&3420 & 0.&3770 \\ 
+ hd.ord & Democrat & --0.&0002 & --0.&0004 \\ 
+ hot.deck & Democrat & --0.&0005 & --0.&0005 \\ 
+ amelia & Democrat & + 0.&0000 & --0.&0001 \\ 
+ mice & Democrat & + 0.&0000 & + 0.&0000 \\ 
+ na.omit & Democrat & --0.&0200 & --0.&0213 \\
+ true & Male & 0.&4890 & 0.&4830 \\ 
+ hd.ord & Male & --0.&0002 & --0.&0005 \\
+ hot.deck & Male & --0.&0001 & --0.&0004 \\
+ amelia & Male & + 0.&0000 & --0.&0001 \\
+ mice & Male & + 0.&0000 & --0.&0001 \\ 
+ na.omit & Male & --0.&0254 & --0.&0350 \\ 
  true & Income & 16.&6140 & 6.&4810 \\ 
- hd.ord & Income & --.&0346 & --.&0114 \\
- hot.deck & Income & --.&0657 & --.&0241 \\ 
- amelia & Income & --.&0018 & --.&0007 \\
- mice & Income & --.&0027 & --.&0005 \\
- na.omit & Income & --.&6432 & --.&2888 \\
+ hd.ord & Income & --0.&0346 & --0.&0114 \\
+ hot.deck & Income & --0.&0657 & --0.&0241 \\ 
+ amelia & Income & --0.&0018 & --0.&0007 \\
+ mice & Income & --0.&0027 & --0.&0005 \\
+ na.omit & Income & --0.&6432 & --0.&2888 \\
  true & Age & 50.&0410 & 52.&8230 \\ 
- hd.ord & Age & --.&0887 & --.&0704 \\
- hot.deck & Age & --.&1951 & --.&1532 \\
- amelia & Age & +.&0010 & --.&0021 \\
- mice & Age & --.&0016 & --.&0055 \\ 
- na.omit & Age & --.&8025 & --.&4330 \\
- true & Black & .&0790 & .&0950 \\
- hd.ord & Black & +.&0001 & --.&0001 \\
- hot.deck & Black & +.&0000 & --.&0001 \\
- amelia & Black & +.&0000 & +.&0001 \\ 
- mice & Black & +.&0001 & +.&0001 \\ 
- na.omit & Black & --.&0103 & --.&0122 \\ 
- true & Employed & .&6610 & .&4370 \\
- hd.ord & Employed & +.&0007 & +.&0003 \\
- hot.deck & Employed & +.&0008 & +.&0001 \\ 
- amelia & Employed & +.&0001 & +.&0000 \\
- mice & Employed & +.&0001 & --.&0001 \\
- na.omit & Employed & --.&0109 & --.&0328 \\
- true & Religious & .&6460 & .&6420 \\ 
- hd.ord & Religious & --.&0001 & --.&0002 \\ 
- hot.deck & Religious & --.&0005 & --.&0003 \\ 
- amelia & Religious & +.&0000 & --.&0001 \\
- mice & Religious & +.&0000 & --.&0002 \\
- na.omit & Religious & --.&0174 & --.&0241 \\ 
- true & Married & .&5290 & .&6310 \\ 
- hd.ord & Married & --.&0001 & --.&0002 \\ 
- hot.deck & Married & +.&0003 & +.&0001 \\ 
- amelia & Married & --.&0001 & --.&0002 \\ 
- mice & Married & --.&0001 & --.&0002 \\ 
- na.omit & Married & --.&0390 & --.&0324 \\ 
- true & OwnHome & .&6820 & .&7010 \\ 
- hd.ord & OwnHome & --.&0005 & --.&0001 \\
- hot.deck & OwnHome & --.&0001 & +.&0002 \\ 
- amelia & OwnHome & +.&0000 & +.&0001 \\
- mice & OwnHome & --.&0001 & +.&0000 \\
- na.omit & OwnHome & --.&0341 & --.&0295 \\
- true & Rally & .&0830 & --- \\ 
- hd.ord & Rally & +.&0000 & --- \\ 
- hot.deck & Rally & --.&0002 & --- \\
- amelia & Rally & +.&0001 & --- \\ 
- mice & Rally & +.&0002 & --- \\
- na.omit & Rally & --.&0186 & --- \\ 
- true & Donate & .&1390 & --- \\ 
- hd.ord & Donate & --.&0003 & --- \\ 
- hot.deck & Donate & --.&0007 & --- \\
- amelia & Donate & --.&0001 & --- \\
- mice & Donate & +.&0000 & --- \\ 
- na.omit & Donate & --.&0310 & --- \\ 
- true & Gay & \multicolumn{2}{l}{---} & .&0420 \\ 
- hd.ord & Gay & \multicolumn{2}{l}{---} & +.&0001 \\ 
- hot.deck & Gay & \multicolumn{2}{l}{---} & +.&0000 \\ 
- amelia & Gay & \multicolumn{2}{l}{---} & +.&0000 \\ 
- mice & Gay & \multicolumn{2}{l}{---} & +.&0001 \\
- na.omit & Gay & \multicolumn{2}{l}{---} & --.&0113 \\ 
- true & StudLoans & \multicolumn{2}{l}{---} & .&1910 \\
- hd.ord & StudLoans & \multicolumn{2}{l}{---} & +.&0001 \\ 
- hot.deck & StudLoans & \multicolumn{2}{l}{---} & +.&0001 \\
- amelia & StudLoans & \multicolumn{2}{l}{---} & --.&0001 \\ 
- mice & StudLoans & \multicolumn{2}{l}{---} & --.&0001 \\ 
- na.omit & StudLoans & \multicolumn{2}{l}{---} & --.&0146 \\
+ hd.ord & Age & --0.&0887 & --0.&0704 \\
+ hot.deck & Age & --0.&1951 & --0.&1532 \\
+ amelia & Age & + 0.&0010 & --0.&0021 \\
+ mice & Age & --0.&0016 & --0.&0055 \\ 
+ na.omit & Age & --0.&8025 & --0.&4330 \\
+ true & Black & 0.&0790 & 0.&0950 \\
+ hd.ord & Black & + 0.&0001 & --0.&0001 \\
+ hot.deck & Black & + 0.&0000 & --0.&0001 \\
+ amelia & Black & + 0.&0000 & + 0.&0001 \\ 
+ mice & Black & + 0.&0001 & + 0.&0001 \\ 
+ na.omit & Black & --0.&0103 & --0.&0122 \\ 
+ true & Employed & 0.&6610 & 0.&4370 \\
+ hd.ord & Employed & + 0.&0007 & + 0.&0003 \\
+ hot.deck & Employed & + 0.&0008 & + 0.&0001 \\ 
+ amelia & Employed & + 0.&0001 & + 0.&0000 \\
+ mice & Employed & + 0.&0001 & --0.&0001 \\
+ na.omit & Employed & --0.&0109 & --0.&0328 \\
+ true & Religious & 0.&6460 & 0.&6420 \\ 
+ hd.ord & Religious & --0.&0001 & --0.&0002 \\ 
+ hot.deck & Religious & --0.&0005 & --0.&0003 \\ 
+ amelia & Religious & + 0.&0000 & --0.&0001 \\
+ mice & Religious & + 0.&0000 & --0.&0002 \\
+ na.omit & Religious & --0.&0174 & --0.&0241 \\ 
+ true & Married & 0.&5290 & 0.&6310 \\ 
+ hd.ord & Married & --0.&0001 & --0.&0002 \\ 
+ hot.deck & Married & + 0.&0003 & + 0.&0001 \\ 
+ amelia & Married & --0.&0001 & --0.&0002 \\ 
+ mice & Married & --0.&0001 & --0.&0002 \\ 
+ na.omit & Married & --0.&0390 & --0.&0324 \\ 
+ true & OwnHome & 0.&6820 & 0.&7010 \\ 
+ hd.ord & OwnHome & --0.&0005 & --0.&0001 \\
+ hot.deck & OwnHome & --0.&0001 & + 0.&0002 \\ 
+ amelia & OwnHome & + 0.&0000 & + 0.&0001 \\
+ mice & OwnHome & --0.&0001 & + 0.&0000 \\
+ na.omit & OwnHome & --0.&0341 & --0.&0295 \\
+ true & Rally & 0.&0830 & --- \\ 
+ hd.ord & Rally & + 0.&0000 & --- \\ 
+ hot.deck & Rally & --0.&0002 & --- \\
+ amelia & Rally & + 0.&0001 & --- \\ 
+ mice & Rally & + 0.&0002 & --- \\
+ na.omit & Rally & --0.&0186 & --- \\ 
+ true & Donate & 0.&1390 & --- \\ 
+ hd.ord & Donate & --0.&0003 & --- \\ 
+ hot.deck & Donate & --0.&0007 & --- \\
+ amelia & Donate & --0.&0001 & --- \\
+ mice & Donate & + 0.&0000 & --- \\ 
+ na.omit & Donate & --0.&0310 & --- \\ 
+ true & Gay & \multicolumn{2}{l}{---} & 0.&0420 \\ 
+ hd.ord & Gay & \multicolumn{2}{l}{---} & + 0.&0001 \\ 
+ hot.deck & Gay & \multicolumn{2}{l}{---} & + 0.&0000 \\ 
+ amelia & Gay & \multicolumn{2}{l}{---} & + 0.&0000 \\ 
+ mice & Gay & \multicolumn{2}{l}{---} & + 0.&0001 \\
+ na.omit & Gay & \multicolumn{2}{l}{---} & --0.&0113 \\ 
+ true & StudLoans & \multicolumn{2}{l}{---} & 0.&1910 \\
+ hd.ord & StudLoans & \multicolumn{2}{l}{---} & + 0.&0001 \\ 
+ hot.deck & StudLoans & \multicolumn{2}{l}{---} & + 0.&0001 \\
+ amelia & StudLoans & \multicolumn{2}{l}{---} & --0.&0001 \\ 
+ mice & StudLoans & \multicolumn{2}{l}{---} & --0.&0001 \\ 
+ na.omit & StudLoans & \multicolumn{2}{l}{---} & --0.&0146 \\
  \hline \\[-1.8ex] 
  \end{longtable}
 
@@ -1747,84 +1747,84 @@ Table \ref{mult.mnar.11var} shows the results of imputing both data sets with tw
  \hline \\[-1.8ex] 
  \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
  \hline \\[-1.8ex] 
- true & Democrat & .&3420 & .&3770 \\ 
- hd.ord & Democrat & --.&0050 & --.&0053 \\ 
- hot.deck & Democrat & --.&0053 & --.&0053 \\
- amelia & Democrat & --.&0047 & --.&0049 \\
- mice & Democrat & --.&0044 & --.&0048 \\ 
- na.omit & Democrat & --.&0097 & --.&0097 \\
- true & Male & .&4890 & .&4830 \\ 
- hd.ord & Male & --.&0061 & --.&0058 \\ 
- hot.deck & Male & --.&0057 & --.&0056 \\ 
- amelia & Male & --.&0060 & --.&0054 \\ 
- mice & Male & --.&0060 & --.&0054 \\ 
- na.omit & Male & --.&0088 & --.&0116 \\ 
+ true & Democrat & 0.&3420 & 0.&3770 \\ 
+ hd.ord & Democrat & --0.&0050 & --0.&0053 \\ 
+ hot.deck & Democrat & --0.&0053 & --0.&0053 \\
+ amelia & Democrat & --0.&0047 & --0.&0049 \\
+ mice & Democrat & --0.&0044 & --0.&0048 \\ 
+ na.omit & Democrat & --0.&0097 & --0.&0097 \\
+ true & Male & 0.&4890 & 0.&4830 \\ 
+ hd.ord & Male & --0.&0061 & --0.&0058 \\ 
+ hot.deck & Male & --0.&0057 & --0.&0056 \\ 
+ amelia & Male & --0.&0060 & --0.&0054 \\ 
+ mice & Male & --0.&0060 & --0.&0054 \\ 
+ na.omit & Male & --0.&0088 & --0.&0116 \\ 
  true & Income & 16.&6140 & 6.&4810 \\
- hd.ord & Income & --.&0841 & --.&0349 \\
- hot.deck & Income & --.&1142 & --.&0473 \\
- amelia & Income & --.&0540 & --.&0250 \\ 
- mice & Income & --.&0549 & --.&0249 \\ 
- na.omit & Income & --.&2112 & --.&0982 \\
+ hd.ord & Income & --0.&0841 & --0.&0349 \\
+ hot.deck & Income & --0.&1142 & --0.&0473 \\
+ amelia & Income & --0.&0540 & --0.&0250 \\ 
+ mice & Income & --0.&0549 & --0.&0249 \\ 
+ na.omit & Income & --0.&2112 & --0.&0982 \\
  true & Age & 50.&0410 & 52.&8230 \\ 
- hd.ord & Age & --.&2124 & --.&1607 \\ 
- hot.deck & Age & --.&3329 & --.&2424 \\ 
- amelia & Age & --.&1194 & --.&1135 \\ 
- mice & Age & --.&1141 & --.&1102 \\ 
- na.omit & Age & --.&2978 & --.&0974 \\ 
- true & Black & .&0790 & .&0950 \\ 
- hd.ord & Black & --.&0036 & --.&0045 \\
- hot.deck & Black & --.&0040 & --.&0042 \\
- amelia & Black & --.&0041 & --.&0044 \\ 
- mice & Black & --.&0037 & --.&0041 \\ 
- na.omit & Black & --.&0050 & --.&0066 \\ 
- true & Employed & .&6610 & .&4370 \\ 
- hd.ord & Employed & --.&0042 & --.&0057 \\ 
- hot.deck & Employed & --.&0036 & --.&0058 \\ 
- amelia & Employed & --.&0034 & --.&0045 \\ 
- mice & Employed & --.&0033 & --.&0044 \\ 
- na.omit & Employed & --.&0022 & --.&0122 \\ 
- true & Religious & .&6460 & .&6420 \\
- hd.ord & Religious & --.&0045 & --.&0044 \\
- hot.deck & Religious & --.&0047 & --.&0042 \\
- amelia & Religious & --.&0043 & --.&0045 \\ 
- mice & Religious & --.&0043 & --.&0045 \\ 
- na.omit & Religious & --.&0055 & --.&0077 \\ 
- true & Married & .&5290 & .&6310 \\ 
- hd.ord & Married & --.&0047 & --.&0043 \\ 
- hot.deck & Married & --.&0042 & --.&0040 \\
- amelia & Married & --.&0046 & --.&0039 \\ 
- mice & Married & --.&0045 & --.&0039 \\ 
- na.omit & Married & --.&0120 & --.&0095 \\
- true & OwnHome & .&6820 & .&7010 \\
- hd.ord & OwnHome & --.&0037 & --.&0035 \\ 
- hot.deck & OwnHome & --.&0030 & --.&0030 \\
- amelia & OwnHome & --.&0031 & --.&0033 \\
- mice & OwnHome & --.&0030 & --.&0033 \\ 
- na.omit & OwnHome & --.&0112 & --.&0088 \\ 
- true & Rally & .&0830 & --- \\ 
- hd.ord & Rally & --.&0047 & --- \\ 
- hot.deck & Rally & --.&0047 & --- \\ 
- amelia & Rally & --.&0045 & --- \\
- mice & Rally & --.&0044 & --- \\
- na.omit & Rally & --.&0080 & --- \\
- true & Donate & .&1390 & --- \\
- hd.ord & Donate & --.&0057 & --- \\ 
- hot.deck & Donate & --.&0060 & --- \\ 
- amelia & Donate & --.&0054 & --- \\  
- mice & Donate & --.&0053 & --- \\ 
- na.omit & Donate & --.&0122 & --- \\ 
- true & Gay & \multicolumn{2}{l}{---} & .&0420 \\ 
- hd.ord & Gay & \multicolumn{2}{l}{---} & --.&0027 \\
- hot.deck & Gay & \multicolumn{2}{l}{---} & --.&0026 \\ 
- amelia & Gay & \multicolumn{2}{l}{---} & --.&0028 \\ 
- mice & Gay & \multicolumn{2}{l}{---} & --.&0027 \\ 
- na.omit & Gay & \multicolumn{2}{l}{---} & --.&0037 \\
- true & StudLoans & \multicolumn{2}{l}{---} & .&1910 \\
- hd.ord & StudLoans & \multicolumn{2}{l}{---} & --.&0067 \\
- hot.deck & StudLoans & \multicolumn{2}{l}{---} & --.&0064 \\
- amelia & StudLoans & \multicolumn{2}{l}{---} & --.&0057 \\
- mice & StudLoans & \multicolumn{2}{l}{---} & --.&0056 \\ 
- na.omit & StudLoans & \multicolumn{2}{l}{---} & --.&0082 \\
+ hd.ord & Age & --0.&2124 & --0.&1607 \\ 
+ hot.deck & Age & --0.&3329 & --0.&2424 \\ 
+ amelia & Age & --0.&1194 & --0.&1135 \\ 
+ mice & Age & --0.&1141 & --0.&1102 \\ 
+ na.omit & Age & --0.&2978 & --0.&0974 \\ 
+ true & Black & 0.&0790 & 0.&0950 \\ 
+ hd.ord & Black & --0.&0036 & --0.&0045 \\
+ hot.deck & Black & --0.&0040 & --0.&0042 \\
+ amelia & Black & --0.&0041 & --0.&0044 \\ 
+ mice & Black & --0.&0037 & --0.&0041 \\ 
+ na.omit & Black & --0.&0050 & --0.&0066 \\ 
+ true & Employed & 0.&6610 & 0.&4370 \\ 
+ hd.ord & Employed & --0.&0042 & --0.&0057 \\ 
+ hot.deck & Employed & --0.&0036 & --0.&0058 \\ 
+ amelia & Employed & --0.&0034 & --0.&0045 \\ 
+ mice & Employed & --0.&0033 & --0.&0044 \\ 
+ na.omit & Employed & --0.&0022 & --0.&0122 \\ 
+ true & Religious & 0.&6460 & 0.&6420 \\
+ hd.ord & Religious & --0.&0045 & --0.&0044 \\
+ hot.deck & Religious & --0.&0047 & --0.&0042 \\
+ amelia & Religious & --0.&0043 & --0.&0045 \\ 
+ mice & Religious & --0.&0043 & --0.&0045 \\ 
+ na.omit & Religious & --0.&0055 & --0.&0077 \\ 
+ true & Married & 0.&5290 & 0.&6310 \\ 
+ hd.ord & Married & --0.&0047 & --0.&0043 \\ 
+ hot.deck & Married & --0.&0042 & --0.&0040 \\
+ amelia & Married & --0.&0046 & --0.&0039 \\ 
+ mice & Married & --0.&0045 & --0.&0039 \\ 
+ na.omit & Married & --0.&0120 & --0.&0095 \\
+ true & OwnHome & 0.&6820 & 0.&7010 \\
+ hd.ord & OwnHome & --0.&0037 & --0.&0035 \\ 
+ hot.deck & OwnHome & --0.&0030 & --0.&0030 \\
+ amelia & OwnHome & --0.&0031 & --0.&0033 \\
+ mice & OwnHome & --0.&0030 & --0.&0033 \\ 
+ na.omit & OwnHome & --0.&0112 & --0.&0088 \\ 
+ true & Rally & 0.&0830 & --- \\ 
+ hd.ord & Rally & --0.&0047 & --- \\ 
+ hot.deck & Rally & --0.&0047 & --- \\ 
+ amelia & Rally & --0.&0045 & --- \\
+ mice & Rally & --0.&0044 & --- \\
+ na.omit & Rally & --0.&0080 & --- \\
+ true & Donate & 0.&1390 & --- \\
+ hd.ord & Donate & --0.&0057 & --- \\ 
+ hot.deck & Donate & --0.&0060 & --- \\ 
+ amelia & Donate & --0.&0054 & --- \\  
+ mice & Donate & --0.&0053 & --- \\ 
+ na.omit & Donate & --0.&0122 & --- \\ 
+ true & Gay & \multicolumn{2}{l}{---} & 0.&0420 \\ 
+ hd.ord & Gay & \multicolumn{2}{l}{---} & --0.&0027 \\
+ hot.deck & Gay & \multicolumn{2}{l}{---} & --0.&0026 \\ 
+ amelia & Gay & \multicolumn{2}{l}{---} & --0.&0028 \\ 
+ mice & Gay & \multicolumn{2}{l}{---} & --0.&0027 \\ 
+ na.omit & Gay & \multicolumn{2}{l}{---} & --0.&0037 \\
+ true & StudLoans & \multicolumn{2}{l}{---} & 0.&1910 \\
+ hd.ord & StudLoans & \multicolumn{2}{l}{---} & --0.&0067 \\
+ hot.deck & StudLoans & \multicolumn{2}{l}{---} & --0.&0064 \\
+ amelia & StudLoans & \multicolumn{2}{l}{---} & --0.&0057 \\
+ mice & StudLoans & \multicolumn{2}{l}{---} & --0.&0056 \\ 
+ na.omit & StudLoans & \multicolumn{2}{l}{---} & --0.&0082 \\
  \hline \\[-1.8ex] 
  \end{longtable}
  
@@ -1968,6 +1968,264 @@ stargazer(run.12var,
 \clearpage 
 
 
+
+## Survey Experiment Results Differentiated by Party ID {#app-framing-pid}
+
+Tables \ref{exp-anes-op-rep} and \ref{exp-anes-op-dem} show the ordinal regression results differentiated by party ID. The `Moral Opposing` frames are stronger than the `Self-Interest Opposing` frames for Democrat ANES environment, Democrat OP environment, Democrat OP healthcare, and Republican ANES environment. Note that these results change, though, for Republican healthcare. Both the ANES and the OP `Self-Interest Opposing` frames move respondents more than their `Moral Opposing` counterparts. It thus appears that Republicans value self-interest more than morality when it comes to opposition to healthcare. As in the overall analysis above, the `Moral Supporting` frames do not move people more than the `Self-Interest Supporting` frames. All coefficients here include the null, with the exception of Democrat OP environment which actually shows a negative coefficient. Almost none of the control variables show statistically significant results. While the results for opposing frames for Republican healthcare are notable, these results nonetheless overall do not change the substantive conclusions for the hypotheses.
+
+
+```{r Framing-Experiment-ANES-Republican, include=FALSE}
+
+df.an.rep <- df.an %>% filter(., pid == "Republican")
+vars.pid <- vars.op[!names(vars.op) %in% "Democrat"]
+
+plr.out.an.rep.hc <- create.formula.plr.out(df.an.rep, vars.pid, "hc")
+plr.out.an.rep.ev <- create.formula.plr.out(df.an.rep, vars.pid, "ev")
+
+# adjust names (has to be done after tidy() because tidy() throws up an error otherwise)
+names(plr.out.an.rep.hc$coefficients) <- repl.names(names(plr.out.an.rep.hc$coefficients), vars.repl)
+names(plr.out.an.rep.ev$coefficients) <- repl.names(names(plr.out.an.rep.ev$coefficients), vars.repl)
+
+```
+
+```{r Framing-Experiment-OP-Republican, include=FALSE}
+
+df.op.rep <- df.op %>% filter(., pid == "Republican")
+
+plr.out.op.rep.hc <- create.formula.plr.out(df.op.rep, vars.pid, "hc")
+plr.out.op.rep.ev <- create.formula.plr.out(df.op.rep, vars.pid, "ev")
+
+# adjust names (has to be done after tidy() because tidy() throws up an error otherwise)
+names(plr.out.op.rep.hc$coefficients) <- repl.names(names(plr.out.op.rep.hc$coefficients), vars.repl)
+names(plr.out.op.rep.ev$coefficients) <- repl.names(names(plr.out.op.rep.ev$coefficients), vars.repl)
+
+```
+
+```{r ANES-OP-Republican-Table, include=FALSE}
+
+stargazer(plr.out.an.rep.hc, plr.out.op.rep.hc, plr.out.an.rep.ev, plr.out.op.rep.ev,
+          header= FALSE,
+          align = TRUE,
+          single.row = TRUE,
+          title = "Ordinal Logistic Regression Results, Republican",
+          label = "exp-anes-op-rep",
+          star.char = c("", "", ""),
+          omit.table.layout = "n",
+          ci = TRUE,
+          dep.var.labels = c("Healthcare", "Environment"),
+          column.labels = c("ANES", "OP", "ANES", "OP"),
+          column.sep.width = "-60pt",
+          model.numbers = FALSE)
+
+```
+
+
+\ssp
+
+\footnotesize
+
+\blandscape
+\centering
+\captionof{table}{Ordinal Logistic Regression Results, Republican\label{exp-anes-op-rep}}
+\begin{tabular}{@{\extracolsep{-60pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{2}{c}{Healthcare} & \multicolumn{2}{c}{Environment} \\ 
+ & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} \\ 
+\hline \\[-1.8ex] 
+ Moral opposing & -0.261$ $(-1.013$, $.490) & -0.732^{}$ $(-1.397$, $-.067) & -1.009^{}$ $(-1.711$, $-.306) & -0.088$ $(-.706$, $.531) \\ 
+  Moral supporting & 0.131$ $(-.586$, $.847) & -0.471$ $(-1.130$, $.189) & -0.304$ $(-1.034$, $.425) & -0.190$ $(-.832$, $.452) \\ 
+  Self-interest opposing & -0.699^{}$ $(-1.370$, $-.028) & -0.949^{}$ $(-1.603$, $-.296) & -0.343$ $(-1.026$, $.340) & 0.027$ $(-.567$, $.622) \\ 
+  Self-interest supporting & -0.302$ $(-1.005$, $.401) & -0.325$ $(-.948$, $.298) & 0.063$ $(-.591$, $.716) & 0.258$ $(-.360$, $.876) \\ 
+  Employed full time & 0.222$ $(-.743$, $1.188) & -0.114$ $(-.832$, $.604) & -0.222$ $(-1.150$, $.707) & 0.137$ $(-.608$, $.882) \\ 
+  Employed part time & 0.224$ $(-.828$, $1.276) & -0.337$ $(-1.145$, $.472) & -0.142$ $(-1.153$, $.869) & 0.204$ $(-.624$, $1.032) \\ 
+  Homemaker & -0.048$ $(-1.168$, $1.072) & -0.310$ $(-1.285$, $.664) & -0.006$ $(-1.116$, $1.103) & 0.109$ $(-.911$, $1.130) \\ 
+  Retired & -0.340$ $(-1.323$, $.643) & -0.427$ $(-1.187$, $.334) & -0.275$ $(-1.225$, $.675) & 0.007$ $(-.782$, $.796) \\ 
+  Student & 1.285$ $(-.353$, $2.922) & 0.147$ $(-.931$, $1.225) & -0.103$ $(-1.677$, $1.472) & -0.885$ $(-2.008$, $.239) \\ 
+  Income & -0.006$ $(-.149$, $.137) & -0.105^{}$ $(-.227$, $.018) & 0.070$ $(-.070$, $.209) & 0.054$ $(-.066$, $.174) \\ 
+  Male & -0.141$ $(-.578$, $.295) & 0.072$ $(-.344$, $.488) & -0.147$ $(-.587$, $.293) & -0.244$ $(-.671$, $.183) \\ 
+  5th-6th grade & -2.747^{}$ $(-5.811$, $.317) &  & 0.288$ $(-2.255$, $2.831) &  \\ 
+  7th-8th grade & 0.821$ $(-2.644$, $4.286) &  & 2.312$ $(-.990$, $5.615) &  \\ 
+  9th grade & -0.274$ $(-3.679$, $3.132) &  & 1.690$ $(-1.678$, $5.058) &  \\ 
+  10th grade & -15.887^{}$ $(-15.887$, $-15.887) &  & -1.034$ $(-3.888$, $1.820) &  \\ 
+  11th grade & -0.750$ $(-3.064$, $1.564) &  & -0.872$ $(-3.107$, $1.364) &  \\ 
+  12th grade & -0.518$ $(-3.144$, $2.109) &  & 0.513$ $(-1.981$, $3.007) &  \\ 
+  High school graduate & 0.036$ $(-1.515$, $1.587) &  & 1.158^{}$ $(-.205$, $2.521) &  \\ 
+  Some college & -0.341$ $(-1.888$, $1.206) & -0.165$ $(-.744$, $.413) & 1.160^{}$ $(-.207$, $2.527) & 0.352$ $(-.240$, $.943) \\ 
+  Associate degree & -0.626$ $(-2.207$, $.955) & -0.209$ $(-.872$, $.453) & 0.739$ $(-.666$, $2.145) & -0.152$ $(-.818$, $.514) \\ 
+  Bachelor & -0.495$ $(-2.018$, $1.029) & 0.122$ $(-.489$, $.733) & 1.224^{}$ $(-.111$, $2.559) & -0.262$ $(-.880$, $.356) \\ 
+  Master & -1.154$ $(-2.772$, $.465) &  & 0.868$ $(-.564$, $2.300) &  \\ 
+  Professional degree & -1.146$ $(-3.198$, $.906) &  & 0.658$ $(-1.457$, $2.772) &  \\ 
+  Master or higher &  & -0.117$ $(-.819$, $.586) &  & -0.097$ $(-.814$, $.619) \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{318} & \multicolumn{1}{c}{331} & \multicolumn{1}{c}{318} & \multicolumn{1}{c}{331} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\fillandplacepagenumber
+\elandscape
+
+\dsp
+
+\normalsize
+
+
+
+```{r Framing-Experiment-ANES-Democrat, include=FALSE}
+
+df.an.dem <- df.an %>% filter(., pid == "Democrat")
+
+plr.out.an.dem.hc <- create.formula.plr.out(df.an.dem, vars.pid, "hc")
+plr.out.an.dem.ev <- create.formula.plr.out(df.an.dem, vars.pid, "ev")
+
+# adjust names (has to be done after tidy() because tidy() throws up an error otherwise)
+names(plr.out.an.dem.hc$coefficients) <- repl.names(names(plr.out.an.dem.hc$coefficients), vars.repl)
+names(plr.out.an.dem.ev$coefficients) <- repl.names(names(plr.out.an.dem.ev$coefficients), vars.repl)
+
+```
+
+```{r Framing-Experiment-OP-Democrat, include=FALSE}
+
+df.op.dem <- df.op %>% filter(., pid == "Democrat")
+
+plr.out.op.dem.hc <- create.formula.plr.out(df.op.dem, vars.pid, "hc")
+plr.out.op.dem.ev <- create.formula.plr.out(df.op.dem, vars.pid, "ev")
+
+# adjust names (has to be done after tidy() because tidy() throws up an error otherwise)
+names(plr.out.op.dem.hc$coefficients) <- repl.names(names(plr.out.op.dem.hc$coefficients), vars.repl)
+names(plr.out.op.dem.ev$coefficients) <- repl.names(names(plr.out.op.dem.ev$coefficients), vars.repl)
+
+```
+
+```{r ANES-OP-Democrat-Table, include=FALSE}
+
+stargazer(plr.out.an.dem.hc, plr.out.op.dem.hc, plr.out.an.dem.ev, plr.out.op.dem.ev,
+          header= FALSE,
+          align = TRUE,
+          single.row = TRUE,
+          title = "Ordinal Logistic Regression Results, Democrat",
+          label = "exp-anes-op-dem",
+          star.char = c("", "", ""),
+          omit.table.layout = "n",
+          ci = TRUE,
+          dep.var.labels = c("Healthcare", "Environment"),
+          column.labels = c("ANES", "OP", "ANES", "OP"),
+          column.sep.width = "-60pt",
+          model.numbers = FALSE)
+
+```
+
+
+\ssp
+
+\footnotesize
+
+\blandscape
+\centering
+\captionof{table}{Ordinal Logistic Regression Results, Democrat\label{exp-anes-op-dem}}
+\begin{tabular}{@{\extracolsep{-60pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{2}{c}{Healthcare} & \multicolumn{2}{c}{Environment} \\ 
+ & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} \\ 
+\hline \\[-1.8ex] 
+ Moral opposing & -0.304$ $(-.890$, $.283) & -0.781^{}$ $(-1.363$, $-.199) & -0.676^{}$ $(-1.317$, $-.036) & -0.671^{}$ $(-1.225$, $-.116) \\ 
+  Moral supporting & 0.415$ $(-.167$, $.997) & -0.310$ $(-.871$, $.252) & -0.110$ $(-.733$, $.514) & -0.591^{}$ $(-1.159$, $-.022) \\ 
+  Self-interest opposing & -0.042$ $(-.574$, $.490) & -0.136$ $(-.712$, $.440) & -0.145$ $(-.763$, $.474) & -0.513^{}$ $(-1.081$, $.054) \\ 
+  Self-interest supporting & -0.073$ $(-.664$, $.517) & -0.135$ $(-.688$, $.419) & 0.497^{}$ $(-.085$, $1.079) & -0.559^{}$ $(-1.138$, $.019) \\ 
+  Employed full time & 0.010$ $(-.634$, $.653) & -0.027$ $(-.641$, $.586) & -0.296$ $(-.950$, $.358) & 0.229$ $(-.378$, $.835) \\ 
+  Employed part time & 0.113$ $(-.586$, $.813) & -0.079$ $(-.748$, $.591) & -0.403$ $(-1.115$, $.309) & -0.027$ $(-.690$, $.636) \\ 
+  Homemaker & 0.469$ $(-.552$, $1.490) & 0.132$ $(-.808$, $1.072) & 0.271$ $(-.772$, $1.315) & -0.199$ $(-1.110$, $.711) \\ 
+  Retired & 0.171$ $(-.497$, $.839) & 0.505$ $(-.158$, $1.169) & 0.085$ $(-.584$, $.754) & 0.895^{}$ $(.234$, $1.557) \\ 
+  Student & -0.257$ $(-1.303$, $.789) & -0.288$ $(-1.237$, $.662) & -0.838$ $(-1.926$, $.250) & 0.510$ $(-.458$, $1.479) \\ 
+  Income & -0.026$ $(-.138$, $.085) & -0.052$ $(-.166$, $.061) & -0.024$ $(-.139$, $.091) & 0.049$ $(-.064$, $.162) \\ 
+  Male & 0.006$ $(-.380$, $.392) & 0.092$ $(-.282$, $.465) & -0.108$ $(-.491$, $.275) & -0.175$ $(-.551$, $.200) \\ 
+  1st-4th grade & 19.675^{}$ $(17.269$, $22.080) &  & 0.217$ $(-4.350$, $4.785) &  \\ 
+  7th-8th grade & 0.525^{}$ $(.525$, $.525) &  & -15.604^{}$ $(-15.604$, $-15.604) &  \\ 
+  9th grade & 21.793^{}$ $(19.747$, $23.839) &  & -1.359$ $(-6.089$, $3.371) &  \\ 
+  10th grade & 24.851^{}$ $(22.655$, $27.048) &  & 2.036$ $(-2.670$, $6.741) &  \\ 
+  11th grade & 23.857^{}$ $(21.309$, $26.404) &  & 0.149$ $(-4.363$, $4.660) &  \\ 
+  12th grade & 22.521^{}$ $(20.929$, $24.114) &  & 0.791$ $(-3.562$, $5.144) &  \\ 
+  High school graduate & 22.797^{}$ $(22.182$, $23.412) &  & 0.546$ $(-3.447$, $4.538) &  \\ 
+  Some college & 23.051^{}$ $(22.499$, $23.603) & 0.566^{}$ $(.004$, $1.129) & 1.217$ $(-2.767$, $5.201) & 0.207$ $(-.350$, $.764) \\ 
+  Associate degree & 23.238^{}$ $(22.583$, $23.894) & 0.402$ $(-.231$, $1.034) & 1.483$ $(-2.517$, $5.483) & 0.365$ $(-.280$, $1.009) \\ 
+  Bachelor & 23.384^{}$ $(22.841$, $23.926) & 0.213$ $(-.334$, $.760) & 1.745$ $(-2.226$, $5.717) & 0.019$ $(-.547$, $.585) \\ 
+  Master & 23.704^{}$ $(23.067$, $24.342) &  & 1.784$ $(-2.196$, $5.764) &  \\ 
+  Professional degree & 23.191^{}$ $(22.116$, $24.265) &  & 1.935$ $(-2.144$, $6.015) &  \\ 
+  Doctorate & 23.703^{}$ $(22.721$, $24.685) &  & 1.418$ $(-2.668$, $5.504) &  \\ 
+  Master or higher &  & 0.694^{}$ $(.060$, $1.328) &  & -0.058$ $(-.677$, $.562) \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{412} & \multicolumn{1}{c}{422} & \multicolumn{1}{c}{412} & \multicolumn{1}{c}{422} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\fillandplacepagenumber
+\elandscape
+
+\dsp
+
+\normalsize
+
+
+<!--
+NORMAL:
+MO consistent significant ANES ev, OP hc, OP ev
+Income sig ANES hc
+MS sig ANES hc, OP hc (sign here neg)
+Male sig OPev
+MS do not move people towards supporting hc and ev
+MS ANES hc sig pos and stronger than ANES hc SIS, but all others zero or the wrong sign
+MO move people, ANES ev, OP hc, OP ev all sig and stronger than SIO
+
+REP HC:
+ANES: SIO stronger (neg) than MO (null)
+OP: SIO stronger (neg) than MO (neg but smaller)
+MS + SIS all null
+All other stuff null
+
+REP EV:
+ANES: MO stronger (neg) than SIO (null)
+OP: Both null
+MS + SIS all null
+All other stuff null
+
+DEM HC:
+ANES: Both null
+OP: MO stronger (neg) than SIO (null)
+MS + SIS all null
+All other stuff null
+
+DEM EV:
+ANES: MO stronger (neg) than SIO (null)
+OP: MO stronger (neg) than SIO (null)
+MS OP neg, MS anes + all SIS null
+OP Retired pos
+
+
+NORMAL:
+MO consistent significant ANES ev, OP hc, OP ev
+Income sig ANES hc
+MS sig ANES hc, OP hc (sign here neg)
+Male sig OPev
+MS do not move people towards supporting hc and ev
+MS ANES hc sig pos and stronger than ANES hc SIS, but all others zero or the wrong sign
+MO move people, ANES ev, OP hc, OP ev all sig and stronger than SIO
+
+No change in controls, almost all are null (one exception is DEM EV OP Retired (positive)
+MS do not move people more than SIS. All null except for DEM EV MS OP, but that is negative
+MO stronger than SIO for DEM EV ANES (SIO null), DEM EV OP (SIO null), DEM HC OP (SIO null), REP EV ANES (SIO null)
+SIO stronger than MO for REP HC ANES (MO null), REP HC OP (MO negative but smaller)
+
+-->
+
+
+
+
+
 ## Imputing 10 Variables with Missing Data {#app-framing-10var}
 
 ```{r MAR 10 Variables Framing, include=FALSE}
@@ -2020,66 +2278,66 @@ Table \ref{mar.10var.frame} shows the imputation results for missing data insert
  \hline \\[-1.8ex] 
 \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{OP} \\ 
  \hline \\[-1.8ex] 
- true & Democrat & .&3879 & .&3826 \\ 
- hot.deck & Democrat & +.&0003 & +.&0003 \\ 
- hd.ord & Democrat & +.&0002 & +.&0003 \\
- amelia & Democrat & +.&0002 & +.&0000 \\
- mice & Democrat & +.&0001 & --.&0001 \\
- na.omit & Democrat & --.&0217 & --.&0249 \\
- true & Male & .&4576 & .&4714 \\ 
- hot.deck & Male & --.&0001 & +.&0003 \\
- hd.ord & Male & +.&0000 & +.&0002 \\
- amelia & Male & +.&0001 & +.&0000 \\ 
- mice & Male & +.&0000 & --.&0001 \\  
- na.omit & Male & --.&0334 & --.&0325 \\ 
- true & Employed & .&5612 & .&5684 \\ 
- hot.deck & Employed & +.&0013 & +.&0013 \\
- hd.ord & Employed & +.&0013 & +.&0014 \\ 
- amelia & Employed & +.&0002 & +.&0001 \\
- mice & Employed & +.&0000 & +.&0000 \\ 
- na.omit & Employed & --.&0277 & --.&0260 \\
+ true & Democrat & 0.&3879 & 0.&3826 \\ 
+ hot.deck & Democrat & + 0.&0003 & + 0.&0003 \\ 
+ hd.ord & Democrat & + 0.&0002 & + 0.&0003 \\
+ amelia & Democrat & + 0.&0002 & + 0.&0000 \\
+ mice & Democrat & + 0.&0001 & --0.&0001 \\
+ na.omit & Democrat & --0.&0217 & --0.&0249 \\
+ true & Male & 0.&4576 & 0.&4714 \\ 
+ hot.deck & Male & --0.&0001 & + 0.&0003 \\
+ hd.ord & Male & + 0.&0000 & + 0.&0002 \\
+ amelia & Male & + 0.&0001 & + 0.&0000 \\ 
+ mice & Male & + 0.&0000 & --0.&0001 \\  
+ na.omit & Male & --0.&0334 & --0.&0325 \\ 
+ true & Employed & 0.&5612 & 0.&5684 \\ 
+ hot.deck & Employed & + 0.&0013 & + 0.&0013 \\
+ hd.ord & Employed & + 0.&0013 & + 0.&0014 \\ 
+ amelia & Employed & + 0.&0002 & + 0.&0001 \\
+ mice & Employed & + 0.&0000 & + 0.&0000 \\ 
+ na.omit & Employed & --0.&0277 & --0.&0260 \\
  true & Income & 3.&5537 & 3.&4923 \\  
- hot.deck & Income & --.&0037 & --.&0035 \\ 
- hd.ord & Income & --.&0081 & --.&0074 \\ 
- amelia & Income & +.&0000 & --.&0001 \\
- mice & Income & --.&0001 & --.&0002 \\  
- na.omit & Income & --.&1501 & --.&1504 \\ 
+ hot.deck & Income & --0.&0037 & --0.&0035 \\ 
+ hd.ord & Income & --0.&0081 & --0.&0074 \\ 
+ amelia & Income & + 0.&0000 & --0.&0001 \\
+ mice & Income & --0.&0001 & --0.&0002 \\  
+ na.omit & Income & --0.&1501 & --0.&1504 \\ 
  true & Age & 46.&3475 & 44.&9574 \\ 
- hot.deck & Age & --.&1106 & --.&1115 \\ 
- hd.ord & Age & --.&1632 & --.&1593 \\
- amelia & Age & --.&0019 & +.&0008 \\ 
- mice & Age & --.&0068 & --.&0009 \\ 
- na.omit & Age & --.&0890 & --.&0921 \\ 
- true & Student & .&0386 & .&0481 \\ 
- hot.deck & Student & --.&0001 & +.&0000 \\
- hd.ord & Student & +.&0000 & +.&0001 \\
- amelia & Student & +.&0001 & +.&0000 \\
- mice & Student & +.&0000 & --.&0001 \\
- na.omit & Student & --.&0069 & --.&0065 \\ 
- true & Conservative & .&3908 & .&3744 \\ 
- hot.deck & Conservative & +.&0001 & +.&0004 \\
- hd.ord & Conservative & --.&0002 & +.&0003 \\ 
- amelia & Conservative & +.&0000 & +.&0001 \\ 
- mice & Conservative & --.&0002 & +.&0002 \\
- na.omit & Conservative & --.&0177 & --.&0193 \\
- true & Black & .&1158 & .&1242 \\ 
- hot.deck & Black & +.&0004 & +.&0003 \\ 
- hd.ord & Black & +.&0005 & +.&0004 \\ 
- amelia & Black & +.&0000 & +.&0000 \\ 
- mice & Black & +.&0001 & +.&0000 \\
- na.omit & Black & --.&0094 & --.&0086 \\
- true & Democrat & .&0895 & .&0907 \\ 
- hot.deck & Democrat & +.&0004 & +.&0003 \\ 
- hd.ord & Democrat & +.&0003 & +.&0001 \\ 
- amelia & Democrat & +.&0000 & +.&0000 \\
- mice & Democrat & --.&0001 & +.&0000 \\
- na.omit & Democrat & --.&0126 & --.&0152 \\ 
- true & Asian & .&0810 & .&0662 \\
- hot.deck & Asian & +.&0001 & --.&0002 \\ 
- hd.ord & Asian & +.&0000 & --.&0001 \\
- amelia & Asian & +.&0001 & +.&0000 \\
- mice & Asian & +.&0000 & +.&0000 \\ 
- na.omit & Asian & --.&0165 & --.&0142 \\ 
+ hot.deck & Age & --0.&1106 & --0.&1115 \\ 
+ hd.ord & Age & --0.&1632 & --0.&1593 \\
+ amelia & Age & --0.&0019 & + 0.&0008 \\ 
+ mice & Age & --0.&0068 & --0.&0009 \\ 
+ na.omit & Age & --0.&0890 & --0.&0921 \\ 
+ true & Student & 0.&0386 & 0.&0481 \\ 
+ hot.deck & Student & --0.&0001 & + 0.&0000 \\
+ hd.ord & Student & + 0.&0000 & + 0.&0001 \\
+ amelia & Student & + 0.&0001 & + 0.&0000 \\
+ mice & Student & + 0.&0000 & --0.&0001 \\
+ na.omit & Student & --0.&0069 & --0.&0065 \\ 
+ true & Conservative & 0.&3908 & 0.&3744 \\ 
+ hot.deck & Conservative & + 0.&0001 & + 0.&0004 \\
+ hd.ord & Conservative & --0.&0002 & + 0.&0003 \\ 
+ amelia & Conservative & + 0.&0000 & + 0.&0001 \\ 
+ mice & Conservative & --0.&0002 & + 0.&0002 \\
+ na.omit & Conservative & --0.&0177 & --0.&0193 \\
+ true & Black & 0.&1158 & 0.&1242 \\ 
+ hot.deck & Black & + 0.&0004 & + 0.&0003 \\ 
+ hd.ord & Black & + 0.&0005 & + 0.&0004 \\ 
+ amelia & Black & + 0.&0000 & + 0.&0000 \\ 
+ mice & Black & + 0.&0001 & + 0.&0000 \\
+ na.omit & Black & --0.&0094 & --0.&0086 \\
+ true & Democrat & 0.&0895 & 0.&0907 \\ 
+ hot.deck & Democrat & + 0.&0004 & + 0.&0003 \\ 
+ hd.ord & Democrat & + 0.&0003 & + 0.&0001 \\ 
+ amelia & Democrat & + 0.&0000 & + 0.&0000 \\
+ mice & Democrat & --0.&0001 & + 0.&0000 \\
+ na.omit & Democrat & --0.&0126 & --0.&0152 \\ 
+ true & Asian & 0.&0810 & 0.&0662 \\
+ hot.deck & Asian & + 0.&0001 & --0.&0002 \\ 
+ hd.ord & Asian & + 0.&0000 & --0.&0001 \\
+ amelia & Asian & + 0.&0001 & + 0.&0000 \\
+ mice & Asian & + 0.&0000 & + 0.&0000 \\ 
+ na.omit & Asian & --0.&0165 & --0.&0142 \\ 
  \hline \\[-1.8ex]
  \end{longtable}
 
@@ -2137,66 +2395,66 @@ As was the case for Tables \ref{mar.5var.frame} and \ref{mnar.5var.frame}, all i
  \hline \\[-1.8ex]
 \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{OP} \\ 
  \hline \\[-1.8ex]  
- true & Democrat & .&3879 & .&3826 \\
- hot.deck & Democrat & --.&0015 & --.&0016 \\
- hd.ord & Democrat & --.&0019 & --.&0019 \\
- amelia & Democrat & --.&0015 & --.&0015 \\
- mice & Democrat & --.&0013 & --.&0014 \\ 
- na.omit & Democrat & --.&0084 & --.&0094 \\ 
- true & Male & .&4576 & .&4714 \\
- hot.deck & Male & --.&0067 & --.&0063 \\ 
- hd.ord & Male & --.&0066 & --.&0062 \\ 
- amelia & Male & --.&0066 & --.&0065 \\
- mice & Male & --.&0067 & --.&0066 \\
- na.omit & Male & --.&0102 & --.&0099 \\ 
- true & Employed & .&5612 & .&5684 \\ 
- hot.deck & Employed & --.&0013 & --.&0015 \\ 
- hd.ord & Employed & --.&0014 & --.&0017 \\
- amelia & Employed & --.&0015 & --.&0015 \\ 
- mice & Employed & --.&0015 & --.&0015 \\
- na.omit & Employed & --.&0086 & --.&0077 \\
+ true & Democrat & 0.&3879 & 0.&3826 \\
+ hot.deck & Democrat & --0.&0015 & --0.&0016 \\
+ hd.ord & Democrat & --0.&0019 & --0.&0019 \\
+ amelia & Democrat & --0.&0015 & --0.&0015 \\
+ mice & Democrat & --0.&0013 & --0.&0014 \\ 
+ na.omit & Democrat & --0.&0084 & --0.&0094 \\ 
+ true & Male & 0.&4576 & 0.&4714 \\
+ hot.deck & Male & --0.&0067 & --0.&0063 \\ 
+ hd.ord & Male & --0.&0066 & --0.&0062 \\ 
+ amelia & Male & --0.&0066 & --0.&0065 \\
+ mice & Male & --0.&0067 & --0.&0066 \\
+ na.omit & Male & --0.&0102 & --0.&0099 \\ 
+ true & Employed & 0.&5612 & 0.&5684 \\ 
+ hot.deck & Employed & --0.&0013 & --0.&0015 \\ 
+ hd.ord & Employed & --0.&0014 & --0.&0017 \\
+ amelia & Employed & --0.&0015 & --0.&0015 \\ 
+ mice & Employed & --0.&0015 & --0.&0015 \\
+ na.omit & Employed & --0.&0086 & --0.&0077 \\
  true & Income & 3.&5537 & 3.&4923 \\
- hot.deck & Income & --.&0241 & --.&0237 \\ 
- hd.ord & Income & --.&0262 & --.&0267 \\
- amelia & Income & --.&0196 & --.&0212 \\
- mice & Income & --.&0196 & --.&0214 \\ 
- na.omit & Income & --.&0476 & --.&0490 \\
+ hot.deck & Income & --0.&0241 & --0.&0237 \\ 
+ hd.ord & Income & --0.&0262 & --0.&0267 \\
+ amelia & Income & --0.&0196 & --0.&0212 \\
+ mice & Income & --0.&0196 & --0.&0214 \\ 
+ na.omit & Income & --0.&0476 & --0.&0490 \\
  true & Age & 46.&3475 & 44.&9574 \\
- hot.deck & Age & --.&2197 & --.&2388 \\
- hd.ord & Age & --.&3100 & --.&2911 \\ 
- amelia & Age & --.&1196 & --.&1307 \\ 
- mice & Age & --.&1207 & --.&1341 \\ 
- na.omit & Age & --.&0274 & --.&0193 \\ 
- true & Student & .&0386 & .&0481 \\ 
- hot.deck & Student & --.&0022 & --.&0024 \\
- hd.ord & Student & --.&0023 & --.&0025 \\
- amelia & Student & --.&0020 & --.&0024 \\
- mice & Student & --.&0015 & --.&0018 \\
- na.omit & Student & --.&0026 & --.&0032 \\
- true & Conservative & .&3908 & .&3744 \\
- hot.deck & Conservative & --.&0043 & --.&0038 \\
- hd.ord & Conservative & --.&0045 & --.&0041 \\
- amelia & Conservative & --.&0042 & --.&0045 \\ 
- mice & Conservative & --.&0044 & --.&0043 \\
- na.omit & Conservative & --.&0059 & --.&0065 \\
- true & Black & .&1158 & .&1242 \\
- hot.deck & Black & --.&0032 & --.&0030 \\
- hd.ord & Black & --.&0033 & --.&0030 \\
- amelia & Black & --.&0023 & --.&0021 \\
- mice & Black & --.&0023 & --.&0020 \\ 
- na.omit & Black & --.&0049 & --.&0050 \\ 
- true & Democrat & .&0895 & .&0907 \\ 
- hot.deck & Democrat & --.&0027 & --.&0028 \\
- hd.ord & Democrat & --.&0034 & --.&0036 \\
- amelia & Democrat & --.&0023 & --.&0022 \\
- mice & Democrat & --.&0023 & --.&0021 \\ 
- na.omit & Democrat & --.&0050 & --.&0057 \\ 
- true & Asian & .&0810 & .&0662 \\ 
- hot.deck & Asian & --.&0034 & --.&0031 \\ 
- hd.ord & Asian & --.&0038 & --.&0032 \\ 
- amelia & Asian & --.&0023 & --.&0020 \\
- mice & Asian & --.&0025 & --.&0017 \\
- na.omit & Asian & --.&0059 & --.&0046 \\ 
+ hot.deck & Age & --0.&2197 & --0.&2388 \\
+ hd.ord & Age & --0.&3100 & --0.&2911 \\ 
+ amelia & Age & --0.&1196 & --0.&1307 \\ 
+ mice & Age & --0.&1207 & --0.&1341 \\ 
+ na.omit & Age & --0.&0274 & --0.&0193 \\ 
+ true & Student & 0.&0386 & 0.&0481 \\ 
+ hot.deck & Student & --0.&0022 & --0.&0024 \\
+ hd.ord & Student & --0.&0023 & --0.&0025 \\
+ amelia & Student & --0.&0020 & --0.&0024 \\
+ mice & Student & --0.&0015 & --0.&0018 \\
+ na.omit & Student & --0.&0026 & --0.&0032 \\
+ true & Conservative & 0.&3908 & 0.&3744 \\
+ hot.deck & Conservative & --0.&0043 & --0.&0038 \\
+ hd.ord & Conservative & --0.&0045 & --0.&0041 \\
+ amelia & Conservative & --0.&0042 & --0.&0045 \\ 
+ mice & Conservative & --0.&0044 & --0.&0043 \\
+ na.omit & Conservative & --0.&0059 & --0.&0065 \\
+ true & Black & 0.&1158 & 0.&1242 \\
+ hot.deck & Black & --0.&0032 & --0.&0030 \\
+ hd.ord & Black & --0.&0033 & --0.&0030 \\
+ amelia & Black & --0.&0023 & --0.&0021 \\
+ mice & Black & --0.&0023 & --0.&0020 \\ 
+ na.omit & Black & --0.&0049 & --0.&0050 \\ 
+ true & Democrat & 0.&0895 & 0.&0907 \\ 
+ hot.deck & Democrat & --0.&0027 & --0.&0028 \\
+ hd.ord & Democrat & --0.&0034 & --0.&0036 \\
+ amelia & Democrat & --0.&0023 & --0.&0022 \\
+ mice & Democrat & --0.&0023 & --0.&0021 \\ 
+ na.omit & Democrat & --0.&0050 & --0.&0057 \\ 
+ true & Asian & 0.&0810 & 0.&0662 \\ 
+ hot.deck & Asian & --0.&0034 & --0.&0031 \\ 
+ hd.ord & Asian & --0.&0038 & --0.&0032 \\ 
+ amelia & Asian & --0.&0023 & --0.&0020 \\
+ mice & Asian & --0.&0025 & --0.&0017 \\
+ na.omit & Asian & --0.&0059 & --0.&0046 \\ 
  \hline \\[-1.8ex] 
  \end{longtable}
 
