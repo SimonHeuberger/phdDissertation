@@ -2,6 +2,7 @@
 
 ## Introduction {#ordblock-intro}
 
+<!--
 ```{r include=FALSE}
 drop.zero <- function (df, digits = 4, p, s, pad.char = NA, ...){
     library(dplyr)
@@ -33,7 +34,7 @@ drop.zero.num <- function(num, digits = 3){
 }
 
 ```
-
+-->
 
 Survey experiments collect background information and attempt to uncover treatment effects on public opinion and political attitudes. In order to identify such potential effects, the treatment groups need to be balanced on the potential outcomes. This can be achieved through random assignment of participants to treatment groups. Randomization, i.e. flipping a fair coin to decide which treatment group a participant is assigned to, probabilistically results in balance based on the Law of Large Numbers [@urdan_statistics_2010]. For small samples, however, it can lead to serious imbalance. This can leave experimental results in statistically murky waters [@imai_quantitative_2018;@king_designing_1994;@fox_applied_2015]. In survey experiments, the overall sample size is often split across several treatment groups, which can exacerbate the problem. @chong_framing_2007, for instance, split 869 participants in a framing experiment on urban growth over 17 treatment groups, which leads to an average of just over 50 participants per group. Randomization is unlikely to lead to comparable treatment groups of this size. Researchers need to employ statistical methods to obtain balanced groups here. Blocking, i.e. arranging participants in groups that are equal in terms of participants' covariates and using random allocation within these groups, can alleviate such worries. 
 
@@ -74,7 +75,7 @@ Participants in the treatment group receive the program description in mortality
 
 @tversky_framing_1981 use this experiment to demonstrate the importance of framing. Support for the program is much higher among respondents who received the survival format, even though the success rate of the program is identical in both formats. Framing the program in a positive light thus dramatically increases support by connecting the program to people's aversion of death and affirmation of life. While these findings stem from an experiment conducted in the 1970s, it is not a big leap to imagine a similar outcome in today's Covid-19 world. Misinformation abounds in all formats across countless media channels and there is little reason to assume human behavior has drastically changed. If we conducted this experiment today, it would be quite possible to once more find sizable differences between these two groups.
 
-Let $T=0$ denote the control group and $T=1$ denote the treatment group. After being shown one of the two groups, all participants are asked whether they support or oppose the program. The treatment effect for each individual participant $i$ is given by $y_{1i} - y_{0i}$. A comparison of the groups' average support reveals the Average Treatment Effect (ATE) across all participants, $\mathbf{E}[\delta] = \mathbf{E}[y_{1i} - y_{0i}]$. A central characteristic of such a comparison is the fundamental problem of causal inference [@holland_1986_statistics;@rubin_1974_estimating]: We are unable to observe both potential outcomes for the same participant at once. In our case, we cannot observe how much participant $i$ supports the program if given the survival format whilst also observing how much the same participant $i$ would have supported the program if given the mortality format. Since the true average treatment effect is unobservable, we need to use statistical means to assess the unobservable counterfactuals. If $Y$ and $T$ are independent, we can substitute $\mathbf{E}[Y_t|T=t]$ for $\mathbf{E}[Y_t]$, thereby replacing an unobservable entity with something we can estimate from the data. If this independence is given, we can use the participants who received the mortality format (treatment) to estimate what would have happened to the participants who did not receive any format (control). The potential outcome of the control group then mirrors what would have happened in the case of treatment, and vice versa. The process of randomization helps justify this independence and allows comparibility. Another means to achieve comparibility is the process of blocking. 
+Let $\bm{T}=0$ denote the control group and $\bm{T}=1$ denote the treatment group. After being shown one of the two groups, all participants are asked whether they support or oppose the program. The treatment effect for each individual participant $i$ is given by $y_{1i} - y_{0i}$. A comparison of the groups' average support reveals the Average Treatment Effect (ATE) across all participants, $\mathbf{E}[\delta] = \mathbf{E}[y_{1i} - y_{0i}]$. A central characteristic of such a comparison is the fundamental problem of causal inference [@holland_1986_statistics;@rubin_1974_estimating]: We are unable to observe both potential outcomes for the same participant at once. In our case, we cannot observe how much participant $i$ supports the program if given the survival format whilst also observing how much the same participant $i$ would have supported the program if given the mortality format. Since the true average treatment effect is unobservable, we need to use statistical means to assess the unobservable counterfactuals. If $\bm{Y}$ and $\bm{T}$ are independent, we can substitute $\mathbf{E}[\bm{Y_t}|\bm{T}=t]$ for $\mathbf{E}[\bm{Y_t}]$, thereby replacing an unobservable entity with something we can estimate from the data. If this independence is given, we can use the participants who received the mortality format (treatment) to estimate what would have happened to the participants who did not receive any format (control). The potential outcome of the control group then mirrors what would have happened in the case of treatment, and vice versa. The process of randomization helps justify this independence and allows comparibility. Another means to achieve comparibility is the process of blocking. 
 
 
 ### Randomization {#ordblock-theory-randomization}
@@ -89,13 +90,13 @@ While randomization thus guarantees balance as the sample size reaches infinity,
 Identical levels in terms of covariates across treatment groups represent the key aspect in experimental studies. In randomization, this is achieved by random chance. In blocking, this is achieved by combining covariate information about the participants with randomization. Specifically, participants are blocked into treatment groups that are similar to one another in terms of the their covariates before treatment is assigned. Their similarity is estimated with the Mahalanobis or Euclidian distance. The Mahalanobis distance (MD) is a multivariate distance metric which measures the distance between two vectors (or between a point and a distribution). For two random vectors $x_i$ and $y_i$ with $i = [1,\ldots,n]$ of the same distribution, the MD is defined as
 
 \begin{align}
-MD_{xy} = \sqrt{(\bm{x}_i - \bm{y}_i)' S^{-1} (\bm{x}_i - \bm{y}_i)},
+MD_{xy} = \sqrt{(x_i - y_i)' S^{-1} (x_i - y_i)},
 \end{align}
 
-where $S$ denotes the covariance matrix. If the covariance matrix is a diagonal identity matrix, the resulting distance measure becomes the Euclidian distance (ED), 
+where $\bm{S}$ denotes the covariance matrix. If the covariance matrix is a diagonal identity matrix, the resulting distance measure becomes the Euclidian distance (ED), 
 
 \begin{align}
-ED_{xy} = \sqrt{\sum_{i=1}^N \frac{(\bm{x}_i - \bm{y}_i)^2}{s^2}},
+ED_{xy} = \sqrt{\sum_{i=1}^N \frac{(x_i - y_i)^2}{s^2}},
 \end{align}
 
 with $s_i$ denoting the standard deviation of $x_i$ and $y_i$. The MD accounts for covariances, whereas the ED assumes equal variances and zero covariances. The ED thus can be argued to represent a special case of the MD.
@@ -211,7 +212,7 @@ grid.arrange(plot_first, plots[[1]], plots[[2]], plots[[3]], plots[[4]], plots[[
 
 For $n = 998$ and 2 treatment groups, the largest distance between randomized treatment groups is `r round(max(all_means_variances_2$diff[all_means_variances_2$sampled_numbers == 998]), digits=3)`, while the largest distance between blocked treatment groups is `r round(max(all_blocked_2$diff[all_blocked_2$sampled_numbers == 998]), digits=3)`. For small samples and a large number of treatment groups, the difference is even starker. For $n = 40$ and 10 treatment groups, the largest distance between randomized treatment groups is `r round(max(all_means_variances_10$diff[all_means_variances_10$sampled_numbers == 40]), digits=3)`, while the largest distance between blocked treatment groups is `r round(max(all_blocked_10$diff[all_blocked_10$sampled_numbers == 40]), digits=3)`. 
 
-Figure \ref{HistLawLarNum} shows the count distributions of these imbalances. For 2 treatment groups (top left plot), almost all blocked treatment groups have a maximum distance of zero. Most randomized groups also have a maximum distance of zero, but it is a narrow majority. Almost 50 percent of randomized groups have distances greater than zero, though still lower than one. As the number of treatment groups increases, so do the distances between the treatment groups. Nonetheless, the vast majority of blocked groups still show a maximum distance of zero. Even for 10 treatment groups, more than 60 percent of the blocked groups are not distant from each other at all. This does not hold true for the randomized groups. For 3 treatment groups, the majority of distances are now above zero. For 5 groups, the majority of distances exceed .25. For 10 treatment groups, more than 60 percent of groups show a distance larger than .5.
+Figure \ref{HistLawLarNum} shows the count distributions of these imbalances. For 2 treatment groups (top left plot), almost all blocked treatment groups have a maximum distance of zero. Most randomized groups also have a maximum distance of zero, but it is a narrow majority. Almost 50 percent of randomized groups have distances greater than zero, though still lower than one. As the number of treatment groups increases, so do the distances between the treatment groups. Nonetheless, the vast majority of blocked groups still show a maximum distance of zero. Even for 10 treatment groups, more than 60 percent of the blocked groups are not distant from each other at all. This does not hold true for the randomized groups. For 3 treatment groups, the majority of distances are now above zero. For 5 groups, the majority of distances exceed 0.25. For 10 treatment groups, more than 60 percent of groups show a distance larger than 0.5.
 
 
 ```{r Law of Large Numbers Plotting Code Histograms, include=FALSE}
@@ -313,26 +314,26 @@ Many approaches in the literature on the analysis of ordinal variables incorpora
 We need to estimate a linear combination of meaningful covariates as predictors and an ordinal variable as the dependent variable. We then train this model on externally and internally valid data. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. We then replace the original categories with these re-estimated categories and conduct the statistical analysis of interest. 
 
 Notationally, let there be $\bm{X}$, an $n \times k$ matrix of explanatory variables. Let further $\bm{Y}$ be observed on the ordered categories $\bm{Y}_i \in [1,\ldots,k]$, for $i=1,\ldots n$, and let $\bm{Y}$ be assumed to be produced by the unobserved latent continuous variable $\bm{Y^{cont}}$. $\bm{Y^{cont}}$ is continuous on $\mathfrak{R}$ from $-\infty$ to $\infty$. The 'response mechanism' for the $r^{th}$ category is $Y=r \Longleftrightarrow \xi_{r-1} < Y^{cont} < \xi_r$. This requires there to be thresholds on $R$:
-$Y^{cont}_i: \; \xi_0 \underset{a=1}{\longleftarrow\!\longrightarrow} \xi_1 \underset{a=2}{\longleftarrow\!\longrightarrow} \xi_2 \underset{a=3}{\longleftarrow\!\longrightarrow} \xi_3\ldots \xi_{A-1} \underset{a=A}{\longleftarrow\!\longrightarrow} \xi_A$. The vector of (unseen) utilities across individuals in the sample, $Y^{cont}$, is determined by a linear model of explanatory variables: $\bm{Y^{cont}} = \bm{X} \bm{\beta} + \mu$, where $\bm{\beta} =[\beta_1,\beta_2,\ldots,\beta_p]$ does not depend on the $\xi_j$ and $\mu \sim F_{\mu}$. For the observed vector $\bm{Y}$,
+$Y^{cont}_i: \; \xi_0 \underset{a=1}{\longleftarrow\!\longrightarrow} \xi_1 \underset{a=2}{\longleftarrow\!\longrightarrow} \xi_2 \underset{a=3}{\longleftarrow\!\longrightarrow} \xi_3\ldots \xi_{A-1} \underset{a=A}{\longleftarrow\!\longrightarrow} \xi_A$. The vector of (unseen) utilities across individuals in the sample, $\bm{Y^{cont}}$, is determined by a linear model of explanatory variables: $Y^{cont} = X \beta + \mu$, where $\bm{\beta} =[\beta_1,\beta_2,\ldots,\beta_p]$ does not depend on the $\xi_j$ and $\mu \sim F_{\mu}$. For the observed vector $\bm{Y}$,
 
 \begin{align}
-p(\bm{Y} \leq r|\bm{X}) &= p(\bm{Y^{cont}} \leq \xi_r) = p(\bm{X}\bm{\beta} + \mu \leq \xi_r) \nonumber\\
-&= p(\mu \leq \xi_r+\bm{X}\bm{\beta}) = F_{\mu}(\xi_r + \bm{X}\bm{\beta})
+p(Y \leq r|X) &= p(Y^{cont} \leq \xi_r) = p(X \beta + \mu \leq \xi_r) \nonumber\\
+&= p(\mu \leq \xi_r+ X \beta) = F_{\mu}(\xi_r + X \beta)
 \end{align}
             
-is called the cumulative model because $p(\bm{Y} \leq \xi_r|\bm{X}) = p(\bm{Y}=1|\bm{X}) + p(\bm{Y}=2|\bm{X}) + \ldots + p(\bm{Y}=r|\bm{X})$. A logistic distributional assumption on the errors produces the ordered logit specification
+is called the cumulative model because $p(Y \leq \xi_r|X) = p(Y=1|X) + p(Y=2|X) + \ldots + p(Y=r|X)$. A logistic distributional assumption on the errors produces the ordered logit specification
 
 \begin{align}
-F_{\mu}(\xi_r - \bm{X}'\bm{\beta}) = P(\bm{Y} \leq r|\bm{X}) = [1+\exp(-\xi_r-\bm{X}'\bm{\beta})]^{-1}. 
+F_{\mu}(\xi_r - X' \beta) = P(Y \leq r|X) = [1+\exp(-\xi_r-X' \beta)]^{-1}. 
 \end{align}
 
 The likelihood function is 
 
 \begin{align}
-L(\bm{\beta},\bm{\xi}|\bm{X},\bm{Y}) = \prod_{i=1}^{n}\prod_{j=1}^{A-1}\left[\Lambda(\xi_j + \bm{X}_i'\bm{\beta}) - \Lambda(\xi_{j-1} + \bm{X}_i'\bm{\beta}) \right]^{z_{ij}}
+L(\beta, \xi|X,Y) = \prod_{i=1}^{n}\prod_{j=1}^{A-1}\left[\Lambda(\xi_j + X_i' \beta) - \Lambda(\xi_{j-1} + X_i' \beta) \right]^{z_{ij}}
 \end{align}
 
-with $\Lambda$ denoting the logistic distribution and where $z_{ij}=1$ if the $i^\text{th}$ case is in the $j^\text{th}$ category and $z_{ij}=0$ otherwise. The thresholds on $R$ partition the variable into regions corresponding to the ordinal categories. The linear model, $Y^{cont}$, bins the observations between these thresholds according to the linear predictors. In `R`, the ordered probit model can be implemented with the `polr` function from the `MASS` package [@ripley_2020_package].
+with $\bm{\Lambda}$ denoting the logistic distribution and where $z_{ij}=1$ if the $i^\text{th}$ case is in the $j^\text{th}$ category and $z_{ij}=0$ otherwise. The thresholds on $\mathfrak{R}$ partition the variable into regions corresponding to the ordinal categories. The linear model, $\bm{Y^{cont}}$, bins the observations between these thresholds according to the linear predictors. In `R`, the ordered probit model can be implemented with the `polr` function from the `MASS` package [@ripley_2020_package].
 
 
 
@@ -359,7 +360,7 @@ We then train this model on the ANES data. This estimates cutoff thresholds betw
 
 
 ```{r Education Thresholds Table, include=FALSE}
-op.model.thresholds <- read.csv("data/blocking/thresholds.csv") %>% drop.zero
+op.model.thresholds <- read.csv("data/blocking/thresholds.csv")
 colnames(op.model.thresholds) <- c("Thresholds", "Coefficients", "Standard Errors", "t-values")
 stargazer(op.model.thresholds, 
           summary = FALSE, 
@@ -379,19 +380,19 @@ stargazer(op.model.thresholds,
 \multicolumn{2}{c}{Thresholds} & \multicolumn{2}{c}{Coefficients} & \multicolumn{2}{c}{Standard Errors} & \multicolumn{2}{c}{t-values} \\ 
 \hline \\[-1.8ex] 
 Up to 1st $\mid$ & \,1st-4th & -7.&869 & 1.&024 & -7.&681 \\ 
-1st-4th $\mid$ & \,5th-6th & -7.&146 & .&717 & -9.&965 \\ 
-5th-6th $\mid$ & \,7th-8th & -5.&379 & .&326 & -16.&515 \\ 
-7th-8th $\mid$ & \,9th & -4.&671 & .&253 & -18.&472 \\ 
-9th $\mid$ & \,10th & -3.&920 & .&206 & -19.&070 \\ 
-10th $\mid$ & \,11th & -3.&468 & .&188 & -18.&489 \\ 
-11th $\mid$ & \,12th & -2.&984 & .&174 & -17.&100 \\ 
-12th $\mid$ & \,HS grad & -2.&511 & .&166 & -15.&116 \\ 
-HS grad $\mid$ & \,Some college & -.&711 & .&154 & -4.&607 \\ 
-Some college $\mid$ & \,Associate & .&384 & .&154 & 2.&500 \\ 
-Associate $\mid$ & \,Bachelor's & 1.&045 & .&154 & 6.&766 \\ 
-Bachelor's $\mid$ & \,Master's & 2.&478 & .&160 & 15.&538 \\ 
-Master's $\mid$ & \,Professional & 4.&099 & .&177 & 23.&144 \\ 
-Professional $\mid$ & \,Doctorate & 4.&838 & .&197 & 24.&589 \\ 
+1st-4th $\mid$ & \,5th-6th & -7.&146 & 0.&717 & -9.&965 \\ 
+5th-6th $\mid$ & \,7th-8th & -5.&379 & 0.&326 & -16.&515 \\ 
+7th-8th $\mid$ & \,9th & -4.&671 & 0.&253 & -18.&472 \\ 
+9th $\mid$ & \,10th & -3.&920 & 0.&206 & -19.&070 \\ 
+10th $\mid$ & \,11th & -3.&468 & 0.&188 & -18.&489 \\ 
+11th $\mid$ & \,12th & -2.&984 & 0.&174 & -17.&100 \\ 
+12th $\mid$ & \,HS grad & -2.&511 & 0.&166 & -15.&116 \\ 
+HS grad $\mid$ & \,Some college & -0.&711 & 0.&154 & -4.&607 \\ 
+Some college $\mid$ & \,Associate & 0.&384 & 0.&154 & 2.&500 \\ 
+Associate $\mid$ & \,Bachelor's & 1.&045 & 0.&154 & 6.&766 \\ 
+Bachelor's $\mid$ & \,Master's & 2.&478 & 0.&160 & 15.&538 \\ 
+Master's $\mid$ & \,Professional & 4.&099 & 0.&177 & 23.&144 \\ 
+Professional $\mid$ & \,Doctorate & 4.&838 & 0.&197 & 24.&589 \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table}
@@ -501,7 +502,7 @@ df.props <- plyr::ldply(list.props, data.frame, .id = NULL)
 lev.names <- sapply(tmp, levels) %>% unlist
 lev.names["pid4"] <- "Something else"
 rownames(df.props) <- lev.names
-df.props <- drop.zero(df.props, digits = 3) %>%
+df.props <- round(df.props, digits = 3) %>%
   .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3")]
 # df.props <- drop.zero(df.props, digits = 3) %>%
 #   .[c("ANES1", "OP1", "ANES2", "OP2", "ANES3", "OP3", "ANES4", "OP4", "ANES5", "OP5")]
@@ -557,7 +558,7 @@ for(i in 1:ncol(an.ed.t1)){
   }
 }
 
-df.ed.an <- drop.zero(df.ed.an, digits = 3)
+df.ed.an <- round(df.ed.an, digits = 3)
 
 op.ed.t1 <- df.op[df.op$id %in% assigned.op$assg[[1]][,1],] %>% subset(., select=c(education))
 op.ed.t2 <- df.op[df.op$id %in% assigned.op$assg[[1]][,2],] %>% subset(., select=c(education))
@@ -578,7 +579,7 @@ for(i in 1:ncol(op.ed.t1)){
   }
 }
 
-df.ed.op <- drop.zero(df.ed.op, digits = 3)
+df.ed.op <- round(df.ed.op, digits = 3)
 top <- data.frame(matrix(NA, 8, length(list.eds.op)))
 colnames(top) <- colnames(df.ed.op)
 rownames(top) <- rownames(df.ed.an)[1:8]
@@ -731,11 +732,11 @@ for(i in 1:length(treats)){
 }
 
 df.aov.sum <- unlist(list.aov.sum, recursive = FALSE) %>% do.call("rbind", .) %>% round(., digits = 3)
-df.aov.sum <- cbind(df.aov.sum[, 1:3] , drop.zero(df.aov.sum[, 4:5], digits = 3))
-df.aov.tukey <- unlist(list.aov.tukey, recursive = FALSE) %>% do.call("rbind", .) %>% drop.zero(., digits = 3)
-df.glm.sum <- unlist(list.glm.sum, recursive = FALSE) %>% do.call("rbind", .) %>% drop.zero(., digits = 3)
+df.aov.sum <- cbind(df.aov.sum[, 1:3] , round(df.aov.sum[, 4:5], digits = 3))
+df.aov.tukey <- unlist(list.aov.tukey, recursive = FALSE) %>% do.call("rbind", .) %>% round(., digits = 3)
+df.glm.sum <- unlist(list.glm.sum, recursive = FALSE) %>% do.call("rbind", .) %>% round(., digits = 3)
 df.glm.anov <- unlist(list.glm.anov, recursive = FALSE) %>% do.call("rbind", .) %>% round(., digits = 3)
-df.glm.anov <- cbind(df.glm.anov[, c(1,3,4)], drop.zero(df.glm.anov[, c(2, 5)], digits = 3)) %>% .[,c(1,4,2,3,5)]
+df.glm.anov <- cbind(df.glm.anov[, c(1,3,4)], round(df.glm.anov[, c(2, 5)], digits = 3)) %>% .[,c(1,4,2,3,5)]
 
 colnames(df.aov.sum) <- c("Df", "Sum.Sq", "Mean.Sq", "F-value", "p-value")
 colnames(df.aov.tukey) <- c("Diff.Means", "CI Lower", "CI Upper", "Adj. p-value")
@@ -827,19 +828,19 @@ The ANOVA regression is repeated for each of the three data sets. Tables \ref{ao
  \multicolumn{1}{l}{} & \multicolumn{1}{l}{Df} & \multicolumn{1}{l}{Sum.Sq} & \multicolumn{1}{l}{Mean.Sq} & \multicolumn{1}{l}{F-value} & \multicolumn{1}{l}{p-value} \\ 
  \hline \\[-1.8ex] 
 \multicolumn{1}{l}{\textbf{Age}} & & & & & \\ 
- \multicolumn{1}{l}{T1} & 1 & 0.107 & 0.107 & .000 & .985 \\
+ \multicolumn{1}{l}{T1} & 1 & 0.107 & 0.107 & 0.000 & 0.985 \\
  \multicolumn{1}{l}{T1 Residuals} & 2,098 & 641,917.600 & 305.966 & & \\
- \multicolumn{1}{l}{T2} & 1 & 414.519 & 414.519 & 1.340 & .247 \\ 
+ \multicolumn{1}{l}{T2} & 1 & 414.519 & 414.519 & 1.340 & 0.247 \\ 
  \multicolumn{1}{l}{T2 Residuals} & 2,098 & 648,946.600 & 309.317 & & \\
- \multicolumn{1}{l}{T3} & 1 & 427.954 & 427.954 & 1.401 & .237 \\
+ \multicolumn{1}{l}{T3} & 1 & 427.954 & 427.954 & 1.401 & 0.237 \\
  \multicolumn{1}{l}{T3 Residuals} & 2,098 & 641,038.400 & 305.547 & & \\ 
  & & & & & \\
 \multicolumn{1}{l}{\textbf{Feel Trump}} & & & & & \\  
- \multicolumn{1}{l}{T1} & 1 & 1,164.808 & 1,164.808 & .979 & .323 \\ 
+ \multicolumn{1}{l}{T1} & 1 & 1,164.808 & 1,164.808 & 0.979 & 0.323 \\ 
  \multicolumn{1}{l}{T1 Residuals} & 2,098 & 2,496,492.000 & 1,189.939 & & \\
- \multicolumn{1}{l}{T2} & 1 & 7,054.667 & 7,054.667 & 5.699 & .017 \\ 
+ \multicolumn{1}{l}{T2} & 1 & 7,054.667 & 7,054.667 & 5.699 & 0.017 \\ 
  \multicolumn{1}{l}{T2 Residuals} & 2,098 & 2,597,204.000 & 1,237.943 & & \\
- \multicolumn{1}{l}{T3} & 1 & 2,486.298 & 2,486.298 & 2.023 & .155 \\ 
+ \multicolumn{1}{l}{T3} & 1 & 2,486.298 & 2,486.298 & 2.023 & 0.155 \\ 
  \multicolumn{1}{l}{T3 Residuals} & 2,098 & 2,577,984.000 & 1,228.782 & & \\ 
  \hline \\[-1.8ex]
  \end{tabular} 

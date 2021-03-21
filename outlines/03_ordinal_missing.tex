@@ -172,55 +172,54 @@
 
 \section*{\hl{Feedback Jeff}}
 	\begin{coi}
-		\item Page 29, first sentence of S3.1: include "refusal" in the list of missingness
-		\item Page 29, change the sentence that starts with "This poses a big problem" to "Missingness in datasets poses a big problem since without pre-processing such data cannot be appropriately analyzed with statistical software."
-		\item Page 29-30 mention that deletion is also called case-wise deletion, list-wise deletion, and complete case analysis
-		\item Page 31-32, why is this matrix $\mathbf{Y}$ instead of $\mathbf{X}$? This is unnecessarily confusing. Say that $\mathbf{R}$ is an "indicator variable" matrix. Note that I've bolded these! And $\boldsymbol{\beta}$ too. Page 33 bold too. And throughout the document. Conventions like this exist because it makes the technical material easier to read. This is also a good reminder to say that you are concerned only with missingness in the explanatory variables. Or are you wrapping all the variables into one imputation matrix? The letter is the correct procedure, BTW. See:
-\begin{verbatim}
-\bibitem    Graham, John W. 2009.
-            \href{http://rhowell.ba.ttu.edu/graham2009.pdf}%
-            {``Missing Data Analysis: Making it Work in the Real World.''}
-            \emph{Review of Psychology} 60, 549-576.
-\end{verbatim}
-		\item Page 32: "It is not possible to test respective data on the mechanism underlying their missingness." There is at least one weak test for MCAR vs. MAR by Rod Little. Restated on page 33.
-\begin{verbatim}
-\bibitem    Little, Roderick J. A.  1988b.
-            \href{http://www.jstor.org/stable/2290157}%
-            {``A Test of Missing Completely At Random for Multivariate Data with Missing Values.''}
-            \emph{Journal of the American Statistical Association} 83, 1198-1202.
-
-\bibitem    {von Hippel}, Paul T.  2007.
-            \href{http://smx.sagepub.com/content/37/1/83.full.pdf}%
-            {``Regression With Missing Ys: An Improved Strategy for Analyzing Multiply Imputed}
-            \href{http://smx.sagepub.com/content/37/1/83.full.pdf}%
-            {Data.''}
-            \emph{Sociological Methodology} 37, 83-117.
-\end{verbatim}
-		\item Page 32-33: The discussion of the three types of missing data is too wordy at the expense of more precise equations
-		\item Page 33: "often induces bias" contradicts "In the case of data MCAR, listwise deletion is not biased." Also, the first sentence is wrong. A better way to say all of this is that listwise deletion is not biased with MCAR data but does reduce the degrees of freedom and my hinder sub-group analysis. Listwise deletion is always biased with MAR and MNAR, the question is how much
-		\item Page 34: "it biases standard errors and confidence intervals", you should say "downward biases"
-		\item Page 35: "Mean imputation, sometimes also called unconditional mean imputation, means" should be "Mean imputation, sometimes also called unconditional mean imputation, involves" (too many "means" for one sentence)
-		\item Everywhere: never use the phrase "independent variables" because this never happens in the social sciences and especially with survey data
-		\item Pages 38-89: Somewhere state that the last step of MI is really an ANOVA calculation
-		\item Maybe you say it somewhere in this chapter but if you don't then state the MI is advised with MCAR data too so as to not lose DF
-		\item Pages 39-40: you can go to CRAN and find out how many times mice and Amelia have been downloaded
-		\item Page 40: One of the original authors of mice has a book
-\begin{verbatim}
-\bibitem    van Buuren, Stef.  2007.
-            \href{http://smm.sagepub.com/content/16/3/219.short}%
-            {``Multiple Imputation of Discrete and Continuous Data by Fully Conditional Specification.''}
-            \emph{Statistical Methods in Medical Research} 16, 219-242.
-\end{verbatim}
-		\item Pages 42-43: Why do you have $\beta$ in the mice process? This is before the regression
-		\item Page 44: "EM functions to a large part like IP". Not at all: one is MCMC whereas EM is just a mode finder. Also, "The Amelia package circumvents this issue with expectation-maximization importance sampling (EMi) (Gelfand \& Smith, 1990; Rubin, 1987; Wei \& Tanner, 1990),". This is wrong. Gelfand and Smith introduce Gibbs sampling. Wei and Tanner introduce data augmentation, which is really a preview of MCMC. If you citing the Rubin book this is okay. But just about everybody cites DLR 1977 here
-		\item Page 45: $\beta$ shows up again in a pure imputation process. You're not doing regression yet
-		\item Page 48: ".4" should  be "0.4" and ".6" should be "0.6". Check elsewhere. Page 57, 59, 61, 62, 63 too
-		\item Tangential: do you want to put hd.ord into hot.deck and be one of the three coauthors?
-		\item Page 53: "Establishing whether real-life missing data is MNAR is a difficult feat." I have found that sometimes it's actually quite easy
-		\item Page 54: "Following Collins et al. (2001) and Honaker \& King (2010), as many relevant pre- dictor variables as possible were used to impute each of the data sets." Do these papers actually user the word "predictor"? They really are predictor variables in way that word is used in statistics. I've seen "helper," "observed," and "complete" much more often
+%		\item Page 29, first sentence of S3.1: include "refusal" in the list of missingness
+%		\item Page 29, change the sentence that starts with "This poses a big problem" to "Missingness in datasets poses a big problem since without pre-processing such data cannot be appropriately analyzed with statistical software."
+%		\item Page 29-30 mention that deletion is also called case-wise deletion, list-wise deletion, and complete case analysis
+%%		\item Page 31-32, why is this matrix $\mathbf{Y}$ instead of $\mathbf{X}$? This is unnecessarily confusing. Say that $\mathbf{R}$ is an "indicator variable" matrix. Note that I've bolded these! And $\boldsymbol{\beta}$ too. Page 33 bold too. And throughout the document. Conventions like this exist because it makes the technical material easier to read. This is also a good reminder to say that you are concerned only with missingness in the explanatory variables. Or are you wrapping all the variables into one imputation matrix? The letter is the correct procedure, BTW. See:
+%\begin{verbatim}
+%\bibitem    Graham, John W. 2009.
+%            \href{http://rhowell.ba.ttu.edu/graham2009.pdf}%
+%            {``Missing Data Analysis: Making it Work in the Real World.''}
+%            \emph{Review of Psychology} 60, 549-576.
+%\end{verbatim}
+%		\item Page 32: "It is not possible to test respective data on the mechanism underlying their missingness." There is at least one weak test for MCAR vs. MAR by Rod Little. Restated on page 33.
+%\begin{verbatim}
+%\bibitem    Little, Roderick J. A.  1988b.
+%            \href{http://www.jstor.org/stable/2290157}%
+%            {``A Test of Missing Completely At Random for Multivariate Data with Missing Values.''}
+%            \emph{Journal of the American Statistical Association} 83, 1198-1202.
+%
+%\bibitem    {von Hippel}, Paul T.  2007.
+%            \href{http://smx.sagepub.com/content/37/1/83.full.pdf}%
+%            {``Regression With Missing Ys: An Improved Strategy for Analyzing Multiply Imputed}
+%            \href{http://smx.sagepub.com/content/37/1/83.full.pdf}%
+%            {Data.''}
+%            \emph{Sociological Methodology} 37, 83-117.
+%\end{verbatim}
+%		\item Page 32-33: The discussion of the three types of missing data is too wordy at the expense of more precise equations
+%		\item Page 33: "often induces bias" contradicts "In the case of data MCAR, listwise deletion is not biased." Also, the first sentence is wrong. A better way to say all of this is that listwise deletion is not biased with MCAR data but does reduce the degrees of freedom and my hinder sub-group analysis. Listwise deletion is always biased with MAR and MNAR, the question is how much
+%		\item Page 34: "it biases standard errors and confidence intervals", you should say "downward biases"
+%		\item Page 35: "Mean imputation, sometimes also called unconditional mean imputation, means" should be "Mean imputation, sometimes also called unconditional mean imputation, involves" (too many "means" for one sentence)
+%		\item Everywhere: never use the phrase "independent variables" because this never happens in the social sciences and especially with survey data
+%		\item Pages 38-89: Somewhere state that the last step of MI is really an ANOVA calculation
+%		\item Maybe you say it somewhere in this chapter but if you don't then state the MI is advised with MCAR data too so as to not lose DF
+%		\item Pages 39-40: you can go to CRAN and find out how many times mice and Amelia have been downloaded
+%		\item Page 40: One of the original authors of mice has a book
+%\begin{verbatim}
+%\bibitem    van Buuren, Stef.  2007.
+%            \href{http://smm.sagepub.com/content/16/3/219.short}%
+%            {``Multiple Imputation of Discrete and Continuous Data by Fully Conditional Specification.''}
+%            \emph{Statistical Methods in Medical Research} 16, 219-242.
+%\end{verbatim}
+		\item Pages 42-43 and 45: Why do you have $\beta$ in the mice and Amelia processes? You're not doing regression yet. This is pure imputation, before the regression
 		\item Page 63: The information in Table 3.8 would be much more intuitive and clear as some graphs. Use the layout package to put them together
-		\item Page 65: change "dependent variable" to "outcome variable"
-		\item Page 68: fourth line from the bottom, put a space before amelia
+%		\item Page 44: "EM functions to a large part like IP". Not at all: one is MCMC whereas EM is just a mode finder. Also, "The Amelia package circumvents this issue with expectation-maximization importance sampling (EMi) (Gelfand \& Smith, 1990; Rubin, 1987; Wei \& Tanner, 1990),". This is wrong. Gelfand and Smith introduce Gibbs sampling. Wei and Tanner introduce data augmentation, which is really a preview of MCMC. If you citing the Rubin book this is okay. But just about everybody cites DLR 1977 here
+%		\item Page 48: ".4" should  be "0.4" and ".6" should be "0.6". Check elsewhere. Page 57, 59, 61, 62, 63 too
+%		\item Tangential: do you want to put hd.ord into hot.deck and be one of the three coauthors?
+%		\item Page 53: "Establishing whether real-life missing data is MNAR is a difficult feat." I have found that sometimes it's actually quite easy
+%		\item Page 54: "Following Collins et al. (2001) and Honaker \& King (2010), as many relevant pre- dictor variables as possible were used to impute each of the data sets." Do these papers actually user the word "predictor"? They really are predictor variables in way that word is used in statistics. I've seen "helper," "observed," and "complete" much more often
+%		\item Page 65: change "dependent variable" to "outcome variable"
+%		\item Page 68: fourth line from the bottom, put a space before amelia
 	\end{coi}
 \end{document}			
 

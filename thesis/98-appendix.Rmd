@@ -275,68 +275,68 @@ Wrong track & .722 & .721 & .752 & .742 & .730 & .741 \\
   & \multicolumn{2}{l}{Estimate} & \multicolumn{2}{l}{Std.Error} & \multicolumn{2}{l}{z-value} & \multicolumn{2}{l}{p-value} \\  
 \hline \\[-1.8ex]  
 \textbf{Gender} & & & & \\  
- T1 Intercept & .091 & .062 & 1.481 & .139 \\ 
- T1 & .038 & .087 & .437 & .662 \\ 
- T2 Intercept & .126 & .062 & 2.035 & .042 \\
- T2 & -0.004 & .087 & -0.044 & .965 \\
- T3 Intercept & .134 & .062 & 2.159 & .031 \\
- T3 & -0.034 & .087 & -0.393 & .694 \\ 
+ T1 Intercept & 0.091 & 0.062 & 1.481 & 0.139 \\ 
+ T1 & 0.038 & 0.087 & 0.437 & 0.662 \\ 
+ T2 Intercept & 0.126 & 0.062 & 2.035 & 0.042 \\
+ T2 & -0.004 & 0.087 & -0.044 & 0.965 \\
+ T3 Intercept & 0.134 & 0.062 & 2.159 & 0.031 \\
+ T3 & -0.034 & 0.087 & -0.393 & 0.694 \\ 
  & & & & \\  
 \textbf{Race} & & & & \\  
- T1 Intercept & -1.061 & .071 & -15.024 & .000 \\
- T1 & -0.035 & .100 & -0.351 & .726 \\ 
- T2 Intercept & -1.153 & .072 & -15.952 & .000 \\
- T2 & .041 & .102 & .407 & .684 \\
- T3 Intercept & -1.206 & .073 & -16.452 & .000 \\
- T3 & -0.005 & .104 & -0.052 & .959 \\
+ T1 Intercept & -1.061 & 0.071 & -15.024 & 0.000 \\
+ T1 & -0.035 & 0.100 & -0.351 & 0.726 \\ 
+ T2 Intercept & -1.153 & 0.072 & -15.952 & 0.000 \\
+ T2 & 0.041 & 0.102 & 0.407 & 0.684 \\
+ T3 Intercept & -1.206 & 0.073 & -16.452 & 0.000 \\
+ T3 & -0.005 & 0.104 & -0.052 & 0.959 \\
    & & & & \\  
 \textbf{Income} & & & & \\  
- T1 Intercept & 1.334 & .076 & 17.557 & .000 \\
- T1 & -0.006 & .107 & -0.054 & .957 \\
- T2 Intercept & 1.227 & .074 & 16.649 & .000 \\ 
- T2 & .038 & .105 & .367 & .714 \\ 
- T3 Intercept & 1.398 & .077 & 18.058 & .000 \\ 
- T3 & -0.036 & .109 & -0.327 & .744 \\
+ T1 Intercept & 1.334 & 0.076 & 17.557 & 0.000 \\
+ T1 & -0.006 & 0.107 & -0.054 & 0.957 \\
+ T2 Intercept & 1.227 & 0.074 & 16.649 & 0.000 \\ 
+ T2 & 0.038 & 0.105 & 0.367 & 0.714 \\ 
+ T3 Intercept & 1.398 & 0.077 & 18.058 & 0.000 \\ 
+ T3 & -0.036 & 0.109 & -0.327 & 0.744 \\
  & & & & \\  
 \textbf{Employment} & & & & \\  
- T1 Intercept & -0.421 & .063 & -6.678 & .000 \\
- T1 & -0.246 & .091 & -2.713 & .007 \\
- T2 Intercept & -0.567 & .064 & -8.831 & .000 \\
- T2 & .193 & .090 & 2.152 & .031 \\
- T3 Intercept & -0.588 & .064 & -9.126 & .000 \\ 
- T3 & .049 & .091 & .545 & .586 \\ 
+ T1 Intercept & -0.421 & 0.063 & -6.678 & 0.000 \\
+ T1 & -0.246 & 0.091 & -2.713 & 0.007 \\
+ T2 Intercept & -0.567 & 0.064 & -8.831 & 0.000 \\
+ T2 & 0.193 & 0.090 & 2.152 & 0.031 \\
+ T3 Intercept & -0.588 & 0.064 & -9.126 & 0.000 \\ 
+ T3 & 0.049 & 0.091 & 0.545 & 0.586 \\ 
  & & & & \\  
   \textbf{Party ID} & & & & \\  
- T1 Intercept & .530 & .064 & 8.297 & .000 \\
- T1 & .125 & .091 & 1.367 & .172 \\
- T2 Intercept & .655 & .065 & 10.065 & .000 \\
- T2 & -0.125 & .091 & -1.367 & .172 \\
- T3 Intercept & .609 & .065 & 9.421 & .000 \\ 
- T3 & -0.000 & .091 & -0.000 & 1.000 \\ 
+ T1 Intercept & 0.530 & 0.064 & 8.297 & 0.000 \\
+ T1 & 0.125 & 0.091 & 1.367 & 0.172 \\
+ T2 Intercept & 0.655 & 0.065 & 10.065 & 0.000 \\
+ T2 & -0.125 & 0.091 & -1.367 & 0.172 \\
+ T3 Intercept & 0.609 & 0.065 & 9.421 & 0.000 \\ 
+ T3 & -0.000 & 0.091 & -0.000 & 1.000 \\ 
  & & & & \\  
 \textbf{President} & & & & \\  
- T1 Intercept & -0.210 & .062 & -3.388 & .001 \\ 
- T1 & .058 & .088 & .657 & .511 \\ 
- T2 Intercept & -0.008 & .062 & -0.123 & .902 \\ 
- T2 & -0.134 & .087 & -1.528 & .126 \\ 
- T3 Intercept & -0.103 & .062 & -1.666 & .096 \\
- T3 & .076 & .087 & .873 & .383 \\ 
+ T1 Intercept & -0.210 & 0.062 & -3.388 & 0.001 \\ 
+ T1 & 0.058 & 0.088 & 0.657 & 0.511 \\ 
+ T2 Intercept & -0.008 & 0.062 & -0.123 & 0.902 \\ 
+ T2 & -0.134 & 0.087 & -1.528 & 0.126 \\ 
+ T3 Intercept & -0.103 & 0.062 & -1.666 & 0.096 \\
+ T3 & 0.076 & 0.087 & 0.873 & 0.383 \\ 
  & & & & \\  
 \textbf{Minimum Wage} & & & & \\  
- T1 Intercept & -0.613 & .065 & -9.480 & .000 \\ 
- T1 & .042 & .091 & .456 & .649 \\ 
- T2 Intercept & -0.465 & .063 & -7.340 & .000 \\
- T2 & -0.106 & .090 & -1.173 & .241 \\
- T3 Intercept & -0.685 & .065 & -10.472 & .000 \\ 
- T3 & .068 & .092 & .736 & .462 \\
+ T1 Intercept & -0.613 & 0.065 & -9.480 & 0.000 \\ 
+ T1 & 0.042 & 0.091 & 0.456 & 0.649 \\ 
+ T2 Intercept & -0.465 & 0.063 & -7.340 & 0.000 \\
+ T2 & -0.106 & 0.090 & -1.173 & 0.241 \\
+ T3 Intercept & -0.685 & 0.065 & -10.472 & 0.000 \\ 
+ T3 & 0.068 & 0.092 & 0.736 & 0.462 \\
  & & & & \\  
 \textbf{Country} & & & & \\  
- T1 Intercept & .954 & .069 & 13.850 & .000 \\ 
- T1 & -0.005 & .097 & -0.049 & .961 \\ 
- T2 Intercept & 1.111 & .071 & 15.544 & .000 \\ 
- T2 & -0.055 & .100 & -0.552 & .581 \\ 
- T3 Intercept & .992 & .069 & 14.282 & .000 \\
- T3 & .059 & .099 & .593 & .553 \\ 
+ T1 Intercept & 0.954 & 0.069 & 13.850 & 0.000 \\ 
+ T1 & -0.005 & 0.097 & -0.049 & 0.961 \\ 
+ T2 Intercept & 1.111 & 0.071 & 15.544 & 0.000 \\ 
+ T2 & -0.055 & 0.100 & -0.552 & 0.581 \\ 
+ T3 Intercept & 0.992 & 0.069 & 14.282 & 0.000 \\
+ T3 & 0.059 & 0.099 & 0.593 & 0.553 \\ 
  \hline \\[-1.8ex]
  \end{longtable} 
 
@@ -413,8 +413,8 @@ While using the full number of observations in the ANES data is possible, doing 
 
 ```{r MAR 5 Variables All Observations, include=FALSE}
 
-mar.5var.anes.all <- read.csv("data/anes/appendix/anes.mar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-mar.5var.cces.all <- read.csv("data/cces/appendix/cces.mar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.5var.anes.all <- read.csv("data/anes/appendix/anes.mar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mar.5var.cces.all <- read.csv("data/cces/appendix/cces.mar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% addPlus
 
 mar.5var.anes.all[1:6, 2] <- mar.5var.cces.all[1:6, 2] <- rep("Democrat", 6)
 mar.5var.anes.all[19:24, 2] <- mar.5var.cces.all[19:24, 2] <- rep("Income", 6)
@@ -499,8 +499,8 @@ cat(kt)
 
 ```{r MNAR 5 Variables All Observations, include=FALSE}
 
-mnar.5var.anes.all <- read.csv("data/anes/appendix/anes.mnar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-mnar.5var.cces.all <- read.csv("data/cces/appendix/cces.mnar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.5var.anes.all <- read.csv("data/anes/appendix/anes.mnar.results.5var.2395n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mnar.5var.cces.all <- read.csv("data/cces/appendix/cces.mnar.results.5var.42205n.10it.20perc.csv") %>% .[,-1] %>% addPlus
 
 mnar.5var.anes.all[1:6, 2] <- mnar.5var.cces.all[1:6, 2] <- rep("Democrat", 6)
 mnar.5var.anes.all[19:24, 2] <- mnar.5var.cces.all[19:24, 2] <- rep("Income", 6)
@@ -857,7 +857,7 @@ Table \ref{amp.oldframe.bycases.acc} shows the results of using `ampute()` with 
 
 
 ```{r results='asis', echo=FALSE}
-amp.oldframe.bycases <- read.csv("data/framing/appendix/bycases=FALSE_cont=FALSE/framing.bycases.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+amp.oldframe.bycases <- read.csv("data/framing/appendix/bycases=FALSE_cont=FALSE/framing.bycases.results.5var.1003n.9644it.20.perc.csv") %>% .[,-1] %>% abs.diff
 levels(amp.oldframe.bycases$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
 colnames(amp.oldframe.bycases) <- c("Method", "Variable", "Value", "Diff")
 stargazer(amp.oldframe.bycases, 
@@ -884,7 +884,7 @@ Table \ref{own.NA.oldframe.acc} shows the results of using my own function, `own
 
 
 ```{r results='asis', echo=FALSE}
-own.NA.oldframe <- read.csv("data/framing/appendix/own.na/framing.own.na.results.3var.1003n.12324it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+own.NA.oldframe <- read.csv("data/framing/appendix/own.na/framing.own.na.results.3var.1003n.12324it.20perc.csv") %>% .[,-1] %>% abs.diff
 levels(own.NA.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
 colnames(own.NA.oldframe) <- c("Method", "Variable", "Value", "Diff")
 stargazer(own.NA.oldframe, 
@@ -904,7 +904,7 @@ stargazer(own.NA.oldframe,
 
 
 ```{r include=FALSE}
-own.NA.rows.oldframe <- read.csv("data/framing/appendix/own.na.rows/framing.own.na.rows.results.17var.1003n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff %>% drop.zero
+own.NA.rows.oldframe <- read.csv("data/framing/appendix/own.na.rows/framing.own.na.rows.results.17var.1003n.10000it.20perc.csv") %>% .[,-1] %>% abs.diff
 levels(own.NA.rows.oldframe$method) <- c("amelia", "hd.norm", "hd.ord", "mice", "na.omit", "true")
 colnames(own.NA.rows.oldframe) <- c("Method", "Variable", "Value", "Diff")
 # to make the in-text citations shorter
@@ -1058,9 +1058,9 @@ It is also noteable how often the difference amounts to zero and how well `na.om
 
 ```{r MAR 12 Variables, include=FALSE}
 
-mar.12var.anes <- read.csv("data/anes/mar/results/anes.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-mar.12var.cces <- read.csv("data/cces/mar/results/cces.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-# mar.12var.frame<- read.csv("data/framing/mar/results/framing.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mar.12var.anes <- read.csv("data/anes/mar/results/anes.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mar.12var.cces <- read.csv("data/cces/mar/results/cces.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+# mar.12var.frame<- read.csv("data/framing/mar/results/framing.mar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
 
 mar.12var.anes[1:6, 2] <- mar.12var.cces[1:6, 2] <- rep("Democrat", 6)
 mar.12var.anes[19:24, 2] <- mar.12var.cces[19:24, 2] <- rep("Income", 6)
@@ -1258,9 +1258,9 @@ The results for the interval variables follow the same pattern: `hd.ord` display
 
 ```{r MNAR 12 Variables, include=FALSE}
 
-mnar.12var.anes <- read.csv("data/anes/mnar/results/anes.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-mnar.12var.cces <- read.csv("data/cces/mnar/results/cces.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-# mnar.12var.frame <- read.csv("data/framing/mnar/results/framing.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mnar.12var.anes <- read.csv("data/anes/mnar/results/anes.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mnar.12var.cces <- read.csv("data/cces/mnar/results/cces.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+# mnar.12var.frame <- read.csv("data/framing/mnar/results/framing.mnar.results.12var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
 
 mnar.12var.anes[1:6, 2] <- mnar.12var.cces[1:6, 2] <- rep("Democrat", 6)
 mnar.12var.anes[19:24, 2] <- mnar.12var.cces[19:24, 2] <- rep("Income", 6)
@@ -1439,9 +1439,9 @@ For the ordinal variable, `hd.ord` shows the worst performance across both data 
 
 ```{r MULT MAR 11 Variables, include=FALSE}
 
-mult.mar.11var.anes <- read.csv("data/anes/mar/results/anes.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-mult.mar.11var.cces <- read.csv("data/cces/mar/results/cces.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-# mult.mar.11var.frame <- read.csv("data/framing/mar/results/framing.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mar.11var.anes <- read.csv("data/anes/mar/results/anes.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mult.mar.11var.cces <- read.csv("data/cces/mar/results/cces.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+# mult.mar.11var.frame <- read.csv("data/framing/mar/results/framing.mar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
 
 mult.mar.11var.anes[1:6, 2] <- mult.mar.11var.cces[1:6, 2] <- rep("Democrat", 6)
 mult.mar.11var.anes[13:18, 2] <- mult.mar.11var.cces[13:18, 2] <- rep("Income", 6)
@@ -1639,9 +1639,9 @@ The same can be observed for the interval variables, with `hd.ord` again claimin
 
 ```{r MULT MNAR 11 Variables, include=FALSE}
 
-mult.mnar.11var.anes <- read.csv("data/anes/mnar/results/anes.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-mult.mnar.11var.cces <- read.csv("data/cces/mnar/results/cces.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
-# mult.mnar.11var.frame <- read.csv("data/framing/mnar/results/framing.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% dropZero.addPlus
+mult.mnar.11var.anes <- read.csv("data/anes/mnar/results/anes.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mult.mnar.11var.cces <- read.csv("data/cces/mnar/results/cces.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+# mult.mnar.11var.frame <- read.csv("data/framing/mnar/results/framing.mnar.mult.results.11var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
 
 mult.mnar.11var.anes[1:6, 2] <- mult.mnar.11var.cces[1:6, 2] <- rep("Democrat", 6)
 mult.mnar.11var.anes[13:18, 2] <- mult.mnar.11var.cces[13:18, 2] <- rep("Income", 6)
@@ -2035,30 +2035,30 @@ stargazer(plr.out.an.rep.hc, plr.out.op.rep.hc, plr.out.an.rep.ev, plr.out.op.re
 \\[-1.8ex] & \multicolumn{2}{c}{Healthcare} & \multicolumn{2}{c}{Environment} \\ 
  & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} \\ 
 \hline \\[-1.8ex] 
- Moral opposing & -0.261$ $(-1.013$, $.490) & -0.732^{}$ $(-1.397$, $-.067) & -1.009^{}$ $(-1.711$, $-.306) & -0.088$ $(-.706$, $.531) \\ 
-  Moral supporting & 0.131$ $(-.586$, $.847) & -0.471$ $(-1.130$, $.189) & -0.304$ $(-1.034$, $.425) & -0.190$ $(-.832$, $.452) \\ 
-  Self-interest opposing & -0.699^{}$ $(-1.370$, $-.028) & -0.949^{}$ $(-1.603$, $-.296) & -0.343$ $(-1.026$, $.340) & 0.027$ $(-.567$, $.622) \\ 
-  Self-interest supporting & -0.302$ $(-1.005$, $.401) & -0.325$ $(-.948$, $.298) & 0.063$ $(-.591$, $.716) & 0.258$ $(-.360$, $.876) \\ 
-  Employed full time & 0.222$ $(-.743$, $1.188) & -0.114$ $(-.832$, $.604) & -0.222$ $(-1.150$, $.707) & 0.137$ $(-.608$, $.882) \\ 
-  Employed part time & 0.224$ $(-.828$, $1.276) & -0.337$ $(-1.145$, $.472) & -0.142$ $(-1.153$, $.869) & 0.204$ $(-.624$, $1.032) \\ 
-  Homemaker & -0.048$ $(-1.168$, $1.072) & -0.310$ $(-1.285$, $.664) & -0.006$ $(-1.116$, $1.103) & 0.109$ $(-.911$, $1.130) \\ 
-  Retired & -0.340$ $(-1.323$, $.643) & -0.427$ $(-1.187$, $.334) & -0.275$ $(-1.225$, $.675) & 0.007$ $(-.782$, $.796) \\ 
-  Student & 1.285$ $(-.353$, $2.922) & 0.147$ $(-.931$, $1.225) & -0.103$ $(-1.677$, $1.472) & -0.885$ $(-2.008$, $.239) \\ 
-  Income & -0.006$ $(-.149$, $.137) & -0.105^{}$ $(-.227$, $.018) & 0.070$ $(-.070$, $.209) & 0.054$ $(-.066$, $.174) \\ 
-  Male & -0.141$ $(-.578$, $.295) & 0.072$ $(-.344$, $.488) & -0.147$ $(-.587$, $.293) & -0.244$ $(-.671$, $.183) \\ 
-  5th-6th grade & -2.747^{}$ $(-5.811$, $.317) &  & 0.288$ $(-2.255$, $2.831) &  \\ 
-  7th-8th grade & 0.821$ $(-2.644$, $4.286) &  & 2.312$ $(-.990$, $5.615) &  \\ 
+ Moral opposing & -0.261$ $(-1.013$, $0.490) & -0.732^{}$ $(-1.397$, $-0.067) & -1.009^{}$ $(-1.711$, $-0.306) & -0.088$ $(-0.706$, $0.531) \\ 
+  Moral supporting & 0.131$ $(-0.586$, $0.847) & -0.471$ $(-1.130$, $0.189) & -0.304$ $(-1.034$, $0.425) & -0.190$ $(-0.832$, $0.452) \\ 
+  Self-interest opposing & -0.699^{}$ $(-1.370$, $-0.028) & -0.949^{}$ $(-1.603$, $-0.296) & -0.343$ $(-1.026$, $0.340) & 0.027$ $(-0.567$, $0.622) \\ 
+  Self-interest supporting & -0.302$ $(-1.005$, $0.401) & -0.325$ $(-0.948$, $0.298) & 0.063$ $(-0.591$, $0.716) & 0.258$ $(-0.360$, $0.876) \\ 
+  Employed full time & 0.222$ $(-0.743$, $1.188) & -0.114$ $(-0.832$, $0.604) & -0.222$ $(-1.150$, $0.707) & 0.137$ $(-0.608$, $0.882) \\ 
+  Employed part time & 0.224$ $(-0.828$, $1.276) & -0.337$ $(-1.145$, $0.472) & -0.142$ $(-1.153$, $0.869) & 0.204$ $(-0.624$, $1.032) \\ 
+  Homemaker & -0.048$ $(-1.168$, $1.072) & -0.310$ $(-1.285$, $0.664) & -0.006$ $(-1.116$, $1.103) & 0.109$ $(-0.911$, $1.130) \\ 
+  Retired & -0.340$ $(-1.323$, $0.643) & -0.427$ $(-1.187$, $0.334) & -0.275$ $(-1.225$, $0.675) & 0.007$ $(-0.782$, $0.796) \\ 
+  Student & 1.285$ $(-0.353$, $2.922) & 0.147$ $(-0.931$, $1.225) & -0.103$ $(-1.677$, $1.472) & -0.885$ $(-2.008$, $0.239) \\ 
+  Income & -0.006$ $(-0.149$, $0.137) & -0.105^{}$ $(-0.227$, $0.018) & 0.070$ $(-0.070$, $0.209) & 0.054$ $(-0.066$, $0.174) \\ 
+  Male & -0.141$ $(-0.578$, $0.295) & 0.072$ $(-0.344$, $0.488) & -0.147$ $(-0.587$, $0.293) & -0.244$ $(-0.671$, $0.183) \\ 
+  5th-6th grade & -2.747^{}$ $(-5.811$, $0.317) &  & 0.288$ $(-2.255$, $2.831) &  \\ 
+  7th-8th grade & 0.821$ $(-2.644$, $4.286) &  & 2.312$ $(-0.990$, $5.615) &  \\ 
   9th grade & -0.274$ $(-3.679$, $3.132) &  & 1.690$ $(-1.678$, $5.058) &  \\ 
   10th grade & -15.887^{}$ $(-15.887$, $-15.887) &  & -1.034$ $(-3.888$, $1.820) &  \\ 
   11th grade & -0.750$ $(-3.064$, $1.564) &  & -0.872$ $(-3.107$, $1.364) &  \\ 
   12th grade & -0.518$ $(-3.144$, $2.109) &  & 0.513$ $(-1.981$, $3.007) &  \\ 
-  High school graduate & 0.036$ $(-1.515$, $1.587) &  & 1.158^{}$ $(-.205$, $2.521) &  \\ 
-  Some college & -0.341$ $(-1.888$, $1.206) & -0.165$ $(-.744$, $.413) & 1.160^{}$ $(-.207$, $2.527) & 0.352$ $(-.240$, $.943) \\ 
-  Associate degree & -0.626$ $(-2.207$, $.955) & -0.209$ $(-.872$, $.453) & 0.739$ $(-.666$, $2.145) & -0.152$ $(-.818$, $.514) \\ 
-  Bachelor & -0.495$ $(-2.018$, $1.029) & 0.122$ $(-.489$, $.733) & 1.224^{}$ $(-.111$, $2.559) & -0.262$ $(-.880$, $.356) \\ 
-  Master & -1.154$ $(-2.772$, $.465) &  & 0.868$ $(-.564$, $2.300) &  \\ 
-  Professional degree & -1.146$ $(-3.198$, $.906) &  & 0.658$ $(-1.457$, $2.772) &  \\ 
-  Master or higher &  & -0.117$ $(-.819$, $.586) &  & -0.097$ $(-.814$, $.619) \\ 
+  High school graduate & 0.036$ $(-1.515$, $1.587) &  & 1.158^{}$ $(-0.205$, $2.521) &  \\ 
+  Some college & -0.341$ $(-1.888$, $1.206) & -0.165$ $(-0.744$, $0.413) & 1.160^{}$ $(-0.207$, $2.527) & 0.352$ $(-0.240$, $0.943) \\ 
+  Associate degree & -0.626$ $(-2.207$, $0.955) & -0.209$ $(-0.872$, $0.453) & 0.739$ $(-0.666$, $2.145) & -0.152$ $(-0.818$, $0.514) \\ 
+  Bachelor & -0.495$ $(-2.018$, $1.029) & 0.122$ $(-0.489$, $0.733) & 1.224^{}$ $(-0.111$, $2.559) & -0.262$ $(-0.880$, $0.356) \\ 
+  Master & -1.154$ $(-2.772$, $0.465) &  & 0.868$ $(-0.564$, $2.300) &  \\ 
+  Professional degree & -1.146$ $(-3.198$, $0.906) &  & 0.658$ $(-1.457$, $2.772) &  \\ 
+  Master or higher &  & -0.117$ $(-0.819$, $0.586) &  & -0.097$ $(-0.814$, $0.619) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{318} & \multicolumn{1}{c}{331} & \multicolumn{1}{c}{318} & \multicolumn{1}{c}{331} \\ 
 \hline 
@@ -2133,31 +2133,31 @@ stargazer(plr.out.an.dem.hc, plr.out.op.dem.hc, plr.out.an.dem.ev, plr.out.op.de
 \\[-1.8ex] & \multicolumn{2}{c}{Healthcare} & \multicolumn{2}{c}{Environment} \\ 
  & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} & \multicolumn{1}{c}{ANES} & \multicolumn{1}{c}{OP} \\ 
 \hline \\[-1.8ex] 
- Moral opposing & -0.304$ $(-.890$, $.283) & -0.781^{}$ $(-1.363$, $-.199) & -0.676^{}$ $(-1.317$, $-.036) & -0.671^{}$ $(-1.225$, $-.116) \\ 
-  Moral supporting & 0.415$ $(-.167$, $.997) & -0.310$ $(-.871$, $.252) & -0.110$ $(-.733$, $.514) & -0.591^{}$ $(-1.159$, $-.022) \\ 
-  Self-interest opposing & -0.042$ $(-.574$, $.490) & -0.136$ $(-.712$, $.440) & -0.145$ $(-.763$, $.474) & -0.513^{}$ $(-1.081$, $.054) \\ 
-  Self-interest supporting & -0.073$ $(-.664$, $.517) & -0.135$ $(-.688$, $.419) & 0.497^{}$ $(-.085$, $1.079) & -0.559^{}$ $(-1.138$, $.019) \\ 
-  Employed full time & 0.010$ $(-.634$, $.653) & -0.027$ $(-.641$, $.586) & -0.296$ $(-.950$, $.358) & 0.229$ $(-.378$, $.835) \\ 
-  Employed part time & 0.113$ $(-.586$, $.813) & -0.079$ $(-.748$, $.591) & -0.403$ $(-1.115$, $.309) & -0.027$ $(-.690$, $.636) \\ 
-  Homemaker & 0.469$ $(-.552$, $1.490) & 0.132$ $(-.808$, $1.072) & 0.271$ $(-.772$, $1.315) & -0.199$ $(-1.110$, $.711) \\ 
-  Retired & 0.171$ $(-.497$, $.839) & 0.505$ $(-.158$, $1.169) & 0.085$ $(-.584$, $.754) & 0.895^{}$ $(.234$, $1.557) \\ 
-  Student & -0.257$ $(-1.303$, $.789) & -0.288$ $(-1.237$, $.662) & -0.838$ $(-1.926$, $.250) & 0.510$ $(-.458$, $1.479) \\ 
-  Income & -0.026$ $(-.138$, $.085) & -0.052$ $(-.166$, $.061) & -0.024$ $(-.139$, $.091) & 0.049$ $(-.064$, $.162) \\ 
-  Male & 0.006$ $(-.380$, $.392) & 0.092$ $(-.282$, $.465) & -0.108$ $(-.491$, $.275) & -0.175$ $(-.551$, $.200) \\ 
+ Moral opposing & -0.304$ $(-0.890$, $0.283) & -0.781^{}$ $(-1.363$, $-0.199) & -0.676^{}$ $(-1.317$, $-0.036) & -0.671^{}$ $(-1.225$, $-0.116) \\ 
+  Moral supporting & 0.415$ $(-0.167$, $0.997) & -0.310$ $(-0.871$, $0.252) & -0.110$ $(-0.733$, $0.514) & -0.591^{}$ $(-1.159$, $-0.022) \\ 
+  Self-interest opposing & -0.042$ $(-0.574$, $0.490) & -0.136$ $(-0.712$, $0.440) & -0.145$ $(-0.763$, $0.474) & -0.513^{}$ $(-1.081$, $0.054) \\ 
+  Self-interest supporting & -0.073$ $(-0.664$, $0.517) & -0.135$ $(-0.688$, $0.419) & 0.497^{}$ $(-0.085$, $1.079) & -0.559^{}$ $(-1.138$, $0.019) \\ 
+  Employed full time & 0.010$ $(-0.634$, $0.653) & -0.027$ $(-0.641$, $0.586) & -0.296$ $(-0.950$, $0.358) & 0.229$ $(-0.378$, $0.835) \\ 
+  Employed part time & 0.113$ $(-0.586$, $0.813) & -0.079$ $(-0.748$, $0.591) & -0.403$ $(-1.115$, $0.309) & -0.027$ $(-0.690$, $0.636) \\ 
+  Homemaker & 0.469$ $(-0.552$, $1.490) & 0.132$ $(-0.808$, $1.072) & 0.271$ $(-0.772$, $1.315) & -0.199$ $(-1.110$, $0.711) \\ 
+  Retired & 0.171$ $(-0.497$, $0.839) & 0.505$ $(-0.158$, $1.169) & 0.085$ $(-0.584$, $0.754) & 0.895^{}$ $0.234$, $1.557) \\ 
+  Student & -0.257$ $(-1.303$, $0.789) & -0.288$ $(-1.237$, $0.662) & -0.838$ $(-1.926$, $0.250) & 0.510$ $(-0.458$, $1.479) \\ 
+  Income & -0.026$ $(-0.138$, $0.085) & -0.052$ $(-0.166$, $0.061) & -0.024$ $(-0.139$, $0.091) & 0.049$ $(-0.064$, $0.162) \\ 
+  Male & 0.006$ $(-0.380$, $0.392) & 0.092$ $(-0.282$, $0.465) & -0.108$ $(-0.491$, $0.275) & -0.175$ $(-0.551$, $0.200) \\ 
   1st-4th grade & 19.675^{}$ $(17.269$, $22.080) &  & 0.217$ $(-4.350$, $4.785) &  \\ 
-  7th-8th grade & 0.525^{}$ $(.525$, $.525) &  & -15.604^{}$ $(-15.604$, $-15.604) &  \\ 
+  7th-8th grade & 0.525^{}$ $0.525$, $0.525) &  & -15.604^{}$ $(-15.604$, $-15.604) &  \\ 
   9th grade & 21.793^{}$ $(19.747$, $23.839) &  & -1.359$ $(-6.089$, $3.371) &  \\ 
   10th grade & 24.851^{}$ $(22.655$, $27.048) &  & 2.036$ $(-2.670$, $6.741) &  \\ 
   11th grade & 23.857^{}$ $(21.309$, $26.404) &  & 0.149$ $(-4.363$, $4.660) &  \\ 
   12th grade & 22.521^{}$ $(20.929$, $24.114) &  & 0.791$ $(-3.562$, $5.144) &  \\ 
   High school graduate & 22.797^{}$ $(22.182$, $23.412) &  & 0.546$ $(-3.447$, $4.538) &  \\ 
-  Some college & 23.051^{}$ $(22.499$, $23.603) & 0.566^{}$ $(.004$, $1.129) & 1.217$ $(-2.767$, $5.201) & 0.207$ $(-.350$, $.764) \\ 
-  Associate degree & 23.238^{}$ $(22.583$, $23.894) & 0.402$ $(-.231$, $1.034) & 1.483$ $(-2.517$, $5.483) & 0.365$ $(-.280$, $1.009) \\ 
-  Bachelor & 23.384^{}$ $(22.841$, $23.926) & 0.213$ $(-.334$, $.760) & 1.745$ $(-2.226$, $5.717) & 0.019$ $(-.547$, $.585) \\ 
+  Some college & 23.051^{}$ $(22.499$, $23.603) & 0.566^{}$ $0.004$, $1.129) & 1.217$ $(-2.767$, $5.201) & 0.207$ $(-0.350$, $0.764) \\ 
+  Associate degree & 23.238^{}$ $(22.583$, $23.894) & 0.402$ $(-0.231$, $1.034) & 1.483$ $(-2.517$, $5.483) & 0.365$ $(-0.280$, $1.009) \\ 
+  Bachelor & 23.384^{}$ $(22.841$, $23.926) & 0.213$ $(-0.334$, $0.760) & 1.745$ $(-2.226$, $5.717) & 0.019$ $(-0.547$, $0.585) \\ 
   Master & 23.704^{}$ $(23.067$, $24.342) &  & 1.784$ $(-2.196$, $5.764) &  \\ 
   Professional degree & 23.191^{}$ $(22.116$, $24.265) &  & 1.935$ $(-2.144$, $6.015) &  \\ 
   Doctorate & 23.703^{}$ $(22.721$, $24.685) &  & 1.418$ $(-2.668$, $5.504) &  \\ 
-  Master or higher &  & 0.694^{}$ $(.060$, $1.328) &  & -0.058$ $(-.677$, $.562) \\ 
+  Master or higher &  & 0.694^{}$ $0.060$, $1.328) &  & -0.058$ $(-0.677$, $0.562) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{412} & \multicolumn{1}{c}{422} & \multicolumn{1}{c}{412} & \multicolumn{1}{c}{422} \\ 
 \hline 
@@ -2230,8 +2230,8 @@ SIO stronger than MO for REP HC ANES (MO null), REP HC OP (MO negative but small
 
 ```{r MAR 10 Variables Framing, include=FALSE}
 
-mar.10var.frame.an <- read.csv("data/framing/experiment/mar/results/framing.an.mar.results.10var.1062n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
-mar.10var.frame.op <- read.csv("data/framing/experiment/mar/results/framing.op.mar.results.10var.1103n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+mar.10var.frame.an <- read.csv("data/framing/experiment/mar/results/framing.an.mar.results.10var.1062n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% addPlus
+mar.10var.frame.op <- read.csv("data/framing/experiment/mar/results/framing.op.mar.results.10var.1103n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% addPlus
 
 mar.10var.frame.an[49:54, 2] <- mar.10var.frame.op[49:54, 2] <- rep("Democrat", 6)
 
@@ -2348,8 +2348,8 @@ Table \ref{mar.10var.frame} shows the imputation results for missing data insert
 
 ```{r MNAR 10 Variables Framing, include=FALSE}
 
-mnar.10var.frame.an <- read.csv("data/framing/experiment/mnar/results/framing.an.mnar.results.10var.1062n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
-mnar.10var.frame.op <- read.csv("data/framing/experiment/mnar/results/framing.op.mnar.results.10var.1103n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% dropZero.addPlus
+mnar.10var.frame.an <- read.csv("data/framing/experiment/mnar/results/framing.an.mnar.results.10var.1062n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% addPlus
+mnar.10var.frame.op <- read.csv("data/framing/experiment/mnar/results/framing.op.mnar.results.10var.1103n.1000it.20perc.csv", stringsAsFactors = TRUE, check.names = FALSE)  %>% .[,-1] %>% addPlus
 
 mnar.10var.frame.an[49:54, 2] <- mnar.10var.frame.op[49:54, 2] <- rep("Democrat", 6)
 
