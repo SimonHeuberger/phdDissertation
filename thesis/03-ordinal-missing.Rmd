@@ -57,18 +57,18 @@ The following is an outline of the remainder of this chapter: Sections \ref{ordm
 
 ### Missing Data Mechanisms {#ordmiss-theory-mechanisms}
 
-Let there be $\bm{X}$, an $n \times v$ matrix with data on $n$ respondents for $v$ variables. Let there also be the response indicator $\bm{R}$ as an $n \times v$ matrix with values of 0 or 1. Let their respective elements be denoted by $x_{ij}$ and $r_{ij}$, with $i = 1, ..., n$ and $j = 1, ..., v$. If $x_{ij}$ is observed, $r_{ij} = 1$. If $x_{ij}$ is missing, $r_{ij} = 0$. All elements where $r_{ij} = 0$ make up the missing data, $\bm{X^{miss}}$. All elements where $r_{ij} = 1$ make up the observed data, $\bm{X^{obs}}$. Together, $\bm{X^{obs}}$ and $\bm{X^{miss}}$ form the complete data $\bm{X}$. Missing data can then generally be described by $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{X^{miss}}, \bm{\beta})$, i.e. the probability of missing data depends on the observed data, the missing data, and a vector of unknown parameters.^[The literature often uses $\bm{\theta}$ for missing data notation, but since my concern lies primarily with regression style models, I will be using $\bm{\beta}$ instead.] Depending on the mechanism by which data is missing, this expression can be further simplified. Data can be missing by three basic mechanisms: It can be missing completely at random (MCAR), missing at random (MAR), or missing not at random (MNAR). Researchers need to make assumptions about how the data came to be missing. 
+Let there be $\bm{X}$, an $n \times v$ matrix with data on $n$ respondents for $v$ variables. Let there also be the response indicator $\bm{R}$ as an $n \times v$ matrix with values of 0 or 1. Let their respective elements be denoted by $x_{ij}$ and $r_{ij}$, with $i = 1, ..., n$ and $j = 1, ..., v$. If $x_{ij}$ is observed, $r_{ij} = 1$. If $x_{ij}$ is missing, $r_{ij} = 0$. All elements where $r_{ij} = 0$ make up the missing data, $\bm{X^{miss}}$. All elements where $r_{ij} = 1$ make up the observed data, $\bm{X^{obs}}$. Together, $\bm{X^{obs}}$ and $\bm{X^{miss}}$ form the complete data $\bm{X}$. Missing data can then generally be described by $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{X^{miss}}, \bm{\theta})$, i.e. the probability of missing data depends on the observed data, the missing data, and a vector of unknown parameters. Depending on the mechanism by which data is missing, this expression can be further simplified. Data can be missing by three basic mechanisms: It can be missing completely at random (MCAR), missing at random (MAR), or missing not at random (MNAR). Researchers need to make assumptions about how the data came to be missing. 
 
-The general missing data expression can be simplified under the MCAR assumption to $\text{prob}(\bm{R} = 0 | \bm{\beta})$, i.e. the generic probability of missing data, independent of the data themselves and only dependent on $\bm{\beta}$. A MCAR assumption in political science surveys is rare and requires justification as missing data most often occur systematically. Respondents are known to withhold sensitive data, for instance in the attempt to hide private information (income, sexual orientation) or out of fear of political or social repercussions in the community (union membership, support for polarizing political candidates) [@groves_survey_2009]. Such information is often not refused randomly but occurs only in specific subsets of respondents. Answers criticizing the authorities, for instance, tend to be missing in surveys in non-democratic states, while the state-loyal responses are present. 
+The general missing data expression can be simplified under the MCAR assumption to $\text{prob}(\bm{R} = 0 | \bm{\theta})$, i.e. the generic probability of missing data, independent of the data themselves and only dependent on $\bm{\theta}$. A MCAR assumption in political science surveys is rare and requires justification as missing data most often occur systematically. Respondents are known to withhold sensitive data, for instance in the attempt to hide private information (income, sexual orientation) or out of fear of political or social repercussions in the community (union membership, support for polarizing political candidates) [@groves_survey_2009]. Such information is often not refused randomly but occurs only in specific subsets of respondents. Answers criticizing the authorities, for instance, tend to be missing in surveys in non-democratic states, while the state-loyal responses are present. 
 
 <!--
 The simplest and easiest case is missing completely at random (MCAR). Under the MCAR assumption, there is no process guiding the missingness; it is inserted truly at random. 
 In statistical terms, this means both the unobserved and the missing data independently from each other form a random sample of the population and have the same underlying distribution. 
 -->
 
-It is more commonly assumed among researchers that data are missing at random (MAR). MAR means missing data are related to the observed but not the unobserved data. In practical terms, this for instance means missing data on income can be related to observed data on education or occupation. Here, the missing data are not a random sample of the entire data. MAR transforms the general missing data expression to $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{\beta})$, i.e. the chances of missing data depend on the observed data and $\bm{\beta}$.
+It is more commonly assumed among researchers that data are missing at random (MAR). MAR means missing data are related to the observed but not the unobserved data. In practical terms, this for instance means missing data on income can be related to observed data on education or occupation. Here, the missing data are not a random sample of the entire data. MAR transforms the general missing data expression to $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{\theta})$, i.e. the chances of missing data depend on the observed data and $\bm{\theta}$.
 
-Finally, data can be missing not at random (MNAR).^[Data MNAR is also sometimes called 'non-ignorable' [see for instance @gill_2012_have and Allison, 2002].] This is the case when missing data are related to unknown and/or unobserved parameters. Continuing the example of missing data on income, under MNAR we do not observe data on education or occupation that can be used to fill the missing income data slot. In the case of data MNAR, the general missing data expression remains unchanged, $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{X^{miss}}, \bm{\beta})$, i.e. the missingness of data depends on the observed and the missing data. 
+Finally, data can be missing not at random (MNAR).^[Data MNAR is also sometimes called 'non-ignorable' [see for instance @gill_2012_have and Allison, 2002].] This is the case when missing data are related to unknown and/or unobserved parameters. Continuing the example of missing data on income, under MNAR we do not observe data on education or occupation that can be used to fill the missing income data slot. In the case of data MNAR, the general missing data expression remains unchanged, $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{X^{miss}}, \bm{\theta})$, i.e. the missingness of data depends on the observed and the missing data. 
 
 As mentioned above, the assessment of the missing data mechanism underlying any respective data comes from researchers and their understanding of the data generating process. The statistical methods to address missing data can be broadly categorized into deletion, imputation, and multiple imputation.
 
@@ -214,25 +214,25 @@ The `R` package `mice` was released in 2001 [@buuren_2000_multiple]. It stands f
 
 Chained equations are based on the Gibbs sampler, a randomized Markov chain Monte Carlo algorithm to estimate a sequence of observations from a specified multivariate probability distribution [@gelman_2013_bayesian; @gill_2014_bayesian]. In essence, chained equations fill in missing values through an iterative repetition of univariate procedures that are chained together -- hence the name for the procedure. As the term univariate signifies, specification happens at the variable level, i.e. each chained equation specifies the imputation model separately for each column of the data. Following deliberations by @rubin_1987_multiple and @buuren_2011_mice, imputation by chained equations takes the missing data generating process into account and maintains data relations as well as the uncertainty about these relations. With these conditions satisfied, the imputation model results in statistically valid and factual imputations. This has been proven empirically under various circumstances, for instance for regression models [@giorgi_2008_performance; @horton_2001_multiple; @horton_2007_much], continuous data [@yu_2007_evaluation], missing predictor variables [@moons_2006_using], large surveys [@schunk_2008_markov], and addressing issues of convergence [@brand_1999_development; @buuren_2006_fully; @drechsler_2008_does].
 
-Continuing the notation from section \ref{ordmiss-theory-mechanisms} and incorporating @buuren_2011_mice, let there be $\bm{X}$, an $n \times v$ matrix with data on $n$ respondents for $v$ variables, that is formed of missing, $\bm{X^{miss}}$, and observed data, $\bm{X^{obs}}$. As before, let there also be a vector of unknown parameters $\bm{\beta}$. Now let $\bm{X}$ further be a random sample from the $z$-variate multivariate distribution, $\bm{Z}(\bm{X} | \bm{\beta})$, with $\bm{\beta}$ accounting for the multivariate distribution of $\bm{X}$. The proverbial pot of gold here is how to estimate the multivariate distribution of $\bm{\beta}$. Under the chained equations model, we estimate a posterior distribution of $\bm{\beta}$ by sampling repeatedly from conditional distributions, i.e.:
+Continuing the notation from section \ref{ordmiss-theory-mechanisms} and incorporating @buuren_2011_mice, let there be $\bm{X}$, an $n \times v$ matrix with data on $n$ respondents for $v$ variables, that is formed of missing, $\bm{X^{miss}}$, and observed data, $\bm{X^{obs}}$. As before, let there also be a vector of unknown parameters $\bm{\theta}$. Now let $\bm{X}$ further be a random sample from the $z$-variate multivariate distribution, $\bm{Z}(\bm{X} | \bm{\theta})$, with $\bm{\theta}$ accounting for the multivariate distribution of $\bm{X}$. The proverbial pot of gold here is how to estimate the multivariate distribution of $\bm{\theta}$. Under the chained equations model, we estimate a posterior distribution of $\bm{\theta}$ by sampling repeatedly from conditional distributions, i.e.:
 
 \begin{align}
-Z(X_1 &| X_{-1}, \beta_1) \nonumber\\
+Z(X_1 &| X_{-1}, \theta_1) \nonumber\\
 &\vdots \nonumber\\
-Z(X_z &| X_{-z}, \beta_z)
+Z(X_z &| X_{-z}, \theta_z)
 \end{align}
 
 Any iteration $n$ of chained equations is then a Gibbs sampler that sequentially draws
 
 \begin{align}
-\beta_1^{\sim(n)} &\sim Z(\beta_1 | X_1^{obs}, X_2^{(n-1)}, ..., X_z^{(n-1)}) \nonumber\\
-X_1^{\sim(n)} &\sim Z(X_1 | X_1^{obs}, X_2^{(n-1)}, ..., X_z^{(n-1)}, \beta_1^{\sim(n)}) \nonumber\\
+\theta_1^{*(n)} &\sim Z(\theta_1 | X_1^{obs}, X_2^{(n-1)}, ..., X_z^{(n-1)}) \nonumber\\
+X_1^{*(n)} &\sim Z(X_1 | X_1^{obs}, X_2^{(n-1)}, ..., X_z^{(n-1)}, \theta_1^{*(n)}) \nonumber\\
 &\vdots \nonumber\\
-\beta_z^{\sim(n)} &\sim Z(\beta_z | X_z^{obs}, X_1^{(n)}, ..., X_{z-1}^{(n)}) \nonumber\\
-X_z^{\sim(n)} &\sim Z(X_z | X_z^{obs}, X_1^{(n)}, ..., X_z^{(n)}, \beta_z^{\sim(n)})
+\theta_z^{*(n)} &\sim Z(\theta_z | X_z^{obs}, X_1^{(n)}, ..., X_{z-1}^{(n)}) \nonumber\\
+X_z^{*(n)} &\sim Z(X_z | X_z^{obs}, X_1^{(n)}, ..., X_z^{(n)}, \theta_z^{*(n)})
 \end{align}
 
-with the chain starting from a random draw from observed marginal distributions and $\bm{X_i^{(n)}} = (\bm{X_i^{obs}}, \bm{X_i^{\sim(n)}})$ being the $i$th imputed variable at iteration $n$. Note that immediately preceding imputations, $\bm{X_i^{\sim(n-1)}}$, do not affect $\bm{X_i^{\sim(n)}}$ directly but only through connections with other variables. 
+with the chain starting from a random draw from observed marginal distributions and $\bm{X_i^{(n)}} = (\bm{X_i^{obs}}, \bm{X_i^{*(n)}})$ being the $i$th imputed variable at iteration $n$. Note that immediately preceding imputations, $\bm{X_i^{*(n-1)}}$, do not affect $\bm{X_i^{*(n)}}$ directly but only through connections with other variables. 
 
 Figure \ref{mice-func} shows the package's main imputation function, `mice`, with all its arguments. As stated above, I will use `mice` with its default settings to ensure simplicity and user-friendliness.
 
@@ -295,31 +295,31 @@ The `R` package `Amelia` was originally released in 1998 [@honaker_1998_amelia].
 
 The `Amelia` package circumvents this issue with expectation-maximization importance sampling (EMi) [@dempster_1977_maximum; @rubin_1987_multiple], which combines EM with the iterative simulation approach of importance sampling. This proved unsuitable for large data sets, however, as it led to high running times and system crashes. The `Amelia II` package addresses this by mixing EM with bootstrapping [@efron_1994_missing; @lahlrl_2003_impact; @rubin_1994_missing; @shao_1996_bootstrap], allowing the imputation of more variables for more observations more quickly.
 
-`Amelia II` is based on the assumption that the complete data ($\bm{X^{obs}}$ and $\bm{X^{miss}}$) are multivariate normal (MVN): $\bm{X} \sim \bm{N_v}(\mu, \sum)$, with mean vector $\mu$ and covariance matrix $\sum$. The MVN model has been proven to work for a variety of variable types [@ezzati-rice_1995_simulation; @graham_1999_performance; @rubin_1986_multiple; @schafer_1997_analysis]. Continuing the notation from section \ref{ordmiss-theory-mechanisms} and incorporating @honaker_2010_what, let there be a vector of unknown parameters $\bm{\beta}$, with $\bm{\beta} = (\mu, \sum)$. Let there further be our missingness matrix $\bm{R}$ and the likelihood of $\bm{X^{obs}}$, $\text{prob}(\bm{X^{obs}}, \bm{R} | \bm{\beta})$. `Amelia II` is explicitly set up for the MAR assumption of missing data, $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{\beta})$. Under this assumption, the likelihood can be transformed as
+`Amelia II` is based on the assumption that the complete data ($\bm{X^{obs}}$ and $\bm{X^{miss}}$) are multivariate normal (MVN): $\bm{X} \sim \bm{N_v}(\mu, \sum)$, with mean vector $\mu$ and covariance matrix $\sum$. The MVN model has been proven to work for a variety of variable types [@ezzati-rice_1995_simulation; @graham_1999_performance; @rubin_1986_multiple; @schafer_1997_analysis]. Continuing the notation from section \ref{ordmiss-theory-mechanisms} and incorporating @honaker_2010_what, let there be a vector of unknown parameters $\bm{\theta}$, with $\bm{\theta} = (\mu, \sum)$. Let there further be our missingness matrix $\bm{R}$ and the likelihood of $\bm{X^{obs}}$, $\text{prob}(\bm{X^{obs}}, \bm{R} | \bm{\theta})$. `Amelia II` is explicitly set up for the MAR assumption of missing data, $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{\theta})$. Under this assumption, the likelihood can be transformed as
 
 \begin{align}
-\text{prob}(X^{obs}, R | \beta) = \text{prob}(R | X^{obs}) \text{prob}(X^{obs} | \beta).
+\text{prob}(X^{obs}, R | \theta) = \text{prob}(R | X^{obs}) \text{prob}(X^{obs} | \theta).
 \end{align}
 
 Since the missing mechanism is MAR, we are only interested in the inference on complete data parameters, thus the likelihood becomes
 
 \begin{align}
-L(\beta | X^{obs}) \propto \text{prob}(X^{obs} | \beta)
+L(\theta | X^{obs}) \propto \text{prob}(X^{obs} | \theta)
 \end{align}
 
 which further translates into
 
 \begin{align}
-\text{prob}(X^{obs} | \beta) = \int \text{prob}(X | \beta) x X^{miss}
+\text{prob}(X^{obs} | \theta) = \int \text{prob}(X | \theta) x X^{miss}
 \end{align}
 
 under the law of iterated expectations. This results in the posterior
 
 \begin{align}
-\text{prob}(\beta | X^{obs}) \propto \text{prob}(X^{obs} | \beta) = \int \text{prob}(X | \beta) x X^{miss}.
+\text{prob}(\theta | X^{obs}) \propto \text{prob}(X^{obs} | \theta) = \int \text{prob}(X | \theta) x X^{miss}.
 \end{align}
 
-Taking draws from this posterior is computationally intensive since the contents of $\mu$ and $\sum$ increase exponentially as the number of variables increases -- this is the perennial crux of multiple imputation, particularly for large data sets with many variables. `Amelia II` solves this through a combination of EM and bootstrapping. This process bootstraps the data to simulate estimation uncertainty for each posterior draw, runs the EM algorithm to find the mode of the posterior bootstrapped data, and then imputes by drawing from $\bm{X^{miss}}$ conditional on $\bm{X^{obs}}$ and the respective draws of $\bm{\beta}$. The latter is a linear regression with parameters that can be estimated from $\bm{\beta}$. This bootstrapped EM approach is faster than IP as Markov chains do not need be assessed for convergence and an improvement over EMi since the variance matrix of $\mu$ and $\sum$ do not need to be calculated, allowing the algorithm to handle larger data sets.
+Taking draws from this posterior is computationally intensive since the contents of $\mu$ and $\sum$ increase exponentially as the number of variables increases -- this is the perennial crux of multiple imputation, particularly for large data sets with many variables. `Amelia II` solves this through a combination of EM and bootstrapping. This process bootstraps the data to simulate estimation uncertainty for each posterior draw, runs the EM algorithm to find the mode of the posterior bootstrapped data, and then imputes by drawing from $\bm{X^{miss}}$ conditional on $\bm{X^{obs}}$ and the respective draws of $\bm{\theta}$. The latter is a linear regression with parameters that can be estimated from $\bm{\theta}$. This bootstrapped EM approach is faster than IP as Markov chains do not need be assessed for convergence and an improvement over EMi since the variance matrix of $\mu$ and $\sum$ do not need to be calculated, allowing the algorithm to handle larger data sets.
 
 Figure \ref{amelia-func} shows the package's main imputation function, `amelia`, with all its arguments. As stated above, I will use `amelia` with its default settings to ensure simplicity and user-friendliness.
 
@@ -1220,11 +1220,12 @@ The results for the interval variables are consistent with the previous analyses
 
 
 
-
+\clearpage
 
 ### Increased Percentage of Missingness {#ordmiss-results-increaseNA}
 
-```{r Increasing Missingness Percentage, include=FALSE}
+
+```{r Increasing Missingness Percentage Table, include=FALSE}
 
 # There is currently no CCES 80 percent .csv file because polr is acting up. In case the committee wants that, I can address it then
 
@@ -1289,7 +1290,100 @@ Framing MAR 5 Var
 		amelia outperforms mice for all percentages for all vars	
 -->
 
-This brief section shows the imputation results when the percentage of missingness is increased. I conduct this for data MAR for five variables with the CCES data. The results are shown in Table \ref{mar.5var.cces.perc}. `hd.ord` performs comparatively well for 50 percent missing data `Democrat` (`r cces.NA50[cces.perc.meth == "hd.ord" & cces.perc.var == "Democrat"]` vs. `r cces.NA50[cces.perc.meth == "amelia" & cces.perc.var == "Democrat"]` `amelia`) but falls short for `Male` (`r cces.NA50[cces.perc.meth == "hd.ord" & cces.perc.var == "Male"]` vs. `r cces.NA50[cces.perc.meth == "mice" & cces.perc.var == "Male"]` `mice`).
+This brief section shows the imputation results when the percentage of missingness is increased. I conduct this for data MAR for five variables with the CCES data. Figures \ref{Speed20} and \ref{Speed50} show the results for 20 and 50 percent missingness, respectively.
+
+
+```{r Increasing Missingness Percentage Plots, include=FALSE}
+
+# 20 percent missingness
+mar.5var.cces.20.plot <- mar.5var.cces.20[,1:3]
+mar.5var.cces.20.plot$value <- as.numeric(mar.5var.cces.20.plot$value)
+mar.5var.cces.20.plot.dem <- filter(mar.5var.cces.20.plot, variable == "Democrat")
+
+yint <- mar.5var.cces.20.plot.dem$value[mar.5var.cces.20.plot.dem$variable == "Democrat" & mar.5var.cces.20.plot.dem$method == "true"]
+var.filter <- filter(mar.5var.cces.20.plot.dem, variable == "Democrat", method != "true")
+var.filter$method <- factor(var.filter$method, levels = c("hd.ord", "hot.deck", "amelia", "mice", "na.omit"))
+plot.dem.20 <- ggplot(var.filter, aes(x=method, value)) + 
+    geom_point(size = 3) + 
+    geom_hline(yintercept= yint, linetype = "dashed", color = "red", size = 1) + 
+    theme(axis.title = element_blank()) + 
+    annotate(geom="text", x=4.4, y=yint+0.0025, label="True benchmark",
+             color="red") + 
+  ggtitle("Democrat") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+mar.5var.cces.20.plot.other <- filter(mar.5var.cces.20.plot, variable != "Democrat")
+vars.unique <- mar.5var.cces.20.plot.other$variable %>% unique
+plot.list.20 <- list()
+plot.list.20[[1]] <- plot.dem.20
+
+for(i in 1:length(vars.unique)){
+  yint <- mar.5var.cces.20.plot.other$value[mar.5var.cces.20.plot.other$variable == vars.unique[i] & mar.5var.cces.20.plot.other$method == "true"]
+  var.filter <- filter(mar.5var.cces.20.plot.other, variable == vars.unique[i], method != "true")
+  var.filter$method <- factor(var.filter$method, levels = c("hd.ord", "hot.deck", "amelia", "mice", "na.omit"))
+  plot.list.20[[i+1]] <- ggplot(var.filter, aes(x=method, value)) + 
+    geom_point(size = 3) + 
+    geom_hline(yintercept= yint, linetype = "dashed", color = "red", size = 1) + 
+    theme(axis.title = element_blank()) +  
+    ggtitle(vars.unique[i]) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+
+# 50 percent missingness
+mar.5var.cces.50.plot <- mar.5var.cces.50[,1:3]
+mar.5var.cces.50.plot$value <- as.numeric(mar.5var.cces.50.plot$value)
+mar.5var.cces.50.plot.dem <- filter(mar.5var.cces.50.plot, variable == "Democrat")
+
+yint <- mar.5var.cces.50.plot.dem$value[mar.5var.cces.50.plot.dem$variable == "Democrat" & mar.5var.cces.50.plot.dem$method == "true"]
+var.filter <- filter(mar.5var.cces.50.plot.dem, variable == "Democrat", method != "true")
+var.filter$method <- factor(var.filter$method, levels = c("hd.ord", "hot.deck", "amelia", "mice", "na.omit"))
+plot.dem.50 <- ggplot(var.filter, aes(x=method, value)) + 
+    geom_point(size = 3) + 
+    geom_hline(yintercept= yint, linetype = "dashed", color = "red", size = 1) + 
+    theme(axis.title = element_blank()) + 
+    annotate(geom="text", x=4.4, y=yint+0.006, label="True benchmark",
+             color="red") + 
+  ggtitle("Democrat") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+mar.5var.cces.50.plot.other <- filter(mar.5var.cces.50.plot, variable != "Democrat")
+vars.unique <- mar.5var.cces.50.plot.other$variable %>% unique
+plot.list.50 <- list()
+plot.list.50[[1]] <- plot.dem.50
+
+for(i in 1:length(vars.unique)){
+  yint <- mar.5var.cces.50.plot.other$value[mar.5var.cces.50.plot.other$variable == vars.unique[i] & mar.5var.cces.50.plot.other$method == "true"]
+  var.filter <- filter(mar.5var.cces.50.plot.other, variable == vars.unique[i], method != "true")
+  var.filter$method <- factor(var.filter$method, levels = c("hd.ord", "hot.deck", "amelia", "mice", "na.omit"))
+  plot.list.50[[i+1]] <- ggplot(var.filter, aes(x=method, value)) + 
+    geom_point(size = 3) + 
+    geom_hline(yintercept= yint, linetype = "dashed", color = "red", size = 1) + 
+    theme(axis.title = element_blank()) +  
+    ggtitle(vars.unique[i]) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+```
+
+```{r Speed-Plots-20-Percent, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Accuracy of Multiple Imputation Methods for 20 Percent Missingness. CCES Data, MAR, Five Variables with NA. Y-Axis Shows Percentages/Means.\\label{Speed20}"}
+
+grid.arrange(grobs = plot.list.20, ncol = 3, nrow = 2)
+
+```
+
+```{r Speed-Plots-50-Percent, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Accuracy of Multiple Imputation Methods for 50 Percent Missingness. CCES Data, MAR, Five Variables with NA. Y-Axis Shows Percentages/Means.\\label{Speed50}"}
+
+grid.arrange(grobs = plot.list.50, ncol = 3, nrow = 2)
+
+```
+
+`hd.ord` performs comparatively well for 50 percent missing data `Democrat` (`r cces.NA50[cces.perc.meth == "hd.ord" & cces.perc.var == "Democrat"]` vs. `r cces.NA50[cces.perc.meth == "amelia" & cces.perc.var == "Democrat"]` `amelia`) but falls short for `Male` (`r cces.NA50[cces.perc.meth == "hd.ord" & cces.perc.var == "Male"]` vs. `r cces.NA50[cces.perc.meth == "mice" & cces.perc.var == "Male"]` `mice`). `hd.ord` also represents the second-worst method for both percentages for all ordinal and interval variables. 
+`amelia` and `mice` show virtually identical results and are hardly affected by the increase in missingness for the ordinal variable. This changes somewhat for the interval variable `Age`. Nonetheless, `amelia` and `mice` far outperform the other methods. Note that `amelia` noticeably outperforms `mice` for `Age` for both percentages.
+
+
+<!--
+Table \ref{mar.5var.cces.perc}: `hd.ord` performs comparatively well for 50 percent missing data `Democrat` (`r cces.NA50[cces.perc.meth == "hd.ord" & cces.perc.var == "Democrat"]` vs. `r cces.NA50[cces.perc.meth == "amelia" & cces.perc.var == "Democrat"]` `amelia`) but falls short for `Male` (`r cces.NA50[cces.perc.meth == "hd.ord" & cces.perc.var == "Male"]` vs. `r cces.NA50[cces.perc.meth == "mice" & cces.perc.var == "Male"]` `mice`).
 
 
  \begin{table}[!htbp] \centering 
@@ -1338,10 +1432,10 @@ This brief section shows the imputation results when the percentage of missingne
 \end{tablenotes}
 \end{threeparttable}
 \end{table} 
- 
+-->
 
-`hd.ord` also represents the second-worst method for both percentages for all ordinal and interval variables. 
-`amelia` and `mice` show virtually identical results and are hardly affected by the increase in missingness for the ordinal variable. This changes somewhat for the interval variable `Age`. Nonetheless, `amelia` and `mice` far outperform the other methods. Note that `amelia` significantly outperforms `mice` for `Age` for both percentages.
+
+
 
 
 
