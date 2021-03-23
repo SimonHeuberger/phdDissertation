@@ -135,7 +135,7 @@ evs <- c("age", "gender", "race", "income", "occupation", "pid")
 ord.list <- OPMord(data = df, dv = dv, evs = evs)
 
 # save ord.list to be used in other scripts
-saveRDS(ord.list, here("data", "ob", "ord_list.rds"))
+saveRDS(ord.list, here("data", "anes", "ord_list.rds"))
 
 # plot and save Coefficients/Thresholds visualization with horizontal error bars of SE
 ggplot(ord.list$int.df, aes(Values, Intercepts)) + geom_point(size = 1.5) + geom_errorbarh(aes(xmin=Values-SE, xmax=Values+SE), height = .3) +

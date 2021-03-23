@@ -418,13 +418,18 @@ Professional $\mid$ & \,Doctorate & 4.&838 & 0.&197 & 24.&589 \\
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table}
-The observations in the data are binned according to the estimated threshold coefficients, which in turn determines what education categories make sense, given the underlying latent continuous variable. This results in two sets of education categories: the original ANES categories, and the model-estimated OP categories. Figure \ref{BarEducCat} shows the distribution of both sets. The ordered probit model uses the ordinal information with unevenly spaced distances provided and returns categories that fit the data.
+The ordered probit model uses the ordinal information with unevenly spaced distances provided and bins observations according to the estimated threshold coefficients, which in turn determines what education categories make sense given the underlying latent continuous variable. Figure \ref{DensEducLP} shows the distribution of this variable. As we can see, no cases fall lower than \texttt{12th\textbar{}HS\ grad} or higher than \texttt{Master\textquotesingle{}s\textbar{}Professional}, which results in a new set of model-estimated OP education categories that fit the data. We thus have two sets of education categories: the original ANES categories, and the model-estimated OP categories.
+\begin{figure}
+\centering
+\includegraphics{dissertation_files/figure-latex/Density-Education-Categories-Linear-Predictors-1.pdf}
+\caption{\label{fig:Density-Education-Categories-Linear-Predictors}Distribution of Education Linear Predictor Data Cases. Vertical Lines Are Threshold Cutpoints. No Cases Fall Lower than \texttt{12th\textbar{}HS\ grad} or Higher than \texttt{Master\textquotesingle{}s\textbar{}Professional}.\label{DensEducLP}}
+\end{figure}
 \begin{figure}
 \centering
 \includegraphics{dissertation_files/figure-latex/Barplot-Education-Categories-1.pdf}
-\caption{\label{fig:Barplot-Education-Categories}Distribution of Education Categories. Original ANES Categories on the Left, Ordered Probit Estimated Categories on the Right. Categories Below \texttt{High\ School\ Graduate} and Above \texttt{Master\textquotesingle{}s} Are Collapsed. OP Categories Can Now Be Used For Blocking.\label{BarEducCat}}
+\caption{\label{fig:Barplot-Education-Categories}Distribution of Education Categories. Original ANES Categories on the Left, Ordered Probit Estimated Categories on the Right. Categories Below \texttt{High\ School\ Graduate} and Above \texttt{Master\textquotesingle{}s} Are Gone. OP Categories Can Now Be Used For Blocking.\label{BarEducCat}}
 \end{figure}
-As we can see, all categories `below' ``High School Graduate'' and `above' ``Master's'' are collapsed in the OP education variable because they do not fit the data. We can now use these estimated education categories as the basis for blocking. Assigning numerical values to the new categories is now justifiable because they are based on data-driven estimations. This allows us to block on numerical values with the MD, which would not be permitted on theoretical grounds without empirical justification. The following sections demonstrate how the newly estimated categories affect blocking and regression results.
+Figure \ref{BarEducCat} shows the distribution of both sets. All categories `below' ``High School Graduate'' and `above' ``Master's'' are gone in the OP set because they do not fit the data. We can now use these estimated education categories as the basis for blocking. Assigning numerical values to the new categories is now justifiable because they are based on data-driven estimations. This allows us to block on numerical values with the MD, which would not be permitted on theoretical grounds without empirical justification. The following sections demonstrate how the newly estimated categories affect blocking and regression results.
 
 \hypertarget{ordblock-data-blockdiff}{%
 \subsection{Blocking Differences}\label{ordblock-data-blockdiff}}

@@ -398,10 +398,33 @@ Professional $\mid$ & \,Doctorate & 4.&838 & 0.&197 & 24.&589 \\
 \end{table}
 
 
-The observations in the data are binned according to the estimated threshold coefficients, which in turn determines what education categories make sense, given the underlying latent continuous variable. This results in two sets of education categories: the original ANES categories, and the model-estimated OP categories. Figure \ref{BarEducCat} shows the distribution of both sets. The ordered probit model uses the ordinal information with unevenly spaced distances provided and returns categories that fit the data. 
+The ordered probit model uses the ordinal information with unevenly spaced distances provided and bins observations according to the estimated threshold coefficients, which in turn determines what education categories make sense given the underlying latent continuous variable. Figure \ref{DensEducLP} shows the distribution of this variable. As we can see, no cases fall lower than `12th|HS grad` or higher than `Master's|Professional`, which results in a new set of model-estimated OP education categories that fit the data. We thus have two sets of education categories: the original ANES categories, and the model-estimated OP categories.
 
 
-```{r Education Categories Plotting Code Histograms, include=FALSE}
+```{r Education Categories Linear Predictor Plotting Code, include=FALSE}
+
+ord.list <- readRDS("data/anes/ord_list.rds")
+lp.values <- data.frame(ord.list$plr.out$lp)
+cut.points <- ord.list$int.df[, c(1,2)] %>% 
+  filter(., Values >= min(lp.values) & Values < max(lp.values))
+cut.points.plot <- rbind(ord.list$int.df[8, c(1,2)], cut.points, ord.list$int.df[13, c(1,2)])
+
+```
+
+```{r Density-Education-Categories-Linear-Predictors, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distribution of Education Linear Predictor Data Cases. Vertical Lines Are Threshold Cutpoints. No Cases Fall Lower than `12th|HS grad` or Higher than `Master's|Professional`.\\label{DensEducLP}"}
+
+ggplot(lp.values, aes(x=ord.list.plr.out.lp)) + 
+  geom_density() +
+  xlim(c(plyr::round_any(cut.points.plot[1,2],1), 
+         plyr::round_any(cut.points.plot[6,2],.5, f = ceiling))) + 
+  geom_vline(xintercept = cut.points.plot$Values, linetype="solid", color = "red") + 
+  annotate(geom = "text", x = cut.points.plot$Values, y = 0.2, label = cut.points.plot$Intercepts, 
+           vjust = -1, color = "red", size = 3, angle = 90) + 
+  xlab("Linear Predictor Data Cases") + ylab("Density")
+
+```
+
+```{r Education Categories Plotting Code, include=FALSE}
 
 op.model.data <- readRDS("data/anes/anes_education.rds")
 plot.orig <- ggplot(op.model.data, aes(x = education)) + geom_bar(aes(y = (..count..)/sum(..count..)), fill = "darkred") + theme(axis.title=element_blank(), axis.text.x = element_text(angle = 45))
@@ -409,14 +432,14 @@ plot.new <- ggplot(op.model.data, aes(x = education.new)) + geom_bar(aes(y = (..
 
 ```
 
-```{r Barplot-Education-Categories, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distribution of Education Categories. Original ANES Categories on the Left, Ordered Probit Estimated Categories on the Right. Categories Below `High School Graduate` and Above `Master's` Are Collapsed. OP Categories Can Now Be Used For Blocking.\\label{BarEducCat}"}
+```{r Barplot-Education-Categories, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distribution of Education Categories. Original ANES Categories on the Left, Ordered Probit Estimated Categories on the Right. Categories Below `High School Graduate` and Above `Master's` Are Gone. OP Categories Can Now Be Used For Blocking.\\label{BarEducCat}"}
 
 grid.arrange(plot.orig, plot.new, ncol = 2, nrow = 1, bottom = "Education", left = "Percentages")
 
 ```
 
 
-As we can see, all categories 'below' "High School Graduate" and 'above' "Master's" are collapsed in the OP education variable because they do not fit the data. We can now use these estimated education categories as the basis for blocking. Assigning numerical values to the new categories is now justifiable because they are based on data-driven estimations. This allows us to block on numerical values with the MD, which would not be permitted on theoretical grounds without empirical justification. The following sections demonstrate how the newly estimated categories affect blocking and regression results. 
+Figure \ref{BarEducCat} shows the distribution of both sets. All categories 'below' "High School Graduate" and 'above' "Master's" are gone in the OP set because they do not fit the data. We can now use these estimated education categories as the basis for blocking. Assigning numerical values to the new categories is now justifiable because they are based on data-driven estimations. This allows us to block on numerical values with the MD, which would not be permitted on theoretical grounds without empirical justification. The following sections demonstrate how the newly estimated categories affect blocking and regression results. 
 
 
 
