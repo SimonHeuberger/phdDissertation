@@ -478,7 +478,6 @@ For OP healthcare, the confidence intervals for the coefficients of `Moral Oppos
   Master or higher &  &0.437^{}$ $(0.048$, $0.825) &  &0.139$ $(-0.245$, $0.523) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{1,062} & \multicolumn{1}{c}{1,103} & \multicolumn{1}{c}{1,062} & \multicolumn{1}{c}{1,103} \\ 
-\hline 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \fillandplacepagenumber
@@ -611,7 +610,7 @@ Moral opposing: High is negative, Low is null -> Reject nh
 Moral supporting: Both are null -> Fail to reject nh
 -->
 
-I run the same regression models as before after subsetting both data sets. Tables \ref{exp-hc-mor-high-low} and \ref{exp-ev-mor-high-low} show the results separated by issue. For healthcare, the confidence intervals for ANES high `Moral Opposing` and ANES low `Moral Opposing` include the null. ANES high `Moral Supporting` on the other hand is positive, while ANES low `Moral Supporting` again includes the null. \textbf{H2} claims that moral frames move people with higher morality scores more than people with lower morality scores. Based on the first finding, I would fail to reject the null hypothesis for \textbf{H2}. Based on the second finding, however, I would reject it. A similar pattern continues throughout all high and low morality estimates. For healthcare, OP high `Moral Opposing` is negative but OP low `Moral Opposing` includes the null, which means we would reject the null hypothesis. Both confidence intervals for OP high `Moral Supporting` and OP low `Moral Supporting` include zero, though, which means we would fail to reject the null hypothesis here. The same picture shows for environment: ANES high `Moral Opposing` is negative and ANES low `Moral Opposing` includes zero (i.e. reject the NH), but both CIs for `Moral Supporting` include the null (i.e. fail to reject the NH). Likewise, OP high `Moral Opposing` is negative and OP low `Moral Opposing` includes the null (i.e. reject), while both CIs for `Moral Supporting` again include the null (i.e. fail to reject). Results are thus mixed. The `Moral Opposing` frames appear to resonate more strongly with respondents with high morality scores, which would support \textbf{H2}, but the `Moral Supporting` frames mostly show null results, which would lead us to reject \textbf{H2}.
+I run the same regression models as before after subsetting both data sets. Tables \ref{exp-hc-mor-high-low} and \ref{exp-ev-mor-high-low} show the results separated by issue. For healthcare, the confidence intervals for ANES high `Moral Opposing` and ANES low `Moral Opposing` include the null. ANES high `Moral Supporting` on the other hand is positive, while ANES low `Moral Supporting` again includes the null. \textbf{H2} claims that moral frames move people with higher morality scores more than people with lower morality scores. Based on the first finding, we fail to reject the null hypothesis for \textbf{H2}. Based on the second finding, however, we would reject it. This pattern continues for all estimates. For healthcare, OP high `Moral Opposing` is negative but OP low `Moral Opposing` includes the null, which means we would reject the null hypothesis. Both confidence intervals for OP high `Moral Supporting` and OP low `Moral Supporting` include zero, though, which means we would fail to reject the null hypothesis here. The same picture shows for environment: ANES high `Moral Opposing` is negative and ANES low `Moral Opposing` includes zero (i.e. reject the NH), but both CIs for `Moral Supporting` include the null (i.e. fail to reject the NH). Likewise, OP high `Moral Opposing` is negative and OP low `Moral Opposing` includes the null (i.e. reject), while both CIs for `Moral Supporting` again include the null (i.e. fail to reject). Results are thus mixed. The `Moral Opposing` frames appear to resonate more strongly with respondents with high morality scores, which would support \textbf{H2}, but the `Moral Supporting` frames mostly show null results, which would lead us to reject \textbf{H2}.
 
 
 ```{r Healthcare-Moral-High-Low-Table, include=FALSE}
@@ -677,7 +676,6 @@ stargazer(plr.out.an.high.mor.hc, plr.out.an.low.mor.hc, plr.out.op.high.mor.hc,
   Master or higher &  &  &0.747^{}$ $(0.001$, $1.492) & -0.084$ $(-0.793$, $0.626) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{367} & \multicolumn{1}{c}{368} \\ 
-\hline 
 \hline \\[-1.8ex] 
 \end{tabular}
 \fillandplacepagenumber
@@ -751,7 +749,6 @@ stargazer(plr.out.an.high.mor.ev, plr.out.an.low.mor.ev, plr.out.op.high.mor.ev,
   Master or higher &  &  & -0.144$ $(-0.853$, $0.564) & -0.161$ $(-0.879$, $0.558) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{367} & \multicolumn{1}{c}{368} \\ 
-\hline 
 \hline \\[-1.8ex] 
 \end{tabular}
 \fillandplacepagenumber
@@ -896,7 +893,6 @@ stargazer(plr.out.an.high.si.hc, plr.out.an.low.si.hc, plr.out.op.high.si.hc, pl
   Master or higher &  &  &0.415$ $(-0.254$, $1.083) &0.395$ $(-0.287$, $1.077) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{367} & \multicolumn{1}{c}{368} \\ 
-\hline 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \fillandplacepagenumber
@@ -968,7 +964,6 @@ stargazer(plr.out.an.high.si.ev, plr.out.an.low.si.ev, plr.out.op.high.si.ev, pl
   Master or higher &  &  &0.204$ $(-0.462$, $0.871) & -0.147$ $(-0.823$, $0.530) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{367} & \multicolumn{1}{c}{368} \\ 
-\hline 
 \hline \\[-1.8ex] 
 \end{tabular}
 \fillandplacepagenumber

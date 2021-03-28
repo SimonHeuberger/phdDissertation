@@ -1870,7 +1870,7 @@ stargazer(run.12var,
 
 # FRAMING {#app-framing}
 
-## Questionnaire {#app-framing-questionnaire}
+## Framing Questionnaire {#app-framing-questionnaire}
 
 \begin{figure}[hbt]
   \centering
@@ -2061,7 +2061,6 @@ stargazer(plr.out.an.rep.hc, plr.out.op.rep.hc, plr.out.an.rep.ev, plr.out.op.re
   Master or higher &  & -0.117$ $(-0.819$, $0.586) &  & -0.097$ $(-0.814$, $0.619) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{318} & \multicolumn{1}{c}{331} & \multicolumn{1}{c}{318} & \multicolumn{1}{c}{331} \\ 
-\hline 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \fillandplacepagenumber
@@ -2160,7 +2159,6 @@ stargazer(plr.out.an.dem.hc, plr.out.op.dem.hc, plr.out.an.dem.ev, plr.out.op.de
   Master or higher &  & 0.694^{}$ $0.060$, $1.328) &  & -0.058$ $(-0.677$, $0.562) \\ 
  \hline \\[-1.8ex] 
 Observations & \multicolumn{1}{c}{412} & \multicolumn{1}{c}{422} & \multicolumn{1}{c}{412} & \multicolumn{1}{c}{422} \\ 
-\hline 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \fillandplacepagenumber

@@ -559,13 +559,13 @@ stargazer(ill.data.int.df.tab,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,
-          title = "Illustrative Data polr Results",
+          title = "Illustrative Data `polr` Results",
           label = "ordmiss-ill-res")
 ```
 
 
 \begin{table}[!htbp] \centering 
-  \caption{Illustrative Data polr Results} 
+  \caption{Illustrative Data `polr` Results} 
   \label{ordmiss-ill-res} 
 \begin{tabular}{r@{}lr@{}l} 
 \\[-1.8ex]\hline 
@@ -1366,13 +1366,13 @@ for(i in 1:length(vars.unique)){
 
 ```
 
-```{r Speed-Plots-20-Percent, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Accuracy of Multiple Imputation Methods for 20 Percent Missingness. CCES Data, MAR, Five Variables with NA. Y-Axis Shows Percentages/Means.\\label{Speed20}"}
+```{r Increased-Missingness-20-Percent, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Accuracy of Multiple Imputation Methods for 20 Percent Missingness. CCES Data, MAR, Five Variables with NA. Y-Axis Shows Percentages/Means.\\label{Speed20}"}
 
 grid.arrange(grobs = plot.list.20, ncol = 3, nrow = 2)
 
 ```
 
-```{r Speed-Plots-50-Percent, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Accuracy of Multiple Imputation Methods for 50 Percent Missingness. CCES Data, MAR, Five Variables with NA. Y-Axis Shows Percentages/Means.\\label{Speed50}"}
+```{r Increased-Missingness-50-Percent, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Accuracy of Multiple Imputation Methods for 50 Percent Missingness. CCES Data, MAR, Five Variables with NA. Y-Axis Shows Percentages/Means.\\label{Speed50}"}
 
 grid.arrange(grobs = plot.list.50, ncol = 3, nrow = 2)
 
@@ -1733,7 +1733,7 @@ stargazer(bart.reg.res[["92"]][["orig"]],
           rownames = FALSE,
           dep.var.labels = c("Campaign Interest", "Education", "Education"),
           covariate.labels = c("Education", "Age", "Income", "Black", "Female", "Partisan strength", "Days before election"),
-          title = "lm and polr Differences in 1992 ANES Data as Used by Bartels (1999)",
+          title = "`lm` and `polr` Differences in 1992 ANES Data as Used by Bartels (1999)",
           no.space = TRUE,
           model.numbers = FALSE,
           star.char = c("", "", ""),
@@ -1744,7 +1744,7 @@ stargazer(bart.reg.res[["92"]][["orig"]],
 
 
 \begin{table}[!htbp] \centering 
-  \caption{lm and polr Differences in 1992 ANES Data as Used by Bartels (1999)} 
+  \caption{`lm` and `polr` Differences in 1992 ANES Data as Used by Bartels (1999)} 
   \label{ordmiss-bartels-92} 
 \begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 \\[-1.8ex]\hline 
@@ -1777,7 +1777,6 @@ R$^{2}$ & \multicolumn{1}{c}{0.114} & \multicolumn{1}{c}{0.248} &  \\
 Adjusted R$^{2}$ & \multicolumn{1}{c}{0.109} & \multicolumn{1}{c}{0.245} &  \\ 
 Residual Std. Error & \multicolumn{1}{c}{0.331 (df = 1351)} & \multicolumn{1}{c}{2.401 (df = 1352)} &  \\ 
 F Statistic & \multicolumn{1}{c}{24.750$^{}$ (df = 7; 1351)} & \multicolumn{1}{c}{74.507$^{}$ (df = 6; 1352)} &  \\ 
-\hline 
 \hline \\[-1.8ex] 
 \end{tabular} 
 \end{table}
@@ -1786,7 +1785,7 @@ F Statistic & \multicolumn{1}{c}{24.750$^{}$ (df = 7; 1351)} & \multicolumn{1}{c
 To determine how statistically distinct the variables on the right-hand side in these models (`Age`, `Income`, `Black`, `Female`, `Partisan strength`, `Days before election`) are, I simulate the posterior distribution of each $\bm{\beta}$ coefficient from both regressions in columns two and three as a normal distribution with mean $\bm{\hat{\beta}}$, standard error $SE(\bm{\hat{\beta}})$, and $n = 100,000$. I then plot the overlapping distributions of each linear regression coefficient with the corresponding ordered probit regression coefficient to assess the posterior percentage of overlay. The results are shown in Figure \ref{DensBart92}. 
 
 
-```{r Density-Plots-Bartels-1992, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distributions of lm and polr Coefficients\\label{DensBart92}"}
+```{r Density-Plots-Bartels-1992, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distributions of `lm` and `polr` Coefficients in 1992 ANES Data as Used by Bartels (1999)\\label{DensBart92}"}
 
 grid.arrange(grobs = plots.92, ncol = 2, left = "Density")
 

@@ -363,7 +363,7 @@ au-cms.sty is not supported. Please use natbib.sty for your bibliography.}
 % supporting the title and approval pages.
 %
 %school or college (e.g., College of Arts and Sciences)
-\newcommand\deansigline{\parbox{2.1in}{Dean of the College}}   % used below dean's signature
+\newcommand\deansigline{\parbox{2.4in}{Dean of the School of Public Affairs}}   % used below dean's signature
 \newcommand\schoolorcollege{College of Arts and Sciences}   % used in Faculty specification
 % \tableofcontents:
 \newcommand\contentsname{TABLE OF CONTENTS}   % capitalization required by Guide
