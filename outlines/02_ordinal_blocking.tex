@@ -439,70 +439,70 @@
 	\end{coi}
 	
 	
-%\section*{\hl{Crispify writing}}
-%	\begin{coi}
-%		\item Figure 2.2: Make the sections where the graphs overlap black (not grey). Add to the legend that the then-black sections show where randomized and blocked overlap (that wasn't clear to Jeff)
-%		\item Table 2.1: Make the vertical bars bigger or bold. Line up the bars vertically. That can be done with the {tabular} command. \begin{verbatim}
-%			\begin{tabular}{@{}lr@{$\quad[$}r@{$;$ }r@{$]$ }r@{$\quad[$}\end{verbatim}
-%			\begin{verbatim}r@{$;$ }r@{$]$}@{}}\end{verbatim}
-% 		\item Figure 2.4: Come up with some bolder colors. Experiment with other colors that are stronger, more forceful. Leave overlapping part as it is (i.e. don't make that one black)
-%		\item Define Mahalanobis and Euclidian distance in mathematical terms (i.e. the algebraic formulas) (bottom of p. 10). I can move the MD formula up from a later page, but make it an equation (i.e. in the middle of the page, not in-line)
-%		\item Discuss the ANES when I first mention it. Pretend that I'm talking to someone who's never heard of it before. Explain what it is etc.
-%		\item 2.2.1 I'm missing an opportunity to bring in Covid here. A paragraph that says ``what if we did this today?" would be good, about the human expectations connected with this. The Kahnemann example even talks about an Asian disease, so make it relevant to today. Because everyone will think about Covid when they read about ``Asian disease"
-% 		\item 2.3.2 Add some stuff about what a placebo regression is, some background, some citations
-%		\item I need to talk more about figure 2.2 in the text. What does it mean that these distributions are different and imbalanced? I only have one sentence about this figure at the moment
-%		\item Make the chapter stand on its own by repeating things from the introduction a bit. ``Recall that ...", ``As noted in chapter 1 ..." etc. 
-%		\item Not technical enough, not enough background maths in general. Put some algebra/formulas back in from Ryan (that I had originally taken out again), but put them in my own notation
-%	\end{coi}
+\section*{Crispify writing}
+	\begin{coi}
+		\item Figure 2.2: Make the sections where the graphs overlap black (not grey). Add to the legend that the then-black sections show where randomized and blocked overlap (that wasn't clear to Jeff)
+		\item Table 2.1: Make the vertical bars bigger or bold. Line up the bars vertically. That can be done with the {tabular} command. \begin{verbatim}
+			\begin{tabular}{@{}lr@{$\quad[$}r@{$;$ }r@{$]$ }r@{$\quad[$}\end{verbatim}
+			\begin{verbatim}r@{$;$ }r@{$]$}@{}}\end{verbatim}
+ 		\item Figure 2.4: Come up with some bolder colors. Experiment with other colors that are stronger, more forceful. Leave overlapping part as it is (i.e. don't make that one black)
+		\item Define Mahalanobis and Euclidian distance in mathematical terms (i.e. the algebraic formulas) (bottom of p. 10). I can move the MD formula up from a later page, but make it an equation (i.e. in the middle of the page, not in-line)
+		\item Discuss the ANES when I first mention it. Pretend that I'm talking to someone who's never heard of it before. Explain what it is etc.
+		\item 2.2.1 I'm missing an opportunity to bring in Covid here. A paragraph that says ``what if we did this today?" would be good, about the human expectations connected with this. The Kahnemann example even talks about an Asian disease, so make it relevant to today. Because everyone will think about Covid when they read about ``Asian disease"
+ 		\item 2.3.2 Add some stuff about what a placebo regression is, some background, some citations
+		\item I need to talk more about figure 2.2 in the text. What does it mean that these distributions are different and imbalanced? I only have one sentence about this figure at the moment
+		\item Make the chapter stand on its own by repeating things from the introduction a bit. ``Recall that ...", ``As noted in chapter 1 ..." etc. 
+		\item Not technical enough, not enough background maths in general. Put some algebra/formulas back in from Ryan (that I had originally taken out again), but put them in my own notation
+	\end{coi}
 
 \section*{Final write-up}
 	\begin{coi}
 		\item Write conclusion
 	\end{coi}
 	
-%\section*{\hl{Feedback Ryan}}
-%	\begin{coi}
-%		\item p 7. This reads as "interval are categorical". Clarify
-%		\item p 9. This implies that K \& T give "misinformation". Clarify
-%		\item The first $E(\delta)$ piece is a definition unrelated to balance, despite what's implied
-%		\item On the second $E(\delta)$ piece: the point is that if $Y$ and $T$ are independent, then we can substitute $E(Y_t|T = t)$ in for $E(Y_t)$, replacing something we can never observe with something we can estimate naturally from data. Randomization helps justify that independence. The relationship between the notation and the ideas isn't clear here. Rework or rephrase a bit
-%		\item Did K \& T show balance? It's implied here
-%		\item p 11. $x= [1, \ldots, n]$. I think the goal here is to enumerate indices of a vector, not the ''values" 1, 2, 3, ..., $n$. This notation needs to be adjusted
-%		\item (2.2): Don't index $s$. It's common to all $i$
-%		\item Describe how the Figure 1.1 data are blocked
-%		\item p 13. Does the ANES know demographics before survey experiments? That's the implication here
-%		\item p 14. (2.3) Fix the delimiter sizes with, e.g., \begin{verbatim}\left(\end{verbatim}
-%		\item p 15. The difference between (2.4) and (2.1) is that in (2.4), one of these has not yet been assigned, and the other is a member of some treatment group. Not clear we need this discussion here, but if so, make the important ideas clear to the reader early
-%		\item p 15. Check the "Not all" sentence for grammar
-%		\item p 18. "I propose ordinals as predictors" immediately gives way to notation with ordinal \textbf{outcome}. Clarify what's about to happen before we read the notation. What's next? What will we need to take away from it? Your $Y$ is a covariate that will be the outcome of an ordered model, that \textbf{then} will be used for blocking/imputation?
-%		\item p 18-19 is the critical proposal you make. Make this very clear to readers. Add a schematic figure showing the steps, e.g.
-%		\item p 19. Are you binning by "coefficients"? Or linear combinations of covariates $\times$ predictors?
-%		\item 20. Not "countless". Cite 2.
-%		\item Any other justification of the model (2.8)? Strong correlations, e.g.? Write this in statistical, not R, notation. Same for (2.11)
-%		\item Fig 2.3 is the first key result. Add a summary of the result to the caption. Fix the $x$-axis over-writing
-%		\item p 24. I worry about these $p$-values a bit. The smaller the ANES, the harder to detect differences. Maybe this is a weak, but acceptable, test, but it depends on sample sizes
-%		\item 2.4.2. How do you do this blocking? 
-%		\item p 31. "This indicates that \ldots". This paragraph is the most important point of the chapter. Don't make us wait until p. 31 to read it! It should be in the abstract, intro, and signposted earlier in the chapter
-%		\item p 13. Justify including the "on the go" section. That's not what you do in this chapter
-%		\item p 22. Five "treatment groups"? Just a coincidence that this is same number of OP groups discovered in education variable? Disambiguate these by changing number of treatment conditions
-%		\item p 23. Make a figure and move this to the appendix. What's the big picture here? Add it to the caption and signpost it more strongly. Is it that using OP does better than ANES? Not worse than ANES? Something else? OK, I see some of this at the bottom of 24, but bring it to the front
-%		\item p 27. Make a figure and move this to the appendix $\rightarrow$ I moved it to the appendix, but I have no idea how that is supposed to be a figure that makes sense, so I left it as a table
-%		\item p 17. Show that the "create group indicators" strategy is often done, and, if possible, a consequence of throwing the ordering away
-%		\item p 29. Do this 5000 times, if easy. Is there any precision difference between the two methods? $\rightarrow$ We block and assign over 3,000 observations. Doing this one time on Jeff's machine takes 12 minutes. 5000 times would take 6 weeks, so this can't be done. Not sure what he means by ``precision"
-%		\item (2.9) and (2.10) The syntax is not important (but should be in a replication file). Write the statistical idea down here instead
-%		\item Make a short (appendix?) table showing which ANES education categories map on to which OP categories. You named these, so let us see the groupings you used to do so
-%	\end{coi}
+\section*{Pre-defense feedback Ryan}
+	\begin{coi}
+		\item p 7. This reads as "interval are categorical". Clarify
+		\item p 9. This implies that K \& T give "misinformation". Clarify
+		\item The first $E(\delta)$ piece is a definition unrelated to balance, despite what's implied
+		\item On the second $E(\delta)$ piece: the point is that if $Y$ and $T$ are independent, then we can substitute $E(Y_t|T = t)$ in for $E(Y_t)$, replacing something we can never observe with something we can estimate naturally from data. Randomization helps justify that independence. The relationship between the notation and the ideas isn't clear here. Rework or rephrase a bit
+		\item Did K \& T show balance? It's implied here
+		\item p 11. $x= [1, \ldots, n]$. I think the goal here is to enumerate indices of a vector, not the ''values" 1, 2, 3, ..., $n$. This notation needs to be adjusted
+		\item (2.2): Don't index $s$. It's common to all $i$
+		\item Describe how the Figure 1.1 data are blocked
+		\item p 13. Does the ANES know demographics before survey experiments? That's the implication here
+		\item p 14. (2.3) Fix the delimiter sizes with, e.g., \begin{verbatim}\left(\end{verbatim}
+		\item p 15. The difference between (2.4) and (2.1) is that in (2.4), one of these has not yet been assigned, and the other is a member of some treatment group. Not clear we need this discussion here, but if so, make the important ideas clear to the reader early
+		\item p 15. Check the "Not all" sentence for grammar
+		\item p 18. "I propose ordinals as predictors" immediately gives way to notation with ordinal \textbf{outcome}. Clarify what's about to happen before we read the notation. What's next? What will we need to take away from it? Your $Y$ is a covariate that will be the outcome of an ordered model, that \textbf{then} will be used for blocking/imputation?
+		\item p 18-19 is the critical proposal you make. Make this very clear to readers. Add a schematic figure showing the steps, e.g.
+		\item p 19. Are you binning by "coefficients"? Or linear combinations of covariates $\times$ predictors?
+		\item 20. Not "countless". Cite 2.
+		\item Any other justification of the model (2.8)? Strong correlations, e.g.? Write this in statistical, not R, notation. Same for (2.11)
+		\item Fig 2.3 is the first key result. Add a summary of the result to the caption. Fix the $x$-axis over-writing
+		\item p 24. I worry about these $p$-values a bit. The smaller the ANES, the harder to detect differences. Maybe this is a weak, but acceptable, test, but it depends on sample sizes
+		\item 2.4.2. How do you do this blocking? 
+		\item p 31. "This indicates that \ldots". This paragraph is the most important point of the chapter. Don't make us wait until p. 31 to read it! It should be in the abstract, intro, and signposted earlier in the chapter
+		\item p 13. Justify including the "on the go" section. That's not what you do in this chapter
+		\item p 22. Five "treatment groups"? Just a coincidence that this is same number of OP groups discovered in education variable? Disambiguate these by changing number of treatment conditions
+		\item p 23. Make a figure and move this to the appendix. What's the big picture here? Add it to the caption and signpost it more strongly. Is it that using OP does better than ANES? Not worse than ANES? Something else? OK, I see some of this at the bottom of 24, but bring it to the front
+		\item p 27. Make a figure and move this to the appendix $\rightarrow$ I moved it to the appendix, but I have no idea how that is supposed to be a figure that makes sense, so I left it as a table
+		\item p 17. Show that the "create group indicators" strategy is often done, and, if possible, a consequence of throwing the ordering away
+		\item p 29. Do this 5000 times, if easy. Is there any precision difference between the two methods? $\rightarrow$ We block and assign over 3,000 observations. Doing this one time on Jeff's machine takes 12 minutes. 5000 times would take 6 weeks, so this can't be done. Not sure what he means by ``precision"
+		\item (2.9) and (2.10) The syntax is not important (but should be in a replication file). Write the statistical idea down here instead
+		\item Make a short (appendix?) table showing which ANES education categories map on to which OP categories. You named these, so let us see the groupings you used to do so
+	\end{coi}
 	
-%\section*{\hl{Feedback Jeff}}
-%	\begin{coi}
-%		\item Page 8: "Others include interval (ordered and evenly spaced, e.g. income)". Not true, most income questions have the rightmost category as open-ended to the right, and the leftmost category a "below XXX"
-%		\item Page 10: "In our case, we cannot observe how much participant A supports the program if given the survival format whilst also observing how much the same participant A would have..." should be "In our case, we cannot observe how much participant $i$ supports the program if given the survival format whilst also observing how much the same participant $i$ would have..."
-%		\item Page 10: second to last line, change "flipping a coin" to "flipping a fair coin"
-%		\item Page 11: change "With huge samples, the Law of Large Numbers predicts" to "With huge samples, the Law of Large Numbers requires"
-%		\item Page 18: change "is common applied to ordinal variables in the social sciences." to "is commonly applied to ordinal variables in the social sciences."
-%		\item Page 20: change "is continuous on R" to "is continuous on $\mathfrak{R}$". Also some at the bottom of this page note that $\Lambda$ denotes the logistic distribution
-%		\item Page 24: you define ANOVA on the second mention not the first
-%	\end{coi}
+\section*{Pre-defense feedback Jeff}
+	\begin{coi}
+		\item Page 8: "Others include interval (ordered and evenly spaced, e.g. income)". Not true, most income questions have the rightmost category as open-ended to the right, and the leftmost category a "below XXX"
+		\item Page 10: "In our case, we cannot observe how much participant A supports the program if given the survival format whilst also observing how much the same participant A would have..." should be "In our case, we cannot observe how much participant $i$ supports the program if given the survival format whilst also observing how much the same participant $i$ would have..."
+		\item Page 10: second to last line, change "flipping a coin" to "flipping a fair coin"
+		\item Page 11: change "With huge samples, the Law of Large Numbers predicts" to "With huge samples, the Law of Large Numbers requires"
+		\item Page 18: change "is common applied to ordinal variables in the social sciences." to "is commonly applied to ordinal variables in the social sciences."
+		\item Page 20: change "is continuous on R" to "is continuous on $\mathfrak{R}$". Also some at the bottom of this page note that $\Lambda$ denotes the logistic distribution
+		\item Page 24: you define ANOVA on the second mention not the first
+	\end{coi}
 	
 
 \end{document}

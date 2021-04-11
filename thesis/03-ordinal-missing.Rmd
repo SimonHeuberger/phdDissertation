@@ -1077,25 +1077,25 @@ Table \ref{mult.mar.4var} shows the results of imputing both data sets with two 
  hot.deck & Democrat & --0.&0018 & --0.&0005 \\
  amelia & Democrat & +0.&0002 & +0.&0001 \\
  mice & Democrat & +0.&0001 & +0.&0002 \\
- ha.omit & Democrat & --0.&0333 & --0.&0294 \\
+ na.omit & Democrat & --0.&0333 & --0.&0294 \\
  true & Male & 0.&4890 & 0.&4830 \\
  hd.ord & Male & --0.&0022 & --0.&0019 \\
  hot.deck & Male & --0.&0015 & --0.&0018 \\
  amelia & Male & +0.&0001 & +0.&0000 \\
  mice & Male & +0.&0000 & +0.&0000 \\ 
- ha.omit & Male & --0.&0396 & --0.&0407 \\
+ na.omit & Male & --0.&0396 & --0.&0407 \\
  true & Income & 16.&6140 & 6.&4810 \\
  hd.ord & Income & --0.&0830 & --0.&0246 \\
  hot.deck & Income & --0.&1523 & --0.&0516 \\
  amelia & Income & +0.&0010 & --0.&0006 \\
  mice & Income & --0.&0008 & +0.&0002 \\
- ha.omit & Income & --0.&5771 & --0.&2564 \\
+ na.omit & Income & --0.&5771 & --0.&2564 \\
  true & Age & 50.&0410 & 52.&8230 \\
  hd.ord & Age & --0.&2889 & --0.&2350 \\
  hot.deck & Age & --0.&5431 & --0.&4664 \\
  amelia & Age & +0.&0018 & +0.&0085 \\
  mice & Age & +0.&0024 & --0.&0002 \\ 
- ha.omit & Age & --1.&1521 & --1.&1228 \\
+ na.omit & Age & --1.&1521 & --1.&1228 \\
  \hline \\[-1.8ex] 
 \end{tabular} 
 \begin{tablenotes}[para,flushleft]

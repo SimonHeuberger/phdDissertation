@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  23 MAR 2021 22:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  7 APR 2021 17:10
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -783,14 +783,18 @@ Overfull \hbox (70.77843pt too wide) in paragraph at lines 431--432
 [][][]\OT1/cmr/m/n/12 http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.703.5878&rep=rep1&type=pdf[][] 
  []
 
-[9]
+[9] [10] [11]
+LaTeX Font Info:    Trying to load font information for U+euf on input line 527.
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/ueuf.fd
+File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
+)
 \Changes@OutFile=\write5
 \openout5 = `02_ordinal_blocking.soc'.
 
 \tf@loc=\write6
 \openout6 = `02_ordinal_blocking.loc'.
 
- [10]
+ [12]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 532.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 532.
  (/Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/02_ordinal_blocking.aux)
@@ -801,18 +805,18 @@ Package rerunfilecheck Info: File `02_ordinal_blocking.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 532.
  ) 
 Here is how much of TeX's memory you used:
- 20806 strings out of 480608
- 381928 string characters out of 5903631
- 651532 words of memory out of 5000000
- 36219 multiletter control sequences out of 15000+600000
- 542055 words of font info for 63 fonts, out of 8000000 for 9000
+ 20824 strings out of 480608
+ 382226 string characters out of 5903631
+ 651531 words of memory out of 5000000
+ 36229 multiletter control sequences out of 15000+600000
+ 542999 words of font info for 67 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  79i,6n,89p,970b,497s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on /Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/02_ordinal_blocking.pdf (10 pages, 106852 bytes).
+{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/euler/eufm10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
+Output written on /Users/simonheuberger/dissertation/diss/outlines/.texpadtmp/02_ordinal_blocking.pdf (12 pages, 146718 bytes).
 PDF statistics:
- 126 PDF objects out of 1000 (max. 8388607)
- 90 compressed objects within 1 object stream
- 11 named destinations out of 1000 (max. 500000)
+ 152 PDF objects out of 1000 (max. 8388607)
+ 109 compressed objects within 2 object streams
+ 13 named destinations out of 1000 (max. 500000)
  109 words of extra memory for PDF output out of 10000 (max. 10000000)
 
