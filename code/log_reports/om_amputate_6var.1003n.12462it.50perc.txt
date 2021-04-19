@@ -1,410 +1,0 @@
-
-R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
-Copyright (C) 2019 The R Foundation for Statistical Computing
-Platform: x86_64-apple-darwin15.6.0 (64-bit)
-
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
-[Previously saved workspace restored]
-
-> 
-> library(dplyr)
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-> library(hot.deck)
-Loading required package: mice
-Loading required package: lattice
-
-Attaching package: ‘mice’
-
-The following objects are masked from ‘package:base’:
-
-    cbind, rbind
-
-> library(magrittr)
-> library(rlist)
-> library(Amelia)
-Loading required package: Rcpp
-## 
-## Amelia II: Multiple Imputation
-## (Version 1.7.5, built: 2018-05-07)
-## Copyright (C) 2005-2019 James Honaker, Gary King and Matthew Blackwell
-## Refer to http://gking.harvard.edu/amelia/ for more information
-## 
-> library(caret)
-Loading required package: ggplot2
-> 
-> load("OPMord.Rdata") 
-> load("OPMcut.Rdata") 
-> load("hot.deck.ord.Rdata") 
-> 
-> # Load the framing data
-> framing <- read.csv("second_framing_experiment.csv")
-> 
-> # Make all needed columns numeric/integer (needed for hot.deck())
-> framing <- mutate(framing,
-+                   Dem = ifelse(pid == "Democrat", 1, 0),
-+                   Rep = ifelse(pid == "Republican", 1, 0),
-+                   Ind = ifelse(pid == "Independent", 1, 0),
-+                   Cons = ifelse(ideol == "Conservative", 1, 0),
-+                   Lib = ifelse(ideol == "Liberal", 1, 0),
-+                   Black = ifelse(race == "Black or African-American", 1, 0),
-+                   Hisp = ifelse(race == "Hispanic", 1, 0),
-+                   White = ifelse(race == "White", 1, 0),
-+                   Arab = ifelse(race == "Arabic", 1, 0),
-+                   Asian = ifelse(race == "Asian", 1, 0),
-+                   Female = ifelse(gender == "Female", 1, 0),
-+                   Male = ifelse(gender == "Male", 1, 0),
-+                   Empl = ifelse(empl == "Employed full time outside of the home" |
-+                                   empl == "Employed part time outside of the home", 1, 0),
-+                   Unempl = ifelse(empl == "Unemployed", 1, 0),
-+                   Ret = ifelse(empl == "Retired", 1, 0),
-+                   Stud = ifelse(empl == "Student", 1, 0)
-+                   )
-> 
-> 
-> # Select needed columns and save complete data under a different name
-> # interest: following public affairs (ordinal, 4 levels)
-> # media: media consumption (numeric, accumulative count of activities)
-> # part: political participation (numeric, accumulative count of activities)
-> framing_true <- framing <- framing[, c("Dem", "Rep", "Ind", "Cons", "Lib", "Black", "Hisp",         
-+                                        "White", "Asian", "Female", "Male", "Empl", "Unempl",        
-+                                        "Ret", "Stud", "interest", "media", "part", "inc",           
-+                                        "age", "educ")]                                              
-> 
-> 
-> # identify and discard highly collinear variables
-> coll.var <- framing_true %>% cor() %>% abs() %>% findCorrelation(., cutoff = .7) %>% sort()         
-> framing_true <- framing_true[,-c(coll.var)]                                                         
-> # save name of all EVs
-> all.evs <- colnames(framing_true)[-which(colnames(framing_true) == "educ")]                         
-> 
-> # variables to insert NAs into
-> add.nas.columns <- c("Dem", "inc", "age", "White", "Female", "interest")                            
-> # separate framing_true into columns with and without NAs
-> no.nas <- framing_true[,!names(framing_true) %in% add.nas.columns]                                  
-> yes.nas <- framing_true[,names(framing_true) %in% add.nas.columns]
-> 
-> # the proportions of NAs to insert
-> prop <- .5      
-> # number of imputations (https://stats.stackexchange.com/questions/219013/how-do-the-number-of-imputations-the-maximum-iterations-affect-accuracy-in-mul)
-> m <- prop*100
-> 
-> # imputation methods
-> methods <- c("hd.ord", "hd.norm.orig", "amelia", "mice", "na.omit")                                 
-> # methods <- c("hd.ord", "hd.norm.cut", "hd.norm.orig", "amelia", "mice", "na.omit")
-> 
-> # true variable means
-> true <- sapply(framing_true[, add.nas.columns], mean)                                               
-> # minimum number of rows int.df needs to have (see below) 
-> min.row <- framing_true$educ %>% unique() %>% length-1
-> # empty list to store OPMord output
-> OPMord.frame <- list()
-> 
-> mc.iterations <- 12500
-> # set up the percentage progress bar across the sampled numbers
-> pb <- txtProgressBar(min = 1, max = mc.iterations, style = 3)                                       
-> 
->   for(mc in 1:mc.iterations){
-+     # load the percentage progress bar into the loop
-+     setTxtProgressBar(pb, mc)                                                                       
-+     # combine columns with NAs and columns without NAs
-+     framing.nas <- cbind(no.nas, ampute(yes.nas, prop = prop, mech = "MAR")$amp)                    
-+     # run ordinal polr() function on data
-+     OPMord.frame[[mc]] <- OPMord(data = framing.nas, dv = "educ", evs = all.evs)                    
-+ 
-+       # print whenever int.df doesn't have all rows, which means it doesn't have all education levels (6 rows for 7 levels)
-+       if(OPMord.frame[[mc]]$int.df %>% nrow() < min.row){                                           
-+         print("Fewer than original levels")                                                         
-+       }                                                                                       
-+   }
-  |                                                                              |                                                                      |   0%
-Attaching package: ‘MASS’
-
-The following object is masked from ‘package:dplyr’:
-
-    select
-
-
-Attaching package: ‘data.table’
-
-The following objects are masked from ‘package:dplyr’:
-
-    between, first, last
-
-  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |==                                                                    |   4%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%[1] "Fewer than original levels"
-  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   6%  |                                                                              |=====                                                                 |   7%[1] "Fewer than original levels"
-  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%[1] "Fewer than original levels"
-  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%[1] "Fewer than original levels"
-  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |=========                                                             |  14%  |                                                                              |==========                                                            |  14%[1] "Fewer than original levels"
-  |                                                                              |==========                                                            |  15%  |                                                                              |===========                                                           |  15%  |                                                                              |===========                                                           |  16%  |                                                                              |============                                                          |  16%  |                                                                              |============                                                          |  17%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  18%[1] "Fewer than original levels"
-[1] "Fewer than original levels"
-  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  19%[1] "Fewer than original levels"
-  |                                                                              |==============                                                        |  20%[1] "Fewer than original levels"
-[1] "Fewer than original levels"
-  |                                                                              |==============                                                        |  21%  |                                                                              |===============                                                       |  21%[1] "Fewer than original levels"
-[1] "Fewer than original levels"
-[1] "Fewer than original levels"
-  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  22%  |                                                                              |================                                                      |  23%  |                                                                              |================                                                      |  24%  |                                                                              |=================                                                     |  24%  |                                                                              |=================                                                     |  25%  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |===================                                                   |  28%[1] "Fewer than original levels"
-  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  29%  |                                                                              |=====================                                                 |  30%[1] "Fewer than original levels"
-  |                                                                              |=====================                                                 |  31%  |                                                                              |======================                                                |  31%  |                                                                              |======================                                                |  32%  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%[1] "Fewer than original levels"
-  |                                                                              |=======================                                               |  34%  |                                                                              |========================                                              |  34%  |                                                                              |========================                                              |  35%[1] "Fewer than original levels"
-  |                                                                              |=========================                                             |  35%  |                                                                              |=========================                                             |  36%  |                                                                              |==========================                                            |  36%  |                                                                              |==========================                                            |  37%  |                                                                              |==========================                                            |  38%  |                                                                              |===========================                                           |  38%  |                                                                              |===========================                                           |  39%[1] "Fewer than original levels"
-  |                                                                              |============================                                          |  39%  |                                                                              |============================                                          |  40%  |                                                                              |============================                                          |  41%  |                                                                              |=============================                                         |  41%  |                                                                              |=============================                                         |  42%  |                                                                              |==============================                                        |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |==============================                                        |  44%  |                                                                              |===============================                                       |  44%  |                                                                              |===============================                                       |  45%[1] "Fewer than original levels"
-  |                                                                              |================================                                      |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |=================================                                     |  48%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%[1] "Fewer than original levels"
-[1] "Fewer than original levels"
-  |                                                                              |===================================                                   |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |===================================                                   |  51%  |                                                                              |====================================                                  |  51%[1] "Fewer than original levels"
-[1] "Fewer than original levels"
-  |                                                                              |====================================                                  |  52%[1] "Fewer than original levels"
-  |                                                                              |=====================================                                 |  52%[1] "Fewer than original levels"
-  |                                                                              |=====================================                                 |  53%  |                                                                              |=====================================                                 |  54%  |                                                                              |======================================                                |  54%  |                                                                              |======================================                                |  55%  |                                                                              |=======================================                               |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  56%  |                                                                              |========================================                              |  57%[1] "Fewer than original levels"
-  |                                                                              |========================================                              |  58%  |                                                                              |=========================================                             |  58%[1] "Fewer than original levels"
-  |                                                                              |=========================================                             |  59%  |                                                                              |==========================================                            |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |==========================================                            |  61%  |                                                                              |===========================================                           |  61%[1] "Fewer than original levels"
-  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  63%  |                                                                              |============================================                          |  64%  |                                                                              |=============================================                         |  64%[1] "Fewer than original levels"
-  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  66%  |                                                                              |===============================================                       |  67%[1] "Fewer than original levels"
-  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |=================================================                     |  71%  |                                                                              |==================================================                    |  71%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |===================================================                   |  74%  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%[1] "Fewer than original levels"
-  |                                                                              |=====================================================                 |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  76%  |                                                                              |======================================================                |  77%  |                                                                              |======================================================                |  78%[1] "Fewer than original levels"
-  |                                                                              |=======================================================               |  78%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  79%  |                                                                              |========================================================              |  80%[1] "Fewer than original levels"
-[1] "Fewer than original levels"
-  |                                                                              |========================================================              |  81%[1] "Fewer than original levels"
-  |                                                                              |=========================================================             |  81%  |                                                                              |=========================================================             |  82%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |==========================================================            |  84%  |                                                                              |===========================================================           |  84%  |                                                                              |===========================================================           |  85%  |                                                                              |============================================================          |  85%  |                                                                              |============================================================          |  86%  |                                                                              |=============================================================         |  86%  |                                                                              |=============================================================         |  87%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  88%  |                                                                              |==============================================================        |  89%[1] "Fewer than original levels"
-  |                                                                              |===============================================================       |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |===============================================================       |  91%  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |=================================================================     |  94%  |                                                                              |==================================================================    |  94%[1] "Fewer than original levels"
-  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |====================================================================  |  98%  |                                                                              |===================================================================== |  98%[1] "Fewer than original levels"
-  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================|  99%  |                                                                              |======================================================================| 100%> 
-> 
-> # empty vector to store numbers rows of int.dfs
-> empty <- c()
->   # extract numbers of rows of int.dfs
->   for (i in 1:mc.iterations){                                                                       
-+     empty[i] <- OPMord.frame[[i]]$int.df %>% nrow()                                           
-+   }
-> # show how many int.dfs don't have all education levels
-> table(empty)                                                                                        
-empty
-    5     6 
-   38 12462 
-> 
-> 
->   # remove all data that don't have all education levels and overwrite output
->   if(all.equal(length(empty), sum(empty == min.row)) != TRUE){                                      
-+     OPMord.frame <- list.remove(OPMord.frame, which(empty != min.row)) 
-+   }else{
-+     OPMord.frame <- OPMord.frame
-+   }
-> 
-> # empty list of lists of vectors to store results
-> results.list <- rep(list(rep(list(c()), length(methods))), length(add.nas.columns))                 
-> # name first list after variables with NAs
-> names(results.list) <- add.nas.columns                                                              
-> 
->   # name second lists after methods
->   for (t in 1:length(add.nas.columns)){                                                             
-+     names(results.list[[t]]) <- methods 
-+   }
-> 
-> 
-> 
-> pb <- txtProgressBar(min = 1, max = length(OPMord.frame), style = 3)
-> 
->   for(n in 1:length(OPMord.frame)){
-+     setTxtProgressBar(pb, n)
-+     # replace ordinal values with mid-cutpoints
-+     OPMcut.frame <- OPMcut(data = OPMord.frame[[n]]$data.full.nas,                                  
-+                            dv = "educ", OPMordOut = OPMord.frame[[n]]) 
-+     # run hot.deck.ord() on OPMcut education values, which scales the ordinal variable
-+     hd.ord.frame <- hot.deck.ord(OPMcut.frame, m = m, ord = "educ", 
-+                                  sdCutoff = sd(OPMcut.frame$educ), method = "best.cell")            
-+     # hd.norm.cut.frame <- hot.deck(OPMcut.frame, m = m, sdCutoff = sd(OPMcut.frame$educ), 
-+     #                               method = "best.cell") # run normal hot.deck() on OPMcut values
-+     # run normal hot.deck() on original education values
-+     hd.norm.orig.frame <- hot.deck(OPMord.frame[[n]]$data.full.nas, m = m,                          
-+                                    sdCutoff = sd(OPMord.frame[[n]]$data.full.nas$educ), 
-+                                    method = "best.cell") 
-+     # run amelia() on original education values (ps2 sets the console printing)
-+     am.orig.frame <- amelia(OPMord.frame[[n]]$data.full.nas, m = m, p2s = 0)                        
-+     # run mice() on original education values (print sets the console)
-+     mice.orig.frame <- mice(OPMord.frame[[n]]$data.full.nas, m = m, print = FALSE)                  
-+ 
-+     # empty dfs to store variable means
-+     # means.mice.orig <- means.am.orig <- means.hd.norm.cut <-means.hd.norm.orig <- means.hd.ord <-
-+     #   data.frame(matrix(NA, m, length(add.nas.columns))) # empty dfs to store variable means
-+     means.mice.orig <- means.am.orig <- means.hd.norm.orig <- means.hd.ord <-                       
-+       data.frame(matrix(NA, m, length(add.nas.columns))) 
-+     # which rows and columns have NAs
-+     na.rows.cols <- which(is.na(OPMord.frame[[n]]$data.full.nas), arr.ind=TRUE)                     
-+     # which column numbers have NAs in them
-+     na.cols <- na.rows.cols %>% .[,2] %>% unique()                                                  
-+   
-+       # fill in means dfs
-+       for (x in 1:length(na.cols)){                                                                 
-+         for (i in 1:m){
-+           means.hd.ord[i,x] <- hd.ord.frame$data[[i]] %>% .[, add.nas.columns[x]] %>% mean()
-+           # means.hd.norm.cut[i,x] <- hd.norm.cut.frame$data[[i]] %>% 
-+           #   .[, add.nas.columns[x]] %>% 
-+           #   mean()
-+           means.hd.norm.orig[i,x] <- hd.norm.orig.frame$data[[i]] %>%
-+             .[, add.nas.columns[x]] %>%
-+             mean()
-+           means.am.orig[i,x] <- am.orig.frame$imputations[[i]] %>%
-+             .[, add.nas.columns[x]] %>%
-+             mean()
-+           means.mice.orig[i,x] <- mice::complete(mice.orig.frame, action = i) %>%
-+             .[, add.nas.columns[x]] %>%
-+             mean()
-+         }
-+       }
-+ 
-+     # take mean of each means df
-+     hd.ord <- sapply(means.hd.ord, mean)                                                            
-+     # hd.norm.cut <- sapply(means.hd.norm.cut, mean)
-+     hd.norm.orig <- sapply(means.hd.norm.orig, mean)
-+     am.orig <- sapply(means.am.orig, mean)
-+     mice.orig <- sapply(means.mice.orig, mean)
-+     # take means of variables from data without NAs
-+     na.omit <- sapply(OPMord.frame[[n]]$data.short.na.omit[, add.nas.columns], mean)                
-+ 
-+       # fill in results.list
-+       for (ss in 1:length(add.nas.columns)){                                                        
-+         results.list[[ss]][["hd.ord"]][n] <- hd.ord[ss]
-+         # results.list[[ss]][["hd.norm.cut"]][n] <- hd.norm.cut[ss]
-+         results.list[[ss]][["hd.norm.orig"]][n] <- hd.norm.orig[ss]
-+         results.list[[ss]][["amelia"]][n] <- am.orig[ss]
-+         results.list[[ss]][["mice"]][n] <- mice.orig[ss]
-+         results.list[[ss]][["na.omit"]][n] <- na.omit[ss]
-+       }
-+   
-+   }
-  |                                                                              |                                                                      |   0%  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |==                                                                    |   4%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |=========                                                             |  14%  |                                                                              |==========                                                            |  14%  |                                                                              |==========                                                            |  15%  |                                                                              |===========                                                           |  15%  |                                                                              |===========                                                           |  16%  |                                                                              |============                                                          |  16%  |                                                                              |============                                                          |  17%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |==============                                                        |  21%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  22%  |                                                                              |================                                                      |  23%  |                                                                              |================                                                      |  24%  |                                                                              |=================                                                     |  24%  |                                                                              |=================                                                     |  25%  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |===================                                                   |  28%  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  29%  |                                                                              |=====================                                                 |  30%  |                                                                              |=====================                                                 |  31%  |                                                                              |======================                                                |  31%  |                                                                              |======================                                                |  32%  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |=======================                                               |  34%  |                                                                              |========================                                              |  34%  |                                                                              |========================                                              |  35%  |                                                                              |=========================                                             |  35%  |                                                                              |=========================                                             |  36%  |                                                                              |==========================                                            |  36%  |                                                                              |==========================                                            |  37%  |                                                                              |==========================                                            |  38%  |                                                                              |===========================                                           |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  39%  |                                                                              |============================                                          |  40%  |                                                                              |============================                                          |  41%  |                                                                              |=============================                                         |  41%  |                                                                              |=============================                                         |  42%  |                                                                              |==============================                                        |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |==============================                                        |  44%  |                                                                              |===============================                                       |  44%  |                                                                              |===============================                                       |  45%  |                                                                              |================================                                      |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |=================================                                     |  48%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%  |                                                                              |===================================                                   |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |===================================                                   |  51%  |                                                                              |====================================                                  |  51%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |=====================================                                 |  54%  |                                                                              |======================================                                |  54%  |                                                                              |======================================                                |  55%  |                                                                              |=======================================                               |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  56%  |                                                                              |========================================                              |  57%  |                                                                              |========================================                              |  58%  |                                                                              |=========================================                             |  58%  |                                                                              |=========================================                             |  59%  |                                                                              |==========================================                            |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |==========================================                            |  61%  |                                                                              |===========================================                           |  61%  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  63%  |                                                                              |============================================                          |  64%  |                                                                              |=============================================                         |  64%  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |=================================================                     |  71%  |                                                                              |==================================================                    |  71%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |===================================================                   |  74%  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%  |                                                                              |=====================================================                 |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  76%  |                                                                              |======================================================                |  77%  |                                                                              |======================================================                |  78%  |                                                                              |=======================================================               |  78%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  79%  |                                                                              |========================================================              |  80%  |                                                                              |========================================================              |  81%  |                                                                              |=========================================================             |  81%  |                                                                              |=========================================================             |  82%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |==========================================================            |  84%  |                                                                              |===========================================================           |  84%  |                                                                              |===========================================================           |  85%  |                                                                              |============================================================          |  85%  |                                                                              |============================================================          |  86%  |                                                                              |=============================================================         |  86%  |                                                                              |=============================================================         |  87%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |===============================================================       |  91%  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |=================================================================     |  94%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |====================================================================  |  98%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================|  99%  |                                                                              |======================================================================| 100%There were 50 or more warnings (use warnings() to see the first 50)
-> 
-> 
-> saveRDS(results.list, file = paste0("results.", length(add.nas.columns), "var.", 
-+                                     nrow(framing_true), "n.", length(OPMord.frame), "it.", 
-+                                     prop*100, "perc.rds"))
-> 
-> # results.list
-> # 
-> # 
-> # 
-> # # output <- readRDS("results.6var.1003n.5it.80perc.rds")
-> # output <- readRDS("results.6var.1003n.10566it.80perc.rds")
-> # 
-> # results <- data.frame(cbind(
-> #   "method" = rep(c("true", methods), length(add.nas.columns)),
-> #   "variable" = rep(add.nas.columns, each = length(methods)+1),
-> #   "value" = rep(NA, (length(methods)+1)*length(add.nas.columns)),
-> #   "diff" = rep(NA, (length(methods)+1)*length(add.nas.columns))
-> #   ))
-> # results$value <- as.numeric(results$value)
-> # results$diff <- as.numeric(results$diff)
-> # 
-> # 
-> #   for (xs in 1:length(add.nas.columns)){
-> #     results$value[results$method == "true" & results$variable == add.nas.columns[xs]] <- true[xs]
-> #       for(vv in 1:length(methods)){
-> #         results$value[results$method == methods[vv] & results$variable == add.nas.columns[xs]] <- 
-> #           output[[add.nas.columns[xs]]][[methods[vv]]] %>% mean()
-> #       }
-> #   }
-> # 
-> # results[, "value"] <- results[, "value"] %>% round(., digits = 4)
-> # 
-> # 
-> # for(vv in 1:length(add.nas.columns)){
-> #   results$diff[results$variable == add.nas.columns[vv]] <- 
-> #     results$value[results$variable == add.nas.columns[vv]] - 
-> #     results$value[results$variable == add.nas.columns[vv] & results$method == "true"]
-> # }
-> # 
-> # results
-> 
-> 
-> # dd <- data.frame(cbind(
-> #   "method" = rep(c("true", methods), length(add.nas.columns)),
-> #   "variable" = rep(add.nas.columns, each = length(methods)+1),
-> #   "value" = rep(NA, (length(methods)+1)*length(add.nas.columns))
-> #   ))
-> # dd$value <- as.numeric(dd$value)
-> # 
-> # 
-> # for (xs in 1:length(add.nas.columns)){
-> #   dd$value[dd$method == "true" & dd$variable == add.nas.columns[xs]] <- true[xs]
-> #   dd$value[dd$method == "hd.ord" & dd$variable == add.nas.columns[xs]] <- output[[add.nas.columns[xs]]][["hd.ord"]] %>% mean()
-> #   dd$value[dd$method == "hd.norm.orig" & dd$variable == add.nas.columns[xs]] <- output[[add.nas.columns[xs]]][["hd.norm.orig"]] %>% mean()
-> #   dd$value[dd$method == "amelia" & dd$variable == add.nas.columns[xs]] <- output[[add.nas.columns[xs]]][["amelia"]] %>% mean()
-> #   dd$value[dd$method == "mice" & dd$variable == add.nas.columns[xs]] <- output[[add.nas.columns[xs]]][["mice"]] %>% mean()
-> #   dd$value[dd$method == "na.omit" & dd$variable == add.nas.columns[xs]] <- output[[add.nas.columns[xs]]][["na.omit"]] %>% mean()
-> # }
-> # 
-> # dd
-> # 
-> # all.equal(dd, results)
-> 
-> 
-> # results <- data.frame(cbind(
-> #   c("true", methods),
-> #   c(unname(true["Rep"]),
-> #     r.rep[["hd.ord"]] %>% mean,
-> #     r.rep[["hd.norm"]] %>% mean,
-> #     r.rep[["na.omit"]] %>% mean),
-> #   c(unname(true["inc"]),
-> #     r.inc[["hd.ord"]] %>% mean,
-> #     r.inc[["hd.norm"]] %>% mean,
-> #     r.inc[["na.omit"]] %>% mean)
-> # ))
-> 
-> 
-> # # Old reading code
-> # r.rep <- readRDS("rep.1003n.10741it.80perc.rds")
-> # r.inc <- readRDS("inc.1003n.10741it.80perc.rds")
-> # 
-> # add.nas.columns <- c("Rep", "inc") 
-> # methods <- c("hd.ord", "hd.norm", "na.omit")
-> # true <- sapply(framing_true[, add.nas.columns], mean)
-> # 
-> # results <- data.frame(cbind(
-> #   c("true", methods),
-> #   c(unname(true["Rep"]),
-> #     r.rep[["hd.ord"]] %>% mean,
-> #     r.rep[["hd.norm"]] %>% mean,
-> #     r.rep[["na.omit"]] %>% mean),
-> #   c(unname(true["inc"]),
-> #     r.inc[["hd.ord"]] %>% mean,
-> #     r.inc[["hd.norm"]] %>% mean,
-> #     r.inc[["na.omit"]] %>% mean)
-> # ))
-> # 
-> # colnames(results) <- c("method", add.nas.columns)
-> # results[,add.nas.columns] <- sapply(results[,add.nas.columns], function(x)as.numeric(as.character(x)))
-> # 
-> # results[, "Rep.diff"] <- c(results[,"Rep"] - results[1,"Rep"])
-> # results[, "inc.diff"] <- c(results[,"inc"] - results[1,"inc"])
-> # results[,c(add.nas.columns, "Rep.diff", "inc.diff")] <- 
-> # sapply(results[,c(add.nas.columns, "Rep.diff", "inc.diff")], function(x)round(x, digits = 4))
-> # 
-> # results
-> # 
-> 
-> proc.time()
-      user     system    elapsed 
-122000.398   8581.638 130702.715 
