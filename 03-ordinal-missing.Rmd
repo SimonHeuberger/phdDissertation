@@ -1,0 +1,1329 @@
+# QUALITY COMPARISON OF MAJOR MISSING DATA SOLUTIONS WITH A PROPOSED NEW METHOD FOR ORDINAL VARIABLES {#ordmiss}
+
+## Introduction {#ordmiss-intro}
+
+```{r include=FALSE}
+# function to make all diff columns absolute values
+abs.diff <- function(df){
+  df$diff <- df$diff %>% abs
+  return(df)
+}
+
+# function to add a plus/minus sign for the diff numeric columns in data
+addPlus <- function (df, digits = 4){
+  x <- dplyr::select_if(df, is.numeric)
+  for(i in 1:ncol(x)){
+    x[,i] <- round(as.numeric(x[,i]), digits)
+    x[,i] <- sprintf(paste0("%.", digits, "f"), x[,i])
+    # x[,i] <- gsub("^0(?=\\.)|(?<=-)0", "", x[,i], perl = TRUE) # took it out because Jeff wants leading zeros ...
+  }
+  df[, colnames(x)] <- x
+  
+  for(i in 1:nrow(df)){
+    if(grepl("-", df$diff[i]) == FALSE){
+      df$diff[i] <- paste0("+", df$diff[i])
+    }else{
+      df$diff[i] <- paste0("-", df$diff[i])
+    }
+  }
+  return(df)
+}
+
+```
+
+```{r Levels Overall, include=FALSE}
+levs <- c("amelia", "hot.deck", "hd.ord", "mice", "na.omit", "true")
+col.names <- c("Method", "Variable", "ANES", "CCES")
+# col.names <- c("Method", "Variable", "ANES", "CCES", "Framing")
+```
+
+
+Missing data are ubiquitous in survey research [@allison_2002_missing;@raghunathan_2016_missing]. Respondents frequently refuse to answer questions, select "Don't Know" as a response option, or drop out during the response collection process [@honaker_2010_what]. Missingness in data sets poses a big problem since such data cannot be appropriately analyzed with statistical software without pre-processing [@little_2002_statistical;@molenberghs_2007_missing]. Scholars have developed several ways to treat missing data. These can be roughly categorized into deletion, single imputation, and multiple imputation. 
+
+Deletion, also called case-wise deletion, list-wise deletion or complete case analysis, simply removes all observations with missing values from the sample. Single imputation concerns the replacement of missing values with substitute estimates such as the mean, regression coefficients, or values from randomly drawn 'similar' respondents in the data. Multiple imputation estimates missing values from conditional distributions and subsequently averages the results into a single parameter of inference [@rubin_1976_inference;@king_2001_analyzing;@fay_1996_alternative].
+
+Multiple imputation has become the state of the art in missing data management since it accounts for and incorporates uncertainty around the estimated imputations through repeated draws [@andridge_2010_review; @graham_1999_performance; @schafer_2002_missing; @white_2011_multiple]. This is missing from single imputation techniques which treat the single estimated replacement value as a de-facto data entry on par with observed values. Uncertainty is not reflected in the imputed values, which leads to biased standard errors and confidence intervals [@kroh_2006_taking;@gill_2013_bayesian]. Similarly, list-wise deletion has been shown to induce bias with political data [@bodner_2008_what;@collins_2001_comparison;@moore_2012_loses;@pigott_review_2001;@rees_1997_methods;@reilly_1993_data].
+
+However, parametric multiple imputation as applied by the most popular imputation packages in `R` is not necessarily always the most suitable method for all types of variables. For discrete data, multiple hot deck imputation, a combination of the single imputation method hot decking and multiple imputation, proves more precise as it avoids the common multiple imputation technique of imputing discrete data on a continuous scale [@gill_2012_have]. The latter turns discrete variables into continuous variables which changes their nature and can result in non-observable and biased imputation values with artificially smaller standard errors [@fuller_2005_deck; @kim_2004_finite; @kim_2004_fractional]. Multiple hot deck imputation on the other hand preserves the integrity of discrete data, does not change the size of standard errors, and produces more accurate imputations. It estimates affinity scores for each missing value to measure how similar a respondent with a missing value is to another respondent across all variables except the missing one. 
+
+However, multiple hot deck imputation does not account for distances between ordinal variables as it is non-parametric. I propose an adaptation of the algorithm designed to impute discrete missing data specifically from ordinal variables. Because of the success of multiple hot deck imputation in its applicability to missing data with discrete variables with a small number of categories [@gill_2012_have], this method is based on multiple hot deck imputation and adapted to account for the specific circumstances of ordinal variables. Based on the ordered probit model approach described in section \ref{ordblock-theory-op}, it applies a scaled solution with newly estimated numerical thresholds from an assumed underlying latent continuous variable to measure the distances between the categories.
+
+
+
+## Theory {#ordmiss-theory}
+
+### Missing Data Mechanisms {#ordmiss-theory-mechanisms}
+
+Let there be $\bm{X}$, an $n \times v$ matrix with data on $n$ respondents for $v$ variables. Let there also be the response indicator $\bm{R}$ as an $n \times v$ matrix with values of 0 or 1. Let their respective elements be denoted by $x_{ij}$ and $r_{ij}$, with $i = 1, ..., n$ and $j = 1, ..., v$. If $x_{ij}$ is observed, $r_{ij} = 1$. If $x_{ij}$ is missing, $r_{ij} = 0$. All elements where $r_{ij} = 0$ make up the missing data, $\bm{X^{miss}}$. All elements where $r_{ij} = 1$ make up the observed data, $\bm{X^{obs}}$. Together, $\bm{X^{obs}}$ and $\bm{X^{miss}}$ form the complete data $\bm{X}$. Missing data can then generally be described by $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{X^{miss}}, \bm{\theta})$, i.e. the probability of missing data depends on the observed data, the missing data, and a vector of unknown parameters. Depending on the mechanism by which data is missing, this expression can be further simplified. Data can be missing by three basic mechanisms: It can be missing completely at random (MCAR), missing at random (MAR), or missing not at random (MNAR). Researchers need to make assumptions about how the data came to be missing. 
+
+The general missing data expression can be simplified under the MCAR assumption to $\text{prob}(\bm{R} = 0 | \bm{\theta})$, i.e. the generic probability of missing data, independent of the data themselves and only dependent on $\bm{\theta}$. A MCAR assumption in political science surveys is rare and requires justification as missing data most often occur systematically. Respondents are known to withhold sensitive data, for instance in the attempt to hide private information (income, sexual orientation) or out of fear of political or social repercussions in the community (union membership, support for polarizing political candidates) [@groves_survey_2009]. Such information is often not refused randomly but occurs only in specific subsets of respondents. Answers criticizing the authorities, for instance, tend to be missing in surveys in non-democratic states, while the state-loyal responses are present. 
+
+It is more commonly assumed among researchers that data are MAR. MAR means missing data are related to the observed but not the unobserved data. In practical terms, this for instance means missing data on income can be related to observed data on education or occupation. Here, the missing data are not a random sample of the entire data. MAR transforms the general missing data expression to $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{\theta})$, i.e. the chances of missing data depend on the observed data and $\bm{\theta}$.
+
+Finally, data can be MNAR.^[Data MNAR is also sometimes called 'non-ignorable' [see for instance @gill_2012_have and Allison, 2002].] This is the case when missing data are related to unknown and/or unobserved parameters. Continuing the example of missing data on income, under MNAR we do not observe data on education or occupation that can be used to fill the missing income data slot. In the case of data MNAR, the general missing data expression remains unchanged, $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{X^{miss}}, \bm{\theta})$, i.e. the missingness of data depends on the observed data, the missing data, and $\bm{\theta}$.
+
+As mentioned above, the assessment of the missing data mechanism underlying any respective data comes from researchers and their understanding of the data generating process. The statistical methods to address missing data can be broadly categorized into deletion, imputation, and multiple imputation.
+
+
+
+
+### List-Wise Deletion {#ordmiss-theory-delete}
+
+One of the most common methods of handling missing data in quantitative political science is list-wise deletion. This involves the removal of any incomplete observations, thereby reducing the sample size. The resulting sample is then ready for analysis. 
+
+List-wise deletion is not biased with data MCAR as it removes a random sample of the population, but it reduces the degrees of freedom and might hinder sub-group analysis [@allison_2002_missing; @king_2001_analyzing; @little_2002_statistical; @schafer_2002_missing]. When data are MAR or MNAR, list-wise deletion is always biased, since the observed data is tilted towards respondents with characteristics that make them more likely to respond. Whether this bias is trivial or substantial depends on the research and circumstances in question [@collins_2001_comparison; @diggle_1994_informative; @glynn_1993_multiple; @graham_1997_analysis; @robins_1998_semiparametric].
+
+While the bias inserted by list-wise deletion in each individual data analysis may not necessarily be drastic, studies have shown that it can be so severe as to alter substantive conclusions [@brown_1994_efficacy; @graham_1996_maximizing; @honaker_2010_what; @wothke_2000_longitudinal]. Even if that were not or only rarely the case and most data were MCAR, reducing the sample size is generally never a recommended approach as, among other aspects, standard errors from regression models are inflated. As @king_2001_analyzing put it, the result of list-wise deletion "is a loss of valuable information at best and severe selection bias at worst" (p. 49). In `R`, list-wise deletion can be implemented with the base function `na.omit`. 
+
+
+
+
+### Single Imputation {#ordmiss-theory-singimpute}
+
+Single imputation means replacing missing data with substituted values, i.e. the structural opposite of deletion. Imputation requires a predictive distribution, based on the observed data, from which value substitutions are picked. Single imputation, regardless of its exact nature, is not recommended to impute missing data since, similar to deletion, it downward biases standard errors and confidence intervals [@honaker_2010_what]. Crucially, uncertainty is not reflected in the imputed values [@little_2002_statistical]. The following is a mere selection of the most common single imputation methods and makes no claim of completeness. Since single imputation is widely condemned as a general imputation method and as my focus lies on multiple imputation, they are also brief.
+
+
+#### Mean {#ordmiss-theory-impute-mean}
+
+Mean imputation, sometimes also called unconditional mean imputation, involves replacing missing values within cells with the mean of the observed values, so $\bm{X^{miss}} = \bm{\overline{X^{obs}}}$. While it does not change the mean of the sample, this method distorts the empirical distribution of $\bm{X}$, which in turn produces biased estimates of any non-linear quantities such as variances and covariances [@haitovsky_1968_missing]. It is also bound to be inaccurate in most cases, since few values generally fall exactly on the mean, and can be non-sensical for discrete variables [@efron_1994_missing]. Mean imputation can be done in many ways in `R`, for instance with the `impute` function in the `Hmisc` package or by setting `method = "mean"` in the `mice` function in the `mice` package. 
+
+
+#### Regression {#ordmiss-theory-impute-regress}
+
+Imputation by regression, sometimes also called conditional mean imputation, imputes missing values conditional on observed values. Researchers predict observed variable values based on other variables, while the fitted values from the regression model are then used to impute variable values where they are missing. Let there be an explanatory variable $x$ in a multiple regression model. Assume that $x$ contains missing values, $x^{miss}$, and observed values, $x^{obs}$. We regress $x^{obs}$ on the other explanatory variables and use the estimated equation to generate predicted values for $x^{miss}$, $x^{pred}$. $x^{pred}$ then replace $x^{miss}$, thus completing the data set. While more accurate than mean imputation, particularly for large samples with data MCAR, regression imputation nonetheless suffers from the same flaw that accompanies all single imputation approaches: Uncertainty is not reflected in the imputed values [@horton_2007_much].
+
+Differing variations of imputation by regression exist in `R`, such as the `aregImpute` function in the `Hmisc` package, which performs additive regression, and setting `method = "norm.predict"` in the `mice` function to conduct linear regression. The `predict` function in base `R` also applies linear regression imputation.
+
+
+#### Hot Decking {#ordmiss-theory-impute-hd}
+
+Hot deck imputation was developed in the 1970s and replaces missing values with values from similar respondents in the sample [@ernst_1978_weighting; @ford_1983_overview]. It is called 'hot decking' as a reference to taking draws from a deck of matching computer punch-cards. The deck was 'hot' since it was currently being processed, as opposed to pre-collected or 'cold' data [@andridge_2010_review; @little_2002_statistical]. In the most general version, researchers select all respondents that are 'similar' to a respondent with missing data and randomly draw one of those respondents (with replacement) to fill in the missing value. The respondent with the initially missing value is termed the \textit{recipient}, while the 'similar' respondent is called the \textit{donor}. Variations of the method include hot decking within adjustment cells, by nearest neighbor, and sequentially ordered by a covariate [@cox_1980_weighted; @david_1986_alternative; @kaiser_1983_effectiveness; @kalton_1981_efficient; @rockwell_1975_investigation].
+
+Contrary to mean or regression imputation, hot deck imputation preserves the integrity of the data, i.e. only actually observed values are used to fill in missing slots [@bailar_1997_comparison]. In both other single imputation methods, it is possible and sometimes even likely that missing values are replaced by values not found amongst the observed values. Contrary to regression imputation, hot decking also does not require a fitted model and is thus less vulnerable to model misspecification. However, hot decking does necessitate the existence of at least some donors for a respondent at every variable value that is missing. With a lot of missing data and few 'similar' matches, the accuracy of hot decking greatly decreases [@young_2011_survey]. Hot decking works best for discrete data as continuous data are very unlikely to be matched or 'similar', though the definition of what might constitute a 'similar' respondent is somewhat subjective [@marker_2002_large-scale]. As is the case with all single imputation methods, uncertainty is not reflected in the imputed values. Selecting the initial sample of 'similar' respondents and the subsequent random sampling from that subsampling are treated as factual responses, which leads to smaller standard errors and confidence intervals than statistically valid [@little_2002_statistical].
+
+Several `R` packages currently apply differing variants of hot deck imputation [@cho_2020_package;@dorazio_2020_package;@templ_2021_package]. Hot decking is also in use by some government statistics agencies such as the National Center for Education Statistics (for parts of the Current Population Survey) or the U.S. Bureau of the Census [@census_2002_current; @education-statistics_2002_nces].
+
+
+
+
+### Multiple Imputation {#ordmiss-theory-multimpute}
+
+Multiple imputation was invented by Rubin in the 1970s to account for the absence of uncertainty in single imputation methods and allow more accurate standard error estimates. It fills missing values with a predictive model that includes observed data and prior knowledge [@honaker_2010_what]. Over the time of its development, it has become the dominant sophisticated strategy for handling missing data [@dempster_1977_maximum; @glynn_1993_multiple; @heitjan_1991_ignorability; @little_2002_statistical; @rubin_1976_inference; @rubin_1986_multiple; @rubin_1987_multiple; @rubin_1996_multiple]. Multiple imputation involves three general steps:
+
+\vspace{0.3cm}
+\begin{adjustwidth*}{+0.5cm}{+0.5cm}
+\ssp
+\begin{enumerate}
+\item \noindent Impute data with missing values $m$ times. This results in $i$ complete
+ \begin{sloppypar}\hspace{0.5cm} data sets (with $i = 1, ..., m$).\end{sloppypar}
+\item Analyze each of the $i$ complete data sets.
+\item Combine the results from each of the $i$ analyses into one collective result.
+\end{enumerate}
+\end{adjustwidth*}
+\vspace{0.3cm}
+
+\ssp
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    \node [block3] (ds) {\scriptsize{Data set with missing values}};
+    \node [block2r, above right=1.2cm and 1.8cm of ds] (imp1) {\scriptsize{Imputed data set 1}};
+    \node [block2r, above right=-0.4cm and 1.8cm of ds] (imp2) {\scriptsize{Imputed data set 2}};
+    \node [block2r, below right=1.2cm and 1.8cm of ds] (impi) {\scriptsize{Imputed data set $i$}};
+	\coordinate[right=0cm of ds] (dsc);
+	\coordinate[left=0cm of imp1] (imp1lc);	
+	\coordinate[left=0cm of imp2] (imp2lc);	
+	\coordinate[left=0cm of impi] (impilc);	
+	\path [line] (dsc) -- (imp1lc);
+	\path [line] (dsc) -- (imp2lc);
+	\path (imp2) --node[auto=false]{\Large{\vdots}} (impi);
+	\path [line] (dsc) -- (impilc);
+    \node [block2r, right=1cm of imp1] (results1) {\scriptsize{Results 1}};
+    \node [block2r, right=1cm of imp2] (results2) {\scriptsize{Results 2}};
+    \node [block2r, right=1cm of impi] (resultsi) {\scriptsize{Results $i$}};
+	\coordinate[right=0cm of imp1] (imp1rc);
+	\coordinate[right=0cm of imp2] (imp2rc);
+	\coordinate[right=0cm of impi] (impirc);
+	\coordinate[left=0cm of results1] (results1lc);	
+	\coordinate[left=0cm of results2] (results2lc);	
+	\coordinate[left=0cm of resultsi] (resultsilc);	
+	\path [line] (imp1rc) -- (results1lc);
+	\path [line] (imp2rc) -- (results2lc);
+	\path (results2) --node[auto=false]{\Large{\vdots}} (resultsi);
+	\path [line] (impirc) -- (resultsilc);
+    \node [block3, below right=1.2cm and 1.8cm of results1] (results) {\scriptsize{Combined result}};
+	\coordinate[left=0cm of results] (resultsc);
+	\coordinate[right=0cm of results1] (results1rc);	
+	\coordinate[right=0cm of results2] (results2rc);	
+	\coordinate[right=0cm of resultsi] (resultsirc);	
+	\path [line] (results1rc) -- (resultsc);
+	\path [line] (results2rc) -- (resultsc);
+	\path [line] (resultsirc) -- (resultsc);
+\end{tikzpicture}
+\caption{Multiple Imputation Workflow} 
+\label{mi-workflow}
+\end{figure}
+
+\dsp
+
+Figure \ref{mi-workflow} provides a graphical overview of this workflow. Each missing value is imputed $m$ times from a conditional distribution using other present values for the respective value to create $i$ imputed complete data sets. The chosen statistical analysis $\bm{\tau}$, for instance a regression model, is applied to each of these $i$ data sets, resulting in $\bm{\tau_{i}}$, with $i = 1, ..., m$. Averaging $\bm{\tau_{i}}$ then gives us the single estimate, $\bm{\overline{\tau}}$. Together, this is expressed as: 
+
+\begin{align}
+\overline{\tau} = \frac{1}{m}\sum\limits_{i=1}^{m} \tau_{i}.
+\end{align}
+
+
+Following @rubin_1987_multiple, the total variance of $\bm{\overline{\tau}}$, $\bm{Var_T}$ consists of the mean variance of $\bm{\tau_i}$ within each data set $i$, $\bm{\overline{Var_W}}$, and the sample variance of $\bm{\tau}$ across both data sets, $\bm{Var_A}$:
+
+\begin{align}
+\overline{Var_W} &= \frac{1}{m} \sum\limits_{i=1}^{m} SE(\tau_i)^2\\
+Var_A &= \sum\limits_{i=1}^{m} \frac{(\tau_{i} - \overline{\tau})^2}{m -1}\\
+Var_T &= \overline{Var_W} + Var_A.
+\end{align}
+
+Multiplied by a factor correcting for small numbers of $m$ (as $m < \infty$), $\bm{Var_T}$ is adjusted to 
+
+\begin{align}
+Var_T = \overline{Var_W} + Var_A (1 + \frac{1}{m}).
+\end{align}
+
+
+Each imputed complete data set is identical to all other imputed complete data sets, with the exception of the imputed value. The imputed values for a missing value differ with each imputation of $\bm{M}$ in order to reflect uncertainty levels. The 'multiple' part of the imputation is a crucial aspect here since each imputation run will produce slightly different parameter estimates. Imputing multiple times and then averaging the results creates variability to adjust the standard errors upward, with the latter step taking the same form as an ANOVA calculation [@kroh_2006_taking]. This deliberate random variation included in a deterministic multiple imputation run removes the overconfidence from single imputation, where the standard error estimates are too low [@schafer_2002_missing]. In a case where the utilized multiple imputation model predicts missing values well, variation across the imputed values is small. In other cases, variation may be larger, depending on the level of certainty we have about the missing value. Multiple imputation has been shown to produce consistent, asymptotically efficient and normal estimates for a variety of data MAR [@allison_2002_missing]. It is also advised for data MCAR in order to retain degrees of freedom.
+
+Choosing $m$, the number of imputations, is somewhat subjective. Originally, $m = 5$ was considered sufficient based on efficiency calculations [@rubin_1987_multiple] and is still the default in most software packages. More recent discussions stress the need for an increase of $m$ in order to estimate more nuanced standard errors. Various approaches continue to coexist, such as focusing on the parameter with the largest fraction of missing information [@kroh_2006_taking] or starting with $m = 5$ and gradually increasing it in subsequent runs [@raghunathan_2016_missing]. The most common current practice appears to be to set $m$ to the percentage of missing data, i.e. if 20 percent of data are missing, $m = 20$ [@bodner_2008_what; @white_2011_multiple]. 
+
+There are numerous ways to implement multiple imputation. Up until the late 1990s, this required considerable statistical knowledge and sophisticated methodological skills [see @honaker_2010_what for an overview]. The use of multiple imputation was thus limited to a rather specialized audience of statisticians and methodologists. Since then, numerous `R` packages have emerged to facilitate user-friendliness. The by far most popular packages are `mice` and `Amelia`. Since its inception in 2001, `mice` has been downloaded nearly 3 million times from CRAN at the time of writing. `Amelia` was created in 1998 and has been downloaded over 600,000 times. They are both considered among the very best implementations of multiple imputation [@horton_2007_much]. Any improvement in multiple imputation thus needs to be measured against them. `hot.deck`, the method by @gill_2012_have upon which my proposed method of multiple hot deck imputation with ordinal variables, `hd.ord`, is based, follows this approach and demonstrates improved results when compared to `Amelia`. I extend this with `hd.ord` and also include `mice` as a further benchmark of performance.
+
+The following sections do not cover the full list of functions available in each package, as this would go far beyond the scope of this chapter and fills articles of its own [e.g. @buuren_2007_multiple]. Instead, I will focus on the packages' core underlying mechanisms and their major functions to perform imputation, which are named after their package namesakes: `mice`, `amelia`, `hot.deck`, and `hd.ord`.^[For the remainder of this chapter and to avoid confusion, all names will refer to the functions unless explicitly stated otherwise.] I extend the focus on simplicity and user-friendliness further by running these major imputation functions with their default settings. Survey analysts usually do not possess the statistical expertise that enable them to dive deeply into distribution or chain properties. The vast majority of users can be assumed to use imputation functions with their default settings. If a package only proved superior over others by setting specific and highly technical function arguments, this would defeat the purpose of making multiple imputation the missing data approach for the masses. I apply only one very minor exception to the default settings by setting the number of imputations to the percentage of missingness instead of the default five.
+
+
+
+
+
+#### `mice`: Multivariate Imputation by Chained Equations {#ordmiss-theory-multimpute-mice}
+
+The `R` package `mice` was released in 2001 [@buuren_2000_multiple]. It stands for Multiple Imputation by Chained Equations (MICE), which means imputing incomplete multivariate data by full conditional specification [@buuren_2007_multiple; @buuren_2011_mice], a version of the imputation-posterior (IP) [@king_2001_analyzing]. Full conditional specification refers to imputation on a variable-by-variable basis, i.e. a set of conditional densities is used to impute data for each individual missing value. This approach does not require the specification of a multivariate distribution for the missing data, which separates it from competing methods like joint modeling [@schafer_1997_analysis]. The initial release of `mice` featured predictor selection, passive imputation, and automatic pooling. Subsequent releases included functionality for imputing multilevel data, post-processing imputed values, specialized pooling, stable imputation of categorical data, and model selection, among many others. Imputation by chained equations is extensively used across domains [see @buuren_2011_mice for a list of over 20 applied fields]. 
+
+Chained equations are based on the Gibbs sampler, a randomized Markov chain Monte Carlo algorithm to estimate a sequence of observations from a specified multivariate probability distribution [@gelman_2013_bayesian; @gill_2014_bayesian]. In essence, chained equations fill in missing values through an iterative repetition of univariate procedures that are chained together -- hence the name for the procedure. As the term univariate signifies, specification happens at the variable level, i.e. each chained equation specifies the imputation model separately for each column of the data. Following deliberations by @rubin_1987_multiple and @buuren_2011_mice, imputation by chained equations takes the missing data generating process into account and maintains data relations as well as the uncertainty about these relations. With these conditions satisfied, the imputation model results in statistically valid and factual imputations. This has been proven empirically under various circumstances, for instance for regression models [@giorgi_2008_performance; @horton_2001_multiple; @horton_2007_much], continuous data [@yu_2007_evaluation], missing predictor variables [@moons_2006_using], large surveys [@schunk_2008_markov], and addressing issues of convergence [@brand_1999_development; @buuren_2006_fully; @drechsler_2008_does].
+
+Continuing the notation from section \ref{ordmiss-theory-mechanisms} and incorporating @buuren_2011_mice, let there be $\bm{X}$, an $n \times v$ matrix with data on $n$ respondents for $v$ variables, that is formed of missing, $\bm{X^{miss}}$, and observed data, $\bm{X^{obs}}$. As before, let there also be a vector of unknown parameters $\bm{\theta}$. Now let $\bm{X}$ further be a random sample from the $z$-variate multivariate distribution, $\bm{Z}(\bm{X} | \bm{\theta})$, with $\bm{\theta}$ accounting for the multivariate distribution of $\bm{X}$. The proverbial pot of gold here is how to estimate the multivariate distribution of $\bm{\theta}$. Under the chained equations model, we estimate a posterior distribution of $\bm{\theta}$ by sampling repeatedly from conditional distributions, i.e.
+
+\begin{align}
+Z(X_1 &| X_{-1}, \theta_1) \nonumber\\
+&\vdots \nonumber\\
+Z(X_z &| X_{-z}, \theta_z).
+\end{align}
+
+Any iteration $n$ of chained equations is then a Gibbs sampler that sequentially draws
+
+\begin{align}
+\theta_1^{*(n)} &\sim Z(\theta_1 | X_1^{obs}, X_2^{(n-1)}, ..., X_z^{(n-1)}) \nonumber\\
+X_1^{*(n)} &\sim Z(X_1 | X_1^{obs}, X_2^{(n-1)}, ..., X_z^{(n-1)}, \theta_1^{*(n)}) \nonumber\\
+&\vdots \nonumber\\
+\theta_z^{*(n)} &\sim Z(\theta_z | X_z^{obs}, X_1^{(n)}, ..., X_{z-1}^{(n)}) \nonumber\\
+X_z^{*(n)} &\sim Z(X_z | X_z^{obs}, X_1^{(n)}, ..., X_z^{(n)}, \theta_z^{*(n)}),
+\end{align}
+
+with the chain starting from a random draw from observed marginal distributions and $\bm{X_i^{(n)}} = (\bm{X_i^{obs}}, \bm{X_i^{*(n)}})$ being the $i$th imputed variable at iteration $n$. Note that immediately preceding imputations, $\bm{X_i^{*(n-1)}}$, do not affect $\bm{X_i^{*(n)}}$ directly but only through connections with other variables. 
+
+Figure \ref{mice-func} shows the package's main imputation function, `mice`, with all its arguments. As stated above, I will use `mice` with its default settings to ensure simplicity and user-friendliness.
+
+\vspace{0.5cm}
+
+\begin{figure}[!htbp] 
+  \centering
+  \includegraphics{figures/mice.png}
+  \caption{The \texttt{mice} Function}
+  \label{mice-func}
+\end{figure}
+
+\vspace{-0.5cm}
+
+The majority of arguments are not of importance to general users. Arguments like `predictorMatrix`, which specifies the set of predictors to be used for each target column, and `blocks`, which provides the option to manually put variables into imputation blocks, require too much statistical knowledge to be of use to non-specialists. Other arguments do not affect the basic workings of the function. This applies for instance to `printFlag`, which sets the console printing preference, `seed`, which is used to offset the random number generator, and `data.init`, which specifies a data frame to be used to initialize imputations before the start of the iterative process. 
+
+The only important arguments for general users are `data`, `m`, and `defaultMethod`. Only `data` requires user input. As mentioned above, `m` should also be set to the percentage of missing data. The argument `defaultMethod` does not require user input but is crucial for insights into the default workings of `mice`. Its options `pmm`, `logreg`, `polyreg`, and `polr` refer to the default imputation methods that are implemented depending on the type of variable in question. The argument `pmm` (predictive mean matching) is used for numerical data, `logreg` (logistic regression imputation) for binary and factor data with two levels, `polyreg` (polytomous regression imputation) for factor data with more than two unordered levels, and `polr` (proportional odds model) for factor data with more than two ordered levels. Note that `mice` thus distinguishes between ordered and unordered as well as the number of factor levels, but does not specifically incorporate ordinal variables, which feature ordered but unevenly spaced levels.
+
+
+
+
+
+
+#### `Amelia`: A Program for Missing Data {#ordmiss-theory-multimpute-amelia}
+
+The `R` package `Amelia` was originally released in 1998 [@honaker_1998_amelia]. A second version, `Amelia II`, was released in 2010 [@honaker_2012_amelia]. Contrary to `mice`, which is based on IP, both versions of `Amelia` are based on the expectation-maximization (EM) algorithm [@dempster_1977_maximum; @gelman_2013_bayesian; @jackman_2000_estimation; @mclachlan_1997_algorithm; @tanner_1996_tools]. In EM, deterministic calculations of posterior means replace random draws from the entire posterior. This translates into running regressions to estimate the regression coefficient, imputing a missing value with a predicted value, re-estimating the regression coefficient, and repeating the process until convergence [@king_2001_analyzing]. While the iterations and parameters thus represent an entire density in IP, they are single maximum posterior values in EM. This makes EM comparatively much faster in finding the maximum of the likelihood function. On its own, however, EM is unsuitable for multiple imputation as it does not provide the rest of the distribution. 
+
+The `Amelia` package circumvents this issue with expectation-maximization importance sampling (EMi) [@dempster_1977_maximum; @rubin_1987_multiple], which combines EM with the iterative simulation approach of importance sampling. This proved unsuitable for large data sets, however, as it led to high running times and system crashes. The `Amelia II` package addresses this by mixing EM with bootstrapping [@efron_1994_missing; @lahlrl_2003_impact; @rubin_1994_missing; @shao_1996_bootstrap], allowing the imputation of more variables for more observations more quickly.
+
+`Amelia II` is based on the assumption that the complete data ($\bm{X^{obs}}$ and $\bm{X^{miss}}$) are multivariate normal (MVN), $\bm{X} \sim \bm{N_v}(\mu, \sum)$, with mean vector $\mu$ and covariance matrix $\sum$. The MVN model has been proven to work for a variety of variable types [@ezzati-rice_1995_simulation; @graham_1999_performance; @rubin_1986_multiple; @schafer_1997_analysis]. Continuing the notation from section \ref{ordmiss-theory-mechanisms} and incorporating @honaker_2010_what, let there be a vector of unknown parameters $\bm{\theta}$, with $\bm{\theta} = (\mu, \sum)$. Let there further be our missingness matrix $\bm{R}$ and the likelihood of $\bm{X^{obs}}$, $\text{prob}(\bm{X^{obs}}, \bm{R} | \bm{\theta})$. `Amelia II` is explicitly set up for the MAR assumption of missing data, $\text{prob}(\bm{R} = 0 | \bm{X^{obs}}, \bm{\theta})$. Under this assumption, the likelihood can be transformed as
+
+\begin{align}
+\text{prob}(X^{obs}, R | \theta) = \text{prob}(R | X^{obs}) \text{prob}(X^{obs} | \theta).
+\end{align}
+
+Since the missing mechanism is MAR, we are only interested in the inference on complete data parameters, thus the likelihood becomes
+
+\begin{align}
+L(\theta | X^{obs}) \propto \text{prob}(X^{obs} | \theta)
+\end{align}
+
+which further translates into
+
+\begin{align}
+\text{prob}(X^{obs} | \theta) = \int \text{prob}(X | \theta) dX^{miss}
+\end{align}
+
+under the law of iterated expectations. This results in the posterior
+
+\begin{align}
+\text{prob}(\theta | X^{obs}) \propto \text{prob}(X^{obs} | \theta) = \int \text{prob}(X | \theta) dX^{miss}.
+\end{align}
+
+Taking draws from this posterior is computationally intensive since the contents of $\mu$ and $\sum$ increase exponentially as the number of variables increases -- this is the perennial crux of multiple imputation, particularly for large data sets with many variables. `Amelia II` solves this through a combination of EM and bootstrapping. This process bootstraps the data to simulate estimation uncertainty for each posterior draw, runs the EM algorithm to find the mode of the posterior bootstrapped data, and then imputes by drawing from $\bm{X^{miss}}$ conditional on $\bm{X^{obs}}$ and the respective draws of $\bm{\theta}$. The latter is a linear regression with parameters that can be estimated from $\bm{\theta}$. This bootstrapped EM approach is faster than IP as Markov chains do not need to be assessed for convergence and an improvement over EMi since the variance matrix of $\mu$ and $\sum$ does not need to be calculated, allowing the algorithm to handle larger data sets.
+
+Figure \ref{amelia-func} shows the package's main imputation function, `amelia`, with all its arguments. As stated above, I will use `amelia` with its default settings to ensure simplicity and user-friendliness.
+
+\vspace{0.5cm}
+
+\begin{figure}[!htbp] 
+  \centering
+  \includegraphics{figures/amelia.png}
+  \caption{The \texttt{amelia} Function}
+  \label{amelia-func}
+\end{figure}
+
+\vspace{-0.5cm}
+
+As with `mice`, the majority of arguments are not of importance to general users. Specifications such as `splinetime`, which allows the control of cubic smoothing splines of time, and `lags`, which indicates columns in the data that should have their lags included in the imputation model, will only be used in very particular situations by a small minority of users. Other arguments likewise are not crucial to the basic workings of the function, such as `p2s`	to control console printing and `parallel` to identify any type of parallel operation to be used. 
+
+The only argument that requires user input is `x`, which needs to be data with missing values that can be in a variety of formats. `m`, identical to `mice`, should be adjusted to reflect the percentage of missingness in the data. Three other arguments are important since they arguably comprise the core of `amelia`'s underlying imputation mechanism: `tolerance`, `autopri`, and `boot.type`. `tolerance`	sets the convergence threshold for the EM algorithm. `autopri`	allows the EM chain to increase the empirical prior if the path strays into an non-positive definite covariance matrix. `boot.type` offers the option to turn off the non-parametric bootstrap that is applied by default. 
+
+General multiple imputation research treats independent ordinal variables as continuous variables. `amelia` supports this and treats ordinal variables as continuous variables as a default. This means missing ordinal variables are imputed on a continuous scale, rather than preserved as the factual levels present in the observed data. However, the `ords` argument allows users to 'disable' continuous ordinal imputation. In this case, ordinal variables are still imputed on a continuous scale, but these imputations are then scaled and used as the probability of success in a binomial distribution. The draw from this binomial distribution is then transformed into one of the ordinal levels present in the observed data by rounding. While `amelia` thus does incorporate ordinal variables to some extent, the rounding process changes the nature of ordinal variables to continuous variables. None of its features address or reflect the spacing between the ordinal variable categories. 
+
+
+
+
+
+
+
+
+#### `hot.deck`: Multiple Hot Deck Imputation {#ordmiss-theory-multimpute-hdnorm}
+
+`hot.deck` is an `R` package released in 2012 [@gill_2012_have]. It combines a variation of non-parametric hot decking (see section \ref{ordmiss-theory-singimpute}) with multiple imputation and aims to fill gaps where parametric multiple imputation, i.e. the approach used in `mice` and `amelia`, falls short [@fuller_2005_deck; @kim_2004_finite; @kim_2004_fractional; @reilly_1993_data]. Like hot decking, `hot.deck` uses draws of actual observable values (\textit{donors}) to fill missing values (\textit{recipients}). In order to account for uncertainty around the drawn values, `hot.deck` iterates these draws over $m$ imputations and pools the results. 
+
+The main proposed advantage of `hot.deck` lies in its applicability to missing data with discrete variables with a small number of categories. Approaches like the one used in `amelia`, for instance, by default impute discrete data on a continuous scale. This changes the nature of discrete variables and practically turns them into continuous variables. This can result in non-observable, biased, and sometimes even non-sensical imputation values with artificially smaller standard errors. The proposed `amelia` solution of rounding continuous imputations is problematic as well: Let imputation 1 of a binary variable between 0 and 1 be 0.4. Let further imputation 2 of the binary variable be 0.6. With rounding, these imputations become 0 and 1, when they are in fact 0.4 and 0.6. Rounding thus by definition introduces at least some level of bias. The problem is exacerbated for ordinal variables, where the spacing between the discrete variable categories is unknown, since it arbitrarily reduces or lengthens distances between the categories. This is not the case in `hot.deck` as it preserves the integrity of discrete data, does not change the size of standard errors, and produces more accurate imputations. `hot.deck` also does not require assumptions of a MVN distribution that are required by `amelia`.
+
+Following @gill_2012_have, `hot.deck` estimates affinity scores, $\bm{\alpha}$, for each missing value to measure how similar a respondent with a missing value, the recipient $c$, is to another respondent, the potential donor $o$, across all variables except the missing one. Each score is bounded by 0 and 1. The total set of affinity scores is denoted by $\bm{\alpha_{co}}$. For each respondent, let there be vector $(p, v)$, with $p$ being the dependent variable and $v$ a vector of discrete explanatory variables of length $k$. If recipient $c$ has $q_c$ missing values in $v_c$, then the potential donor vector, $v_o$, has between 0 and $k-q_c$ exact matches with $c$. Let $w_{co}$ be the number of variables where $c$ and $o$ have non-identical values. This leaves $k-q_c -w_{co}$ as the number of variables where they have identical values. Scaled by the highest number of possible matches $(k-q_c)$, this value forms the affinity score
+
+\begin{align}
+\alpha_{co} = \frac{k-q_c-w_{co}}{k-q_c}
+\end{align}
+
+for each missing value recipient $c$. When the number of identical matches decreases, so does $\bm{\alpha_{co}}$. While this might work well for binary variables, it poses a problem for discrete variables with many levels, as the probability to find identical matches decreases. To account for this, `hot.deck` treats potential donors $o$ for the $h$th variable in $v_{o[h]}$ that are 'close' differently than potential donors $o$ that are further away. 'Close' is defined as $v_{o[h]}$ and $v_{c[h]}$ being in the same concentric standard deviation from $\overline{h}$, the mean of variable $h$. Values outside of this range are penalized while values within this range are counted as matches. All donors with the highest affinity scores, i.e. all matches, form the best imputation cell $\bm{B}$. Since all values of $v_{c[h]}$ in $\bm{B}$ are part of the same distribution of independent and identically distributed (iid) random variables, which satisfies the MCAR requirement, we can use random draws from $\bm{B}$ to impute the missing value. As with the other multiple imputation approaches, this process is then repeated $m$ times for each missing value to account for imputation uncertainty, following the logic displayed in Figure \ref{mi-workflow}.
+
+Figure \ref{hot.deck-func} shows the package's main imputation function, `hot.deck`, with all its arguments. As before, I will use `hot.deck` with its default settings. 
+
+\vspace{0.5cm}
+
+\begin{figure}[!htbp] 
+  \centering
+  \includegraphics{figures/hot.deck.png}
+  \caption{The \texttt{hot.deck} Function}
+  \label{hot.deck-func}
+\end{figure}
+
+\vspace{-0.5cm}
+
+Like `mice` and `amelia`, `hot.deck` only requires user input for `data`. `m` should once more be set to the percentage of missingness. Specialized arguments such as `optimStep` and `optimStop`, which can be tweaked to optimize standard deviation cutoff parameters, as well as `weightedAffinity`, which indicates whether a correlation-weighted affinity score should be used, do not apply to general users.
+
+`method` and `cutoff` form the core of `hot.deck`. The default setting of `best.cell` in the `method` argument implements multiple hot deck imputation. The alternative, `p.draw`, on the other hand, merely conducts random probabilistic draws. `cutoff` allows users to specify which variables the algorithm should treat as discrete. By default, any variable up to and including 10 unique values is considered discrete. This thus includes the majority of political science survey measures, with the sensible exceptions of variables like age or for instance widely spread assessments of income levels.
+
+Overall, `hot.deck` is a specialized function to improve the application of multiple imputation for discrete data and has been shown to do so for highly granular discrete data [@gill_2012_have]. Moreover, political science survey research relies on highly discrete measures. What is missing from `hot.deck`, however, is the incorporation of ordinal variables as a special form of discrete data. I thus identify this gap as a leverage point to improve the use of ordinal variables in the imputation of missing data. To do so, I adapt `hot.deck` to form `hd.ord`, a function specifically designed to utilize the ordered but unevenly spaced information contained in ordinal variables.
+
+
+
+
+
+
+
+
+
+#### `hd.ord`: Multiple Hot Deck Imputation with Ordinal Variables {#ordmiss-theory-multimpute-hdord}
+
+`hd.ord` is a self-penned `R` function designed specifically to implement multiple hot deck imputation with ordinal variables. It is an extension of `hot.deck` and fully utilizes the unevenly spaced yet ordered information contained in ordinal variables. As described in section \ref{ordblock-theory-op}, ordinal variables matter in political science surveys because a key variable in such surveys is ordinal: education. The importance of the spacing between education values is best demonstrated with a simplified example shown in Table \ref{ordmiss-ordspace}.
+
+
+\begin{table}[!htbp] 
+  \centering
+  \caption{Illustrative Data}
+  \label{ordmiss-ordspace}
+  \begin{tabular}{lccccc}
+  \bottomrule 
+  \midrule
+  Respondent & Age & Party ID & Education & Income & Gender\\
+  \hline
+  A & 25 & Republican & High School Graduate & \$30-40,000 & Male \\
+  B & 40 & NA & Some High School &  \$20-30,000 & Female\\
+  C & 30 & Democrat & Bachelor's Degree &  \$50-60,000 & Female\\
+  \bottomrule 
+  \end{tabular}
+\end{table}
+
+Respondent B shows missing data for party ID. To impute a fill-in value, we look at how close respondents A and C are to B in terms of age, education, income, and gender. C is closer to B in terms of age and they share the same gender. A is closer to B on education and income. `hot.deck` estimates affinity scores for respondents A and C based on how close A and C are to B on all variables except the missing one, i.e. party ID. B then receives the party ID fill-in value from whichever respondent has the higher score. Since the algorithm building the affinity score is non-parametric and thus does not care about distances, however, `hot.deck` does not take the uneven distances between the ordinal variable categories into account.
+
+To avoid this, `hd.ord` uses the ordered probit approach described in section \ref{ordblock-theory-op}. It applies `polr` from the `MASS` package to any specified number of ordinal variables in the data to estimate the underlying latent continuous variable. This estimates cutoff thresholds between the ordinal categories and bins data cases according to the linear predictors. The binned cases determine which variable categories make sense, given the underlying latent continuous variable. This can result in a reduction of education categories if the categories are too finely thinned out. `hd.ord` estimates the mid-cutpoints between each of these newly estimated categories based on the `polr` results. We then replace the ordinal variable categories with the newly estimated numerical mid-cutpoints in the data. Finally, these values are scaled and used to assess distances to calculate affinity scores.
+
+
+```{r Illustrative Data Code, include=FALSE}
+
+load("functions/OPMord.Rdata")
+load("functions/OPMcut.Rdata")
+ill.data <- readRDS("data/anes/anes_1000.rds")
+
+ill.data <- ill.data[,!names(ill.data) %in% c("Liberal", "Conservative", "Single")]
+dv <- "Educ"
+dplyr::rename(ill.data, 
+              Democrat = Dem,
+              Income = Inc)
+
+all.evs <- colnames(ill.data)[-which(colnames(ill.data) == dv)]                         
+add.nas.columns <- c("Democrat", "Male", "Interest", "Income", "Age")                        
+no.nas <- ill.data[,!names(ill.data) %in% add.nas.columns]                                  
+yes.nas <- ill.data[,names(ill.data) %in% add.nas.columns]
+prop <- .2
+
+set.seed(123)
+data.amp <- cbind(no.nas, ampute(yes.nas, prop = prop, mech = "MAR")$amp)
+OPMord.full <- OPMord(data.amp, dv = dv, evs = all.evs)
+OPMcut.dat <- OPMcut(data = OPMord.full$data.full.nas, dv = dv, OPMordOut = OPMord.full)
+
+OPMord.full$int.df$Intercepts <- OPMord.full$int.df$Intercepts %>% as.character 
+OPMord.full$int.df$Intercepts <- c("Less Than High School|Some High School", "Some High School|High School Graduate", "High School Graduate|Some College", "Some College|Bachelor's Degree", "Bachelor's Degree|Master's Degree")
+OPMord.full$int.df$Values <- round(OPMord.full$int.df$Values, digits = 3)
+ill.data.int.df <- OPMord.full$int.df[,1:2]
+ill.data.int.df.tab <- ill.data.int.df
+colnames(ill.data.int.df.tab) <- c("Thresholds", "Coefficients")
+
+ill.data.cutp <- data.frame(cbind(c("Less Than High School", "Some High School", "High School Graduate", "Some College", "Bachelor's Degree", "Master's Degree"), OPMcut.dat$Educ %>% unique %>% round(., digits = 3) %>% sort))
+ill.data.cutp$X2 <- ill.data.cutp$X2 %>% as.character %>% as.numeric
+# ill.data.cutp <- ill.data.cutp %>% round(digits = 3)
+colnames(ill.data.cutp) <- c("origed", "midc")
+ill.data.cutp.tab <- ill.data.cutp
+colnames(ill.data.cutp.tab) <- c("Original Education Categories", "Mid-Cutpoints")
+
+```
+
+
+Table \ref{ordmiss-ill-res} illustrates this procedure with results from running `polr` on rudimentary survey data, with column "Thresholds" showing the estimated cutoff thresholds between the education categories. Table \ref{ordmiss-ill-mid} in turn shows the estimated mid-cutpoints for each of the education categories. The mid-cutpoint values for the categories in Table \ref{ordmiss-ill-mid} fall between the adjacent values in Table \ref{ordmiss-ill-res}, i.e. the mid-cutpoint of `r ill.data.cutp$midc[ill.data.cutp$origed == "Some High School"]` for "Some High School" lies between the respective thresholds of `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"]` and `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"]`. To estimate the beginning cutpoint for the first category ("Less Than High School"), we halve the difference between the first and second threshold and subtract this value from the first threshold: `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"]` $-$ (`r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"]` $-$ `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric`) / 2 =  `r ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric - ((ill.data.int.df$Values[ill.data.int.df$Intercepts == "Some High School|High School Graduate"] %>% as.numeric - ill.data.int.df$Values[ill.data.int.df$Intercepts == "Less Than High School|Some High School"] %>% as.numeric) / 2) %>% round(digits = 3)`. The same process is applied to estimate the ending cutpoint for the last category ("Master's Degree"). The mid-cutpoint values are then scaled and used for the calculation of the affinity scores.
+
+
+```{r Illustrative Data Table 1, include=FALSE}
+
+stargazer(ill.data.int.df.tab, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Illustrative Data `polr` Results",
+          label = "ordmiss-ill-res")
+```
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Illustrative Data `polr` Results} 
+  \label{ordmiss-ill-res} 
+\begin{tabular}{r@{}lr@{}l} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\multicolumn{2}{c}{Thresholds} & \multicolumn{2}{c}{Coefficients} \\ 
+\hline \\[-1.8ex] 
+Less Than High School $\mid$ & \,Some High School & 2.&418 \\ 
+Some High School $\mid$ & \,High School Graduate & 3.&495 \\ 
+High School Graduate $\mid$ & \,Some College & 4.&214 \\ 
+Some College $\mid$ & \,Bachelor's Degree & 5.&727 \\ 
+Bachelor's Degree $\mid$ & \,Master's Degree & 7.&412 \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+```{r Illustrative Data Table 2, results='asis', echo=FALSE}
+
+stargazer(ill.data.cutp.tab, 
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Illustrative Data Value Replacements",
+          label = "ordmiss-ill-mid")
+
+```
+
+
+
+
+Figure \ref{hd.ord-func} shows `hd.ord` with all its arguments. As before, I will use `hd.ord` with its default settings. Since `hd.ord` is an adaptation of `hot.deck`, the two functions are identical except for the `ord` argument, which allows users to specify the ordinal variables for `polr` treatment.
+
+\vspace{0.5cm}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics{figures/hd.ord.png}
+  \caption{The \texttt{hd.ord} Function}
+  \label{hd.ord-func}
+\end{figure}
+
+\vspace{-0.5cm}
+
+
+
+
+
+
+
+
+## Data {#ordmiss-data}
+
+To test the performance of imputation methods, we need to work with complete data, as only complete data allow us to obtain the true values needed as a benchmark for comparison. I choose two different sets of survey data from the 2016 ANES and the 2016 CCES. Data for all selected variables in both data sets is complete. In order to test the accuracy of several imputation methods, I delete data from these complete data sets with the `ampute` function from the `mice` package [@buuren_2020_package]. `ampute` allows the removal of data MCAR, MAR, and MNAR. Particularly the availability of the latter offers unique opportunities, as it can be a difficult feat to establish whether real-life missing data is MNAR. Data that are artificially created to be MNAR, however, circumvent this problem and allow us to test the accuracy of imputation methods for this type of missing data as well. `ampute` has been shown to accurately remove data MCAR, MAR, and MNAR [@schouten_2018_generating].
+
+Each data set is imputed with four different `R` functions: `hd.ord`, `hot.deck`, `amelia`, and `mice`. I also apply list-wise deletion with `na.omit`. As outlined in section \ref{ordmiss-theory-multimpute}, all functions are used with their default settings but with the number of imputations set to the percentage of missingness.
+
+I test each function for accuracy and speed for binary, ordinal, and interval variables in both data sets. Each data set contains two ordinal (`Education`, `Interest`), two interval (`Age`, `Income`) and numerous binary variables. In order to enable factually accurate comparison and unless explicitly specified otherwise, each data set contains 1,000 observations and six levels of the ordinal variable `Education`. 1,000 observations represent a common size for survey and survey experiment data, and the `polr` analysis from section \ref{ordblock-data} estimates five or six levels to best represent `Education` in a US context. Each data set imputation was repeated 1,000 times. Note that this differs from the number of imputations conducted: Each imputation procedure involves 20 imputations (matching the percentage of missingness), then this procedure is repeated 1,000 times. With the exception of Figure \ref{accuracy50} and Table \ref{run.cces.perc}, 20 percent missing data were randomly amputed in each iteration for each data set.^[The decision to reduce the number of education categories in the ANES data is made out of necessity. It is not feasible to use all ANES observations, as repeated multiple imputation is computationally intensive for a sample of this size. The reduction to 1,000 observations in turn makes it impossible to use all original categories, since the insertion of missing data would consistently lead to dropped categories, which in turn would render a comparison of imputation runs pointless. See appendix section \ref{app-ordmiss-allObs} for imputations for all ANES and CCES observations (as much as computationally possible).] 
+
+Following @collins_2001_comparison and @honaker_2010_what, as many relevant observed variables as possible were used to impute each of the data sets. For the ANES data, up to 14 predictor variables were used: `Independent`, `Moderate`, `Black`, `Hispanic`, `Asian`, `Employed`, `Student`, `Religious`, `InternetHome`, `OwnHome`, `Rally` (have you attended a political rally), `Donate` (have you donated to a political candidate), `Married`, and `Separated`. For the CCES data, up to 17 predictor variables were used: `Republican`, `Moderate`, `Liberal`, `Black`, `Hispanic`, `Asian`, `Employed`, `Unemployed`, `Student`, `Gay`, `Bisexual`, `StudLoans` (do you have student loans), `InternetHome`, `NotReligious`, `RentHome`, `Separated`, and `Single`. Highly collinear variables were excluded with a cutoff of 0.6.
+
+The variable mean serves as the baseline of comparison for the performance of each imputation method. Since each data set is complete, we know the true variable mean of all variables. The closer a method comes to the true mean, the better its performance. I impute both data sets for data MAR and MNAR for five amputed variables: `Democrat` (binary), `Male` (binary), `Interest` (ordinal, scaled from 1 to 4), `Income` (interval), and `Age` (interval). `Interest` is here used in its numerical form. Imputation is not necessary for data MCAR because simple deletion leads to unbiased and therefore valid results. I subsequently increase the number of ordinal variables to be treated by `polr` in `hd.ord` by including `Interest`. This means `Interest` is no longer part of the amputed variables but is instead used in its ordinal form by `hd.ord`, in addition to `Education`. The remaining four amputed variables are the same as before. Imputations are again conducted MAR and MNAR. Next, I test the effect of increasing the amount of missing data to 50 percent. Finally, I compare the imputation runtimes for each method.
+
+
+
+
+
+
+
+
+## Results {#ordmiss-results}
+
+
+
+
+### MAR {#ordmiss-results-mar}
+
+```{r MAR 5 Variables, include=FALSE}
+
+mar.5var.anes <- read.csv("data/anes/mar/results/anes.mar.results.5var.1000n.1000it.20perc.csv")  %>% .[,-1] %>% addPlus
+mar.5var.cces <- read.csv("data/cces/mar/results/cces.mar.results.5var.1000n.1000it.20perc.csv")  %>% .[,-1] %>% addPlus
+# mar.5var.frame <- read.csv("data/framing/mar/results/framing.mar.results.5var.1000n.1000it.20perc.csv")  %>% .[,-1] %>% addPlus
+
+mar.5var.anes[1:6, 2] <- mar.5var.cces[1:6, 2] <- rep("Democrat", 6)
+mar.5var.anes[19:24, 2] <- mar.5var.cces[19:24, 2] <- rep("Income", 6)
+
+mar.5var.anes$diff[mar.5var.anes$method == "true"] <- mar.5var.anes$value[mar.5var.anes$method == "true"]
+mar.5var.cces$diff[mar.5var.cces$method == "true"] <- mar.5var.cces$value[mar.5var.cces$method == "true"]
+# mar.5var.frame$diff[mar.5var.frame$method == "true"] <- mar.5var.frame$value[mar.5var.frame$method == "true"]
+
+levels(mar.5var.anes$method) <- levels(mar.5var.cces$method) <- levs
+# levels(mar.5var.frame$method) <- levs
+  
+mar.5var <- cbind(mar.5var.anes[, c(1,2,4)], mar.5var.cces[,4])
+# mar.5var <- cbind(mar.5var.anes[, c(1,2,4)], mar.5var.cces[,4], mar.5var.frame[,4])
+colnames(mar.5var) <- col.names
+
+# to make the in-text citations shorter
+mar.5.anes <- mar.5var$ANES
+mar.5.cces <- mar.5var$CCES
+# mar.5.frame <- mar.5var$Framing
+mar.5.meth <- mar.5var$Method
+mar.5.var <- mar.5var$Variable
+
+tab.mar.5var <- stargazer(mar.5var, 
+                          summary = FALSE,
+                          align = TRUE,
+                          header = FALSE,
+                          rownames = FALSE,
+                          digits = 4,
+                          title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 5 Variables with NA",
+                          label = "mar.5var")
+
+dt <- gsub("\\multicolumn{1}{c}{", "", tab.mar.5var, fixed = TRUE)
+cat(dt)
+
+
+
+```
+
+
+This section shows the imputation results for the MAR missing data mechanism. MAR amputation was achieved by setting the `mech` argument in the `ampute` function to `MAR`. Table \ref{mar.5var} shows the results of imputing both data sets MAR for five amputed variables. For the two binary variables, `Democrat` and `Male`, `hd.ord` performs on par or worse than `hot.deck` for both data sets, while `mice` and `amelia` perform best. `hd.ord` is relatively close for CCES `Democrat` (`r mar.5.cces[mar.5.meth == "amelia" & mar.5.var == "Democrat"]` `amelia` vs. `r mar.5.cces[mar.5.meth == "hd.ord" & mar.5.var == "Democrat"]` `hd.ord`) but further away for ANES ( `r mar.5.anes[mar.5.meth == "mice" & mar.5.var == "Democrat"]` `mice` vs. `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Democrat"]` `hd.ord` `Democrat`; `r mar.5.anes[mar.5.meth == "mice" & mar.5.var == "Male"]` `mice` vs. `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Male"]` `hd.ord` `Male`) and CCES `Male` (`r mar.5.cces[mar.5.meth == "amelia" & mar.5.var == "Male"]` `amelia` vs. `r mar.5.cces[mar.5.meth == "hd.ord" & mar.5.var == "Male"]` `hd.ord`).
+
+
+
+ \begin{table}[!htbp] \centering   
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, MAR, 5 Variables with NA}   
+ \label{mar.5var}  
+\begin{threeparttable}
+ \begin{tabular}{ccr@{}lr@{}l}  
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex]  
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex]  
+ true & Democrat & 0.&3420 & 0.&3770 \\
+ hd.ord & Democrat & --0.&0010 & +0.&0000 \\ 
+ hot.deck & Democrat & --0.&0011 & --0.&0004 \\ 
+ amelia & Democrat & +0.&0004 & +0.&0001 \\
+ mice & Democrat & +0.&0003 & +0.&0002 \\
+ na.omit & Democrat & --0.&0290 & --0.&0229 \\
+ true & Male & 0.&4890 & 0.&4830 \\
+ hd.ord & Male & --0.&0013 & --0.&0011 \\
+ hot.deck & Male & --0.&0013 & --0.&0014 \\
+ amelia & Male & +0.&0002 & --0.&0001 \\
+ mice & Male & +0.&0001 & --0.&0001 \\
+ na.omit & Male & --0.&0392 & --0.&0414 \\
+ true & Interest & 2.&9340 & 3.&3290 \\
+ hd.ord & Interest & --0.&0130 & --0.&0125 \\
+ hot.deck & Interest & --0.&0191 & --0.&0196 \\ 
+ amelia & Interest & +0.&0003 & +0.&0003 \\ 
+ mice & Interest & +0.&0003 & +0.&0000 \\
+ na.omit & Interest & --0.&0705 & --0.&0724 \\
+ true & Income & 16.&6140 & 6.&4810 \\
+ hd.ord & Income & --0.&1068 & --0.&0259 \\
+ hot.deck & Income & --0.&1278 & --0.&0407 \\
+ amelia & Income & +0.&0008 & --0.&0004 \\
+ mice & Income & +0.&0003 & --0.&0002 \\
+ na.omit & Income & --0.&5631 & --0.&2468 \\
+ true & Age & 50.&0410 & 52.&8230 \\
+ hd.ord & Age & --0.&3888 & --0.&2616 \\
+ hot.deck & Age & --0.&4597 & --0.&3895 \\
+ amelia & Age & +0.&0007 & --0.&0033 \\
+ mice & Age & +0.&0017 & --0.&0073 \\
+ na.omit & Age & --1.&1875 & --1.&2361 \\
+ \hline \\[-1.8ex]  
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+
+
+For the ordinal variable, `Interest`, `hd.ord` performs worst for both data sets, with considerable distance to `hot.deck` (`r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Interest"]` vs. `r mar.5.anes[mar.5.meth == "hot.deck" & mar.5.var == "Interest"]` ANES; `r mar.5.cces[mar.5.meth == "hd.ord" & mar.5.var == "Interest"]` vs. `r mar.5.cces[mar.5.meth == "hot.deck" & mar.5.var == "Interest"]` CCES). `mice` and `amelia` perform by far best across both data sets. The performance differences between the methods are far larger for the ordinal than for the binary variables: `mice` is not more than `r mar.5.anes[mar.5.meth == "mice" & mar.5.var == "Interest"]` (ANES) away from the true value across both data sets, while the maximum difference for `hd.ord` amounts to `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Interest"]` (ANES).
+
+For the interval variables, `Income` and `Age`, `hd.ord` also performs worst for both data sets. The distance to `hot.deck` is once more considerable. `mice` performs best for `Income` and `amelia` shows the best results for `Age`. The performance differences between the methods are even larger here: For `Income`, `mice` is not more than `r mar.5.cces[mar.5.meth == "mice" & mar.5.var == "Income"]` (CCES) away from the true value across both data sets, but the maximum difference for `hd.ord` is `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Income"]` (ANES). Similarly, `amelia`'s largest deviation from the true value for `Age` is `r mar.5.cces[mar.5.meth == "amelia" & mar.5.var == "Age"]` (CCES) as opposed to `hd.ord`'s `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Age"]` (ANES).^[For a repeat of this MAR analysis for 12 amputed variables, see appendix section \ref{app-ordmiss-12var}. The results do not change substantively.]
+
+
+
+
+
+
+
+
+### MNAR {#ordmiss-results-mnar}
+
+```{r MNAR 5 Variables, include=FALSE}
+
+mnar.5var.anes <- read.csv("data/anes/mnar/results/anes.mnar.results.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mnar.5var.cces <- read.csv("data/cces/mnar/results/cces.mnar.results.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+# mnar.5var.frame <- read.csv("data/framing/mnar/results/framing.mnar.results.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+
+mnar.5var.anes[1:6, 2] <- mnar.5var.cces[1:6, 2] <- rep("Democrat", 6)
+mnar.5var.anes[19:24, 2] <- mnar.5var.cces[19:24, 2] <- rep("Income", 6)
+
+mnar.5var.anes$diff[mnar.5var.anes$method == "true"] <- mnar.5var.anes$value[mnar.5var.anes$method == "true"]
+mnar.5var.cces$diff[mnar.5var.cces$method == "true"] <- mnar.5var.cces$value[mnar.5var.cces$method == "true"]
+# mnar.5var.frame$diff[mnar.5var.frame$method == "true"] <- mnar.5var.frame$value[mnar.5var.frame$method == "true"]
+
+levels(mnar.5var.anes$method) <- levels(mnar.5var.cces$method) <- levs
+# levels(mnar.5var.frame$method) <- levs
+
+mnar.5var <- cbind(mnar.5var.anes[,c(1,2,4)], mnar.5var.cces[,4])
+# mnar.5var <- cbind(mnar.5var.anes[,c(1,2,4)], mnar.5var.cces[,4], mnar.5var.frame[,4])
+colnames(mnar.5var) <- col.names
+
+# to make the in-text citations shorter
+mnar.5.anes <- mnar.5var$ANES
+mnar.5.cces <- mnar.5var$CCES
+# mnar.5.frame <- mnar.5var$Framing
+mnar.5.meth <- mnar.5var$Method
+mnar.5.var <- mnar.5var$Variable
+
+tab.mnar.5var <- stargazer(mnar.5var,
+                           summary = FALSE,
+                           align = TRUE,
+                           header = FALSE,
+                           rownames = FALSE,
+                           digits = 4,
+                           title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 5 Variables with NA",
+                           label = "mnar.5var")
+
+et <- gsub("\\multicolumn{1}{c}{", "", tab.mnar.5var, fixed = TRUE)
+cat(et)
+
+
+```
+
+This section shows the imputation results for the MNAR missing data mechanism. MNAR amputation was achieved by setting the `mech` argument in the `ampute` function to `MNAR`. All MAR and MNAR analyses are otherwise identical. Table \ref{mnar.5var} shows the results of imputing both data sets MNAR for five amputed variables. It is immediately noticeable that the differences between the methods' imputation results and the true values are much higher for all methods for all variables for both data sets. The results for `Democrat` and `Male`, for instance, hover around 0.0100 and 0.0125 for both data sets. In the corresponding MAR analysis, however, the results for `Democrat` and `Male` showed around 0.0005. 
+
+
+
+ \begin{table}[!htbp] \centering 
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, MNAR, 5 Variables with NA}  
+ \label{mnar.5var} 
+\begin{threeparttable}
+ \begin{tabular}{ccr@{}lr@{}l} 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex]  
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex]  
+ true & Democrat & 0.&3420 & 0.&3770 \\
+ hd.ord & Democrat & --0.&0114 & --0.&0099 \\ 
+ hot.deck & Democrat & --0.&0120 & --0.&0105 \\
+ amelia & Democrat & --0.&0106 & --0.&0102 \\
+ mice & Democrat & --0.&0099 & --0.&0101 \\ 
+ na.omit & Democrat & --0.&0176 & --0.&0140 \\
+ true & Male & 0.&4890 & 0.&4830 \\ 
+ hd.ord & Male & --0.&0136 & --0.&0116 \\ 
+ hot.deck & Male & --0.&0133 & --0.&0124 \\
+ amelia & Male & --0.&0132 & --0.&0121 \\
+ mice & Male & --0.&0132 & --0.&0120 \\
+ na.omit & Male & --0.&0214 & --0.&0219 \\
+ true & Interest & 2.&9340 & 3.&3290 \\ 
+ hd.ord & Interest & --0.&0288 & --0.&0246 \\ 
+ hot.deck & Interest & --0.&0335 & --0.&0296 \\
+ amelia & Interest & --0.&0167 & --0.&0146 \\
+ mice & Interest & --0.&0167 & --0.&0146 \\
+ na.omit & Interest & --0.&0379 & --0.&0372 \\
+ true & Income & 16.&6140 & 6.&4810 \\
+ hd.ord & Income & --0.&2299 & --0.&0928 \\ 
+ hot.deck & Income & --0.&2554 & --0.&1038 \\
+ amelia & Income & --0.&1225 & --0.&0578 \\
+ mice & Income & --0.&1229 & --0.&0566 \\
+ na.omit & Income & --0.&2770 & --0.&1334 \\
+ true & Age & 50.&0410 & 52.&8230 \\
+ hd.ord & Age & --0.&6319 & --0.&4596 \\ 
+ hot.deck & Age & --0.&7415 & --0.&5929 \\ 
+ amelia & Age & --0.&2450 & --0.&2266 \\
+ mice & Age & --0.&2369 & --0.&2160 \\ 
+ na.omit & Age & --0.&6427 & --0.&6392 \\
+ \hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+
+For the binary variables, `hd.ord` performs on par with `amelia` and `mice` than in the corresponding MAR analysis above, sometimes more (`r mnar.5.anes[mnar.5.meth == "hd.ord" & mnar.5.var == "Male"]` `hd.ord` vs. `r mnar.5.anes[mnar.5.meth == "amelia" & mnar.5.var == "Male"]` `amelia` ANES `Male`) and sometimes less so (`r mnar.5.anes[mnar.5.meth == "hd.ord" & mnar.5.var == "Democrat"]` `hd.ord` vs. `r mnar.5.anes[mnar.5.meth == "mice" & mnar.5.var == "Democrat"]` `mice` ANES `Democrat`). The results for the ordinal variables confirm those of the MAR analysis: `hd.ord` represents the worst method across both data sets. `amelia` and `mice` show by far the best results and are virtually identical with each other, though the differences to the true values are much higher than in the MAR analysis, as is the case for the entire MNAR analysis. The results for the interval variables paint the same picture as the ordinal ones. `hd.ord` shows the worst performance. It is very notable, however, that `hd.ord` rivals the performance of `mice` and `amelia` for binary variables. Data MNAR thus represents an area where `mice` and `amelia` do not show superior performance. Compared to MAR, none of the methods perform well, i.e. they are all equally bad. This makes sense because none of the methods were designed for data MNAR. In one case, even list-wise deletion becomes competitive: `na.omit` performs equally well as `hd.ord` for ANES `Age`. Seeing as `hd.ord` holds its own for binary variables here, though, it could nonetheless be that the latent mapping conducted in `hd.ord` might be more suitable for binary variables in data MNAR than it is for other missing data mechanisms.^[For a repeat of this MNAR analysis for 12 amputed variables, see appendix section \ref{app-ordmiss-12var}. The results do not change substantively.]
+
+
+
+
+
+
+
+### Increased Number of Ordinal Variables {#ordmiss-results-increaseOrd}
+
+```{r MULT MAR 4 Variables, include=FALSE}
+
+mult.mar.4var.anes <- read.csv("data/anes/mar/results/anes.mar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mult.mar.4var.cces <- read.csv("data/cces/mar/results/cces.mar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+# mult.mar.4var.frame <- read.csv("data/framing/mar/results/framing.mar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+
+mult.mar.4var.anes[1:6, 2] <- mult.mar.4var.cces[1:6, 2] <- rep("Democrat", 6)
+mult.mar.4var.anes[13:18, 2] <- mult.mar.4var.anes[13:18, 2] <- rep("Income", 6)
+
+mult.mar.4var.anes$diff[mult.mar.4var.anes$method == "true"] <- mult.mar.4var.anes$value[mult.mar.4var.anes$method == "true"]
+mult.mar.4var.cces$diff[mult.mar.4var.cces$method == "true"] <- mult.mar.4var.cces$value[mult.mar.4var.cces$method == "true"]
+# mult.mar.4var.frame$diff[mult.mar.4var.frame$method == "true"] <- mult.mar.4var.frame$value[mult.mar.4var.frame$method == "true"]
+
+levels(mult.mar.4var.anes$method) <- levels(mult.mar.4var.cces$method) <- levs
+# levels(mult.mar.4var.frame$method) <- levs
+
+mult.mar.4var <- cbind(mult.mar.4var.anes[, c(1,2,4)], mult.mar.4var.cces[,4])
+# mult.mar.4var <- cbind(mult.mar.4var.anes[, c(1,2,4)], mult.mar.4var.cces[,4], mult.mar.4var.frame[,4])
+colnames(mult.mar.4var) <- col.names
+
+# to make the in-text citations shorter
+mult.mar.4.anes <- mult.mar.4var$ANES
+mult.mar.4.cces <- mult.mar.4var$CCES
+# mult.mar.4.frame <- mult.mar.4var$Framing
+mult.mar.4.meth <- mult.mar.4var$Method
+mult.mar.4.var <- mult.mar.4var$Variable
+
+tab.mult.mar.4var <- stargazer(mult.mar.4var, 
+                               summary = FALSE,
+                               align = TRUE,
+                               header = FALSE,
+                               rownames = FALSE,
+                               digits = 4,
+                               title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, 2 Ordinal Variables (Education, Interest), MAR, 4 Variables with NA",
+                               label = "mult.mar.4var")
+
+ft <- gsub("\\multicolumn{1}{c}{", "", tab.mult.mar.4var, fixed = TRUE)
+cat(ft)
+
+
+```
+
+
+This section shows the imputation results for an increased number of ordinal variables to be treated by `polr` in `hd.ord`. Specifically, I add `Interest` to the `ord` argument in `hd.ord`. This means `Interest` is no longer part of the amputed variables in its numerical form but instead is used in its ordinal form for treatment by `hd.ord`. Instead of using one ordinal variable to measure the underlying continuous variable, we now employ two: `Interest` and `Education`. The intuition behind this is a strengthening of the underlying latent continuous variable assumption. The results of the previous analyses do not show superior performance by `hd.ord`, but perhaps this might be due to a lack of 'influence' so far. Perhaps one ordinal variable treated with `polr` is not enough to manifest itself in improved results. By including another ordinal variable in the treatment, this 'influence' is strengthened and the `polr` assumption is put to another test. As in sections \ref{ordmiss-results-mar} and \ref{ordmiss-results-mnar}, imputations are conducted MAR and MNAR. Because `Interest` 'moves' to the `polr` treatment, the number of imputed variables is reduced to four and 11, respectively, to ensure accurate comparison. This means the amputed variables do not include an ordinal variable any more. The remaining variables are the same as before.
+
+Table \ref{mult.mar.4var} shows the results of imputing both data sets with two `polr`-treated variables MAR for four amputed variables. `hd.ord` displays the worst results for `Democrat` across both data sets and beats only `hot.deck` for `Male`. `amelia` and `mice` perform best and show virtually identically results that often match the true variable means. A comparison with the MAR analysis of five imputed variables reveals that `hd.ord` consistently performs slightly worse here: `r mult.mar.4.anes[mult.mar.4.meth == "hd.ord" & mult.mar.4.var == "Democrat"]` and `r mult.mar.4.cces[mult.mar.4.meth == "hd.ord" & mult.mar.4.var == "Democrat"]` vs. `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Democrat"]` and `r mar.5.cces[mar.5.meth == "hd.ord" & mar.5.var == "Democrat"]` for `Democrat`; `r mult.mar.4.anes[mult.mar.4.meth == "hd.ord" & mult.mar.4.var == "Male"]` and `r mult.mar.4.cces[mult.mar.4.meth == "hd.ord" & mult.mar.4.var == "Male"]` vs. `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Male"]`and `r mar.5.cces[mar.5.meth == "hd.ord" & mar.5.var == "Male"]` for `Male`.
+
+ \begin{table}[!htbp] \centering  
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, 2 Ordinal Variables (Education, Interest), MAR, 4 Variables with NA} 
+ \label{mult.mar.4var} 
+\begin{threeparttable}
+ \begin{tabular}{ccr@{}lr@{}l} 
+ \\[-1.8ex]\hline 
+ \hline \\[-1.8ex] 
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex]
+ true & Democrat & 0.&3420 & 0.&3770 \\
+ hd.ord & Democrat & --0.&0008 & +0.&0002 \\
+ hot.deck & Democrat & --0.&0018 & --0.&0005 \\
+ amelia & Democrat & +0.&0002 & +0.&0001 \\
+ mice & Democrat & +0.&0001 & +0.&0002 \\
+ na.omit & Democrat & --0.&0333 & --0.&0294 \\
+ true & Male & 0.&4890 & 0.&4830 \\
+ hd.ord & Male & --0.&0022 & --0.&0019 \\
+ hot.deck & Male & --0.&0015 & --0.&0018 \\
+ amelia & Male & +0.&0001 & +0.&0000 \\
+ mice & Male & +0.&0000 & +0.&0000 \\ 
+ na.omit & Male & --0.&0396 & --0.&0407 \\
+ true & Income & 16.&6140 & 6.&4810 \\
+ hd.ord & Income & --0.&0830 & --0.&0246 \\
+ hot.deck & Income & --0.&1523 & --0.&0516 \\
+ amelia & Income & +0.&0010 & --0.&0006 \\
+ mice & Income & --0.&0008 & +0.&0002 \\
+ na.omit & Income & --0.&5771 & --0.&2564 \\
+ true & Age & 50.&0410 & 52.&8230 \\
+ hd.ord & Age & --0.&2889 & --0.&2350 \\
+ hot.deck & Age & --0.&5431 & --0.&4664 \\
+ amelia & Age & +0.&0018 & +0.&0085 \\
+ mice & Age & +0.&0024 & --0.&0002 \\ 
+ na.omit & Age & --1.&1521 & --1.&1228 \\
+ \hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+ 
+ 
+
+`hd.ord` also performs worst for both data sets across both interval variables. `amelia` and `mice` again perform best. `amelia` and `mice` perform equally well for ANES, while `mice` does better for CCES. As for the binary variables, the results for `hd.ord` consistently get slightly worse in the switch from one to two ordinal variables in `polr`-treatment: `r mult.mar.4.anes[mult.mar.4.meth == "hd.ord" & mult.mar.4.var == "Income"]` and `r mult.mar.4.cces[mult.mar.4.meth == "hd.ord" & mult.mar.4.var == "Income"]` vs. `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Income"]` and `r mar.5.cces[mar.5.meth == "hd.ord" & mar.5.var == "Income"]` for `Income`; `r mult.mar.4.anes[mult.mar.4.meth == "hd.ord" & mult.mar.4.var == "Age"]` and `r mult.mar.4.cces[mult.mar.4.meth == "hd.ord" & mult.mar.4.var == "Age"]` vs. `r mar.5.anes[mar.5.meth == "hd.ord" & mar.5.var == "Age"]` and `r mar.5.cces[mar.5.meth == "hd.ord" & mar.5.var == "Age"]` for `Age`.^[For a repeat of this MAR analysis for 11 amputed variables and two ordinal variables, see appendix section \ref{app-ordmiss-mult-11var}. The results do not change substantively.]
+
+
+
+
+
+
+```{r MULT MNAR 4 Variables, include=FALSE}
+
+mult.mnar.4var.anes <- read.csv("data/anes/mnar/results/anes.mnar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+mult.mnar.4var.cces <- read.csv("data/cces/mnar/results/cces.mnar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+# mult.mnar.4var.frame <- read.csv("data/framing/mnar/results/framing.mnar.mult.results.4var.1000n.1000it.20perc.csv") %>% .[,-1] %>% addPlus
+
+mult.mnar.4var.anes[1:6, 2] <- mult.mnar.4var.cces[1:6, 2] <- rep("Democrat", 6)
+mult.mnar.4var.anes[13:18, 2] <- mult.mnar.4var.anes[13:18, 2] <- rep("Income", 6)
+
+mult.mnar.4var.anes$diff[mult.mnar.4var.anes$method == "true"] <- mult.mnar.4var.anes$value[mult.mnar.4var.anes$method == "true"]
+mult.mnar.4var.cces$diff[mult.mnar.4var.cces$method == "true"] <- mult.mnar.4var.cces$value[mult.mnar.4var.cces$method == "true"]
+# mult.mnar.4var.frame$diff[mult.mnar.4var.frame$method == "true"] <- mult.mnar.4var.frame$value[mult.mnar.4var.frame$method == "true"]
+
+levels(mult.mnar.4var.anes$method) <- levels(mult.mnar.4var.cces$method) <- levs
+# levels(mult.mnar.4var.frame$method) <- levs
+
+mult.mnar.4var <- cbind(mult.mnar.4var.anes[, c(1,2,4)], mult.mnar.4var.cces[,4])
+# mult.mnar.4var <- cbind(mult.mnar.4var.anes[, c(1,2,4)], mult.mnar.4var.cces[,4], mult.mnar.4var.frame[,4])
+colnames(mult.mnar.4var) <- col.names
+
+# to make the in-text citations shorter
+mult.mnar.4.anes <- mult.mnar.4var$ANES
+mult.mnar.4.cces <- mult.mnar.4var$CCES
+# mult.mnar.4.frame <- mult.mnar.4var$Framing
+mult.mnar.4.meth <- mult.mnar.4var$Method
+mult.mnar.4.var <- mult.mnar.4var$Variable
+
+tab.mult.mnar.4var <- stargazer(mult.mnar.4var, 
+                                summary = FALSE,
+                                align = TRUE,
+                                header = FALSE,
+                                rownames = FALSE,
+                                digits = 4,
+                                title = "Accuracy of Multiple Imputation Methods. ANES and CCES Data, 2 Ordinal Variables (Education, Interest), MNAR, 4 Variables with NA",
+                                label = "mult.mnar.4var")
+
+gt <- gsub("\\multicolumn{1}{c}{", "", tab.mult.mnar.4var, fixed = TRUE)
+cat(gt)
+
+
+```
+
+
+Table \ref{mult.mnar.4var} shows the results of imputing both data sets with two `polr`-treated variables MNAR for four amputed variables. For the binary variables, `hd.ord` performs on the same level as `amelia` and `mice` when compared to the MNAR analysis of five imputed variables with only `Education` treated by `polr`; sometimes more (`r mult.mnar.4.cces[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Democrat"]` `hd.ord` vs. `r mult.mnar.4.cces[mult.mnar.4.meth == "mice" & mult.mnar.4.var == "Democrat"]` `mice` CCES `Democrat`), sometimes less so (`r mult.mnar.4.anes[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Democrat"]` `hd.ord` vs. `r mult.mnar.4.anes[mult.mnar.4.meth == "mice" & mult.mnar.4.var == "Democrat"]` `mice` ANES `Democrat`). `na.omit` does not perform as well as it does in Table \ref{mnar.5var}. `hd.ord` again consistently performs slightly worse with the two-ordinal-variable-`polr`-treatment: `r mult.mnar.4.anes[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Democrat"]` and `r mult.mnar.4.cces[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Democrat"]` vs. `r mnar.5.anes[mnar.5.meth == "hd.ord" & mnar.5.var == "Democrat"]` and `r mnar.5.cces[mnar.5.meth == "hd.ord" & mnar.5.var == "Democrat"]` for `Democrat`; `r mult.mnar.4.anes[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Male"]` and `r mult.mnar.4.cces[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Male"]` vs. `r mnar.5.anes[mnar.5.meth == "hd.ord" & mnar.5.var == "Male"]` and `r mnar.5.cces[mnar.5.meth == "hd.ord" & mnar.5.var == "Male"]` for `Male`.
+
+
+ \begin{table}[!htbp] \centering
+ \caption{Accuracy of Multiple Imputation Methods. ANES and CCES Data, 2 Ordinal Variables (Education, Interest), MNAR, 4 Variables with NA} 
+ \label{mult.mnar.4var} 
+\begin{threeparttable}
+ \begin{tabular}{ccr@{}lr@{}l} 
+ \\[-1.8ex]\hline  
+ \hline \\[-1.8ex]
+ \multicolumn{1}{c}{Method} & \multicolumn{1}{c}{Variable} & \multicolumn{2}{c}{ANES} & \multicolumn{2}{c}{CCES} \\
+ \hline \\[-1.8ex] 
+ true & Democrat & 0.&3420 & 0.&3770 \\ 
+ hd.ord & Democrat & --0.&0142 & --0.&0133 \\ 
+ hot.deck & Democrat & --0.&0155 & --0.&0131 \\
+ amelia & Democrat & --0.&0136 & --0.&0131 \\
+ mice & Democrat & --0.&0127 & --0.&0130 \\
+ na.omit & Democrat & --0.&0211 & --0.&0185 \\
+ true & Male & 0.&4890 & 0.&4830 \\
+ hd.ord & Male & --0.&0180 & --0.&0162 \\
+ hot.deck & Male & --0.&0172 & --0.&0160 \\
+ amelia & Male & --0.&0170 & --0.&0154 \\
+ mice & Male & --0.&0170 & --0.&0153 \\ 
+ na.omit & Male & --0.&0233 & --0.&0241 \\
+ true & Income & 16.&6140 & 6.&4810 \\
+ hd.ord & Income & --0.&2481 & --0.&1034 \\ 
+ hot.deck & Income & --0.&3174 & --0.&1303 \\
+ amelia & Income & --0.&1555 & --0.&0741 \\
+ mice & Income & --0.&1568 & --0.&0730 \\
+ na.omit & Income & --0.&3114 & --0.&1513 \\
+ true & Age & 50.&0410 & 52.&8230 \\
+ hd.ord & Age & --0.&6020 & --0.&4844 \\
+ hot.deck & Age & --0.&8997 & --0.&7259 \\
+ amelia & Age & --0.&3103 & --0.&2831 \\
+ mice & Age & --0.&2994 & --0.&2702 \\
+ na.omit & Age & --0.&6726 & --0.&6482 \\
+ \hline \\[-1.8ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+\footnotesize{\textit{Note:} Each \texttt{true} value shows the true variable mean. All other values show the differences between the imputation means and the true mean, indicated with a + or -- sign.}
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+ 
+ 
+
+
+The results for the interval variables are consistent with the previous analyses. In addition, note that `na.omit` performs better than `hd.ord` for `Age` in both data sets and for ANES `Income`. Once more, `hd.ord` consistently performs slightly worse with more than two ordinal variables: `r mult.mnar.4.anes[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Income"]` and `r mult.mnar.4.cces[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Income"]` vs. `r mnar.5.anes[mnar.5.meth == "hd.ord" & mnar.5.var == "Income"]` and `r mnar.5.cces[mnar.5.meth == "hd.ord" & mnar.5.var == "Income"]` for `Income`; `r mult.mnar.4.anes[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Age"]` and `r mult.mnar.4.cces[mult.mnar.4.meth == "hd.ord" & mult.mnar.4.var == "Age"]` vs. `r mnar.5.anes[mnar.5.meth == "hd.ord" & mnar.5.var == "Age"]` and `r mnar.5.cces[mnar.5.meth == "hd.ord" & mnar.5.var == "Age"]` for `Age`.^[For a repeat of this MNAR analysis for 11 amputed variables and two ordinal variables, see appendix section \ref{app-ordmiss-mult-11var}. The results do not change substantively.]
+
+
+
+\clearpage
+
+### Increased Percentage of Missingness {#ordmiss-results-increaseNA}
+
+
+```{r Increasing Missingness Percentage Table, include=FALSE}
+
+# There is currently no CCES 80 percent .csv file because polr is acting up. In case the committee wants that, I can address it then
+
+mar.5var.cces.20 <- mar.5var.cces
+mar.5var.cces.50 <- read.csv("data/cces/mar/results/cces.mar.results.5var.1000n.1000it.50perc.csv") %>% .[,-1] %>% addPlus
+# mar.5var.cces.80 <- read.csv("data/cces/mar/results/cces.mar.results.5var.1000n.1000it.80perc.csv") %>% .[,-1] %>% addPlus
+
+mar.5var.cces.50[1:6, 2] <- rep("Democrat", 6)
+mar.5var.cces.50[19:24, 2] <- rep("Income", 6)
+
+mar.5var.cces.20$diff[mar.5var.cces.20$method == "true"] <-
+  mar.5var.cces.50$diff[mar.5var.cces.50$method == "true"] <-
+  # mar.5var.cces.80$diff[mar.5var.cces.80$method == "true"] <-
+  mar.5var.cces.20$value[mar.5var.cces.20$method == "true"]
+
+levels(mar.5var.cces.20$method) <-
+  levels(mar.5var.cces.50$method) <-
+  # levels(mar.5var.cces.80$method) <-
+  levs
+
+mar.5var.cces.perc <- cbind(mar.5var.cces.20[,c(1,2,4)], mar.5var.cces.50[,4])
+# mar.5var.cces.perc <- cbind(mar.5var.cces.20[,c(1,2,4)], mar.5var.cces.50[,4], mar.5var.cces.80[,4])
+colnames(mar.5var.cces.perc) <- c("Method", "Variable", "20% NA", "50% NA")
+# colnames(mar.5var.cces.perc) <- c("Method", "Variable", "20% NA", "50% NA", "80% NA")
+
+# to make the in-text citations shorter
+cces.NA20 <- mar.5var.cces.perc$`20% NA`
+cces.NA50 <- mar.5var.cces.perc$`50% NA`
+# cces.NA80 <- mar.5var.cces.perc$`80% NA`
+cces.perc.meth <- mar.5var.cces.perc$Method
+cces.perc.var <- mar.5var.cces.perc$Variable
+
+tab.mar.5var.cces.perc <- stargazer(mar.5var.cces.perc,
+                                    summary = FALSE,
+                                    align = TRUE,
+                                    header = FALSE,
+                                    rownames = FALSE,
+                                    digits = 4,
+                                    title = "Accuracy of Multiple Imputation Methods for Increasing Percentages of Missingness. CCES Data, MAR, Five Variables with NA",
+                                    label = "mar.5var.cces.perc")
+
+ht <- gsub("\\multicolumn{1}{c}{", "", tab.mar.5var.cces.perc, fixed = TRUE)
+cat(ht)
+
+
+```
+
+
+This brief section shows the imputation results when the percentage of missingness is increased. I conduct this for data MAR for five variables with the CCES data. Figures \ref{accuracy20} and \ref{accuracy50} show the results for 20 and 50 percent missingness, respectively.
+
+
+```{r Increasing Missingness Percentage Plots, include=FALSE}
+
+# 20 percent missingness
+mar.5var.cces.20.plot <- mar.5var.cces.20[,1:3]
+mar.5var.cces.20.plot$value <- as.numeric(mar.5var.cces.20.plot$value)
+mar.5var.cces.20.plot.dem <- filter(mar.5var.cces.20.plot, variable == "Democrat")
+
+yint <- mar.5var.cces.20.plot.dem$value[mar.5var.cces.20.plot.dem$variable == "Democrat" & mar.5var.cces.20.plot.dem$method == "true"]
+var.filter <- filter(mar.5var.cces.20.plot.dem, variable == "Democrat", method != "true")
+var.filter$method <- factor(var.filter$method, levels = c("hd.ord", "hot.deck", "amelia", "mice", "na.omit"))
+plot.dem.20 <- ggplot(var.filter, aes(x=method, value)) + 
+    geom_point(size = 3) + 
+    geom_hline(yintercept= yint, linetype = "dashed", color = "red", size = 1) + 
+    theme(axis.title = element_blank()) + 
+    annotate(geom="text", x=4.4, y=yint+0.0025, label="True benchmark",
+             color="red") + 
+  ggtitle("Democrat") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+mar.5var.cces.20.plot.other <- filter(mar.5var.cces.20.plot, variable != "Democrat")
+vars.unique <- mar.5var.cces.20.plot.other$variable %>% unique
+plot.list.20 <- list()
+plot.list.20[[1]] <- plot.dem.20
+
+for(i in 1:length(vars.unique)){
+  yint <- mar.5var.cces.20.plot.other$value[mar.5var.cces.20.plot.other$variable == vars.unique[i] & mar.5var.cces.20.plot.other$method == "true"]
+  var.filter <- filter(mar.5var.cces.20.plot.other, variable == vars.unique[i], method != "true")
+  var.filter$method <- factor(var.filter$method, levels = c("hd.ord", "hot.deck", "amelia", "mice", "na.omit"))
+  plot.list.20[[i+1]] <- ggplot(var.filter, aes(x=method, value)) + 
+    geom_point(size = 3) + 
+    geom_hline(yintercept= yint, linetype = "dashed", color = "red", size = 1) + 
+    theme(axis.title = element_blank()) +  
+    ggtitle(vars.unique[i]) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+
+# 50 percent missingness
+mar.5var.cces.50.plot <- mar.5var.cces.50[,1:3]
+mar.5var.cces.50.plot$value <- as.numeric(mar.5var.cces.50.plot$value)
+mar.5var.cces.50.plot.dem <- filter(mar.5var.cces.50.plot, variable == "Democrat")
+
+yint <- mar.5var.cces.50.plot.dem$value[mar.5var.cces.50.plot.dem$variable == "Democrat" & mar.5var.cces.50.plot.dem$method == "true"]
+var.filter <- filter(mar.5var.cces.50.plot.dem, variable == "Democrat", method != "true")
+var.filter$method <- factor(var.filter$method, levels = c("hd.ord", "hot.deck", "amelia", "mice", "na.omit"))
+plot.dem.50 <- ggplot(var.filter, aes(x=method, value)) + 
+    geom_point(size = 3) + 
+    geom_hline(yintercept= yint, linetype = "dashed", color = "red", size = 1) + 
+    theme(axis.title = element_blank()) + 
+    annotate(geom="text", x=4.4, y=yint+0.006, label="True benchmark",
+             color="red") + 
+  ggtitle("Democrat") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+mar.5var.cces.50.plot.other <- filter(mar.5var.cces.50.plot, variable != "Democrat")
+vars.unique <- mar.5var.cces.50.plot.other$variable %>% unique
+plot.list.50 <- list()
+plot.list.50[[1]] <- plot.dem.50
+
+for(i in 1:length(vars.unique)){
+  yint <- mar.5var.cces.50.plot.other$value[mar.5var.cces.50.plot.other$variable == vars.unique[i] & mar.5var.cces.50.plot.other$method == "true"]
+  var.filter <- filter(mar.5var.cces.50.plot.other, variable == vars.unique[i], method != "true")
+  var.filter$method <- factor(var.filter$method, levels = c("hd.ord", "hot.deck", "amelia", "mice", "na.omit"))
+  plot.list.50[[i+1]] <- ggplot(var.filter, aes(x=method, value)) + 
+    geom_point(size = 3) + 
+    geom_hline(yintercept= yint, linetype = "dashed", color = "red", size = 1) + 
+    theme(axis.title = element_blank()) +  
+    ggtitle(vars.unique[i]) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+```
+
+```{r Increased-Missingness-20-Percent, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Accuracy of Multiple Imputation Methods for 20 Percent Missingness. CCES Data, MAR, Five Variables with NA. Y-Axis Shows Percentages/Means.\\label{accuracy20}"}
+
+grid.arrange(grobs = plot.list.20, ncol = 3, nrow = 2)
+
+```
+
+```{r Increased-Missingness-50-Percent, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Accuracy of Multiple Imputation Methods for 50 Percent Missingness. CCES Data, MAR, Five Variables with NA. Y-Axis Shows Percentages/Means.\\label{accuracy50}"}
+
+grid.arrange(grobs = plot.list.50, ncol = 3, nrow = 2)
+
+```
+
+`hd.ord` performs comparatively well for 50 percent missing data `Democrat` (`r cces.NA50[cces.perc.meth == "hd.ord" & cces.perc.var == "Democrat"]` vs. `r cces.NA50[cces.perc.meth == "amelia" & cces.perc.var == "Democrat"]` `amelia`) but falls short for `Male` (`r cces.NA50[cces.perc.meth == "hd.ord" & cces.perc.var == "Male"]` vs. `r cces.NA50[cces.perc.meth == "mice" & cces.perc.var == "Male"]` `mice`). `hd.ord` also represents the second-worst imputation method for both percentages for the ordinal and interval variables. `amelia` and `mice` show virtually identical results, are hardly affected by the increase in missingness, and far outperform the other methods.
+
+
+
+
+
+
+
+
+
+
+### Speed {#ordmiss-results-speed}
+
+```{r Runtimes 5 Variables MAR, include=FALSE}
+
+run.5var.anes <- read.csv("data/anes/mar/runtimes/anes.mar.runtime.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+run.5var.cces <- read.csv("data/cces/mar/runtimes/cces.mar.runtime.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+# run.5var.frame <- read.csv("data/framing/mar/runtimes/framing.mar.runtime.5var.1000n.1000it.20perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+
+run.5var <- cbind(run.5var.anes, run.5var.cces[,2])
+colnames(run.5var) <- c("", "ANES", "CCES")
+
+```
+
+This section shows the running times for all methods. I outline the speed differences for both data sets (Table \ref{runtimes5var}) and by the percentage of missingness for the CCES data (Table \ref{run.cces.perc}). Both analyses are conducted MAR for five imputed variables. All running times are given in minutes, apply to all 1,000 imputation iterations combined, and were achieved on a Code Ocean AWS EC2 instance with 16 cores and 120 GB of memory.
+
+Table \ref{runtimes5var} shows `hd.ord` and `hot.deck` with virtually identical running times for both data sets. This is to be expected as both methods are very similar in terms of their code build-up. More importantly, however, we observe that both methods are much faster than `amelia` and `mice`: `amelia` is `r (run.5var[3, "ANES"] / run.5var[1, "ANES"]) %>% round(., digits = 1)` times slower than `hd.ord` for the ANES data and `r (run.5var[3, "CCES"] / run.5var[1, "CCES"]) %>% round(., digits = 1)` times slower for the CCES data. `mice`, however, is by far the slowest method and takes `r (run.5var[4, "CCES"] / run.5var[1, "CCES"]) %>% round(., digits = 1)` (CCES) and `r (run.5var[4, "ANES"] / run.5var[1, "ANES"]) %>% round(., digits = 1)` (ANES) times as long as `hd.ord`.^[For the runtimes for 12 imputed variables, see appendix section \ref{app-ordmiss-speed-12var}. The results do not change substantively.]
+
+
+```{r Runtimes Increased Missingness MAR 5 Variables Table, results='asis', echo=FALSE}
+
+stargazer(run.5var,
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes). ANES and CCES Data, MAR, 5 Variables with NA",
+          label = "runtimes5var")
+
+```
+
+
+```{r Runtimes Increased Missingness MAR Code, include=FALSE}
+
+# There is currently no CCES 80 percent .csv file because polr is acting up. In case the committee wants that, I can address it then
+
+run.cces.20 <- run.5var.cces
+run.cces.50 <- read.csv("data/cces/mar/runtimes/cces.mar.runtime.5var.1000n.1000it.50perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+# run.cces.80 <- read.csv("data/cces/mar/runtimes/cces.mar.runtime.5var.1000n.1000it.80perc.csv") %>% .[,-1] %>% .[, order(ncol(.):1)]
+
+run.cces.perc <- cbind(run.cces.20$V1, run.cces.50$V1) %>% as.data.frame %>% round(., digits = 2)
+# run.cces.perc <- cbind(run.cces.20$V1, run.cces.50$V1, run.cces.80$V1) %>% as.data.frame %>% round(., digits = 2)
+run.cces.perc$V3 <- run.cces.20$V2 %>% as.character
+# run.cces.perc$V4 <- run.cces.20$V2 %>% as.character
+run.cces.perc <- run.cces.perc[,c(3, 1:2)]
+# run.cces.perc <- run.cces.perc[,c(4, 1:3)]
+colnames(run.cces.perc) <- c("Method", "20% NA", "50% NA")
+# colnames(run.cces.perc) <- c("Method", "20% NA", "50% NA", "80% NA")
+
+perc.hd.am.div <- run.cces.perc[3,2:3] %>% as.numeric / run.cces.perc[1,2:3] %>% as.numeric
+perc.hd.mi.div <- run.cces.perc[4,2:3] %>% as.numeric / run.cces.perc[1,2:3] %>% as.numeric
+
+
+```
+
+
+Table \ref{run.cces.perc} shows that `hd.ord` and `hot.deck` remain the fastest methods across both percentages of missingness, but the gap to `amelia` and `mice` narrows as the missingness increases. `amelia` improves from `r perc.hd.am.div %>% max %>% round(., digits = 1)` times slower than `hd.ord` for 20 percent missing data to `r perc.hd.am.div %>% min %>% round(., digits = 1)` times slower for 50 percent missing data. Similarly, `mice` speeds up from `r perc.hd.mi.div %>% max %>% round(., digits = 1)` to `r perc.hd.mi.div %>% min %>% round(., digits = 1)` times slower.
+
+
+
+```{r Runtimes Increased Missingness MAR Table, results='asis', echo=FALSE}
+
+stargazer(run.cces.perc,
+          summary = FALSE,
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          title = "Runtimes of Multiple Imputation Methods (in Minutes) by Percentage of Missingness. CCES Data",
+          label = "run.cces.perc")
+
+```
+
+
+## Brief Evaluation of Shortcomings {#ordmiss-eval}
+
+Given `hd.ord`'s inferior performance, we need to speculate about possible reasons. Perhaps the importance of the uneven distances between ordinal variable categories is over-emphasized in the literature, with the distances potentially being not as uneven as previously thought. The fact that `hd.ord` consistently performs worse when a second ordinal variable is added to the `polr` treatment seems to point in this direction. To investigate this possibility, I test the influence of `polr` on regression coefficient transformations with data from previous publications.
+
+The first column of Table \ref{ordmiss-bartels-92} shows a replication of a linear model estimated by @bartels_1999_panel on the 1992 ANES data. Bartels regresses several explanatory variables on `Campaign Interest` (this estimation corresponds to the column "Panel" in Table 2 of the original publication). As we can see, the ordinal variable `Education` is part of the explanatory variables in the model. To test the transformations implemented by an ordered probit model for ordinal variables, I remove the current outcome variable (`Campaign Interest`) and replace it with `Education`. The resulting model is then estimated as a linear regression (column two) and an ordered probit regression (column three).
+
+
+```{r lm and polr Differences on External Data, include=FALSE}
+
+bart.92 <- read_sav("data/bartels/panel.92.sav")
+
+# all variables taken from data/bartels/var_descriptions.txt
+bart.cols <- list(
+  c("V4", "V3", "V5", "V6", "V7", "V13", "V16", "V17")
+  )
+
+bart.colnames <- list(
+  c("Education", "Age", "Income", "Black", "Female", "Camp_int", "Part_strength", "Days_bef_elec")
+  )
+
+bart.dv.orig <- c("Camp_int")
+bart.dv.lm <- "Education"
+dv.polr <- paste0(bart.dv.lm, ".fac")
+
+bart.dfs <- list(bart.92)
+bart.dfs.sub <- list()
+bart.evs.orig <- list()
+bart.evs.new <- list()
+bart.reg.res <- rep(list(list()), length(bart.dfs))
+
+models <- c("orig", "lm", "polr")
+years <- c(92)
+mod.temp <- rep(list(list()), length(models))
+names(mod.temp) <- models
+bart.reg.res <- rep(list(mod.temp), length(bart.dfs))
+names(bart.reg.res) <- years
+
+for (n in 1:length(bart.dfs)){
+  bart.dfs.sub <- subset(bart.dfs[[n]], subset = c(V1 == 1)) %>% .[bart.cols[[n]]]
+  colnames(bart.dfs.sub) <- bart.colnames[[n]]
+  bart.evs.orig <- colnames(bart.dfs.sub)[!colnames(bart.dfs.sub) %in% bart.dv.orig[n]]
+  bart.dfs.sub[[dv.polr]] <- bart.dfs.sub[[bart.dv.lm]] %>% as.factor
+  bart.evs.new <- bart.evs.orig[!bart.evs.orig %in% c(bart.dv.lm, dv.polr)]
+  bart.reg.res[[n]][["orig"]] <- lm(paste(bart.dv.orig[[n]], paste(bart.evs.orig, collapse = " + "), sep = " ~ "),
+                               data = bart.dfs.sub)
+  bart.reg.res[[n]][["lm"]] <- lm(paste(bart.dv.lm, paste(bart.evs.new, collapse = " + "), sep = " ~ "),
+                               data = bart.dfs.sub)
+  bart.reg.res[[n]][["polr"]] <- polr(paste(dv.polr, paste(bart.evs.new, collapse = " + "), sep = " ~ "),
+                                 data = bart.dfs.sub, Hess=TRUE)
+  }
+
+bart.92.lm <- bart.reg.res[["92"]][["lm"]] %>% 
+  summary %>% 
+  .$coefficients %>% 
+  data.frame %>% 
+  .[-1, 1:2]
+bart.92.polr <- bart.reg.res[["92"]][["polr"]] %>% 
+  summary %>% 
+  .$coefficients %>%
+  data.frame %>%
+  .[1:nrow(bart.92.lm), 1:2]
+
+xlab <- c("Age", "Income", "Black", "Female", "Partisan strength", "Days before election")
+
+plots.92 <- list()
+ov.perc <- c()
+reps <- 100000
+
+for (i in 1:nrow(bart.92.lm)){
+  set.seed(126)
+  lm.norm.92 <- rnorm(reps, mean = bart.92.lm[i,1], 
+                      sd = bart.92.lm[i,2])
+  polr.norm.92 <- rnorm(reps, mean = bart.92.polr[i,1], 
+                        sd = bart.92.polr[i,2])
+  
+  lm.92 <- cbind(lm.norm.92, rep("lm", reps)) %>% data.frame
+  polr.92 <- cbind(polr.norm.92, rep("polr", reps)) %>% data.frame
+  colnames(lm.92) <- colnames(polr.92) <- c("Coefficient", "Model")
+  over.lap  <- list(lm.92$Coefficient %>% as.numeric, 
+                    polr.92$Coefficient %>% as.numeric) %>% 
+    overlap(.) %>%
+    .$OV * 100
+  ov.perc[i] <- round(over.lap, digits = 2)
+  df.92 <- rbind(lm.92, polr.92)
+  df.92$Coefficient <- df.92$Coefficient %>% as.numeric
+  grob <- grobTree(textGrob(paste("Overlap:",  paste0(ov.perc[i], " %"), sep="\n"),
+                            x=0.75,  y=0.75, hjust=0,
+                            gp=gpar(col="red", fontsize=10)))
+  if(i == 1){
+    plots.92[[i]] <- ggplot(df.92, aes(x=Coefficient, fill=Model)) + 
+      geom_density(alpha=0.2, aes(y=..density..), position="identity") + 
+      xlab(xlab[i]) + 
+      theme(axis.title.y=element_blank()) + 
+      theme(legend.title=element_blank()) + 
+      theme(legend.position = c(0.15, 0.75)) + 
+      theme(plot.title = element_text(hjust = 0.5)) +
+      annotation_custom(grob)
+  } else{
+    plots.92[[i]] <- ggplot(df.92, aes(x=Coefficient, fill=Model)) + 
+      geom_density(alpha=0.2, aes(y=..density..), position="identity") + 
+      xlab(xlab[i]) + 
+      theme(axis.title.y=element_blank()) + 
+      theme(legend.title=element_blank()) + 
+      theme(legend.position = "none") + 
+      theme(plot.title = element_text(hjust = 0.5)) +
+      annotation_custom(grob)
+  }
+}
+
+stargazer(bart.reg.res[["92"]][["orig"]],
+          bart.reg.res[["92"]][["lm"]],
+          bart.reg.res[["92"]][["polr"]],
+          align = TRUE,
+          header = FALSE,
+          rownames = FALSE,
+          dep.var.labels = c("Campaign Interest", "Education", "Education"),
+          covariate.labels = c("Education", "Age", "Income", "Black", "Female", "Partisan strength", "Days before election"),
+          title = "`lm` and `polr` Differences in 1992 ANES Data as Used by Bartels (1999)",
+          no.space = TRUE,
+          model.numbers = FALSE,
+          star.char = c("", "", ""),
+          label = "ordmiss-bartels-92",
+          omit.table.layout = "n")
+
+```
+
+
+\begin{table}[!htbp] \centering 
+  \caption{`lm` and `polr` Differences in 1992 ANES Data as Used by Bartels (1999)} 
+  \label{ordmiss-bartels-92} 
+\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & \multicolumn{1}{c}{Campaign Interest} & \multicolumn{1}{c}{Education} & \multicolumn{1}{c}{Education} \\ 
+\\[-1.8ex] & \multicolumn{1}{c}{\textit{OLS}} & \multicolumn{1}{c}{\textit{OLS}} & \multicolumn{1}{c}{\textit{ordered}} \\ 
+ & \multicolumn{1}{c}{\textit{}} & \multicolumn{1}{c}{\textit{}} & \multicolumn{1}{c}{\textit{logistic}} \\ 
+\hline \\[-1.8ex] 
+ Education & 0.023^{} &  &  \\ 
+  & (0.004) &  &  \\ 
+  Age & 0.002^{} & -0.032^{} & -0.021^{} \\ 
+  & (0.001) & (0.004) & (0.003) \\ 
+  Income & 0.071^{} & 4.092^{} & 3.133^{} \\ 
+  & (0.037) & (0.245) & (0.204) \\ 
+  Black & -0.028 & -0.865^{} & -0.673^{} \\ 
+  & (0.028) & (0.198) & (0.150) \\ 
+  Female & -0.055^{} & -0.058 & -0.054 \\ 
+  & (0.018) & (0.133) & (0.102) \\ 
+  Partisan strength & 0.214^{} & 0.290 & 0.196 \\ 
+  & (0.027) & (0.198) & (0.152) \\ 
+  Days before election & -0.001^{} & 0.014^{} & 0.012^{} \\ 
+  & (0.0005) & (0.004) & (0.003) \\ 
+  Constant & 0.391^{} & -0.388 &  \\ 
+  & (0.038) & (0.273) &  \\ 
+ \hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{1,359} & \multicolumn{1}{c}{1,359} & \multicolumn{1}{c}{1,359} \\ 
+R$^{2}$ & \multicolumn{1}{c}{0.114} & \multicolumn{1}{c}{0.248} &  \\ 
+Adjusted R$^{2}$ & \multicolumn{1}{c}{0.109} & \multicolumn{1}{c}{0.245} &  \\ 
+Residual Std. Error & \multicolumn{1}{c}{0.331 (df = 1351)} & \multicolumn{1}{c}{2.401 (df = 1352)} &  \\ 
+F Statistic & \multicolumn{1}{c}{24.750$^{}$ (df = 7; 1351)} & \multicolumn{1}{c}{74.507$^{}$ (df = 6; 1352)} &  \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
+
+
+To determine how statistically distinct the variables on the right-hand side in these models are (`Age`, `Income`, `Black`, `Female`, `Partisan strength`, `Days before election`), I simulate the posterior distribution of each $\bm{\beta}$ coefficient from both regressions in columns two and three as a normal distribution with mean $\bm{\hat{\beta}}$, standard error $SE(\bm{\hat{\beta}})$, and $n = 100,000$. I then plot the overlapping distributions of each linear regression coefficient with the corresponding ordered probit regression coefficient to assess the posterior percentage of overlay. The results are shown in Figure \ref{DensBart92}. 
+
+
+```{r Density-Plots-Bartels-1992, echo=FALSE, fig.width=10, fig.height=6, fig.cap="Distributions of `lm` and `polr` Coefficients in 1992 ANES Data as Used by Bartels (1999)\\label{DensBart92}"}
+
+grid.arrange(grobs = plots.92, ncol = 2, left = "Density")
+
+```
+
+
+We observe a small posterior percentage of overlay for the distributions of `Age` and `Income` (< 10 percent) and a large posterior percentage of overlay for the distributions of `Black`, `Female`, `Partisan strength`, and `Days before election` (> 40 percent). Since a large percentage indicates little difference in significance between the two sets of coefficients, these results appear provide evidence against the importance of re-estimating ordinal variable categories with an ordered probit model. It seems that uneven distances between ordinal variable categories might not actually be of crucial importance when it comes to missing data imputation.
+
+
+
+## Conclusion {#ordmiss-conclusion}
+
+I set out to improve multiple imputation results with ordinal variables by accounting for the unevenly spaced ordering contained in ordinal variables. I did so by adapting the multiple hot deck imputation function `hot.deck` to treat ordinal variables with an ordered probit model in order to estimate numerical thresholds from an assumed underlying latent continuous variable. The results clearly show diverging outcomes from the different algorithms, with each algorithm behaving differently under changing circumstances. 
+
+`hd.ord` overall shows worse results than `amelia` and `mice` for data MAR for all types of variables. `amelia` and `mice` also outperform `hd.ord` for interval and ordinal variables in data MNAR. For binary variables in data missing MNAR, however, `hd.ord` performs on par. Increasing the number of ordinal variables included in the `polr` reduces `hd.ord`'s effectiveness: `hd.ord` consistently performs slightly worse for both data sets. Unlike `amelia` and `mice`, `hd.ord`'s performance also worsens when the percentage of missingness in the data is increased to 50 percent.
+
+`hd.ord` performs multiple imputation much more quickly than the other methods: For 1,000 multiple imputation iterations, `amelia` and `mice` are at least `r (run.5var[3, "CCES"] / run.5var[1, "CCES"]) %>% round(., digits = 1)` and `r (run.5var[4, "CCES"] / run.5var[1, "CCES"]) %>% round(., digits = 1)` times slower than `hd.ord` for 20 percent of missing data, respectively. For basic users who want to impute missing data once for one specific data set, this speed gain is negligible as a single run of `amelia` does not take so much longer than a run of `hd.ord` as to make it impractical. For more advanced users conducting Markov chain Monte Carlo simulations, however, these differences are profound: 1,000 iterations do not represent a large number in the realm of Bayesian estimation. Speed differences of this magnitude thus can have a great impact on computing time saved as well as computing resources used.
+
+Given all the above, the result of this quality comparison of major missing data solutions is a clear endorsement of `amelia`. It performs well for all types of variables in all stages of missingness. The combination of EM with bootstrapping represents a great improvement in terms of speed over IP used in `mice`. While it offers a wealth of sophisticated options for specialized users, `amelia`'s default out-of-the-box settings are simple and intuitive for general users. `amelia`'s lack of speed compared to `hd.ord` does not make a large difference for basic users in practical terms. While `hd.ord`'s speed gain over `amelia` cannot be considered enough reason to choose `hd.ord` over `amelia` as a general rule, the use of `hd.ord` might nonetheless be appropriate depending on the respective circumstances. If the data in question are MNAR and consist of binary variables and if the analyses to be conducted require a large number of simulations/iterations, `hd.ord` provides a viable alternative with equal performance at a much greater speed.
+

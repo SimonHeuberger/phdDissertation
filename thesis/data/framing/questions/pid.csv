@@ -1,4 +1,0 @@
-id,text,page,type,choices,choiceNames,reverse,placeholder,min,max,disabled,checkType,width,height,inline,randomize
-NA,"<p style=""text-align:center;""><img src=""logo.png"" alt=""Logo""></p>",1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
-NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
-pid,"Generally speaking, do you think of yourself as a Republican, a Democrat, an Independent, or something else?",1,radioButtons,"1,2,3,4","Democrat,Republican,Independent,Something else",NA,NA,NA,NA,1,is.null,900px,NA,0,0

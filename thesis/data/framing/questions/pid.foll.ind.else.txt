@@ -1,4 +1,0 @@
-id	text	page	type	choices	choiceNames	reverse	placeholder	min	max	disabled	checkType	width	height	inline	randomize
-NA	<p style="text-align:center;"><img src="logo.png" alt="Logo"></p>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
-NA	<br>	1	HTML	NA	NA	NA	NA	NA	NA	0	NA	NA	NA	NA	0
-pid.follow	Do you think of yourself as closer to the Republican Party or the Democratic Party?	1	radioButtons	1,2,3	Closer to the Republican Party,Closer to the Democratic Party,Neither	NA	NA	NA	NA	1	is.null	800px	NA	0	0

@@ -1,4 +1,0 @@
-id,text,page,type,choices,choiceNames,reverse,placeholder,min,max,disabled,checkType,width,height,inline,randomize
-NA,"<p style=""text-align:center;""><img src=""logo.png"" alt=""Logo""></p>",1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
-NA,<br>,1,HTML,NA,NA,NA,NA,NA,NA,0,NA,NA,NA,NA,0
-check,"A moment ago, you were informed about a plan that was recently debated. Which of the following political topics is the plan about?",1,radioButtons,"1,2,3,4,5,6,7","Minimum wage,Same-sex marriage,Taxes,Immigration,Environment,Gun control,Abortion",NA,NA,NA,NA,1,is.null,900px,NA,0,0
