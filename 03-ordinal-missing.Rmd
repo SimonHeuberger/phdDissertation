@@ -1246,9 +1246,12 @@ for (i in 1:nrow(bart.92.lm)){
   }
 }
 
-stargazer(bart.reg.res[["92"]][["orig"]],
-          bart.reg.res[["92"]][["lm"]],
-          bart.reg.res[["92"]][["polr"]],
+# 2023 update: R versions > 4.2 now return an error for a stargazer function (previously it was just a warning). Not sure what exactly breaks, but the work-around is to have short model names inside stargazer(), then it runs fine (solution found on https://www.reddit.com/r/rstats/comments/ucmtdn/issue_with_stargazer_package_after_update_to_r_420/)
+m1 <- bart.reg.res[["92"]][["orig"]]
+m2 <- bart.reg.res[["92"]][["lm"]]
+m3 <- bart.reg.res[["92"]][["polr"]]
+
+stargazer(m1, m2, m3,
           align = TRUE,
           header = FALSE,
           rownames = FALSE,

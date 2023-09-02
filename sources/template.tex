@@ -106,6 +106,19 @@ $if(graphics)$
 \@namedef{endfigure*}{\end@dblfloat}
 \makeatother
 $endif$
+
+
+% SH: The following was added in 2023 after the release of Pandoc version 2.8. This version introduced cslreferences. Not really sure what that means, but it didn't compile any more Adding the following based lines solved the issue (solution found on https://stackoverflow.com/questions/59193797/pandocs-environment-cslreferences-undefined-when-knitting-rmarkdown-to-pdf-in-r)
+$if(csl-refs)$
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newenvironment{CSLReferences}%
+  {$if(csl-hanging-indent)$\setlength{\parindent}{0pt}%
+  \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces$endif$}%
+  {\par}
+$endif$ 
+
+
 % SH: The following is repeated from the .cls file to make it appear in Markdown. The commands set the captions and also make the lof and lot double-spaced (unless it extends to more than one line, in which case it's single-spaced)
 \makeatletter
 \def\caption{\refstepcounter\@captype \@dblarg{\@caption\@captype}}

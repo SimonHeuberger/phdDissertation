@@ -504,7 +504,13 @@ I run the same regression models as before after subsetting both data sets. Tabl
 
 ```{r Healthcare-Moral-High-Low-Table, include=FALSE}
 
-stargazer(plr.out.an.high.mor.hc, plr.out.an.low.mor.hc, plr.out.op.high.mor.hc, plr.out.op.low.mor.hc,
+# 2023 update: R versions > 4.2 now return an error for a stargazer function (previously it was just a warning). Not sure what exactly breaks, but the work-around is to have short model names inside stargazer(), then it runs fine (solution found on https://www.reddit.com/r/rstats/comments/ucmtdn/issue_with_stargazer_package_after_update_to_r_420/)
+m1 <- plr.out.an.high.mor.hc
+m2 <- plr.out.an.low.mor.hc
+m3 <- plr.out.op.high.mor.hc
+m4 <- plr.out.op.low.mor.hc
+
+stargazer(m1, m2, m3, m4,
           header= FALSE,
           align = TRUE,
           single.row = TRUE,
@@ -577,7 +583,13 @@ Observations & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{354} & \multicolumn{
 
 ```{r Environment-Moral-High-Low-Table, include=FALSE}
 
-stargazer(plr.out.an.high.mor.ev, plr.out.an.low.mor.ev, plr.out.op.high.mor.ev, plr.out.op.low.mor.ev,
+# 2023 update: R versions > 4.2 now return an error for a stargazer function (previously it was just a warning). Not sure what exactly breaks, but the work-around is to have short model names inside stargazer(), then it runs fine (solution found on https://www.reddit.com/r/rstats/comments/ucmtdn/issue_with_stargazer_package_after_update_to_r_420/)
+m1 <- plr.out.an.high.mor.ev
+m2 <- plr.out.an.low.mor.ev
+m3 <- plr.out.op.high.mor.ev
+m4 <- plr.out.op.low.mor.ev
+
+stargazer(m1, m2, m3, m4,
           header= FALSE,
           align = TRUE,
           single.row = TRUE,
@@ -703,7 +715,13 @@ As above, I run the same regression models as before after subsetting both data 
 
 ```{r Healthcare-Self-Interest-High-Low-Table, include=FALSE}
 
-stargazer(plr.out.an.high.si.hc, plr.out.an.low.si.hc, plr.out.op.high.si.hc, plr.out.op.low.si.hc,
+# 2023 update: R versions > 4.2 now return an error for a stargazer function (previously it was just a warning). Not sure what exactly breaks, but the work-around is to have short model names inside stargazer(), then it runs fine (solution found on https://www.reddit.com/r/rstats/comments/ucmtdn/issue_with_stargazer_package_after_update_to_r_420/)
+m1 <- plr.out.an.high.si.hc
+m2 <- plr.out.an.low.si.hc
+m3 <- plr.out.op.high.si.hc
+m4 <- plr.out.op.low.si.hc
+
+stargazer(m1, m2, m3, m4,
           header= FALSE,
           align = TRUE,
           single.row = TRUE,
@@ -774,7 +792,13 @@ Observations & \multicolumn{1}{c}{354} & \multicolumn{1}{c}{354} & \multicolumn{
 
 ```{r Environment-Self-Interest-High-Low-Table, include=FALSE}
 
-stargazer(plr.out.an.high.si.ev, plr.out.an.low.si.ev, plr.out.op.high.si.ev, plr.out.op.low.si.ev,
+# 2023 update: R versions > 4.2 now return an error for a stargazer function (previously it was just a warning). Not sure what exactly breaks, but the work-around is to have short model names inside stargazer(), then it runs fine (solution found on https://www.reddit.com/r/rstats/comments/ucmtdn/issue_with_stargazer_package_after_update_to_r_420/)
+m1 <- plr.out.an.high.si.ev
+m2 <- plr.out.an.low.si.ev
+m3 <- plr.out.op.high.si.ev
+m4 <- plr.out.op.low.si.ev
+
+stargazer(m1, m2, m3, m4,
           header= FALSE,
           align = TRUE,
           single.row = TRUE,

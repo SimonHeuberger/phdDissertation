@@ -1240,7 +1240,13 @@ names(plr.out.op.rep.ev$coefficients) <- repl.names(names(plr.out.op.rep.ev$coef
 
 ```{r ANES-OP-Republican-Table, include=FALSE}
 
-stargazer(plr.out.an.rep.hc, plr.out.op.rep.hc, plr.out.an.rep.ev, plr.out.op.rep.ev,
+# 2023 update: R versions > 4.2 now return an error for a stargazer function (previously it was just a warning). Not sure what exactly breaks, but the work-around is to have short model names inside stargazer(), then it runs fine (solution found on https://www.reddit.com/r/rstats/comments/ucmtdn/issue_with_stargazer_package_after_update_to_r_420/)
+m1 <- plr.out.an.rep.hc
+m2 <- plr.out.op.rep.hc
+m3 <- plr.out.an.rep.ev
+m4 <- plr.out.op.rep.ev
+
+stargazer(m1, m2, m3, m4,
           header= FALSE,
           align = TRUE,
           single.row = TRUE,
@@ -1337,7 +1343,13 @@ names(plr.out.op.dem.ev$coefficients) <- repl.names(names(plr.out.op.dem.ev$coef
 
 ```{r ANES-OP-Democrat-Table, include=FALSE}
 
-stargazer(plr.out.an.dem.hc, plr.out.op.dem.hc, plr.out.an.dem.ev, plr.out.op.dem.ev,
+# 2023 update: R versions > 4.2 now return an error for a stargazer function (previously it was just a warning). Not sure what exactly breaks, but the work-around is to have short model names inside stargazer(), then it runs fine (solution found on https://www.reddit.com/r/rstats/comments/ucmtdn/issue_with_stargazer_package_after_update_to_r_420/)
+m1 <- plr.out.an.dem.hc
+m2 <- plr.out.op.dem.hc
+m3 <- plr.out.an.dem.ev
+m4 <- plr.out.op.dem.ev
+
+stargazer(m1, m2, m3, m4,
           header= FALSE,
           align = TRUE,
           single.row = TRUE,
